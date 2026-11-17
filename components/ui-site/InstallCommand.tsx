@@ -53,7 +53,7 @@ export default function InstallCommand({ url }: { url: string }) {
           </span>
         </button>
       </div>
-      <pre className="overflow-x-auto px-4 py-5 font-mono text-[12.5px] leading-[1.6] text-ink">
+      <pre className="ui-cmd overflow-x-auto px-4 py-5 font-mono text-[12.5px] leading-[1.6] text-ink">
         <code key={runner} className="ui-swap inline-block">
           <span className="select-none text-mute">$ </span>
           {cmd}

@@ -26,6 +26,11 @@ async function slugToFile(): Promise<Map<string, string>> {
   for (const m of kit.matchAll(/"([a-z0-9-]+)":\s*load\(\(\) => import\("\.\/demos\/[a-z0-9-]+"\)\)/g)) {
     map.set(m[1], `components/kit/${m[1]}.tsx`);
   }
+  // Variants: `components/kit/variants/<slug>.tsx`, registered in `components/kit/variants.ts`.
+  const vars = await readFile(path.join(/*turbopackIgnore: true*/ ROOT, "components/kit/variants.ts"), "utf8");
+  for (const m of vars.matchAll(/"([a-z0-9-]+)":\s*load\(\(\) => import\("\.\/variants\/demos\/[a-z0-9-]+"\)\)/g)) {
+    map.set(m[1], `components/kit/variants/${m[1]}.tsx`);
+  }
   return map;
 }
 
@@ -69,12 +74,13 @@ export async function getSource(slug: string): Promise<Source | null> {
 
 /** A kit item's demo, with its kit imports pointed at the CLI install path. */
 export async function getDemo(slug: string): Promise<string | null> {
-  try {
-    const code = await readFile(path.join(/*turbopackIgnore: true*/ ROOT, `components/kit/demos/${slug}.tsx`), "utf8");
-    return code.replace(/"@\/components\/kit\/([a-z0-9-]+)"/g, (_, s: string) => `"@/components/astabyte/${s}"`);
-  } catch {
-    return null;
+  for (const dir of ["components/kit/demos", "components/kit/variants/demos"]) {
+    try {
+      const code = await readFile(path.join(/*turbopackIgnore: true*/ ROOT, `${dir}/${slug}.tsx`), "utf8");
+      return code.replace(/"@\/components\/kit\/(?:variants\/)?([a-z0-9-]+)"/g, (_, s: string) => `"@/components/astabyte/${s}"`);
+    } catch {}
   }
+  return null;
 }
 
 /** The design tokens the components use, as a Tailwind v4 `@theme` block. */

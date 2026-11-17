@@ -11,6 +11,7 @@ import { kitItems } from "@/lib/kit";
 import { labBlocks } from "@/lib/lab";
 import { componentPrompt, importLines } from "@/lib/prompts";
 import { uiItems } from "@/lib/ui-catalog";
+import { variantItemsOf } from "@/lib/variant-items";
 import { highlight } from "@/lib/ui-highlight";
 import { getDemo, getSource, getTheme } from "@/lib/ui-source";
 
@@ -33,7 +34,7 @@ const Code = ({ children }: { children: React.ReactNode }) => (
   <code className="break-words rounded-md bg-paper-2 px-1.5 py-0.5 font-mono text-[12.5px] text-ink">{children}</code>
 );
 
-const TOC = [
+const TOC_BASE = [
   { id: "preview", title: "Preview" },
   { id: "installation", title: "Installation" },
   { id: "cli", title: "shadcn CLI", depth: 1 },
@@ -69,6 +70,25 @@ export default async function UiComponent({ params }: Props) {
     ? { name: "page.tsx", path: "app/page.tsx", code: demo, html: await highlight(demo, "page.tsx") }
     : await usage(block.title, files[0].name, slug);
   const prompt = componentPrompt(block, importLines(use.code), deps.includes("radix-ui"));
+  const vars = await Promise.all(
+    variantItemsOf(slug).map(async (v) => {
+      const src = await getSource(v.slug);
+      const code = (await getDemo(v.slug)) ?? "";
+      const vdeps = (src?.packages ?? []).filter((p) => p !== "react");
+      const vfiles = await Promise.all(
+        [{ name: "app/page.tsx", code }, ...(src?.files ?? [])].map(async (f) => ({
+          name: f.name.split("/").pop()!,
+          path: f.name,
+          code: f.code,
+          html: await highlight(f.code, f.name),
+        })),
+      );
+      return { v, files: vfiles, deps: vdeps, prompt: componentPrompt(v, importLines(code), vdeps.includes("radix-ui")) };
+    }),
+  );
+  const TOC = vars.length
+    ? [TOC_BASE[0], { id: "variants", title: `Variants (${vars.length})` }, ...vars.map(({ v }) => ({ id: v.id, title: `${v.id} · ${v.variant.name}`, depth: 1 })), ...TOC_BASE.slice(1)]
+    : TOC_BASE;
   const promptFile = { name: "prompt.txt", path: "prompt.txt", code: prompt, html: await highlight(prompt, "prompt.txt") };
 
   return (
@@ -117,6 +137,45 @@ export default async function UiComponent({ params }: Props) {
             code={<CodeTabs files={files.slice(0, 1)} fill />}
           />
         </section>
+
+        {vars.length > 0 && (
+          <section id="variants" className="mt-20 scroll-mt-10">
+            <h2 className="display text-[clamp(1.6rem,2.6vw,2.2rem)]">Variants</h2>
+            <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-mute">
+              {vars.length} more takes on the {block.title.toLowerCase()}, each a single file you install on its own by its id.
+            </p>
+            <div className="mt-10 flex flex-col gap-16">
+              {vars.map(({ v, files: vf, deps: vd, prompt: vp }) => (
+                <div key={v.id} id={v.id} className="scroll-mt-10">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <h3 className="flex items-center gap-2.5 text-[19px] font-medium tracking-[-0.015em]">
+                        <span className="rounded-[5px] bg-paper-2 px-1.5 py-0.5 font-mono text-[12px] font-normal tabular-nums text-accent">{v.id}</span>
+                        {v.variant.name}
+                      </h3>
+                      <p className="mt-2 max-w-2xl text-[14.5px] leading-relaxed text-mute">
+                        {v.description}
+                        {vd.length ? (
+                          <>
+                            {" "}
+                            Needs <Code>{vd.join(", ")}</Code>.
+                          </>
+                        ) : null}
+                      </p>
+                    </div>
+                    <CopyPrompt text={vp} className="shrink-0" />
+                  </div>
+                  <div className="mt-5">
+                    <PreviewTabs id={`${block.title} · ${v.id}`} hint={v.variant.name} tone="light" preview={<Live slug={v.slug} />} code={<CodeTabs files={vf} fill />} />
+                  </div>
+                  <div className="mt-4">
+                    <InstallCommand url={`https://ui.astabyte.com/r/${v.slug}.json`} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         <h2 id="installation" className="display mt-20 scroll-mt-10 text-[clamp(1.6rem,2.6vw,2.2rem)]">
           Installation
@@ -201,7 +260,7 @@ export default async function UiComponent({ params }: Props) {
         </nav>
       </article>
 
-      <aside className="sticky top-0 hidden h-svh w-56 shrink-0 overflow-y-auto pb-10 pt-8 [scrollbar-width:none] xl:block">
+      <aside className="sticky top-16 hidden h-[calc(100svh-4rem)] w-56 shrink-0 overflow-y-auto pb-10 pt-8 [scrollbar-width:none] xl:block">
         <Toc items={TOC} />
         <dl className="mt-10 rounded-[10px] bg-paper-2 p-4 text-[13px]">
           <p className="label mb-3 flex justify-between text-mute">

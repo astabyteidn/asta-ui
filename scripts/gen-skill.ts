@@ -4,6 +4,7 @@ import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { useCases } from "../lib/prompts";
 import { uiItems } from "../lib/ui-catalog";
+import { variantItems } from "../lib/variant-items";
 
 const SITE = "https://ui.astabyte.com";
 const row = (s: string) => s.replace(/\|/g, "\\|");
@@ -75,7 +76,15 @@ ${table("kit")}
 ## Catalogue: motion lab
 
 ${table("lab")}
+
+## Catalogue: variants
+
+Standalone takes on a kit component, each with a global id (\`aui-001\`, \`aui-002\`…) and installable on its own. They are shown on the base component's page under Variants.
+
+| Id | Variant | What it does | Install |
+|---|---|---|---|
+${variantItems.map((v) => `| \`${v.id}\` | [${row(v.title)}](${SITE}/${v.variant.base}#${v.id}) | ${row(v.description)} | \`${SITE}/r/${v.slug}.json\` |`).join("\n")}
 `;
 
 writeFileSync(join(process.cwd(), "skills", "astabyte-ui", "SKILL.md"), md);
-console.log(`skills/astabyte-ui/SKILL.md: ${uiItems.length} components`);
+console.log(`skills/astabyte-ui/SKILL.md: ${uiItems.length} components, ${variantItems.length} variants`);
