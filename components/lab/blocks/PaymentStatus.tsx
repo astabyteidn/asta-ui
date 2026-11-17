@@ -85,7 +85,7 @@ export default function PaymentStatus() {
       className="lab-ps flex h-full w-full cursor-pointer items-center justify-center px-6 pb-6 pt-12 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand/50"
       style={{ containerType: "size" }}
     >
-      <style>{`
+      <style href="asta-paymentstatus" precedence="asta">{`
         .lab-ps-body { display: flex; flex-direction: column; align-items: center; gap: min(5cqh, 18px); }
         .lab-ps-ring { width: min(38cqh, 30cqw, 132px); }
         .lab-ps-text { align-items: center; text-align: center; }

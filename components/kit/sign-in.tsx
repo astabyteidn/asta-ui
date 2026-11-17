@@ -148,7 +148,7 @@ export function SignInCard({ title = "Welcome back", subtitle = "Sign in to cont
 
   return (
     <div className={cx("kit-signin relative w-full max-w-[380px] overflow-hidden rounded-xl bg-paper p-6 sm:p-7", "shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_10%,transparent),0_1px_2px_rgb(0_0_0/0.04),0_18px_40px_-20px_rgb(0_0_0/0.25)]", className)}>
-      <style>{CSS}</style>
+      <style href="asta-sign-in" precedence="asta">{CSS}</style>
       {state === "done" ? (
         <div className="flex min-h-[380px] flex-col items-center justify-center text-center" style={{ animation: "kit-signin-pop .5s cubic-bezier(.16,1,.3,1) both" }} role="status">
           <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#30a46c] text-white">

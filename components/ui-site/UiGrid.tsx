@@ -20,7 +20,7 @@ export default function UiGrid({ blocks }: { blocks: LabMeta[] }) {
   const count = (k: Kind | "All") => (k === "All" ? blocks.length : blocks.filter((b) => b.kind.includes(k)).length);
 
   return (
-    <div className="px-gutter">
+    <div className="px-shell">
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="flex gap-1 overflow-x-auto rounded-[10px] bg-paper-2 p-1">
           {(["All", ...KINDS] as const).map((k) => (
@@ -29,10 +29,10 @@ export default function UiGrid({ blocks }: { blocks: LabMeta[] }) {
               type="button"
               onClick={() => setKind(k)}
               aria-pressed={kind === k}
-              className={`flex h-8 shrink-0 items-center gap-2 rounded-[7px] px-3.5 text-[13px] font-medium transition-colors duration-300 ${kind === k ? "bg-ink text-paper" : "text-mute hover:text-ink"}`}
+              className={`flex h-8 shrink-0 items-center gap-2 rounded-[7px] px-3.5 text-[14px] font-medium transition-colors duration-300 ${kind === k ? "bg-ink text-paper" : "text-mute hover:text-ink"}`}
             >
               {k}
-              <span className={`font-mono text-[10.5px] tabular-nums ${kind === k ? "text-paper/60" : "text-mute/60"}`}>{count(k)}</span>
+              <span className={`font-mono text-[11.5px] tabular-nums ${kind === k ? "text-paper/60" : "text-mute/60"}`}>{count(k)}</span>
             </button>
           ))}
         </div>
@@ -41,7 +41,7 @@ export default function UiGrid({ blocks }: { blocks: LabMeta[] }) {
           onChange={(e) => setQ(e.target.value)}
           placeholder="Search components"
           aria-label="Search components"
-          className="h-10 w-full border-b border-line bg-transparent text-[15px] outline-none transition-colors placeholder:text-mute focus:border-accent sm:ml-auto sm:w-64"
+          className="h-10 w-full border-b border-line bg-transparent text-[16px] outline-none transition-colors placeholder:text-mute focus:border-accent sm:ml-auto sm:w-64"
         />
       </div>
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
@@ -56,8 +56,8 @@ export default function UiGrid({ blocks }: { blocks: LabMeta[] }) {
                   <span className="tabular-nums">{specimenId(i)}</span>
                   <span>{b.input.join(" · ")}</span>
                 </span>
-                <span className="mt-2 block truncate text-[16px] font-medium tracking-[-0.015em]">{b.title}</span>
-                <span className="mt-1 line-clamp-2 block text-[13px] leading-snug text-mute">{b.description}</span>
+                <span className="mt-2 block truncate text-[17px] font-medium tracking-[-0.015em]">{b.title}</span>
+                <span className="mt-1 line-clamp-2 block text-[14px] leading-snug text-mute">{b.description}</span>
               </span>
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-paper text-ink transition-colors duration-300 group-hover:bg-ink group-hover:text-paper">
                 <span className="btn-arrow" />

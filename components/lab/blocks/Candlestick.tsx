@@ -6,13 +6,24 @@ type C = { o: number; h: number; l: number; c: number };
 const BUF = 64;
 const NEW_EVERY = 3000;
 
+/** Seeded PRNG for the first frame, so server and client render the same data (no hydration mismatch). */
+function seeded(s: number) {
+  return () => {
+    s = (s + 0x6d2b79f5) | 0;
+    let t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 function seed(): C[] {
+  const rand = seeded(1716);
   const out: C[] = [];
   let p = 1716;
   for (let i = 0; i < BUF; i++) {
     const o = p;
-    const c = o + (Math.random() - 0.47) * 3.2;
-    out.push({ o, c, h: Math.max(o, c) + Math.random() * 1.1, l: Math.min(o, c) - Math.random() * 1.1 });
+    const c = o + (rand() - 0.47) * 3.2;
+    out.push({ o, c, h: Math.max(o, c) + rand() * 1.1, l: Math.min(o, c) - rand() * 1.1 });
     p = c;
   }
   return out;

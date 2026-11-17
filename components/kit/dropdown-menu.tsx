@@ -70,7 +70,7 @@ export function DropdownMenu({ children, groups, align = "start", variant = "out
             "data-[state=open]:animate-[kit-menu-in_.2s_cubic-bezier(.16,1,.3,1)_both] data-[state=closed]:animate-[kit-menu-out_.12s_ease-in_both] motion-reduce:!animate-none",
           )}
         >
-          <style>{KEYFRAMES}</style>
+          <style href="asta-dropdown-menu" precedence="asta">{KEYFRAMES}</style>
           {groups.map((g, gi) => (
             <Menu.Group key={gi}>
               {gi > 0 && <Menu.Separator className="mx-1 my-1.5 h-px bg-[color-mix(in_srgb,var(--color-ink)_8%,transparent)]" />}

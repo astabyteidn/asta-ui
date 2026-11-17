@@ -55,7 +55,7 @@ export function Accordion({ items, type = "single", defaultOpen = [], className 
   ));
 
   const cls = cx("flex w-full flex-col gap-1.5", className);
-  const style = <style>{KEYFRAMES}</style>;
+  const style = <style href="asta-accordion" precedence="asta">{KEYFRAMES}</style>;
   return type === "single" ? (
     <A.Root type="single" collapsible defaultValue={defaultOpen[0]} className={cls}>
       {style}

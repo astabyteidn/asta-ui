@@ -77,6 +77,11 @@ html.lenis body {
   }
 }
 
+/* Docs shell: gutter on small screens, centred 1600px column on wide ones. */
+.px-shell {
+  padding-left: max(var(--gutter), calc((100% - 1600px) / 2 + var(--gutter)));
+  padding-right: max(var(--gutter), calc((100% - 1600px) / 2 + var(--gutter)));
+}
 .px-gutter {
   padding-left: var(--gutter);
   padding-right: var(--gutter);
@@ -116,7 +121,7 @@ html.lenis body {
 
 .label {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -280,7 +285,7 @@ html.lenis body {
   overflow-x: auto;
   padding: 1.1rem 0;
   font-family: var(--font-mono);
-  font-size: 12.5px;
+  font-size: 13.5px;
   line-height: 1.7;
   background: transparent !important;
 }
@@ -311,7 +316,7 @@ html.lenis body {
   left: 0;
   top: 0.15rem;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   color: var(--color-accent);
 }
 @media (max-width: 639px) {
@@ -331,7 +336,7 @@ html.lenis body {
   height: 2.5rem;
   padding: 0 1rem;
   overflow: hidden;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 500;
   letter-spacing: -0.01em;
   white-space: nowrap;
@@ -357,30 +362,99 @@ html.lenis body {
 .btn-ghost { color: var(--color-mute); }
 .btn-ghost::before { background: var(--color-paper-2); }
 .btn-ghost:hover { color: var(--color-ink); }
-.btn-sm { height: 2rem; padding: 0 0.75rem; font-size: 13px; gap: 0.45rem; }
-.btn-lg { height: 3rem; padding: 0 1.4rem; font-size: 15px; }
+.btn-sm { height: 2rem; padding: 0 0.75rem; font-size: 14px; gap: 0.45rem; }
+.btn-lg { height: 3rem; padding: 0 1.4rem; font-size: 16px; }
 .btn-icon { width: 2.25rem; padding: 0; }
 .btn-sm.btn-icon { width: 2rem; }
 .btn-on { color: var(--color-on-signal) !important; background: var(--color-signal) !important; box-shadow: none !important; }
 
-.btn-arrow { position: relative; display: inline-block; width: 1em; height: 1em; overflow: hidden; line-height: 1; }
+.btn-arrow { position: relative; display: inline-block; width: 1em; height: 1em; overflow: hidden; flex-shrink: 0; }
+/* Our own arrows (components/icons), drawn as a mask so they take currentColor. */
 .btn-arrow::before,
 .btn-arrow::after {
-  content: "→";
+  content: "";
   position: absolute;
-  inset: 0;
-  text-align: center;
+  inset: 0.06em;
+  background: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12h15'/%3E%3Cpath d='m13 6 6 6-6 6'/%3E%3C/svg%3E") center / contain no-repeat;
   transition: transform 0.5s var(--ease-expo);
 }
 .btn-arrow::after { transform: translateX(-130%); }
 .btn:hover .btn-arrow::before, a:hover .btn-arrow::before, .group:hover .btn-arrow::before { transform: translateX(130%); }
 .btn:hover .btn-arrow::after, a:hover .btn-arrow::after, .group:hover .btn-arrow::after { transform: none; }
-.btn-arrow.down::before, .btn-arrow.down::after { content: "↓"; }
+.btn-arrow.down::before, .btn-arrow.down::after { mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4v15'/%3E%3Cpath d='m6 13 6 6 6-6'/%3E%3C/svg%3E"); }
 .btn-arrow.down::after { transform: translateY(-130%); }
 .btn:hover .btn-arrow.down::before, .group:hover .btn-arrow.down::before { transform: translateY(130%); }
-.btn-arrow.back::before, .btn-arrow.back::after { content: "←"; }
+.btn-arrow.back::before, .btn-arrow.back::after { mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 12H5'/%3E%3Cpath d='m11 6-6 6 6 6'/%3E%3C/svg%3E"); }
 .btn-arrow.back::after { transform: translateX(130%); }
 .btn:hover .btn-arrow.back::before, a:hover .btn-arrow.back::before, .group:hover .btn-arrow.back::before { transform: translateX(-130%); }
+@media (prefers-reduced-motion: reduce) { .btn-arrow::before, .btn-arrow::after { transition: none; } }
+
+/* ── Icon motion ─────────────────────────────────────────────
+   Each icon has its own small move. It plays when a parent with .icon-hover is hovered or focused.
+   Transform and opacity only; parts move around their own centre. */
+svg[data-icon] > * { transform-box: fill-box; transform-origin: center; }
+@keyframes ic-x { 40% { transform: translateX(var(--d, 3px)) } }
+@keyframes ic-y { 40% { transform: translateY(var(--d, 3px)) } }
+@keyframes ic-xy { 40% { transform: translate(2.5px, -2.5px) } }
+@keyframes ic-spin90 { to { transform: rotate(90deg) } }
+@keyframes ic-spin72 { from { transform: rotate(0) } to { transform: rotate(144deg) } }
+@keyframes ic-pop { 0% { transform: scale(.6); opacity: 0 } 60% { transform: scale(1.15); opacity: 1 } 100% { transform: none } }
+@keyframes ic-beat { 20% { transform: scale(1.18) } 40% { transform: scale(.96) } 60% { transform: scale(1.1) } }
+@keyframes ic-ring { 15% { transform: rotate(14deg) } 35% { transform: rotate(-11deg) } 55% { transform: rotate(7deg) } 75% { transform: rotate(-3deg) } }
+@keyframes ic-blink { 45% { transform: scaleY(1) } 55% { transform: scaleY(.1) } 65% { transform: scaleY(1) } }
+@keyframes ic-flash { 30% { opacity: .25 } 50% { opacity: 1 } 70% { opacity: .4 } }
+@keyframes ic-bob { 40% { transform: translateY(-2.5px) } }
+@keyframes ic-tilt { 40% { transform: rotate(var(--r, -10deg)) } }
+@keyframes ic-grow { 0% { transform: scaleX(1) } 40% { transform: scaleX(.55) } 100% { transform: scaleX(1) } }
+@keyframes ic-cursor { 0%, 50% { opacity: 1 } 25%, 75% { opacity: 0 } }
+@keyframes ic-zoom { 40% { transform: scale(1.12) rotate(-8deg) } }
+@keyframes ic-sun { to { transform: rotate(90deg) } }
+
+.icon-hover:is(:hover, :focus-visible) svg[data-icon] > *, .icon-hover:is(:hover, :focus-visible) svg[data-icon] {
+  animation-duration: .7s; animation-timing-function: cubic-bezier(.16,1,.3,1); animation-fill-mode: both;
+}
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="arrow-right"], [data-icon="chevron-right"], [data-icon="cart"]) { animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="arrow-left"] { --d: -3px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="arrow-down"], [data-icon="chevron-down"]) { animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="arrow-up"] { --d: -3px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="arrow-up-right"] { animation-name: ic-xy; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="external"] > :is(:nth-child(1), :nth-child(2)) { animation-name: ic-xy; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="chevrons-up-down"] > :nth-child(1) { --d: -2.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="chevrons-up-down"] > :nth-child(2) { --d: 2.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="plus"], [data-icon="x"], [data-icon="command"]) { animation-name: ic-spin90; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="minus"]) { animation-name: ic-grow; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="check"]) { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="menu"], [data-icon="filter"]) > * { animation-name: ic-grow; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="menu"], [data-icon="filter"]) > :nth-child(2) { animation-delay: .06s; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="menu"], [data-icon="filter"]) > :nth-child(3) { animation-delay: .12s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="search"] { animation-name: ic-zoom; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="copy"] > :nth-child(1) { --d: 2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="link"] { --r: -20deg; animation-name: ic-tilt; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="download"] > :is(:nth-child(1), :nth-child(2)) { animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="code"] > :nth-child(1) { --d: -2.5px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="code"] > :nth-child(2) { --d: 2.5px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="terminal"] > :nth-child(3) { animation-name: ic-cursor; animation-duration: 1s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="terminal"] > :nth-child(2) { --d: 1.5px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="book"], [data-icon="card"]) { animation-name: ic-tilt; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="box"], [data-icon="user"], [data-icon="chart"]) { animation-name: ic-bob; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="layers"] > :nth-child(1) { --d: -2.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="layers"] > :nth-child(3) { --d: 2px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="wave"] { --d: 2.5px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="sparkle"] > :nth-child(1) { animation-name: ic-spin90; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="sparkle"] > :nth-child(2) { animation-name: ic-pop; animation-delay: .1s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="star"] { animation-name: ic-spin72; animation-duration: .9s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="heart"] { animation-name: ic-beat; animation-duration: .9s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="bolt"] { animation-name: ic-flash; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="bell"] { transform-origin: 50% 15%; animation-name: ic-ring; animation-duration: .9s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="eye"] { animation-name: ic-blink; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="lock"] > :nth-child(2) { --d: -2px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="settings"] > :nth-child(3) { --d: -3px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="settings"] > :nth-child(6) { --d: 3px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="sun"] { animation-name: ic-sun; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="moon"] { --r: -25deg; animation-name: ic-tilt; }
+svg.ic-copied { animation: ic-pop .5s cubic-bezier(.16,1,.3,1) both; }
+@media (prefers-reduced-motion: reduce) { svg.ic-copied { animation: none; } .icon-hover svg[data-icon], .icon-hover svg[data-icon] > * { animation: none !important; } }
 
 .kbd {
   display: inline-flex;
@@ -388,7 +462,7 @@ html.lenis body {
   height: 1.25rem;
   padding: 0 0.35rem;
   font-family: var(--font-mono);
-  font-size: 10.5px;
+  font-size: 11.5px;
   color: var(--color-mute);
   background: var(--color-paper);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-ink) 12%, transparent);
@@ -417,6 +491,17 @@ html.lenis body {
 .ui-live-in { animation: ui-live-in 0.4s var(--ease-expo) both; }
 .ui-live-ph { animation: ui-live-out 0.4s var(--ease-expo) both; pointer-events: none; }
 .ui-swap { animation: ui-swap 0.28s var(--ease-expo) both; }
+/* Primitive switch (Radix | Base UI): both versions share one grid cell, the hidden one fades out and leaves the
+   tab order. Driven by <html data-primitive>, set before paint, so there is no flash and no layout shift. */
+.pv-stack { display: grid; }
+.pv-stack > .pv { grid-area: 1 / 1; min-width: 0; transition: opacity 0.3s var(--ease-expo), visibility 0s linear 0s; }
+:root:not([data-primitive="base"]) .pv-stack > .pv-base,
+:root[data-primitive="base"] .pv-stack > .pv-radix { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.2s var(--ease-expo), visibility 0s linear 0.2s; }
+:root[data-primitive="base"] .pv-slab { transform: translateX(100%); }
+.pv-opt { color: var(--color-mute); }
+.pv-opt:hover, :root:not([data-primitive="base"]) .pv-opt[data-id="radix"], :root[data-primitive="base"] .pv-opt[data-id="base"] { color: var(--color-ink); }
+:root:not([data-primitive="base"]) .pv-inline.pv-base,
+:root[data-primitive="base"] .pv-inline.pv-radix { display: none; }
 .ui-fade-panel { transition: opacity 0.3s var(--ease-expo), transform 0.3s var(--ease-expo); }
 .ui-fade-panel[data-on="false"] { opacity: 0; transform: scale(0.995); pointer-events: none; }
 .ui-replay { transition: opacity 0.14s ease-out; }
@@ -433,7 +518,7 @@ html.lenis body {
   .ui-rise, .ui-word { animation: none; }
   .ui-enter, .ui-live-in, .ui-swap { animation: none; }
   .ui-live-ph { animation-duration: 0.01s; }
-  .ui-fade-panel, .ui-replay, .ui-morph > *, .ui-labels > *, .ui-collapse { transition: none; }
+  .ui-fade-panel, .pv-stack > .pv, .ui-replay, .ui-morph > *, .ui-labels > *, .ui-collapse { transition: none; }
   .ui-marquee-track { animation: none; }
   .btn, .btn::before, .btn-arrow::before, .btn-arrow::after { transition: none; }
 }
@@ -444,7 +529,7 @@ html.lenis body {
 .doc-body > .doc-row { margin-top: 3.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .doc-body > .doc-row:first-child { margin-top: 0; }
 .doc-row > h2 { font-size: clamp(1.5rem, 2.4vw, 2rem); font-weight: 500; letter-spacing: -0.04em; line-height: 1; scroll-margin-top: 7rem; }
-.doc-body > p, .doc-body > ul { margin-top: 1rem; font-size: 16px; line-height: 1.7; color: var(--color-ink-2); }
+.doc-body > p, .doc-body > ul { margin-top: 1rem; font-size: 17px; line-height: 1.7; color: var(--color-ink-2); }
 .doc-body > ul { display: flex; flex-direction: column; gap: 0.6rem; }
 .doc-body > ul > li { position: relative; padding-left: 1.4rem; }
 .doc-body > ul > li::before { content: ""; position: absolute; left: 0; top: 0.7em; width: 6px; height: 6px; background: var(--color-signal); }

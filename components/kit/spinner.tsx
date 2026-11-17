@@ -16,7 +16,7 @@ const KEYFRAMES = `
 export function Spinner({ variant = "ring", label = "Loading", className }: { variant?: SpinnerVariant; label?: string; className?: string }) {
   return (
     <span role="status" aria-label={label} className={cx("kit-spinner relative inline-flex h-[1em] w-[1em] shrink-0 items-center justify-center", className)}>
-      <style>{KEYFRAMES}</style>
+      <style href="asta-spinner" precedence="asta">{KEYFRAMES}</style>
       {variant === "ring" && (
         <svg viewBox="0 0 24 24" className="h-full w-full animate-[kit-spin_.8s_linear_infinite]" fill="none" aria-hidden>
           <circle cx="12" cy="12" r="9.5" stroke="currentColor" strokeOpacity=".18" strokeWidth="2.5" />
@@ -74,7 +74,7 @@ export function Progress({ value, label, showValue, className }: { value?: numbe
         aria-valuenow={v}
         className="kit-spinner relative h-1.5 w-full overflow-hidden rounded-full bg-[color-mix(in_srgb,var(--color-ink)_9%,transparent)]"
       >
-        <style>{KEYFRAMES}</style>
+        <style href="asta-spinner-2" precedence="asta">{KEYFRAMES}</style>
         {v === undefined ? (
           <span className="absolute inset-y-0 rounded-full bg-brand" style={{ animation: "kit-indet 1.3s cubic-bezier(.65,0,.35,1) infinite" }} />
         ) : (

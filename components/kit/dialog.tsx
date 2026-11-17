@@ -73,7 +73,7 @@ export function Dialog({ open, onOpenChange, title, description, children, foote
 
   const layer = (
     <div className={cx(contained ? "absolute" : "fixed", "inset-0 z-50 flex items-center justify-center p-4")}>
-      <D.Overlay forceMount ref={backdrop} className={cx("absolute inset-0 bg-[rgb(10_10_10/0.32)] backdrop-blur-[2px]", contained && "rounded-[inherit]")} />
+      <D.Overlay forceMount ref={backdrop} className={cx("absolute inset-0 bg-[rgb(10_10_10/0.38)] will-change-[opacity]", contained && "rounded-[inherit]")} />
       <D.Content
         forceMount
         ref={panel}

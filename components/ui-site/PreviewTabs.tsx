@@ -52,7 +52,7 @@ export default function PreviewTabs({
             role="tab"
             aria-selected={tab === t}
             onClick={() => setTab(t)}
-            className={`relative h-9 text-[15px] font-medium capitalize tracking-[-0.01em] transition-colors duration-300 ${tab === t ? "text-ink" : "text-mute hover:text-ink"} ${!bar && tab === t ? "after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:bg-accent" : ""}`}
+            className={`relative h-9 text-[16px] font-medium capitalize tracking-[-0.01em] transition-colors duration-300 ${tab === t ? "text-ink" : "text-mute hover:text-ink"} ${!bar && tab === t ? "after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:bg-accent" : ""}`}
           >
             {t}
           </button>

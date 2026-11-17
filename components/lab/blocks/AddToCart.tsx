@@ -149,7 +149,7 @@ export default function AddToCart({
 
   return (
     <div ref={root} className="relative h-full w-full overflow-hidden" style={{ containerType: "size" }}>
-      <style>{`
+      <style href="asta-addtocart" precedence="asta">{`
         @keyframes lab-atc-roll { from { transform: translateY(70%); opacity: 0; filter: blur(2px) } to { transform: none; opacity: 1; filter: none } }
         @media (prefers-reduced-motion: reduce) { .lab-atc-anim { animation: none !important } }
       `}</style>

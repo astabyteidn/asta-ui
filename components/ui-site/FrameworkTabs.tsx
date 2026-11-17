@@ -40,7 +40,7 @@ export default function FrameworkTabs({ tabs }: { tabs: FrameworkTab[] }) {
             aria-selected={i === active}
             aria-controls={`fw-${t.id}`}
             onClick={() => setActive(i)}
-            className={`h-9 shrink-0 rounded-[6px] px-3 text-[14px] transition-colors duration-300 ${i === active ? "text-ink" : "text-mute hover:text-ink"}`}
+            className={`h-9 shrink-0 rounded-[6px] px-3 text-[15px] transition-colors duration-300 ${i === active ? "text-ink" : "text-mute hover:text-ink"}`}
           >
             {t.label}
           </button>

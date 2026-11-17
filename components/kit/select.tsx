@@ -114,7 +114,7 @@ function PlainSelect({ options, value, defaultValue, onChange, placeholder = "Se
       </S.Trigger>
       <S.Portal>
         <S.Content position="popper" sideOffset={6} collisionPadding={8} className={cx(panel("origin-[var(--radix-select-content-transform-origin)]"), "w-[var(--radix-select-trigger-width)]")}>
-          <style>{KEYFRAMES}</style>
+          <style href="asta-select" precedence="asta">{KEYFRAMES}</style>
           <S.Viewport className="max-h-60 [scrollbar-width:thin]">
             {options.map((o) => (
               <S.Item key={o.value} value={o.value} disabled={o.disabled} className={cx(row, "data-[highlighted]:bg-paper-2 data-[highlighted]:text-ink data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40")}>
@@ -203,7 +203,7 @@ function SearchSelect({ options, value, defaultValue, onChange, placeholder = "S
           onKeyDown={onKey}
           className={cx(panel("origin-[var(--radix-popover-content-transform-origin)]"), "w-[var(--radix-popover-trigger-width)]")}
         >
-          <style>{KEYFRAMES}</style>
+          <style href="asta-select-2" precedence="asta">{KEYFRAMES}</style>
           <div className="mb-1 flex items-center gap-2 rounded-lg bg-paper-2 px-2.5">
             <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 shrink-0 text-mute" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
               <circle cx="7" cy="7" r="4.5" />

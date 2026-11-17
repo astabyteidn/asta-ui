@@ -290,7 +290,7 @@ export function Navbar({ brand, brandHref = "/", items, docs, cta, scrollRoot, c
         className,
       )}
     >
-      <style>{`
+      <style href="asta-navbar" precedence="asta">{`
         @keyframes kit-nav-in { from { opacity: 0; transform: translateX(calc(var(--kit-dir) * 36px)); } to { opacity: 1; transform: none; } }
         @keyframes kit-nav-pop { from { opacity: 0; transform: translateY(-6px) scale(.98); } to { opacity: 1; transform: none; } }
         @media (prefers-reduced-motion: reduce) { .kit-nav-motion, .kit-nav-motion * { animation: none !important; transition-duration: 0s !important; } }

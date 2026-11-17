@@ -62,7 +62,7 @@ export function PromptBox({ models, defaultModel, placeholder = "Ask anything…
         className,
       )}
     >
-      <style>{KEYFRAMES}</style>
+      <style href="asta-textarea-aui-008" precedence="asta">{KEYFRAMES}</style>
       <textarea
         ref={area}
         rows={2}
@@ -80,7 +80,7 @@ export function PromptBox({ models, defaultModel, placeholder = "Ask anything…
         className={cx("block w-full resize-none bg-transparent px-1 text-[15px] leading-[1.5] text-ink outline-none placeholder:text-mute transition-opacity duration-300", busy && "opacity-60")}
       />
       <div className="mt-2 flex items-center justify-between gap-2">
-        <Menu.Root>
+        <Menu.Root modal={false}>
           <Menu.Trigger
             aria-label={`Model: ${current?.label ?? "none"}`}
             className="group/m flex h-8 items-center gap-1.5 rounded-full bg-paper-2 pl-2 pr-2.5 text-[12.5px] font-medium text-ink-2 outline-none transition-colors hover:text-ink focus-visible:shadow-[0_0_0_2px_var(--color-brand)] data-[state=open]:text-ink"
@@ -96,7 +96,7 @@ export function PromptBox({ models, defaultModel, placeholder = "Ask anything…
               side="top"
               align="start"
               sideOffset={8}
-              className="z-50 min-w-[220px] origin-[var(--radix-dropdown-menu-content-transform-origin)] rounded-xl bg-paper p-1 text-ink shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_10%,transparent),0_16px_40px_-16px_rgb(0_0_0/0.3)] data-[state=open]:animate-[aui-pop-in_.22s_cubic-bezier(.16,1,.3,1)_both] data-[state=closed]:animate-[aui-pop-out_.12s_ease-in_both] motion-reduce:!animate-none"
+              className="z-50 min-w-[220px] will-change-[transform,opacity] origin-[var(--radix-dropdown-menu-content-transform-origin)] rounded-xl bg-paper p-1 text-ink shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_10%,transparent),0_16px_40px_-16px_rgb(0_0_0/0.3)] data-[state=open]:animate-[aui-pop-in_.22s_cubic-bezier(.16,1,.3,1)_both] data-[state=closed]:animate-[aui-pop-out_.12s_ease-in_both] motion-reduce:!animate-none"
             >
               <Menu.RadioGroup value={model} onValueChange={setModel}>
                 {models.map((m) => (

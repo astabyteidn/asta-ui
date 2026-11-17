@@ -40,7 +40,7 @@ export default function KitGrid() {
   const wide = layer === "Organisms";
 
   return (
-    <div className="px-gutter">
+    <div className="px-shell">
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex max-w-full gap-1 self-start overflow-x-auto rounded-[10px] bg-paper-2 p-1 [scrollbar-width:none]" role="tablist" aria-label="Layer">
           {LAYERS.map((l, i) => (
@@ -50,15 +50,15 @@ export default function KitGrid() {
               role="tab"
               aria-selected={layer === l}
               onClick={() => setLayer(l)}
-              className={`flex h-9 shrink-0 items-center gap-2 rounded-[7px] px-4 text-[14px] font-medium transition-colors duration-300 ${layer === l ? "bg-ink text-paper" : "text-mute hover:text-ink"}`}
+              className={`flex h-9 shrink-0 items-center gap-2 rounded-[7px] px-4 text-[15px] font-medium transition-colors duration-300 ${layer === l ? "bg-ink text-paper" : "text-mute hover:text-ink"}`}
             >
-              <span className={`font-mono text-[10.5px] ${layer === l ? "text-paper/55" : "text-mute/60"}`}>0{i + 1}</span>
+              <span className={`font-mono text-[11.5px] ${layer === l ? "text-paper/55" : "text-mute/60"}`}>0{i + 1}</span>
               {l}
-              <span className={`font-mono text-[10.5px] tabular-nums ${layer === l ? "text-paper/55" : "text-mute/60"}`}>{kitItems.filter((k) => k.layer === l).length}</span>
+              <span className={`font-mono text-[11.5px] tabular-nums ${layer === l ? "text-paper/55" : "text-mute/60"}`}>{kitItems.filter((k) => k.layer === l).length}</span>
             </button>
           ))}
         </div>
-        <p className="text-[14px] text-mute">{BLURB[layer]}</p>
+        <p className="text-[15px] text-mute">{BLURB[layer]}</p>
       </div>
 
       <div key={layer} className={`grid gap-3 sm:grid-cols-2 ${wide ? "" : "xl:grid-cols-3"}`}>
@@ -75,8 +75,8 @@ export default function KitGrid() {
                   <span className="shrink-0 tabular-nums">{kitId(k.slug)}</span>
                   <span className="truncate">{k.parts.slice(0, 3).join(" · ")}</span>
                 </span>
-                <span className="mt-2 block truncate text-[16px] font-medium tracking-[-0.015em]">{k.title}</span>
-                <span className="mt-1 line-clamp-2 block text-[13px] leading-snug text-mute">{k.description}</span>
+                <span className="mt-2 block truncate text-[17px] font-medium tracking-[-0.015em]">{k.title}</span>
+                <span className="mt-1 line-clamp-2 block text-[14px] leading-snug text-mute">{k.description}</span>
               </span>
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-paper text-ink transition-colors duration-300 group-hover:bg-ink group-hover:text-paper">
                 <span className="btn-arrow" />
