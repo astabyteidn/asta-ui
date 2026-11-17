@@ -454,6 +454,74 @@ svg[data-icon] > * { transform-box: fill-box; transform-origin: center; }
 .icon-hover:is(:hover, :focus-visible) [data-icon="sun"] { animation-name: ic-sun; }
 .icon-hover:is(:hover, :focus-visible) [data-icon="moon"] { --r: -25deg; animation-name: ic-tilt; }
 svg.ic-copied { animation: ic-pop .5s cubic-bezier(.16,1,.3,1) both; }
+@keyframes ic-spin { to { transform: rotate(360deg) } }
+@keyframes ic-spin-back { to { transform: rotate(-360deg) } }
+@keyframes ic-shake { 20% { transform: translateX(-1.5px) } 40% { transform: translateX(1.5px) } 60% { transform: translateX(-1px) } 80% { transform: translateX(1px) } }
+@keyframes ic-wiggle { 25% { transform: rotate(-8deg) } 50% { transform: rotate(6deg) } 75% { transform: rotate(-3deg) } }
+@keyframes ic-fade { 40% { opacity: .2 } }
+@keyframes ic-squish { 30% { transform: scale(1.12, .88) } 60% { transform: scale(.95, 1.05) } }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="home"], [data-icon="map-pin"], [data-icon="trophy"], [data-icon="bookmark"], [data-icon="folder"]) { animation-name: ic-bob; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="grid"] > :nth-child(1) { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="grid"] > :nth-child(2) { animation-name: ic-pop; animation-delay: .06s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="grid"] > :nth-child(3) { animation-name: ic-pop; animation-delay: .12s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="grid"] > :nth-child(4) { animation-name: ic-pop; animation-delay: .18s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="list"] > :is(:nth-child(1), :nth-child(2), :nth-child(3)) { animation-name: ic-grow; transform-origin: right center; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="list"] > :nth-child(2) { animation-delay: .06s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="list"] > :nth-child(3) { animation-delay: .12s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="sidebar"] > :nth-child(2) { --d: 2.5px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="maximize"] > :is(:nth-child(1), :nth-child(3)) { animation-name: ic-xy; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="maximize"] > :is(:nth-child(2), :nth-child(4)) { animation-name: ic-xy; animation-direction: reverse; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="more-horizontal"], [data-icon="more-vertical"]) > * { animation-name: ic-bob; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="more-horizontal"], [data-icon="more-vertical"]) > :nth-child(2) { animation-delay: .08s; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="more-horizontal"], [data-icon="more-vertical"]) > :nth-child(3) { animation-delay: .16s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="refresh"] { animation-name: ic-spin; animation-duration: .8s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="loader"] { animation-name: ic-spin; animation-duration: 1s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="undo"] { --r: -20deg; animation-name: ic-tilt; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="redo"] { --r: 20deg; animation-name: ic-tilt; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="trash"] > :is(:nth-child(1), :nth-child(2)) { --d: -2.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="edit"] { animation-name: ic-wiggle; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="share"] > :is(:nth-child(1), :nth-child(3)) { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="share"] > :nth-child(3) { animation-delay: .08s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="upload"] > :is(:nth-child(1), :nth-child(2)) { --d: -3px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="send"] { animation-name: ic-xy; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="log-in"] > :is(:nth-child(2), :nth-child(3)) { animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="log-out"] > :is(:nth-child(2), :nth-child(3)) { animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="info"], [data-icon="help"]) > :not(:first-child) { animation-name: ic-bob; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="alert"] { animation-name: ic-shake; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="smile"] > :nth-child(2) { animation-name: ic-squish; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="smile"] > :is(:nth-child(3), :nth-child(4)) { animation-name: ic-blink; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="flag"] > :nth-child(2) { animation-name: ic-squish; transform-origin: left center; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="calendar"] > :is(:nth-child(3), :nth-child(4)) { --d: -2px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="clock"] > :nth-child(2) { transform-box: view-box; transform-origin: 12px 12px; animation-name: ic-spin; animation-duration: 1s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="mail"] > :nth-child(2) { --d: 1.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="message"] { animation-name: ic-squish; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="message"] > :nth-child(2) { animation-name: ic-grow; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="phone"] { animation-name: ic-ring; animation-duration: .8s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="image"] > :nth-child(2) { --d: -2px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="image"] > :nth-child(3) { animation-name: ic-squish; transform-origin: center bottom; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="video"] > :nth-child(2) { --d: 2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="mic"] > :nth-child(1) { animation-name: ic-squish; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="play"], [data-icon="pause"]) { animation-name: ic-squish; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="volume"] > :nth-child(2) { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="volume"] > :nth-child(3) { animation-name: ic-fade; animation-delay: .1s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="wallet"] > :nth-child(1) { --d: -2px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="tag"], [data-icon="key"]) { animation-name: ic-wiggle; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="gift"] > :is(:nth-child(1), :nth-child(4)) { --d: -2.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="globe"] > :nth-child(3) { animation-name: ic-squish; animation-duration: .8s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="file"] > :is(:nth-child(3), :nth-child(4)) { animation-name: ic-grow; transform-origin: left center; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="file"] > :nth-child(4) { animation-delay: .08s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="cloud"] { --d: 2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="wifi"] > * { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="wifi"] > :nth-child(1) { animation-delay: .18s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="wifi"] > :nth-child(2) { animation-delay: .12s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="wifi"] > :nth-child(3) { animation-delay: .06s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="battery"] > :is(:nth-child(3), :nth-child(4), :nth-child(5)) { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="battery"] > :nth-child(4) { animation-delay: .08s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="battery"] > :nth-child(5) { animation-delay: .16s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="shield"] > :nth-child(2) { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="rocket"] { animation-name: ic-xy; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="thumbs-up"] { --r: -14deg; transform-origin: 30% 80%; animation-name: ic-tilt; }
+
 @media (prefers-reduced-motion: reduce) { svg.ic-copied { animation: none; } .icon-hover svg[data-icon], .icon-hover svg[data-icon] > * { animation: none !important; } }
 
 .kbd {
