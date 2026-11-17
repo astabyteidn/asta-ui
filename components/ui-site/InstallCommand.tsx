@@ -26,13 +26,18 @@ export default function InstallCommand({ url }: { url: string }) {
   return (
     <div className="ui-dark overflow-hidden rounded-[10px] bg-[#0e0e0f]">
       <div className="flex items-center justify-between gap-3 bg-paper-2 px-2 py-2">
-        <div className="flex gap-0.5">
+        <div className="relative grid grid-cols-3 gap-0.5">
+          <span
+            aria-hidden
+            className="absolute inset-y-0 left-0 w-[calc((100%-4px)/3)] bg-[#0e0f0d] transition-transform duration-500 ease-expo"
+            style={{ transform: `translateX(calc(${RUNNERS.findIndex((r) => r.id === runner)} * (100% + 2px)))` }}
+          />
           {RUNNERS.map((r) => (
             <button
               key={r.id}
               type="button"
               onClick={() => setRunner(r.id)}
-              className={`h-8 px-3 font-mono text-[12px] transition-colors ${runner === r.id ? "bg-[#0e0f0d] text-ink" : "text-mute hover:text-ink"}`}
+              className={`relative h-8 px-3 font-mono text-[12px] transition-colors duration-300 ${runner === r.id ? "text-ink" : "text-mute hover:text-ink"}`}
             >
               {r.id}
             </button>
@@ -40,11 +45,16 @@ export default function InstallCommand({ url }: { url: string }) {
         </div>
         <button type="button" onClick={copy} className={`btn btn-quiet btn-sm shrink-0 ${copied ? "btn-on" : ""}`}>
           <CopyIcon done={copied} />
-          {copied ? "Copied" : "Copy"}
+          <span className="ui-labels">
+            <span data-on={!copied}>Copy</span>
+            <span data-on={copied} aria-hidden={!copied}>
+              Copied
+            </span>
+          </span>
         </button>
       </div>
       <pre className="overflow-x-auto px-4 py-5 font-mono text-[12.5px] leading-[1.6] text-ink">
-        <code>
+        <code key={runner} className="ui-swap inline-block">
           <span className="select-none text-mute">$ </span>
           {cmd}
         </code>

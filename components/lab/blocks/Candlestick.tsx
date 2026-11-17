@@ -46,7 +46,7 @@ export default function Candlestick() {
       cv.style.height = `${h}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       const cs = getComputedStyle(el);
-      colors = { ink: cs.getPropertyValue("--color-ink").trim() || colors.ink, mute: cs.getPropertyValue("--color-mute").trim() || colors.mute, paper: cs.getPropertyValue("--color-paper").trim() || colors.paper, accent: cs.getPropertyValue("--color-accent").trim() || colors.accent };
+      colors = { ink: cs.getPropertyValue("--color-ink").trim() || colors.ink, mute: cs.getPropertyValue("--color-mute").trim() || colors.mute, paper: cs.getPropertyValue("--color-paper").trim() || colors.paper, accent: cs.getPropertyValue("--color-brand").trim() || colors.accent };
     };
     const ro = new ResizeObserver(resize);
     ro.observe(el);
@@ -217,7 +217,7 @@ export default function Candlestick() {
         {ohlc ? (
           <span className="text-mute">
             O <span className="text-ink">{f(ohlc.o)}</span> H <span className="text-ink">{f(ohlc.h)}</span> L <span className="text-ink">{f(ohlc.l)}</span> C{" "}
-            <span style={{ color: ohlc.c >= ohlc.o ? "var(--color-accent)" : "var(--color-ink-2)" }}>{f(ohlc.c)}</span>
+            <span style={{ color: ohlc.c >= ohlc.o ? "var(--color-brand)" : "var(--color-ink-2)" }}>{f(ohlc.c)}</span>
           </span>
         ) : (
           <span className="uppercase tracking-[0.12em] text-mute">ACME / USD · 1m</span>

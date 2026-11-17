@@ -64,7 +64,7 @@ const Logo = () => (
   <>
     <svg viewBox="0 0 20 20" className="h-5 w-5" aria-hidden>
       <circle cx="7.5" cy="10" r="5.5" fill="currentColor" />
-      <circle cx="12.5" cy="10" r="5.5" fill="var(--color-accent)" fillOpacity="0.85" />
+      <circle cx="12.5" cy="10" r="5.5" fill="var(--color-brand)" fillOpacity="0.85" />
     </svg>
     Northwind
   </>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import Mark from "@/components/site/Mark";
 import PageviewTracker from "@/components/site/PageviewTracker";
 import CommandMenu from "@/components/ui-site/CommandMenu";
+import { VERSION } from "@/lib/version";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist", display: "swap" });
 const geistMono = Geist_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-geist-mono", display: "swap" });
@@ -25,8 +26,8 @@ export const viewport: Viewport = { themeColor: "#ffffff" };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning className={`${geist.variable} ${geistMono.variable}`}>
-      <body className="antialiased">
-    <div className="ui-light flex min-h-svh flex-col">
+      <body className="ui-light antialiased">
+    <div className="flex min-h-svh flex-col">
       <PageviewTracker prefix="/ui" />
       <header className="px-gutter relative z-40 flex h-16 items-center gap-6">
         <Link href="/" className="flex items-center gap-2.5 text-[15px] font-medium tracking-[-0.01em]">
@@ -74,7 +75,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </div>
         <div className="label mt-14 flex justify-between text-mute">
-          <span>© {new Date().getFullYear()} Astabyte Labs</span>
+          <span>© {new Date().getFullYear()} Astabyte Labs · v{VERSION}</span>
           <a href={STUDIO} className="transition-colors hover:text-ink">
             astabyte.com
           </a>

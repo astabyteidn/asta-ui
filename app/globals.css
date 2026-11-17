@@ -10,6 +10,7 @@
   --color-signal: #c5f82a;
   /* Lime used as text/lines (darkened on light surfaces) and the text colour on a lime fill. */
   --color-accent: #c5f82a;
+  --color-brand: #c5f82a;
   --color-on-signal: #0a0b0a;
   --color-line: rgb(233 233 228 / 0.12);
   --color-line-inv: rgb(10 11 10 / 0.14);
@@ -296,6 +297,10 @@ html.lenis body {
   color: rgb(123 125 118 / 0.45);
   user-select: none;
 }
+/* Prose prompts: wrap long lines, no line numbers. */
+.code-wrap code { min-width: 0; }
+.code-wrap .line { white-space: pre-wrap; overflow-wrap: anywhere; padding-left: 1.25rem; }
+.code-wrap .line::before { display: none; }
 
 /* Numbered install steps. */
 .ui-steps { counter-reset: step; }
@@ -397,8 +402,38 @@ html.lenis body {
 @keyframes ui-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes ui-sheet { from { transform: translateX(-100%); } to { transform: none; } }
 
+/* Docs motion: short, transform/opacity only. */
+@keyframes ui-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes ui-live-in {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes ui-live-out { to { opacity: 0; } }
+@keyframes ui-swap { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+.ui-enter { animation: ui-enter 0.4s var(--ease-expo) both; animation-delay: calc(var(--i, 0) * 45ms); }
+.ui-live-in { animation: ui-live-in 0.4s var(--ease-expo) both; }
+.ui-live-ph { animation: ui-live-out 0.4s var(--ease-expo) both; pointer-events: none; }
+.ui-swap { animation: ui-swap 0.28s var(--ease-expo) both; }
+.ui-fade-panel { transition: opacity 0.3s var(--ease-expo), transform 0.3s var(--ease-expo); }
+.ui-fade-panel[data-on="false"] { opacity: 0; transform: scale(0.995); pointer-events: none; }
+.ui-replay { transition: opacity 0.14s ease-out; }
+.ui-replay[data-out="true"] { opacity: 0; }
+.ui-morph { display: grid; place-items: center; }
+.ui-morph > * { grid-area: 1 / 1; transition: opacity 0.25s var(--ease-expo), transform 0.35s var(--ease-expo); }
+.ui-morph > [data-on="false"] { opacity: 0; transform: scale(0.5); }
+.ui-labels { display: inline-grid; text-align: left; }
+.ui-labels > * { grid-area: 1 / 1; transition: opacity 0.2s, transform 0.3s var(--ease-expo); }
+.ui-labels > [data-on="false"] { opacity: 0; transform: translateY(4px); }
+.ui-collapse { overflow: hidden; transition: height 0.5s var(--ease-expo); }
+
 @media (prefers-reduced-motion: reduce) {
   .ui-rise, .ui-word { animation: none; }
+  .ui-enter, .ui-live-in, .ui-swap { animation: none; }
+  .ui-live-ph { animation-duration: 0.01s; }
+  .ui-fade-panel, .ui-replay, .ui-morph > *, .ui-labels > *, .ui-collapse { transition: none; }
   .ui-marquee-track { animation: none; }
   .btn, .btn::before, .btn-arrow::before, .btn-arrow::after { transition: none; }
 }
@@ -406,6 +441,9 @@ html.lenis body {
 /* Guide pages (ui site). */
 .doc-body > h2 { margin-top: 3.5rem; font-size: clamp(1.5rem, 2.4vw, 2rem); font-weight: 500; letter-spacing: -0.04em; line-height: 1; scroll-margin-top: 7rem; }
 .doc-body > h2:first-child { margin-top: 0; }
+.doc-body > .doc-row { margin-top: 3.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.doc-body > .doc-row:first-child { margin-top: 0; }
+.doc-row > h2 { font-size: clamp(1.5rem, 2.4vw, 2rem); font-weight: 500; letter-spacing: -0.04em; line-height: 1; scroll-margin-top: 7rem; }
 .doc-body > p, .doc-body > ul { margin-top: 1rem; font-size: 16px; line-height: 1.7; color: var(--color-ink-2); }
 .doc-body > ul { display: flex; flex-direction: column; gap: 0.6rem; }
 .doc-body > ul > li { position: relative; padding-left: 1.4rem; }
@@ -424,6 +462,7 @@ html.lenis body {
   --color-mute: #8a8a87;
   --color-line: rgb(10 10 10 / 0.1);
   --color-accent: #2f54eb;
+  --color-brand: #2f54eb;
   --color-signal: #0a0a0a;
   --color-on-signal: #ffffff;
   color-scheme: light;
@@ -439,6 +478,7 @@ html.lenis body {
   --color-mute: #7d7d80;
   --color-line: rgb(242 242 240 / 0.12);
   --color-accent: #8aa4ff;
+  --color-brand: #8aa4ff;
   --color-signal: #f2f2f0;
   --color-on-signal: #0b0b0c;
   color-scheme: dark;

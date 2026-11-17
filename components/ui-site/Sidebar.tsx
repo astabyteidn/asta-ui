@@ -8,6 +8,8 @@ import { UI_GROUPS, type UiItem } from "@/lib/ui-catalog";
 export const GUIDES = [
   { href: "/introduction", title: "Introduction" },
   { href: "/installation", title: "Installation" },
+  { href: "/skill", title: "AI agents" },
+  { href: "/prompts", title: "Prompts" },
 ];
 /** The latest additions, tagged in the index. */
 export const NEW = new Set(["button", "motion-button", "navbar", "command-palette"]);

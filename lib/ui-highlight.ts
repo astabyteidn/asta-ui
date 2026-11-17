@@ -31,6 +31,7 @@ const get = () =>
   }));
 
 export async function highlight(code: string, file: string): Promise<string> {
-  const lang = file.endsWith(".css") ? "css" : "tsx";
+  // Shell commands stay plain: as tsx, the `//` in a URL would read as a comment.
+  const lang = file.endsWith(".css") ? "css" : /\.(sh|txt)$/.test(file) ? "text" : "tsx";
   return (await get()).codeToHtml(code, { lang, theme: "astabyte" });
 }

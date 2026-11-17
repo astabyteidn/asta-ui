@@ -58,7 +58,7 @@ export default function ComboLock() {
           </div>
         ))}
       </div>
-      <span className="label text-mute">{open ? "Unlocked" : "Hint: page not found"}</span>
+      <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-mute">{open ? "Unlocked" : "Hint: page not found"}</span>
     </div>
   );
 }

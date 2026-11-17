@@ -67,9 +67,9 @@ export default function DialKnob() {
         >
           <span className="absolute left-1/2 top-2.5 h-5 w-[3px] -translate-x-1/2 bg-signal" />
         </div>
-        <span className="label pointer-events-none absolute inset-0 grid place-items-center tabular-nums text-ink">{String(v).padStart(3, "0")}</span>
+        <span className="font-mono text-[11px] uppercase tracking-[0.08em] pointer-events-none absolute inset-0 grid place-items-center tabular-nums text-ink">{String(v).padStart(3, "0")}</span>
       </div>
-      <span className="label text-mute">Turn it · scroll · arrows</span>
+      <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-mute">Turn it · scroll · arrows</span>
     </div>
   );
 }

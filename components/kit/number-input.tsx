@@ -153,7 +153,7 @@ export function NumberInput({ value, defaultValue = 0, onChange, min = 0, max = 
         aria-valuemax={max}
         onKeyDown={onKey}
         className={cx(
-          "flex min-w-[3.5em] items-center justify-center gap-1.5 rounded-lg px-1 font-medium tabular-nums tracking-[-0.02em] text-ink outline-none transition-transform duration-200 focus-visible:ring-2 focus-visible:ring-accent/50",
+          "flex min-w-[3.5em] items-center justify-center gap-1.5 rounded-lg px-1 font-medium tabular-nums tracking-[-0.02em] text-ink outline-none transition-transform duration-200 focus-visible:ring-2 focus-visible:ring-brand/50",
           big ? "text-[20px]" : "text-[14px]",
           bump === "max" && "-translate-y-0.5",
           bump === "min" && "translate-y-0.5",

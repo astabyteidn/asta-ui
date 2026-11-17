@@ -72,7 +72,7 @@ export function TagInput({ value, defaultValue = [], onChange, max = 8, placehol
         className={cx(
           "flex min-h-11 w-full cursor-text flex-wrap items-center gap-1.5 rounded-[9px] bg-paper p-1.5 transition-shadow duration-200",
           "shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent)]",
-          "focus-within:shadow-[inset_0_0_0_1px_var(--color-accent),0_0_0_4px_color-mix(in_srgb,var(--color-accent)_14%,transparent)]",
+          "focus-within:shadow-[inset_0_0_0_1px_var(--color-brand),0_0_0_4px_color-mix(in_srgb,var(--color-brand)_14%,transparent)]",
         )}
       >
         <style>{`
@@ -103,7 +103,7 @@ export function TagInput({ value, defaultValue = [], onChange, max = 8, placehol
                   }}
                   aria-label={`Remove ${t}`}
                   className={cx(
-                    "flex h-6 w-6 items-center justify-center rounded-[5px] outline-none transition-colors focus-visible:ring-2 focus-visible:ring-accent/50",
+                    "flex h-6 w-6 items-center justify-center rounded-[5px] outline-none transition-colors focus-visible:ring-2 focus-visible:ring-brand/50",
                     last && armed ? "hover:bg-white/20" : "text-mute hover:bg-[color-mix(in_srgb,var(--color-ink)_8%,transparent)] hover:text-ink",
                   )}
                 >

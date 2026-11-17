@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 const EASE = "cubic-bezier(.16,1,.3,1)";
-const OK = "var(--color-accent)";
+const OK = "var(--color-brand)";
 const BAD = "var(--color-ink-2)";
 const R = 44;
 const C = 2 * Math.PI * R;
@@ -82,7 +82,7 @@ export default function PaymentStatus() {
       type="button"
       onClick={replay}
       aria-label={`Payment ${WORD[phase]}. Click to replay`}
-      className="lab-ps flex h-full w-full cursor-pointer items-center justify-center px-6 pb-6 pt-12 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent/50"
+      className="lab-ps flex h-full w-full cursor-pointer items-center justify-center px-6 pb-6 pt-12 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand/50"
       style={{ containerType: "size" }}
     >
       <style>{`

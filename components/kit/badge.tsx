@@ -10,7 +10,7 @@ export type BadgeTone = "neutral" | "accent" | "success" | "warning" | "danger";
 // One colour per tone; the variants mix it into fill, text and ring.
 const TONE: Record<BadgeTone, string> = {
   neutral: "var(--color-ink)",
-  accent: "var(--color-accent)",
+  accent: "var(--color-brand)",
   success: "#30a46c",
   warning: "#f5a524",
   danger: "#e5484d",
@@ -63,7 +63,7 @@ export function Badge({ variant = "soft", tone = "neutral", dot, pulse, onRemove
           onClick={onRemove}
           aria-label={typeof children === "string" ? `Remove ${children}` : "Remove"}
           className={cx(
-            "inline-flex items-center justify-center rounded-full opacity-60 outline-none transition-[opacity,background-color] hover:bg-[color-mix(in_srgb,currentColor_15%,transparent)] hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-accent/50",
+            "inline-flex items-center justify-center rounded-full opacity-60 outline-none transition-[opacity,background-color] hover:bg-[color-mix(in_srgb,currentColor_15%,transparent)] hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-brand/50",
             size === "sm" ? "h-4 w-4" : "h-[18px] w-[18px]",
           )}
         >

@@ -23,7 +23,7 @@ export default function SettingsPanelDemo() {
         <button
           type="button"
           onClick={() => setNote(panel.current?.requestLeave() ? "Left the page" : "Save or reset first")}
-          className="rounded-lg px-2 py-1 text-[13px] text-mute outline-none transition-colors hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-accent/50"
+          className="rounded-lg px-2 py-1 text-[13px] text-mute outline-none transition-colors hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50"
         >
           ← Back to dashboard
         </button>

@@ -129,7 +129,7 @@ export default function PayMethods() {
             cx="14"
             cy="14"
             r="12"
-            stroke={secs < 60 ? "var(--color-mute)" : "var(--color-accent)"}
+            stroke={secs < 60 ? "var(--color-mute)" : "var(--color-brand)"}
             strokeWidth="2.5"
             strokeLinecap="round"
             strokeDasharray={2 * Math.PI * 12}
@@ -160,7 +160,7 @@ export default function PayMethods() {
       >
         <span
           aria-hidden
-          className="absolute bottom-1.5 top-1.5 rounded-[8px] bg-paper shadow-[0_1px_2px_rgb(0_0_0/0.3),0_8px_20px_-10px_rgb(0_0_0/0.6),inset_0_0_0_1px_color-mix(in_srgb,var(--color-accent)_55%,transparent)] transition-transform duration-700 will-change-transform"
+          className="absolute bottom-1.5 top-1.5 rounded-[8px] bg-paper shadow-[0_1px_2px_rgb(0_0_0/0.3),0_8px_20px_-10px_rgb(0_0_0/0.6),inset_0_0_0_1px_color-mix(in_srgb,var(--color-brand)_55%,transparent)] transition-transform duration-700 will-change-transform"
           style={{ left: 6, width: "calc((100% - 12px) / 4)", transform: `translateX(${i * 100}%)`, transitionTimingFunction: EASE }}
         />
         {METHODS.map((m, n) => (
@@ -171,7 +171,7 @@ export default function PayMethods() {
             aria-checked={i === n}
             tabIndex={i === n ? 0 : -1}
             onClick={() => pick(n)}
-            className={`relative z-10 flex flex-col items-center justify-center gap-1.5 rounded-[8px] outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-accent/50 ${i === n ? "text-ink [&_svg]:text-accent" : "text-mute hover:text-ink-2"}`}
+            className={`relative z-10 flex flex-col items-center justify-center gap-1.5 rounded-[8px] outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-brand/50 ${i === n ? "text-ink [&_svg]:text-brand" : "text-mute hover:text-ink-2"}`}
             style={{ height: "clamp(58px, 24cqh, 84px)" }}
           >
             <span className="h-6 w-6">{m.icon}</span>

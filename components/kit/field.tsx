@@ -86,7 +86,7 @@ export const fieldInputClass =
   "h-10 w-full rounded-lg bg-paper px-3 text-[14px] text-ink outline-none placeholder:text-mute " +
   "shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent)] transition-shadow duration-200 " +
   "hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_24%,transparent)] " +
-  "focus:shadow-[inset_0_0_0_1px_var(--color-accent),0_0_0_3px_color-mix(in_srgb,var(--color-accent)_18%,transparent)] " +
+  "focus:shadow-[inset_0_0_0_1px_var(--color-brand),0_0_0_3px_color-mix(in_srgb,var(--color-brand)_18%,transparent)] " +
   "aria-[invalid=true]:shadow-[inset_0_0_0_1px_#e5484d,0_0_0_3px_rgb(229_72_77/0.14)]";
 
 export default Field;

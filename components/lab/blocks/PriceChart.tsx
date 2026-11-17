@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 const N = 64;
-const UP = "var(--color-accent)";
+const UP = "var(--color-brand)";
 const DOWN = "var(--color-mute)";
 const EASE = "cubic-bezier(.16,1,.3,1)";
 

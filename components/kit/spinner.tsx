@@ -76,9 +76,9 @@ export function Progress({ value, label, showValue, className }: { value?: numbe
       >
         <style>{KEYFRAMES}</style>
         {v === undefined ? (
-          <span className="absolute inset-y-0 rounded-full bg-accent" style={{ animation: "kit-indet 1.3s cubic-bezier(.65,0,.35,1) infinite" }} />
+          <span className="absolute inset-y-0 rounded-full bg-brand" style={{ animation: "kit-indet 1.3s cubic-bezier(.65,0,.35,1) infinite" }} />
         ) : (
-          <span className="absolute inset-y-0 left-0 rounded-full bg-accent transition-[width] duration-700 ease-[cubic-bezier(.16,1,.3,1)]" style={{ width: `${v}%` }} />
+          <span className="absolute inset-y-0 left-0 rounded-full bg-brand transition-[width] duration-700 ease-[cubic-bezier(.16,1,.3,1)]" style={{ width: `${v}%` }} />
         )}
       </div>
     </div>

@@ -63,7 +63,7 @@ export default function InkTrail() {
   return (
     <div className="relative h-full w-full">
       <canvas ref={ref} className="absolute inset-0 h-full w-full [touch-action:none]" />
-      <span className="display pointer-events-none absolute inset-0 flex items-center justify-center text-3xl text-ink/15">draw here</span>
+      <span className="font-medium leading-[0.92] tracking-[-0.05em] pointer-events-none absolute inset-0 flex items-center justify-center text-3xl text-ink/15">draw here</span>
     </div>
   );
 }

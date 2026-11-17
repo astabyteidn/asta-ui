@@ -75,7 +75,7 @@ function Field({ label, type, value, onChange, onBlur, error, shake, autoComplet
             !!end && "pr-11",
             error
               ? "shadow-[inset_0_0_0_1px_#e5484d] focus-visible:ring-2 focus-visible:ring-[#e5484d]/30"
-              : `${RING} focus-visible:ring-2 focus-visible:ring-accent/50`,
+              : `${RING} focus-visible:ring-2 focus-visible:ring-brand/50`,
           )}
         />
         {end && <div className="absolute inset-y-0 right-1 flex items-center">{end}</div>}
@@ -212,7 +212,7 @@ export function SignInCard({ title = "Welcome back", subtitle = "Sign in to cont
                   onClick={() => setReveal((v) => !v)}
                   aria-label={reveal ? "Hide password" : "Show password"}
                   aria-pressed={reveal}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg text-mute outline-none transition-colors hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-accent/50"
+                  className="flex h-8 w-8 items-center justify-center rounded-lg text-mute outline-none transition-colors hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50"
                 >
                   <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden>
                     <path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8Z" />
@@ -226,10 +226,10 @@ export function SignInCard({ title = "Welcome back", subtitle = "Sign in to cont
 
           <div className="mt-3 flex items-center justify-between text-[13px]">
             <label className="flex cursor-pointer items-center gap-2 text-ink-2">
-              <input type="checkbox" defaultChecked className="h-3.5 w-3.5 accent-[var(--color-accent)]" />
+              <input type="checkbox" defaultChecked className="h-3.5 w-3.5 accent-[var(--color-brand)]" />
               Remember me
             </label>
-            <a href="#" onClick={(e) => e.preventDefault()} className="text-accent outline-none hover:underline focus-visible:underline">
+            <a href="#" onClick={(e) => e.preventDefault()} className="text-brand outline-none hover:underline focus-visible:underline">
               Forgot password?
             </a>
           </div>

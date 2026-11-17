@@ -66,10 +66,10 @@ export default function SnapGrid() {
           className={`absolute grid cursor-grab place-items-center bg-signal text-paper [touch-action:none] active:cursor-grabbing ${dragging ? "scale-110 shadow-[0_10px_30px_color-mix(in_srgb,var(--color-signal)_25%,transparent)]" : "transition-[left,top,transform] duration-500 ease-[cubic-bezier(.5,1.8,.4,.8)]"}`}
           style={{ left: pos.x, top: pos.y, width: CELL, height: CELL }}
         >
-          <span className="label">AB</span>
+          <span className="font-mono text-[11px] uppercase tracking-[0.08em]">AB</span>
         </div>
       </div>
-      <span className="label tabular-nums text-mute">
+      <span className="font-mono text-[11px] uppercase tracking-[0.08em] tabular-nums text-mute">
         X {String(cx).padStart(2, "0")} · Y {String(cy).padStart(2, "0")}
       </span>
     </div>

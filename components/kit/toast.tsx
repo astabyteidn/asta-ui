@@ -217,7 +217,7 @@ function Toast({
               data.action!.onClick();
               onDismiss("down");
             }}
-            className="h-7 shrink-0 rounded-lg bg-ink px-2.5 text-[12px] font-medium text-paper outline-none transition-opacity hover:opacity-85 focus-visible:ring-2 focus-visible:ring-accent/50"
+            className="h-7 shrink-0 rounded-lg bg-ink px-2.5 text-[12px] font-medium text-paper outline-none transition-opacity hover:opacity-85 focus-visible:ring-2 focus-visible:ring-brand/50"
           >
             {data.action.label}
           </button>
@@ -226,7 +226,7 @@ function Toast({
             type="button"
             onClick={() => onDismiss("down")}
             aria-label="Dismiss"
-            className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-mute outline-none transition-colors hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-accent/50"
+            className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-mute outline-none transition-colors hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50"
           >
             <svg viewBox="0 0 16 16" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
               <path d="m4.5 4.5 7 7M11.5 4.5l-7 7" />

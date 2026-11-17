@@ -18,12 +18,12 @@ export default function DocPage({
   return (
     <div className="flex gap-12">
       <article className="min-w-0 max-w-3xl flex-1 pb-10 pt-6 lg:pt-8">
-        <p className="text-[13px] text-mute">Get started</p>
-        <h1 className="display ui-rise mt-6 text-[clamp(2.4rem,5vw,4.2rem)]">{title}</h1>
-        <p className="ui-rise mt-4 text-[clamp(1.05rem,1.4vw,1.2rem)] leading-snug text-ink-2" style={{ animationDelay: "80ms" }}>
+        <p className="ui-enter text-[13px] text-mute">Get started</p>
+        <h1 className="display ui-enter mt-6 [--i:1] text-[clamp(2.4rem,5vw,4.2rem)]">{title}</h1>
+        <p className="ui-enter mt-4 text-[clamp(1.05rem,1.4vw,1.2rem)] leading-snug text-ink-2 [--i:2]">
           {lead}
         </p>
-        <div className="doc-body mt-12">{children}</div>
+        <div className="doc-body ui-enter mt-12 [--i:3]">{children}</div>
         {next && (
           <Link href={next.href} className="group mt-20 flex flex-col items-end rounded-[10px] bg-paper-2 p-5 text-right surface-hover">
             <span className="flex items-center gap-2 text-[13px] text-mute">
