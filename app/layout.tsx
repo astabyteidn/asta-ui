@@ -29,7 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="ui-light antialiased">
     <div className="flex min-h-svh flex-col">
       <PageviewTracker prefix="/ui" />
-      <header className="px-gutter relative z-40 flex h-16 items-center gap-6">
+      <header className="ui-header px-gutter sticky top-0 z-40 flex h-16 items-center gap-6">
         <Link href="/" className="flex items-center gap-2.5 text-[15px] font-medium tracking-[-0.01em]">
           <Mark className="h-5 w-5 text-ink" />
           Astabyte

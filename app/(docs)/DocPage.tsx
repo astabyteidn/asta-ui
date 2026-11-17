@@ -33,7 +33,7 @@ export default function DocPage({
           </Link>
         )}
       </article>
-      <aside className="sticky top-0 hidden h-svh w-56 shrink-0 pt-8 xl:block">
+      <aside className="sticky top-16 hidden h-[calc(100svh-4rem)] w-56 shrink-0 pt-8 xl:block">
         <Toc items={toc} />
       </aside>
     </div>

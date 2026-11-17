@@ -283,9 +283,9 @@ html.lenis body {
   font-size: 12.5px;
   line-height: 1.7;
   background: transparent !important;
-  counter-reset: ln;
 }
-.code-block code { display: block; min-width: max-content; }
+/* Reset on <code>, inside the pre: the pre has style containment (content-visibility), which hides a reset set on itself. */
+.code-block code { display: block; min-width: max-content; counter-reset: ln; }
 .code-block .line { display: inline-block; width: 100%; padding-right: 1.25rem; }
 .code-block .line::before {
   counter-increment: ln;
@@ -499,3 +499,34 @@ html:has(.ui-light), html:has(.ui-light) body { background: #fcfcfb; }
 
 /* Scroll-lit paragraph: words go from grey to black as it passes. */
 .ui-lit span { transition: color 0.35s; }
+
+/* Sticky header: clear at the top, a soft paper fade behind it once the page scrolls (no hard edge). */
+.ui-header::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 -24px;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(to bottom, var(--color-paper) 55%, color-mix(in srgb, var(--color-paper) 0%, transparent));
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-expo);
+}
+@supports (animation-timeline: scroll()) {
+  .ui-header::before {
+    animation: ui-header-fade linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 48px;
+  }
+}
+@supports not (animation-timeline: scroll()) {
+  .ui-header::before { opacity: 1; }
+}
+@keyframes ui-header-fade { to { opacity: 1; } }
+
+/* Anchors land below the sticky header. */
+main :is(h2, h3, section)[id], :is(h2, h3, section)[id] { scroll-margin-top: 5.5rem; }
+
+/* Highlighted code is large (~800 nodes a block): skip layout/paint until it is on screen, so page swaps stay in one frame. */
+.ui-docs pre, main pre { content-visibility: auto; contain-intrinsic-size: auto 320px; }
+/* One-line commands are tiny: reserving 320px for them shifted the page by ~270px as each scrolled into view. */
+.ui-docs pre.ui-cmd, main pre.ui-cmd { content-visibility: visible; contain-intrinsic-size: none; }

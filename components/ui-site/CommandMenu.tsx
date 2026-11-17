@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { uiItems } from "@/lib/ui-catalog";
+import { variantItems } from "@/lib/variant-items";
 import { GUIDES } from "./Sidebar";
 
 type Row = { href: string; title: string; meta: string; group: string };
@@ -10,6 +11,7 @@ type Row = { href: string; title: string; meta: string; group: string };
 const ROWS: Row[] = [
   ...GUIDES.map((g) => ({ href: g.href, title: g.title, meta: "Guide", group: "Get started" })),
   ...uiItems.map((b) => ({ href: `/${b.slug}`, title: b.title, meta: b.id, group: b.group })),
+  ...variantItems.map((v) => ({ href: `/${v.variant.base}#${v.id}`, title: v.title, meta: v.id, group: "Variants" })),
 ];
 
 /** Header search button + ⌘K palette over guides and components. */

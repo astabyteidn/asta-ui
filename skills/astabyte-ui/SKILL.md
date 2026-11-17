@@ -116,3 +116,18 @@ Typical things users ask for, and the components that cover them (more at https:
 | [Add to cart](https://ui.astabyte.com/add-to-cart) `add-to-cart` | Actions | A dot arcs from the button into the cart, the badge pops, and the button turns into a stepper. | `https://ui.astabyte.com/r/add-to-cart.json` |
 | [Product options](https://ui.astabyte.com/variant-picker) `variant-picker` | Inputs | Pick a finish and it sweeps across the product; change the storage and the price rolls. | `https://ui.astabyte.com/r/variant-picker.json` |
 | [Free shipping bar](https://ui.astabyte.com/cart-drawer) `cart-drawer` | Surfaces | Items pop in, the bar fills, and it locks in with a check when shipping is free. | `https://ui.astabyte.com/r/cart-drawer.json` |
+
+## Catalogue: variants
+
+Standalone takes on a kit component, each with a global id (`aui-001`, `aui-002`…) and installable on its own. They are shown on the base component's page under Variants.
+
+| Id | Variant | What it does | Install |
+|---|---|---|---|
+| `aui-001` | [Textarea · Labelled](https://ui.astabyte.com/textarea#aui-001) | Label, hint, an optional tag and a live character count that warns near the limit. | `https://ui.astabyte.com/r/textarea-aui-001.json` |
+| `aui-002` | [Textarea · Auto-grow](https://ui.astabyte.com/textarea#aui-002) | Grows with its content and eases to the new height, from a minimum to a maximum number of rows. | `https://ui.astabyte.com/r/textarea-aui-002.json` |
+| `aui-003` | [Textarea · Chat composer](https://ui.astabyte.com/textarea#aui-003) | A message box with attachment chips and a send button. ⌘/Ctrl + Enter sends. | `https://ui.astabyte.com/r/textarea-aui-003.json` |
+| `aui-004` | [Textarea · Floating label](https://ui.astabyte.com/textarea#aui-004) | The label sits inside the field and floats up when you focus or type. Pure CSS. | `https://ui.astabyte.com/r/textarea-aui-004.json` |
+| `aui-005` | [Textarea · Markdown toolbar](https://ui.astabyte.com/textarea#aui-005) | A formatting toolbar that wraps the selection in Markdown, with ⌘B, ⌘I, ⌘E and ⌘K shortcuts and a word count. | `https://ui.astabyte.com/r/textarea-aui-005.json` |
+| `aui-006` | [Textarea · Mentions & commands](https://ui.astabyte.com/textarea#aui-006) | Type @ to mention someone or / for a command. The list opens at the caret and is fully keyboard driven. | `https://ui.astabyte.com/r/textarea-aui-006.json` |
+| `aui-007` | [Textarea · Validation](https://ui.astabyte.com/textarea#aui-007) | Checks the text against rules: quiet while typing, shows what's missing on blur with one small shake, ticks rules off live. | `https://ui.astabyte.com/r/textarea-aui-007.json` |
+| `aui-008` | [Textarea · AI prompt box](https://ui.astabyte.com/textarea#aui-008) | Model picker, token counter and a Generate button that turns into Stop while a response streams. | `https://ui.astabyte.com/r/textarea-aui-008.json` |

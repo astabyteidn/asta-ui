@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from "react";
 import { kitDemos } from "@/components/kit/demos";
+import { variantDemos } from "@/components/kit/variants";
 import { labComponents } from "@/components/lab/components";
 
 const noop = () => () => {};
@@ -25,7 +26,7 @@ export function Live({ slug, eager = false, ssr = false }: { slug: string; eager
     return () => io.disconnect();
   }, [eager, ssr]);
   const on = ssr || (eager ? hydrated : near);
-  const C = labComponents[slug] ?? kitDemos[slug];
+  const C = labComponents[slug] ?? kitDemos[slug] ?? variantDemos[slug];
   return (
     <div ref={ref} className="relative h-full w-full">
       {on && C ? (

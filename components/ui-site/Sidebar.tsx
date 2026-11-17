@@ -266,7 +266,7 @@ export default function Sidebar({ items }: { items: UiItem[] }) {
 
   return (
     <>
-      <aside ref={aside} className="sticky top-0 hidden h-svh w-60 shrink-0 overflow-y-auto pb-12 pt-8 [scrollbar-width:none] lg:block" data-lenis-prevent>
+      <aside ref={aside} className="sticky top-16 hidden h-[calc(100svh-4rem)] w-60 shrink-0 overflow-y-auto pb-12 pt-4 [scrollbar-width:none] lg:block" data-lenis-prevent>
         <Index items={items} />
         <a href="https://astabyte.com/contact?utm_source=ui&utm_campaign=sidebar" className="group mt-10 block rounded-[10px] bg-paper-2 p-4">
           <span className="label text-accent">Astabyte studio</span>
@@ -277,7 +277,7 @@ export default function Sidebar({ items }: { items: UiItem[] }) {
         </a>
       </aside>
 
-      <div className="sticky top-0 z-30 -mx-[var(--gutter)] bg-paper/90 px-[var(--gutter)] py-2 backdrop-blur lg:hidden">
+      <div className="sticky top-16 z-30 -mx-[var(--gutter)] bg-paper/90 px-[var(--gutter)] py-2 backdrop-blur lg:hidden">
         <button type="button" onClick={() => setOpen(true)} className="btn btn-quiet btn-sm w-full !justify-start">
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
             <path d="M2 4h12M2 8h12M2 12h7" />
