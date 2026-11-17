@@ -75,7 +75,7 @@ export default function HoldToConfirm() {
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center gap-5">
-      <style>{`@keyframes hold-draw { from { stroke-dashoffset: 24 } to { stroke-dashoffset: 0 } }`}</style>
+      <style href="asta-holdtoconfirm" precedence="asta">{`@keyframes hold-draw { from { stroke-dashoffset: 24 } to { stroke-dashoffset: 0 } }`}</style>
       <button
         type="button"
         onPointerDown={press}
@@ -104,7 +104,7 @@ export default function HoldToConfirm() {
         >
           {label}
         </span>
-        <style>{`@keyframes hold-flash { 0% { filter: brightness(1.6) } 100% { filter: none } }`}</style>
+        <style href="asta-holdtoconfirm-2" precedence="asta">{`@keyframes hold-flash { 0% { filter: brightness(1.6) } 100% { filter: none } }`}</style>
       </button>
       <div className="flex gap-[3px]" aria-hidden>
         {Array.from({ length: TICKS }, (_, i) => {

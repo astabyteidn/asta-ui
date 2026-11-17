@@ -38,7 +38,7 @@ export function Skeleton({ shape = "line", width, height, className }: SkeletonP
         animation: "kit-shimmer 1.6s cubic-bezier(.4,0,.2,1) infinite",
       }}
     >
-      <style>{SHIMMER}</style>
+      <style href="asta-skeleton" precedence="asta">{SHIMMER}</style>
     </span>
   );
 }

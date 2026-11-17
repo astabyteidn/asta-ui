@@ -11,16 +11,25 @@ const EASE = "cubic-bezier(.16,1,.3,1)";
 type Row = { p: number; s: number; f: number };
 type Book = { mid: number; dir: 1 | -1; asks: Row[]; bids: Row[]; n: number };
 
-const size = () => +(0.4 + Math.random() * 6).toFixed(3);
+/** Seeded PRNG for the first frame, so server and client render the same book (no hydration mismatch). */
+function seeded(s: number) {
+  return () => {
+    s = (s + 0x6d2b79f5) | 0;
+    let t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
 
-function make(mid: number, prev?: Book): Book {
+function make(mid: number, prev?: Book, rand: () => number = Math.random): Book {
+  const size = () => +(0.4 + rand() * 6).toFixed(3);
   const n = (prev?.n ?? 0) + 1;
   const side = (k: 1 | -1, old?: Row[]) =>
     Array.from({ length: LEVELS }, (_, i) => {
       const p = +(mid + k * (i + 1) * TICK).toFixed(2);
       const was = old?.find((r) => r.p === p);
       // Only a couple of levels change per update, so the book reads calm.
-      const change = !was || Math.random() < 0.28;
+      const change = !was || rand() < 0.28;
       return { p, s: change ? size() : was.s, f: change && was ? n : (was?.f ?? 0) };
     });
   return { mid, dir: prev ? (mid >= prev.mid ? 1 : -1) : 1, asks: side(1, prev?.asks), bids: side(-1, prev?.bids), n };
@@ -28,7 +37,7 @@ function make(mid: number, prev?: Book): Book {
 
 /** Five asks, the mid price, five bids. Depth bars ease to their size and changed levels flash. */
 export default function OrderBook() {
-  const [book, setBook] = useState<Book>(() => make(1842.5));
+  const [book, setBook] = useState<Book>(() => make(1842.5, undefined, seeded(1842)));
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -78,7 +87,7 @@ export default function OrderBook() {
 
   return (
     <div className="flex h-full w-full items-center justify-center px-5 pb-5 pt-14 [container-type:size]">
-      <style>{`@keyframes ob-flash { from { opacity: 1 } to { opacity: 0 } }`}</style>
+      <style href="asta-orderbook" precedence="asta">{`@keyframes ob-flash { from { opacity: 1 } to { opacity: 0 } }`}</style>
       <div className="flex h-full max-h-[460px] w-full max-w-[380px] flex-col gap-[3px] font-mono text-[clamp(11px,2.6cqh,15px)]">
         {[...book.asks].reverse().map((r, i) => row(r, ca[LEVELS - 1 - i], DOWN, `a${i}`, LEVELS - 1 - i))}
         <div className="my-1.5 flex flex-[1.6] items-center justify-between px-3">

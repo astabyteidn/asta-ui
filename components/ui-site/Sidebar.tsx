@@ -123,7 +123,7 @@ function Index({ items, onNavigate }: { items: UiItem[]; onNavigate?: () => void
 
   return (
     <div>
-      <label className="flex h-10 items-center gap-2 rounded-lg bg-paper px-3 text-[13px] text-mute shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_10%,transparent),0_1px_2px_rgb(0_0_0/0.04)] transition-shadow focus-within:shadow-[inset_0_0_0_1px_var(--color-accent),0_0_0_3px_color-mix(in_srgb,var(--color-accent)_15%,transparent)]">
+      <label className="flex h-10 items-center gap-2 rounded-lg bg-paper px-3 text-[14px] text-mute shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_10%,transparent),0_1px_2px_rgb(0_0_0/0.04)] transition-shadow focus-within:shadow-[inset_0_0_0_1px_var(--color-accent),0_0_0_3px_color-mix(in_srgb,var(--color-accent)_15%,transparent)]">
         <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
           <circle cx="7" cy="7" r="4.5" />
           <path d="m10.5 10.5 3 3" />
@@ -158,10 +158,10 @@ function Index({ items, onNavigate }: { items: UiItem[]; onNavigate?: () => void
             role="tab"
             aria-selected={section === sct}
             onClick={() => setSection(sct)}
-            className={`relative flex h-8 items-center justify-center gap-1.5 text-[13px] font-medium capitalize transition-colors duration-300 ${section === sct ? "text-ink" : "text-mute hover:text-ink"}`}
+            className={`relative flex h-8 items-center justify-center gap-1.5 text-[14px] font-medium capitalize transition-colors duration-300 ${section === sct ? "text-ink" : "text-mute hover:text-ink"}`}
           >
             {sct}
-            <span className="font-mono text-[10.5px] tabular-nums text-mute/70">{count(sct)}</span>
+            <span className="font-mono text-[11.5px] tabular-nums text-mute/70">{count(sct)}</span>
           </button>
         ))}
       </div>
@@ -182,13 +182,13 @@ function Index({ items, onNavigate }: { items: UiItem[]; onNavigate?: () => void
                   type="button"
                   onClick={() => toggle(g.label)}
                   aria-expanded={isOpen}
-                  className="group/h flex h-7 w-full items-center gap-2 px-2.5 text-[12.5px] font-medium text-ink-2 transition-colors hover:text-ink"
+                  className="group/h flex h-7 w-full items-center gap-2 px-2.5 text-[13.5px] font-medium text-ink-2 transition-colors hover:text-ink"
                 >
                   <span className="text-mute transition-colors group-hover/h:text-accent">
                     <Glyph group={g.label} />
                   </span>
                   {name}
-                  <span className="rounded-[5px] bg-paper-2 px-1.5 font-mono text-[10px] leading-4 tabular-nums text-mute">{g.items.length}</span>
+                  <span className="rounded-[5px] bg-paper-2 px-1.5 font-mono text-[11px] leading-4 tabular-nums text-mute">{g.items.length}</span>
                   <svg
                     viewBox="0 0 16 16"
                     className={`ml-auto h-3 w-3 text-mute transition-transform duration-300 ease-expo ${isOpen ? "" : "-rotate-90"}`}
@@ -215,12 +215,12 @@ function Index({ items, onNavigate }: { items: UiItem[]; onNavigate?: () => void
                             onBlur={() => setHover(null)}
                             onClick={onNavigate}
                             aria-current={on ? "page" : undefined}
-                            className={`group/i flex h-8 items-center gap-2 pl-[34px] pr-2.5 text-[13.5px] outline-none transition-colors duration-200 ${on ? "font-medium text-ink" : hover === it.href ? "text-ink" : "text-mute"}`}
+                            className={`group/i flex h-8 items-center gap-2 pl-[34px] pr-2.5 text-[14.5px] outline-none transition-colors duration-200 ${on ? "font-medium text-ink" : hover === it.href ? "text-ink" : "text-mute"}`}
                           >
                             <span className="truncate">{it.title}</span>
                             {it.isNew && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" title="New" />}
                             {it.id && (
-                              <span className={`ml-auto font-mono text-[10px] tabular-nums transition-opacity duration-200 ${on ? "text-accent opacity-100" : "text-mute/60 opacity-0 group-hover/i:opacity-100"}`}>
+                              <span className={`ml-auto font-mono text-[11px] tabular-nums transition-opacity duration-200 ${on ? "text-accent opacity-100" : "text-mute/60 opacity-0 group-hover/i:opacity-100"}`}>
                                 {it.id}
                               </span>
                             )}
@@ -233,7 +233,7 @@ function Index({ items, onNavigate }: { items: UiItem[]; onNavigate?: () => void
               </div>
             );
           })}
-          {groups.length === 0 && <p className="px-3 text-[13px] text-mute">Nothing called that.</p>}
+          {groups.length === 0 && <p className="px-3 text-[14px] text-mute">Nothing called that.</p>}
         </nav>
       </div>
     </div>
@@ -270,8 +270,8 @@ export default function Sidebar({ items }: { items: UiItem[] }) {
         <Index items={items} />
         <a href="https://astabyte.com/contact?utm_source=ui&utm_campaign=sidebar" className="group mt-10 block rounded-[10px] bg-paper-2 p-4">
           <span className="label text-accent">Astabyte studio</span>
-          <span className="mt-2 block text-[14px] leading-snug text-ink">Need a product that feels like this?</span>
-          <span className="mt-3 flex items-center gap-2 text-[13px] text-mute transition-colors group-hover:text-ink">
+          <span className="mt-2 block text-[15px] leading-snug text-ink">Need a product that feels like this?</span>
+          <span className="mt-3 flex items-center gap-2 text-[14px] text-mute transition-colors group-hover:text-ink">
             Work with us <span className="btn-arrow" />
           </span>
         </a>

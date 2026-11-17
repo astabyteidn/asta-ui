@@ -111,7 +111,7 @@ export default function VariantPicker() {
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center gap-[5cqh] px-5 pt-8" style={{ containerType: "size" }}>
-      <style>{`
+      <style href="asta-variantpicker" precedence="asta">{`
         @keyframes lab-vp-sweep { from { -webkit-mask-position: 100% 0; mask-position: 100% 0 } to { -webkit-mask-position: 0 0; mask-position: 0 0 } }
         .lab-vp-sweep { -webkit-mask-image: linear-gradient(90deg, #000 38%, transparent 62%); mask-image: linear-gradient(90deg, #000 38%, transparent 62%); -webkit-mask-size: 300% 100%; mask-size: 300% 100%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; will-change: mask-position }
         @keyframes lab-vp-name { from { opacity: 0; transform: translateY(35%); filter: blur(2px) } to { opacity: 1; transform: none; filter: none } }

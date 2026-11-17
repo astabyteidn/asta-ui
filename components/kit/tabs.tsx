@@ -102,7 +102,7 @@ export function Tabs({ tabs, value, defaultValue, onChange, variant = "underline
           </T.Trigger>
         ))}
       </T.List>
-      <style>{`@keyframes kit-tab-in { from { opacity: 0; transform: translateY(6px); filter: blur(2px) } to { opacity: 1; transform: none; filter: none } }`}</style>
+      <style href="asta-tabs" precedence="asta">{`@keyframes kit-tab-in { from { opacity: 0; transform: translateY(6px); filter: blur(2px) } to { opacity: 1; transform: none; filter: none } }`}</style>
       {tabs.map((t) => (
         <T.Content key={t.value} value={t.value} className="pt-5 outline-none animate-[kit-tab-in_.45s_cubic-bezier(.16,1,.3,1)_both] motion-reduce:!animate-none">
           {t.content}

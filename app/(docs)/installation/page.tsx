@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import CodeTabs from "@/components/ui-site/CodeTabs";
 import FrameworkTabs from "@/components/ui-site/FrameworkTabs";
 import InstallCommand from "@/components/ui-site/InstallCommand";
+import { ByPrimitive, PrimitiveSwitch } from "@/components/ui-site/Primitive";
 import { highlight } from "@/lib/ui-highlight";
 import { getTokensCss } from "@/lib/ui-source";
 import DocPage from "../DocPage";
@@ -19,10 +20,12 @@ const SITE = "https://ui.astabyte.com";
 
 type Pm = "npm" | "pnpm" | "bun" | "yarn";
 type Cmd = Record<Pm, string>;
-const PMS: Pm[] = ["npm", "pnpm", "bun", "yarn"];
+const PMS: Pm[] = ["pnpm", "npm", "bun", "yarn"];
 
 /** Run a package binary once (npx …). */
 const x = (c: string): Cmd => ({ npm: `npx ${c}`, pnpm: `pnpm dlx ${c}`, bun: `bunx --bun ${c}`, yarn: `yarn dlx ${c}` });
+/** Run our CLI once (npx asta-ui@latest …). */
+const asta = (c: string): Cmd => ({ npm: `npx asta-ui@latest ${c}`, pnpm: `pnpm dlx asta-ui@latest ${c}`, bun: `bunx asta-ui@latest ${c}`, yarn: `yarn dlx asta-ui@latest ${c}` });
 /** Install packages. */
 const add = (pkgs: string, dev = false): Cmd => ({
   npm: `npm install ${dev ? "-D " : ""}${pkgs}`,
@@ -49,21 +52,23 @@ async function file(name: string, code: string) {
   return [{ name, path: `${++uid}-${name}`, code, html: await highlight(code, lang) }];
 }
 
-type Step = { title: string; text?: ReactNode; cmd?: Cmd; file?: [string, string] };
+/** `cmdBase`: the same step for a Base UI project, shown when Base UI is the picked primitive. */
+type Step = { title: string; text?: ReactNode; cmd?: Cmd; cmdBase?: Cmd; file?: [string, string] };
 
 async function steps(list: Step[]) {
   const blocks = await Promise.all(list.map((s) => (s.cmd ? shell(s.cmd) : s.file ? file(...s.file) : null)));
+  const bases = await Promise.all(list.map((s) => (s.cmdBase ? shell(s.cmdBase) : null)));
   return (
     <ol className="flex flex-col gap-8">
       {list.map((s, i) => (
         <li key={s.title} className="grid grid-cols-[28px_1fr] gap-x-3">
-          <span className="mt-0.5 grid h-6 w-6 place-items-center rounded-[6px] bg-paper-2 font-mono text-[11px] tabular-nums text-ink">{i + 1}</span>
+          <span className="mt-0.5 grid h-6 w-6 place-items-center rounded-[6px] bg-paper-2 font-mono text-[12px] tabular-nums text-ink">{i + 1}</span>
           <div className="min-w-0">
-            <h3 className="text-[16px] font-medium tracking-[-0.01em] text-ink">{s.title}</h3>
-            {s.text && <p className="mt-1.5 text-[15px] leading-[1.65] text-ink-2">{s.text}</p>}
+            <h3 className="text-[17px] font-medium tracking-[-0.01em] text-ink">{s.title}</h3>
+            {s.text && <p className="mt-1.5 text-[16px] leading-[1.65] text-ink-2">{s.text}</p>}
             {blocks[i] && (
               <div className="mt-3">
-                <CodeTabs files={blocks[i]} />
+                {bases[i] ? <ByPrimitive radix={<CodeTabs files={blocks[i]} />} base={<CodeTabs files={bases[i]} />} /> : <CodeTabs files={blocks[i]} />}
               </div>
             )}
           </div>
@@ -76,22 +81,27 @@ async function steps(list: Step[]) {
 // ---- shared steps ----
 
 const INIT: Step = {
-  title: "Set up shadcn",
+  title: "Set up Astabyte UI",
   text: (
     <>
-      Creates <code>components.json</code> and the base CSS variables. Pick any base colour: our components bring their own tokens.
+      Runs <code>shadcn init</code> when there is no <code>components.json</code> yet (pick any base colour: our components bring their own
+      tokens), then adds the <code>@astabyte</code> registry. With <code>--base</code> it points the registry at the Base UI builds; if shadcn asks
+      for a component library, pick the same one.
     </>
   ),
-  cmd: x("shadcn@latest init"),
+  cmd: asta("init"),
+  cmdBase: asta("init --base"),
 };
 const ADD: Step = {
   title: "Add components",
   text: (
     <>
-      Files land in <code>components/astabyte/</code>, npm dependencies are installed and the tokens are merged into your CSS.
+      Files land in <code>components/astabyte/</code>, npm dependencies are installed and the tokens are merged into your CSS. Plain shadcn works
+      too: <code>{`pnpm dlx shadcn@latest add @astabyte/button`}</code>.
     </>
   ),
-  cmd: x(`shadcn@latest add ${SITE}/r/button.json ${SITE}/r/price-chart.json`),
+  cmd: asta("add button price-chart"),
+  cmdBase: asta("add button price-chart --base"),
 };
 
 const TSCONFIG = `{
@@ -114,6 +124,25 @@ export default function Page() {
     </main>
   );
 }`;
+const PKG_CSS = `@import "tailwindcss";
+@import "asta-ui/styles.css";`;
+
+const PKG_USE = `import { Button, Dialog, PriceChart, TextareaAui003 } from "asta-ui";
+// Base UI build: import { Button, Dialog, PriceChart } from "asta-ui/base";
+// One component, no primitive package needed: import { PriceChart } from "asta-ui/price-chart";
+
+export default function Page() {
+  return (
+    <main className="dark bg-paper p-8 text-ink">
+      <Button variant="accent">Deploy</Button>
+      <div className="mt-6 h-80 max-w-md">
+        <PriceChart />
+      </div>
+      <TextareaAui003 />
+    </main>
+  );
+}`;
+
 const usage = (name: string) => USAGE.replace("export default function Page", `export default function ${name}`);
 
 export default async function Installation() {
@@ -344,8 +373,8 @@ export const onCreateWebpackConfig: GatsbyNode["onCreateWebpackConfig"] = ({ act
           title: "Copy the component",
           text: (
             <>
-              Open a component page, copy every file from the Code tab and install the packages it lists. The raw files are also in{" "}
-              <code>{`${SITE}/r/<name>.json`}</code>.
+              Open a component page, pick Radix or Base UI, copy every file from the Code tab and install the packages it lists. The raw files are
+              also in <code>{`${SITE}/r/<name>.json`}</code> (Radix) and <code>{`${SITE}/r/base/<name>.json`}</code> (Base UI).
             </>
           ),
         },
@@ -359,45 +388,137 @@ export const onCreateWebpackConfig: GatsbyNode["onCreateWebpackConfig"] = ({ act
   return (
     <DocPage
       title="Installation"
-      lead="Any React project with Tailwind CSS v4 can take these components. The files have no framework imports, so they run the same in Next.js, Vite, Astro and the rest. Interactive components are built on Radix primitives (the radix-ui package, installed for you) for focus, keyboard and screen-reader behaviour; the look and motion are ours."
+      lead="Works in any React project with Tailwind CSS v4. Pick a primitive, pick your framework, add a component."
       toc={[
+        { id: "primitive", title: "Radix or Base UI" },
         { id: "frameworks", title: "Pick your framework" },
         { id: "add", title: "Add a component" },
+        { id: "package", title: "Install as a package" },
+        { id: "registry", title: "Registry URLs" },
         { id: "tokens", title: "Tokens and dark mode" },
         { id: "agents", title: "Use it with an AI agent" },
       ]}
       next={{ href: "/button", title: "Button" }}
     >
+      <h2 id="primitive">Radix or Base UI</h2>
+      <p>
+        15 components (dialog, select, menu, tooltip, tabs, slider…) come in two builds. Same props, same look, same motion. Only the library
+        underneath changes: <code>radix-ui</code> or <code>@base-ui/react</code>.
+      </p>
+      <p>
+        Use the one your project already has, so you don&rsquo;t ship both. If you picked Base UI during <code>shadcn init</code>, pick it here
+        too. Starting fresh? Radix is the long-time default, Base UI is what shadcn recommends now. Both are fine.
+      </p>
+      <p>This switch changes every command and code sample on the site. It remembers your choice.</p>
+      <div className="not-prose my-6">
+        <PrimitiveSwitch />
+      </div>
+
       <h2 id="frameworks">Pick your framework</h2>
-      <p>Already have shadcn set up? Skip straight to adding a component.</p>
+      <p>Already using shadcn? Still run <code>init</code>. It only adds our registry, nothing else.</p>
       <FrameworkTabs tabs={tabs} />
 
       <h2 id="add">Add a component</h2>
-      <p>Point the CLI at a component&rsquo;s registry URL. Every component page shows its own command.</p>
+      <p>
+        Name the components you want. The CLI checks the names, uses the build you picked in <code>init</code>, and lets the shadcn CLI do the
+        rest. Every component page has its own command.
+      </p>
       <div className="not-prose my-6">
-        <InstallCommand url={`${SITE}/r/dial-knob.json`} />
+        <InstallCommand slugs={["dialog"]} />
       </div>
       <p>
-        The full index lives at <code>{`${SITE}/r/registry.json`}</code>. To use short names like <code>@astabyte/button</code>, add the registry to{" "}
-        <code>components.json</code> as shown on the <Link href="/skill">AI agents</Link> page.
+        Two more: <code>list</code> shows every component, <code>prompt &lt;name&gt;</code> prints a prompt for your AI agent.
+      </p>
+
+      <h2 id="package">Install as a package</h2>
+      <p>
+        Prefer imports over owning files? <code>asta-ui</code> is also a regular library: every component, compiled, with types. Update with{" "}
+        <code>pnpm update asta-ui</code>. Customise with props and tokens. Needs React 18.3+ and Tailwind CSS v4.
+      </p>
+      <div className="not-prose my-6">
+        <ByPrimitive radix={<CodeTabs files={await shell(add("asta-ui radix-ui"))} />} base={<CodeTabs files={await shell(add("asta-ui @base-ui/react"))} />} />
+      </div>
+      <p>
+        Import the stylesheet once, right after Tailwind. It brings the tokens and tells Tailwind where our classes live.
+      </p>
+      <div className="not-prose my-6">
+        <CodeTabs files={await file("globals.css", PKG_CSS)} />
+      </div>
+      <p>
+        Classes missing? Your <code>node_modules</code> is probably somewhere unusual. Add{" "}
+        <code>{`@source "../node_modules/asta-ui/dist";`}</code> to your CSS, with the path relative to that file.
+      </p>
+      <p>
+        <code>asta-ui</code> is the Radix build. <code>asta-ui/base</code> is the Base UI build. Each needs its own library installed.
+      </p>
+      <p>
+        Only need one component? Import it by path, like <code>asta-ui/price-chart</code> or <code>asta-ui/base/dialog</code>. Everything is
+        marked <code>&quot;use client&quot;</code>, so Server Components can render it.
+      </p>
+      <div className="not-prose my-6">
+        <CodeTabs files={await file("app/page.tsx", PKG_USE)} />
+      </div>
+      <p>
+        Names match the component pages: <code>Dialog</code>, <code>PriceChart</code>, <code>OrderBook</code>. Variants have two names, the
+        id <code>TextareaAui003</code> and a friendly one, <code>ChatComposer</code>. Motion blocks fill their parent, so give the wrapper a
+        size.
+      </p>
+
+      <h2 id="registry">Registry URLs</h2>
+      <p>Don&rsquo;t want our CLI? Every component is a plain shadcn registry item:</p>
+      <ul>
+        <li>
+          Radix: <code>{`${SITE}/r/<name>.json`}</code>
+        </li>
+        <li>
+          Base UI: <code>{`${SITE}/r/base/<name>.json`}</code>
+        </li>
+        <li>
+          Index: <code>{`${SITE}/r/registry.json`}</code>
+        </li>
+      </ul>
+      <p>
+        To use short names like <code>@astabyte/button</code>, add this to <code>components.json</code>. It&rsquo;s exactly what{" "}
+        <code>asta-ui init</code> writes.
+      </p>
+      <div className="not-prose my-6">
+        <ByPrimitive
+          radix={<CodeTabs files={await file("components.json", `{\n  "registries": {\n    "@astabyte": "${SITE}/r/{name}.json"\n  }\n}`)} />}
+          base={<CodeTabs files={await file("components.json", `{\n  "registries": {\n    "@astabyte": "${SITE}/r/base/{name}.json"\n  }\n}`)} />}
+        />
+      </div>
+      <p>
+        Want both builds at hand? Add a second namespace, like <code>{`"@astabyte-base": "${SITE}/r/base/{name}.json"`}</code>.
       </p>
 
       <h2 id="tokens">Tokens and dark mode</h2>
+      <p>Components read five colours. Change them and everything follows.</p>
+      <ul>
+        <li>
+          <code>paper</code>: background
+        </li>
+        <li>
+          <code>ink</code>: text
+        </li>
+        <li>
+          <code>mute</code>: secondary text
+        </li>
+        <li>
+          <code>signal</code>: strong contrast
+        </li>
+        <li>
+          <code>brand</code>: the one accent colour. Not called <code>accent</code>, so it doesn&rsquo;t clash with shadcn.
+        </li>
+      </ul>
       <p>
-        Components read five colours: <code>paper</code> (ground), <code>ink</code> (text), <code>mute</code> (secondary), <code>signal</code>{" "}
-        (strong contrast) and <code>brand</code> (the one blue). <code>brand</code> has its own name so it never clashes with shadcn&rsquo;s{" "}
-        <code>accent</code>. Change the variables and every component follows.
-      </p>
-      <p>
-        <code>:root</code> holds the light palette and <code>.dark</code> the dark one. The motion blocks are designed on dark surfaces, so put them
-        inside an element with the <code>dark</code> class.
+        <code>:root</code> is light, <code>.dark</code> is dark. Motion blocks are designed on dark, so wrap them in an element with the{" "}
+        <code>dark</code> class.
       </p>
 
       <h2 id="agents">Use it with an AI agent</h2>
       <p>
-        Claude Code, Cursor, Codex and other agents can pick, install and use the right component with the same rules we follow. Set it up on the{" "}
-        <Link href="/skill">AI agents</Link> page, or copy a ready-made prompt from <Link href="/prompts">Prompts</Link>. Every component page also
-        has a <strong>Copy prompt</strong> button.
+        Claude Code, Cursor and Codex can pick and install components for you. Set it up on <Link href="/skill">AI agents</Link>, or grab a
+        prompt from <Link href="/prompts">Prompts</Link>. Every component page also has a <strong>Copy prompt</strong> button.
       </p>
     </DocPage>
   );

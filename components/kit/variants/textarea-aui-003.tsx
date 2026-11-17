@@ -132,7 +132,7 @@ export function ChatComposer({ placeholder = "Write a message…", onSend, accep
           </button>
         </div>
       </div>
-      <style>{`@keyframes aui-chip { from { opacity: 0; transform: scale(.9) } }`}</style>
+      <style href="asta-textarea-aui-003" precedence="asta">{`@keyframes aui-chip { from { opacity: 0; transform: scale(.9) } }`}</style>
     </div>
   );
 }

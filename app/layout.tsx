@@ -5,6 +5,10 @@ import Link from "next/link";
 import Mark from "@/components/site/Mark";
 import PageviewTracker from "@/components/site/PageviewTracker";
 import CommandMenu from "@/components/ui-site/CommandMenu";
+import GitHubStars from "@/components/ui-site/GitHubStars";
+import MobileMenu from "@/components/ui-site/MobileMenu";
+import Icon from "@/components/icons/Icon";
+import { PRIMITIVE_SCRIPT } from "@/lib/primitive";
 import { VERSION } from "@/lib/version";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist", display: "swap" });
@@ -26,14 +30,18 @@ export const viewport: Viewport = { themeColor: "#ffffff" };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning className={`${geist.variable} ${geistMono.variable}`}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: PRIMITIVE_SCRIPT }} />
+      </head>
       <body className="ui-light antialiased">
     <div className="flex min-h-svh flex-col">
       <PageviewTracker prefix="/ui" />
-      <header className="ui-header px-gutter sticky top-0 z-40 flex h-16 items-center gap-6">
-        <Link href="/" className="flex items-center gap-2.5 text-[15px] font-medium tracking-[-0.01em]">
+      <header className="ui-header px-shell sticky top-0 z-40 flex h-16 items-center gap-3 sm:gap-6">
+        <Link href="/" className="flex shrink-0 items-center gap-2.5 text-[16px] font-medium tracking-[-0.01em]">
           <Mark className="h-5 w-5 text-ink" />
           Astabyte
-          <span className="rounded-[5px] bg-paper-2 px-2 font-mono text-[10.5px] leading-5 text-mute">UI</span>
+          <span className="hidden rounded-[5px] bg-paper-2 px-2 font-mono text-[11.5px] leading-5 text-mute sm:inline">UI</span>
+          <span className="rounded-[5px] bg-brand/10 px-2 font-mono text-[11.5px] leading-5 text-brand">Beta</span>
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
           <Link href="/introduction" className="btn btn-ghost btn-sm font-normal">
@@ -45,23 +53,28 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Link href="/#components" className="btn btn-ghost btn-sm font-normal">
             Motion
           </Link>
-          <a href={`${STUDIO}/?utm_source=ui`} className="btn btn-ghost btn-sm font-normal">
-            Studio <span aria-hidden className="text-mute">↗</span>
+          <Link href="/icons" className="btn btn-ghost btn-sm font-normal">
+            Icons
+          </Link>
+          <a href={`${STUDIO}/?utm_source=ui`} className="icon-hover btn btn-ghost btn-sm font-normal">
+            Studio <Icon name="arrow-up-right" className="h-3.5 w-3.5 text-mute" />
           </a>
         </nav>
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex items-center gap-1 sm:gap-2">
           <CommandMenu />
-          <a href={`${STUDIO}/contact?utm_source=ui`} className="btn btn-primary btn-sm">
+          <GitHubStars />
+          <a href={`${STUDIO}/contact?utm_source=ui`} className="btn btn-primary btn-sm hidden sm:inline-flex">
             Hire us <span className="btn-arrow" />
           </a>
+          <MobileMenu studio={STUDIO} />
         </div>
       </header>
       <main className="flex-1">{children}</main>
-      <footer className="mx-2 mb-2 mt-24 rounded-[14px] bg-ink px-6 pb-6 pt-14 text-paper sm:px-10 [&_.btn-quiet]:bg-paper/10 [&_.btn-quiet]:text-paper [&_.btn-quiet]:shadow-none [&_.btn-primary]:bg-paper [&_.btn-primary]:text-ink [&_.text-mute]:text-paper/55">
+      <footer className="mx-auto mb-6 mt-24 w-[calc(100%-2*var(--gutter))] max-w-[calc(1600px-2*var(--gutter))] rounded-[14px] bg-ink px-6 pb-6 pt-14 text-paper sm:px-10 [&_.btn-quiet]:bg-paper/10 [&_.btn-quiet]:text-paper [&_.btn-quiet]:shadow-none [&_.btn-primary]:bg-paper [&_.btn-primary]:text-ink [&_.text-mute]:text-paper/55">
         <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-md">
             <p className="display text-[clamp(1.8rem,3.4vw,2.8rem)] leading-[1]">Want this feel in your product?</p>
-            <p className="mt-4 text-[15px] leading-relaxed text-mute">
+            <p className="mt-4 text-[16px] leading-relaxed text-mute">
               These come out of client work at Astabyte, a design &amp; engineering studio. We build brands, sites and apps that drive revenue.
             </p>
           </div>

@@ -12,7 +12,7 @@ export interface Command {
   icon?: ReactNode;
   /** Shortcut hint shown on the right, e.g. "⌘N". */
   shortcut?: string;
-  /** Extra words that should match, e.g. synonyms. */
+  /** Extra words that match as a plain substring, e.g. synonyms or a description. */
   keywords?: string;
   onSelect?: () => void;
 }
@@ -87,7 +87,7 @@ export function CommandPalette({ open, onOpenChange, commands, groups, placehold
   const sections = useMemo(() => {
     const scored = commands
       .map((c) => {
-        const m = fuzzy(c.label, q) ?? (c.keywords && fuzzy(c.keywords, q) ? { score: -5, hits: [] } : null);
+        const m = fuzzy(c.label, q) ?? (c.keywords && q.trim() && c.keywords.toLowerCase().includes(q.trim().toLowerCase()) ? { score: -5, hits: [] } : null);
         return m && { c, ...m };
       })
       .filter((x): x is { c: Command; score: number; hits: number[] } => !!x);
@@ -115,7 +115,7 @@ export function CommandPalette({ open, onOpenChange, commands, groups, placehold
     <D.Overlay
       className={cx(
         pos,
-        "inset-0 z-50 bg-[color-mix(in_srgb,var(--color-ink)_18%,transparent)] backdrop-blur-[2px]",
+        "inset-0 z-50 bg-[color-mix(in_srgb,var(--color-ink)_24%,transparent)] will-change-[opacity]",
         "data-[state=open]:animate-[kit-cmd-fade_.2s_ease_both] data-[state=closed]:animate-[kit-cmd-fade-out_.15s_ease_both] motion-reduce:!animate-none",
         contained && "rounded-[inherit]",
       )}
@@ -138,7 +138,7 @@ export function CommandPalette({ open, onOpenChange, commands, groups, placehold
       }}
       className={cx(
         pos,
-        "left-1/2 top-[10%] z-50 flex max-h-[min(440px,calc(100%-2rem))] w-[calc(100%-1.5rem)] max-w-[560px] -translate-x-1/2 flex-col overflow-hidden rounded-xl bg-paper outline-none",
+        "left-1/2 top-[10%] z-50 flex will-change-[transform,opacity] max-h-[min(440px,calc(100%-2rem))] w-[calc(100%-1.5rem)] max-w-[560px] -translate-x-1/2 flex-col overflow-hidden rounded-xl bg-paper outline-none",
         "shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_12%,transparent),0_24px_60px_-20px_rgb(0_0_0/0.4)]",
         "data-[state=open]:animate-[kit-cmd-in_.35s_cubic-bezier(.16,1,.3,1)_both] data-[state=closed]:animate-[kit-cmd-out_.15s_ease-in_both] motion-reduce:!animate-none",
         className,
@@ -155,7 +155,7 @@ export function CommandPalette({ open, onOpenChange, commands, groups, placehold
       }}
     >
       <D.Title className="sr-only">Command palette</D.Title>
-      <style>{`
+      <style href="asta-command-palette" precedence="asta">{`
           @keyframes kit-cmd-fade { from { opacity: 0 } }
           @keyframes kit-cmd-fade-out { to { opacity: 0 } }
           @keyframes kit-cmd-in { from { opacity: 0; transform: translateY(-8px) scale(.97) } }

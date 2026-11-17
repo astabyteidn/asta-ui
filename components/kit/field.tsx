@@ -76,7 +76,7 @@ export function Field({ label, hint, error, required, aside, className, children
           </p>
         ) : null}
       </div>
-      <style>{`@keyframes kit-field-in { from { opacity: 0; transform: translateY(-3px) } to { opacity: 1; transform: none } }`}</style>
+      <style href="asta-field" precedence="asta">{`@keyframes kit-field-in { from { opacity: 0; transform: translateY(-3px) } to { opacity: 1; transform: none } }`}</style>
     </div>
   );
 }

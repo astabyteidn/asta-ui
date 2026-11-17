@@ -72,7 +72,7 @@ export function Badge({ variant = "soft", tone = "neutral", dot, pulse, onRemove
           </svg>
         </button>
       )}
-      <style>{`@keyframes kit-badge-ping { 0% { transform: scale(1); opacity: .7 } 100% { transform: scale(3); opacity: 0 } }`}</style>
+      <style href="asta-badge" precedence="asta">{`@keyframes kit-badge-ping { 0% { transform: scale(1); opacity: .7 } 100% { transform: scale(3); opacity: 0 } }`}</style>
     </span>
   );
 }
@@ -89,7 +89,7 @@ export function CountBadge({ count, max = 99, className }: { count: number; max?
       )}
     >
       {count > max ? `${max}+` : count}
-      <style>{`@keyframes kit-badge-pop { 0% { transform: scale(.4) } 60% { transform: scale(1.15) } 100% { transform: scale(1) } }`}</style>
+      <style href="asta-badge-2" precedence="asta">{`@keyframes kit-badge-pop { 0% { transform: scale(.4) } 60% { transform: scale(1.15) } 100% { transform: scale(1) } }`}</style>
     </span>
   );
 }

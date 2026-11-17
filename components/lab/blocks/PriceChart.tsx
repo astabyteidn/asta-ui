@@ -7,11 +7,22 @@ const UP = "var(--color-brand)";
 const DOWN = "var(--color-mute)";
 const EASE = "cubic-bezier(.16,1,.3,1)";
 
+/** Seeded PRNG for the first frame, so server and client render the same data (no hydration mismatch). */
+function seeded(s: number) {
+  return () => {
+    s = (s + 0x6d2b79f5) | 0;
+    let t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 function walk(n: number, start: number) {
+  const rand = seeded(1820);
   const out = [start];
   let m = 0;
   for (let i = 1; i < n; i++) {
-    m = m * 0.6 + (Math.random() - 0.46) * 2.6;
+    m = m * 0.6 + (rand() - 0.46) * 2.6;
     out.push(out[i - 1] + m);
   }
   return out;

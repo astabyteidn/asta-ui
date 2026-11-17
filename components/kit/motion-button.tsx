@@ -20,7 +20,7 @@ const ArrowIcon = ({ className = "" }: { className?: string }) => (
 );
 
 const Styles = () => (
-  <style>{`
+  <style href="asta-motion-button" precedence="asta">{`
 @keyframes kit-beam { to { transform: rotate(1turn) } }
 @keyframes kit-shine { from { transform: translateX(-120%) skewX(-20deg) } to { transform: translateX(340%) skewX(-20deg) } }
 @keyframes kit-confirm { from { transform: scaleX(1) } to { transform: scaleX(0) } }

@@ -23,17 +23,17 @@ const HEADLINE = ["Interfaces", "that", "feel"];
 const FEELS = ["alive.", "tactile.", "weighty.", "playful.", "honest."];
 
 const STORY =
-  "Most UI kits look fine in a screenshot and feel like nothing in the hand. **These come out of client work at Astabyte.** Each one started as a small problem: a price chart traders scrub all day, a card form that has to feel safe, a cart that should make adding one more thing feel good. We tuned them by hand until they **settled the way real objects do,** then wrote them so you can **read, fork and ship the code.**";
+  "Most UI kits look fine in a screenshot. Then you click around and nothing feels like anything. **These come out of client work at Astabyte.** A chart traders scrub all day. A card form that has to feel safe. A cart that makes one more item feel good. We tuned each one **until it moved like a real object,** and kept the code **short enough to read in one sitting.**";
 
 export default function UiHome() {
   const bySlug = new Map(labBlocks.map((b) => [b.slug, b]));
 
   return (
     <>
-      <section className="px-gutter grid grid-cols-1 gap-12 pb-14 pt-12 sm:pt-20 [&>*]:min-w-0 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-end lg:gap-16">
+      <section className="px-shell grid grid-cols-1 gap-12 pb-14 pt-12 sm:pt-20 [&>*]:min-w-0 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-end lg:gap-16">
         <div>
           <Link href="#kit" className="ui-rise btn btn-quiet btn-sm max-w-full !pl-1 font-normal text-ink-2">
-            <span className="shrink-0 rounded-[5px] bg-accent px-2 font-mono text-[10.5px] uppercase leading-5 tracking-wider text-white">New</span>
+            <span className="shrink-0 rounded-[5px] bg-accent px-2 font-mono text-[11.5px] uppercase leading-5 tracking-wider text-white">New</span>
             <span className="truncate">The kit: {kitItems.length} building blocks, from buttons to a navbar</span>
             <span className="btn-arrow" />
           </Link>
@@ -67,7 +67,7 @@ export default function UiHome() {
         </div>
 
         {/* Spec readout: the studio's instrument / spec-sheet habit, in the ui site's palette. */}
-        <dl className="ui-rise rounded-xl bg-paper-2 p-5 text-[13px]" style={{ animationDelay: "600ms" }}>
+        <dl className="ui-rise rounded-xl bg-paper-2 p-5 text-[14px]" style={{ animationDelay: "600ms" }}>
           <p className="label mb-4 flex justify-between text-mute">
             Spec sheet <span className="tabular-nums text-accent">AB-UI</span>
           </p>
@@ -76,7 +76,7 @@ export default function UiHome() {
             ["Motion lab", `${labBlocks.length} experiments`],
             ["Layers", "Atoms · Molecules · Organisms"],
             ["Stack", "React 19 · Tailwind v4"],
-            ["Install", "shadcn CLI or copy"],
+            ["Install", "CLI, npm or copy"],
             ["Licence", "Yours to change"],
           ].map(([k, v]) => (
             <div key={k} className="flex justify-between gap-4 py-1.5">
@@ -85,15 +85,15 @@ export default function UiHome() {
             </div>
           ))}
           <div className="mt-4">
-            <CopyChip text="npx shadcn@latest add https://ui.astabyte.com/r/button.json" label="npx shadcn add …/button" />
+            <CopyChip text="pnpm dlx asta-ui@latest add button" label="pnpm dlx asta-ui add button" />
           </div>
-          <p className="mt-4 flex items-center gap-2 text-[12px] text-mute">
+          <p className="mt-4 flex items-center gap-2 text-[13px] text-mute">
             <span className="kbd">Click</span> the framed word to swap it
           </p>
         </dl>
       </section>
 
-      <section className="px-gutter" aria-label="Featured components">
+      <section className="px-shell" aria-label="Featured components">
         <div className="grid auto-rows-[300px] grid-cols-1 gap-3 md:auto-rows-[260px] md:grid-cols-8">
           {FEATURED.map(({ slug, span }, n) => {
             const hit = bySlug.get(slug);
@@ -115,12 +115,12 @@ export default function UiHome() {
       </section>
 
       <section id="kit" className="mt-24 scroll-mt-8" aria-label="The kit">
-        <div className="px-gutter mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div className="px-shell mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="label text-accent">Atoms → Molecules → Organisms</p>
             <h2 className="display mt-3 text-[clamp(2rem,4.4vw,3.6rem)]">The kit</h2>
           </div>
-          <p className="max-w-sm text-[14px] leading-relaxed text-mute sm:text-right">
+          <p className="max-w-sm text-[15px] leading-relaxed text-mute sm:text-right">
             Built up from the smallest piece. Every demo is live: click, type and tab through them.
           </p>
         </div>
@@ -138,32 +138,32 @@ export default function UiHome() {
         </div>
       </div>
 
-      <section className="px-gutter mx-auto mt-20 max-w-4xl" aria-label="Why we made these">
-        <LitText text={STORY} className="text-[clamp(1.4rem,2.6vw,2.15rem)] font-medium leading-[1.3] tracking-[-0.02em]" />
+      <section className="px-shell mt-24" aria-label="Why we made these">
+        <LitText text={STORY} className="mx-auto max-w-4xl text-[clamp(1.4rem,2.6vw,2.15rem)] font-medium leading-[1.3] tracking-[-0.02em]" />
       </section>
 
-      <section className="px-gutter mt-20 grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label="Why">
+      <section className="px-shell mt-20 grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label="Why">
         {[
           ["Physics, not tweens", "Springs, inertia and friction, so things settle the way objects do."],
           ["Every input", "Pointer, touch and keyboard each get a proper path, not an afterthought."],
-          ["One command", "shadcn CLI drops the file in your repo with its tokens. No package to update."],
+          ["Copy or install", "Drop the file in your repo with one command, or pnpm add asta-ui and import it."],
           ["Yours to change", "Plain React + Tailwind v4. Read it, fork it, ship it."],
         ].map(([t, d], i) => (
           <div key={t} className="rounded-xl bg-paper-2 p-6">
             <span className="label tabular-nums text-accent">§ {String(i + 1).padStart(2, "0")}</span>
-            <p className="mt-6 text-[17px] font-medium tracking-[-0.01em]">{t}</p>
-            <p className="mt-2 text-[14px] leading-relaxed text-mute">{d}</p>
+            <p className="mt-6 text-[18px] font-medium tracking-[-0.01em]">{t}</p>
+            <p className="mt-2 text-[15px] leading-relaxed text-mute">{d}</p>
           </div>
         ))}
       </section>
 
       <section id="components" className="mt-24 scroll-mt-8">
-        <div className="px-gutter mb-8 flex items-end justify-between gap-6">
+        <div className="px-shell mb-8 flex items-end justify-between gap-6">
           <div>
             <p className="label text-accent">Physics, springs, resistance</p>
             <h2 className="display mt-3 text-[clamp(2rem,4.4vw,3.6rem)]">Motion lab</h2>
           </div>
-          <span className="hidden text-[14px] text-mute sm:block">Open one for code and install</span>
+          <span className="hidden text-[15px] text-mute sm:block">Open one for code and install</span>
         </div>
         <UiGrid blocks={labBlocks} />
       </section>

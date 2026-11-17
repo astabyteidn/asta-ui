@@ -90,7 +90,7 @@ export default function CodeTabs({
                 setOpen(false);
                 setFull(null);
               }}
-              className={`relative h-8 shrink-0 px-3 font-mono text-[12px] transition-colors duration-300 ${i === active ? `text-ink ${bar ? "" : "bg-[#0e0f0d]"}` : "text-mute hover:text-ink"}`}
+              className={`relative h-8 shrink-0 px-3 font-mono text-[13px] transition-colors duration-300 ${i === active ? `text-ink ${bar ? "" : "bg-[#0e0f0d]"}` : "text-mute hover:text-ink"}`}
             >
               {f.name}
             </button>

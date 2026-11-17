@@ -75,7 +75,7 @@ export function TagInput({ value, defaultValue = [], onChange, max = 8, placehol
           "focus-within:shadow-[inset_0_0_0_1px_var(--color-brand),0_0_0_4px_color-mix(in_srgb,var(--color-brand)_14%,transparent)]",
         )}
       >
-        <style>{`
+        <style href="asta-tag-input" precedence="asta">{`
           @keyframes kit-tag-in { from { transform: scale(.6); opacity: 0 } }
           @keyframes kit-tag-shake { 0%,100% { transform: none } 20% { transform: translateX(-4px) } 40% { transform: translateX(4px) } 60% { transform: translateX(-3px) } 80% { transform: translateX(2px) } }
           @media (prefers-reduced-motion: reduce) { [data-kit-tag] { animation: none !important } }

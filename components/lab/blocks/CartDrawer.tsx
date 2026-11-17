@@ -133,7 +133,7 @@ export default function CartDrawer() {
 
   return (
     <div className="flex h-full w-full items-center justify-center px-5 pt-8" style={{ containerType: "size" }}>
-      <style>{`
+      <style href="asta-cartdrawer" precedence="asta">{`
         @keyframes lab-cd-pop { 0% { transform: translateY(-14px) scale(.6); opacity: 0 } 55% { opacity: 1 } 70% { transform: translateY(1px) scale(1.04) } 100% { transform: none; opacity: 1 } }
         @keyframes lab-cd-swap { from { opacity: 0; transform: translateY(30%); filter: blur(2px) } to { opacity: 1; transform: none; filter: none } }
         @keyframes lab-cd-shine { from { transform: translateX(-100%) } to { transform: translateX(320%) } }

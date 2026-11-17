@@ -44,7 +44,7 @@ export default function Toc({ items }: { items: { id: string; title: string; dep
                   el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
                   history.replaceState(null, "", `#${i.id}`);
                 }}
-                className={`flex h-7 items-center text-[13px] transition-colors ${i.depth ? "pl-7" : "pl-4"} ${active === i.id ? "text-ink" : "text-mute hover:text-ink"}`}
+                className={`flex h-7 items-center text-[14px] transition-colors ${i.depth ? "pl-7" : "pl-4"} ${active === i.id ? "text-ink" : "text-mute hover:text-ink"}`}
               >
                 {i.title}
               </a>

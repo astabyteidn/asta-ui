@@ -17,11 +17,11 @@ export default function CopyChip({ text, label }: { text: string; label: string 
         } catch {}
       }}
       title={text}
-      className="btn btn-quiet btn-lg font-mono !text-[13px] !font-normal"
+      className="btn btn-quiet btn-lg w-full min-w-0 justify-start font-mono !text-[13px] !font-normal"
     >
       <span className="text-accent">$</span>
-      <span className="text-ink-2">{label}</span>
-      <span className={`ml-1 transition-colors ${done ? "text-accent" : "text-mute"}`}>
+      <span className="min-w-0 flex-1 truncate text-left text-ink-2">{label}</span>
+      <span className={`ml-1 shrink-0 transition-colors ${done ? "text-accent" : "text-mute"}`}>
         <CopyIcon done={done} />
       </span>
     </button>

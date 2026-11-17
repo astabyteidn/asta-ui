@@ -1,77 +1,130 @@
 # Astabyte UI
 
-A motion-first React component kit for [shadcn](https://ui.shadcn.com), plus a motion lab. This repo is the source of **[ui.astabyte.com](https://ui.astabyte.com)**.
+React components that feel good to use. Copy them into your project, or install them from npm.
 
-- **Kit:** everyday building blocks by atomic layer: atoms (button, input, switch…), molecules (select, tabs, toast…) and organisms (navbar, pricing, sign-in…).
-- **Built on Radix:** interactive components (dialog, dropdown menu, select, tooltip, tabs, accordion, checkbox, switch, slider, radio group, avatar, command palette) use [Radix primitives](https://www.radix-ui.com/primitives) via the `radix-ui` package for focus, keyboard and screen-reader behaviour. The styling and motion are ours.
-- **Motion lab:** focused motion components for real products: trading (price chart, candlesticks, order book), payments (card checkout, payment status) and ecommerce (add to cart, product options).
+This repo is the source of **[ui.astabyte.com](https://ui.astabyte.com)**.
 
-## Use a component
+> **Beta.** Names and props can change before 1.0. Check [CHANGELOG.md](CHANGELOG.md) before you update.
 
-Every component is a shadcn registry item. In a Tailwind v4 project with a `components.json`:
+## TL;DR
+
+- **Kit:** everyday pieces, from atoms (button, input, switch) to molecules (select, tabs, toast) to organisms (navbar, pricing, sign-in).
+- **Motion lab:** bigger components for real products. Price charts, order books, card checkout, add to cart.
+- **Icons:** separate from the kit. A small set we draw ourselves, each with its own hover move. Same grid, same stroke. Copy any of them as SVG at [ui.astabyte.com/icons](https://ui.astabyte.com/icons).
+- **Radix or Base UI:** interactive parts come in both builds, with the same props, look and motion. You pick.
+- **React 19, Tailwind CSS v4, TypeScript.** One file per component.
+
+## Add a component
+
+Works in any React 19 project with Tailwind v4: Next.js, Vite, React Router, TanStack Start, or Astro islands.
 
 ```sh
-npx shadcn@latest add https://ui.astabyte.com/r/button.json
+pnpm dlx asta-ui@latest init
+pnpm dlx asta-ui@latest add button dialog
 ```
 
-The file lands in `components/astabyte/`, its npm dependencies are installed and its colour tokens are merged into your CSS. Or open the component's page and copy the file by hand.
+The files land in `components/astabyte/`. They're yours now. Change anything.
 
-Works in any React 19 + Tailwind v4 framework the shadcn CLI supports: Next.js, Vite, React Router, Astro (as islands) and TanStack Start. See [Installation](https://ui.astabyte.com/installation).
+Want Base UI? Add `--base` to both commands. `npx`, `bunx` and `yarn dlx` work too.
 
-With the namespace in `components.json` you can install by name:
+More commands:
+
+- `list` prints every component.
+- `prompt <name>` prints a prompt for your AI agent.
+
+Full guide: [Installation](https://ui.astabyte.com/installation).
+
+### With the shadcn CLI
+
+Every component is a plain shadcn registry item, so this works too:
+
+```sh
+pnpm dlx shadcn@latest add https://ui.astabyte.com/r/button.json        # Radix
+pnpm dlx shadcn@latest add https://ui.astabyte.com/r/base/button.json   # Base UI
+```
+
+Add the namespace to `components.json` and you can install by name:
 
 ```json
 { "registries": { "@astabyte": "https://ui.astabyte.com/r/{name}.json" } }
 ```
 
+One namespace points at one build. Add `@astabyte-base` with `/r/base/{name}.json` if you want both.
+
+## Or import it as a package
+
+Don't want the files in your repo? Install the library instead.
+
 ```sh
-npx shadcn@latest add @astabyte/button
+pnpm add asta-ui radix-ui          # Radix build
+pnpm add asta-ui @base-ui/react    # Base UI build
 ```
+
+```css
+@import "tailwindcss";
+@import "asta-ui/styles.css";
+```
+
+```tsx
+import { Button, Dialog, PriceChart } from "asta-ui";   // Radix
+import { Dialog } from "asta-ui/base";                   // Base UI
+import { PriceChart } from "asta-ui/price-chart";        // one component
+```
+
+Details in the [package README](packages/asta-ui/README.md).
 
 ## AI agents
 
-- **Agent skill:** `npx skills add astabyteidn/asta-ui` (Claude Code, Cursor, Codex…). Or copy [`skills/astabyte-ui/SKILL.md`](skills/astabyte-ui/SKILL.md) to `~/.claude/skills/astabyte-ui/`. Also served at [ui.astabyte.com/skill.md](https://ui.astabyte.com/skill.md).
+- **Skill:** `npx skills add astabyteidn/asta-ui`. Works with Claude Code, Cursor and Codex. Also at [ui.astabyte.com/skill.md](https://ui.astabyte.com/skill.md).
 - **llms.txt:** [ui.astabyte.com/llms.txt](https://ui.astabyte.com/llms.txt) lists every component with its page and registry URL.
-- **Prompts:** [ui.astabyte.com/prompts](https://ui.astabyte.com/prompts) has copy-ready prompts (set up the kit, build a trading dashboard, checkout, settings page…), and every component page has a **Copy prompt** button. Built from `lib/prompts.ts`.
+- **Prompts:** copy-ready prompts at [ui.astabyte.com/prompts](https://ui.astabyte.com/prompts). Every component page has a Copy prompt button too.
 - **shadcn MCP:** `npx shadcn@latest mcp init`, with the `@astabyte` namespace above.
-
-The skill's catalogue is generated from `lib/kit.ts` + `lib/lab.ts` by `bun run skill`; CI fails if `skills/` is out of date.
 
 ## Develop
 
 ```sh
 bun install
 bun run dev          # http://localhost:3792
-bunx tsc --noEmit && bun run lint && bun run build
 ```
 
-Stack: Next.js 16 (App Router, React Compiler), React 19, Tailwind CSS v4, shiki for build-time highlighting.
-
-### Release
-
-Merging to `main` only runs checks. Production deploys from version tags:
+Before you open a PR:
 
 ```sh
-# bump "version" in package.json, add a CHANGELOG.md entry, commit, then
-git tag v0.1.0 && git push --tags
+bunx tsc --noEmit && bun run lint && bun run skill && bun run base --check && bun run build
 ```
 
-CI checks the tag matches `package.json`, pushes the image as `:<version>` and `:latest`, rolls out the service and waits for `/healthz`. See [CHANGELOG.md](CHANGELOG.md).
+A few things to know:
 
-### Layout
+- Changed a Radix component? Make the same change in its twin under `components/kit/base/`, then run `bun run base`.
+- Added a component or changed a description? Run `bun run skill`. CI fails if `skills/` is stale.
+- Components use colour tokens like `paper`, `ink` and `brand`. Never hard-coded colours, so they follow your theme.
+- Motion uses transform and opacity only, and respects reduced motion.
+
+Stack: Next.js 16, React 19, Tailwind CSS v4, shiki for build-time highlighting.
+
+### Where things live
 
 | Path | What |
 |---|---|
-| `components/kit/<slug>.tsx` | Kit component (the file people install) |
-| `components/kit/demos/<slug>.tsx` | Its demo, also shown as the usage code. Register it in `components/kit/demos.ts` |
-| `lib/kit.ts` | Kit metadata (title, layer, description) |
-| `components/lab/blocks/*.tsx` | Motion lab components. Register in `components/lab/components.ts`, metadata in `lib/lab.ts` |
-| `lib/ui-catalog.ts` | Merges kit + lab for the sidebar, ⌘K, pages and the `/r/*` registry |
-| `lib/ui-source.ts` | Reads component sources from disk at build time for the code tabs and the registry |
-| `scripts/gen-skill.ts` | Generates `skills/astabyte-ui/SKILL.md` (`bun run skill`) |
-| `app/` | The site: home, docs pages, `/r/[file]` registry routes |
+| `components/kit/` | Kit components, the files people install |
+| `components/kit/demos/` | Demos, also shown as usage code |
+| `components/kit/base/` | Base UI builds. Some hand-written, the rest from `scripts/gen-base.ts` |
+| `components/lab/blocks/` | Motion lab components |
+| `components/icons/` | The icon set |
+| `lib/kit.ts`, `lib/lab.ts` | Titles, groups and descriptions |
+| `lib/ui-catalog.ts` | Kit + lab merged for the sidebar, search, pages and registry |
+| `packages/asta-ui/` | The npm package: CLI and library |
+| `skills/astabyte-ui/` | Agent skill, generated. Don't edit by hand |
 
-Components use colour tokens (`paper`, `ink`, `mute`, `accent`…) from `app/globals.css`, never hard-coded colours, so they follow your theme.
+### Release
+
+Pushing to `main` only runs checks. Tags deploy.
+
+1. Bump `version` in `package.json` and `packages/asta-ui/package.json`.
+2. Add a CHANGELOG entry and commit.
+3. `git tag vX.Y.Z && git push origin vX.Y.Z`
+
+CI then deploys the site and publishes the package to npm.
 
 ## Licence
 
