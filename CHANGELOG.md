@@ -2,6 +2,10 @@
 
 Releases are git tags (`vX.Y.Z`); pushing a tag deploys ui.astabyte.com. Merging to `main` does not.
 
+## 0.2.2 — 2026-11-18
+
+- **Icons:** 50 new icons, 90 in total. Layout, actions, status, media, files, devices and a few fun ones. Each has its own hover move, like the clock hand that spins, the wifi bars that light up one by one and the loader that turns.
+
 ## 0.2.1 — 2026-11-18
 
 - **Release:** the npm package is published by GitHub Actions through Trusted Publishing. No npm token in CI.
