@@ -5,7 +5,8 @@
 //   dist/base/<slug>.js                                import { Dialog } from "asta-ui/base/dialog"
 //   dist/styles.css tokens + `@source` for Tailwind v4 @import "asta-ui/styles.css";
 // Run from the repo root: bun packages/asta-ui/build.ts
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { build } from "tsup";
@@ -134,7 +135,8 @@ await build({
   format: ["esm"],
   target: "es2020",
   platform: "browser",
-  dts: { compilerOptions: { paths: { "@/*": [`${ROOT}/*`] }, baseUrl: ROOT, jsx: "react-jsx", skipLibCheck: true } },
+  // Types come from one tsc run below. tsup's per-entry dts (rollup) needs 20+ GB for ~130 entries.
+  dts: false,
   tsconfig: join(PKG, "tsconfig.build.json"),
   splitting: true,
   // esbuild already drops unused code per entry; tsup's rollup treeshake pass would strip the banner.
@@ -164,6 +166,30 @@ await build({
     },
   ],
 });
+
+// ---- types ----
+// One tsc program emits .d.ts for every source under dist/types (mirroring the repo), then each entry
+// gets a small .d.ts that re-exports from there. tsc leaves "@/..." aliases as is, so point them at dist/types.
+const TYPES = join(DIST, "types");
+execFileSync(join(ROOT, "node_modules/.bin/tsc"), ["-p", join(PKG, "tsconfig.types.json")], { stdio: "inherit" });
+const walkDts = (dir: string): string[] =>
+  readdirSync(dir, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walkDts(join(dir, e.name)) : e.name.endsWith(".d.ts") ? [join(dir, e.name)] : []));
+for (const f of walkDts(TYPES)) {
+  const src = readFileSync(f, "utf8");
+  const out = src.replace(/(from |import\()"@\/([^"]+)"/g, (_, kw: string, rel: string) => {
+    const r = relative(dirname(f), join(TYPES, rel));
+    return `${kw}"${r.startsWith(".") ? r : `./${r}`}"`;
+  });
+  if (out !== src) writeFileSync(f, out);
+}
+const srcTypes = join(TYPES, relative(ROOT, SRC));
+for (const name of Object.keys(entry)) {
+  const target = relative(dirname(join(DIST, name)), join(srcTypes, name));
+  const spec = target.startsWith(".") ? target : `./${target}`;
+  const hasDefault = /^export \{ default \}/m.test(readFileSync(entry[name], "utf8"));
+  mkdirSync(dirname(join(DIST, `${name}.d.ts`)), { recursive: true });
+  writeFileSync(join(DIST, `${name}.d.ts`), `export * from "${spec}";\n${hasDefault ? `export { default } from "${spec}";\n` : ""}`);
+}
 
 // ---- styles.css ----
 writeFileSync(
