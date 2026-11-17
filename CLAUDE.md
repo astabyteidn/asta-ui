@@ -44,11 +44,13 @@ bunx tsc --noEmit && bun run lint && bun run skill && bun run base --check && bu
 
 ## Releases
 
-Tags deploy. `main` does not: pushes and PRs only run checks.
+Tags deploy. `main` does not.
+
+`main` is protected, admins included: every change goes through a PR, the `check` job must pass, squash merge only, linear history, no force push. Branch, push, `gh pr create`, wait for `check`, `gh pr merge --squash`.
 
 1. Bump `version` in `package.json` **and** `packages/asta-ui/package.json`.
-2. Add a `CHANGELOG.md` entry, then commit.
-3. `git tag vX.Y.Z && git push origin vX.Y.Z`
+2. Add a `CHANGELOG.md` entry, open a PR and merge it.
+3. On the merged `main`: `git tag vX.Y.Z && git push origin vX.Y.Z`
 
 `.github/workflows/deploy.yml` then:
 - **check:** versions match the tag, then builds and runs `npm pack --dry-run`
