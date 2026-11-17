@@ -1,0 +1,38 @@
+"use client";
+
+import { Pricing, type Plan } from "@/components/kit/pricing";
+
+const PLANS: Plan[] = [
+  {
+    name: "Starter",
+    description: "For side projects and trying things out.",
+    price: { monthly: 0, yearly: 0 },
+    features: ["1 project", "1,000 events a month", "Community support"],
+    cta: { label: "Start free", href: "#" },
+  },
+  {
+    name: "Pro",
+    description: "For small teams shipping every week.",
+    price: { monthly: 24, yearly: 19 },
+    features: ["Unlimited projects", "100k events a month", "Automations", "Email support"],
+    cta: { label: "Start 14-day trial", href: "#" },
+    highlight: "Popular",
+  },
+  {
+    name: "Business",
+    description: "For companies that need control.",
+    price: { monthly: 89, yearly: 71 },
+    features: ["Everything in Pro", "SSO and audit logs", "99.9% uptime SLA", "A real human on call"],
+    cta: { label: "Talk to sales", href: "#" },
+  },
+];
+
+export default function PricingDemo() {
+  return (
+    <div className="flex min-h-[420px] w-full items-center justify-center p-3 sm:p-6">
+      <div className="@container w-full max-w-[880px]">
+        <Pricing plans={PLANS} saving="−20%" />
+      </div>
+    </div>
+  );
+}

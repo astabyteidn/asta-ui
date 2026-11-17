@@ -1,0 +1,35 @@
+"use client";
+
+import { useState } from "react";
+import { Accordion } from "@/components/kit/accordion";
+
+const FAQ = [
+  { id: "own", title: "Do I own the code?", content: "Yes. The CLI copies the source into your repo. There is no package to update and nothing to override." },
+  { id: "stack", title: "What does it need?", content: "React and Tailwind v4. A few motion pieces use GSAP; the kit itself has no extra dependencies." },
+  { id: "dark", title: "Does it work in dark mode?", content: "Everything reads colour tokens like paper, ink and accent, so swapping the tokens re-themes every component." },
+  { id: "a11y", title: "Is it accessible?", content: "Headers are real buttons with aria-expanded, panels are labelled regions, and arrow keys move between questions." },
+];
+
+export default function AccordionDemo() {
+  const [type, setType] = useState<"single" | "multiple">("single");
+
+  return (
+    <div className="relative flex min-h-[420px] w-full flex-col items-center justify-center gap-5 p-6 sm:p-10">
+      <div className="flex rounded-full bg-paper-2 p-1 text-[12.5px]" role="radiogroup" aria-label="Mode">
+        {(["single", "multiple"] as const).map((t) => (
+          <button
+            key={t}
+            type="button"
+            role="radio"
+            aria-checked={type === t}
+            onClick={() => setType(t)}
+            className={`h-7 rounded-full px-3 font-medium capitalize transition-colors ${type === t ? "bg-ink text-paper" : "text-mute hover:text-ink"}`}
+          >
+            {t}
+          </button>
+        ))}
+      </div>
+      <Accordion key={type} type={type} items={FAQ} defaultOpen={["own"]} className="max-w-md" />
+    </div>
+  );
+}
