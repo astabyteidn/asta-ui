@@ -15,7 +15,7 @@ export default function FooterDemo() {
         className="w-full max-w-[880px]"
         brand={
           <>
-            <span className="h-4 w-4 rounded-full bg-accent" /> Northwind
+            <span className="h-4 w-4 rounded-full bg-brand" /> Northwind
           </>
         }
         tagline="Revenue analytics for teams that ship. One short letter a month."

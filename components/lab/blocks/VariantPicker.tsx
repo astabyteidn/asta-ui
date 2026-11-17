@@ -46,7 +46,7 @@ const FINISHES = [
   { name: "Graphite", fill: "color-mix(in srgb, var(--color-ink) 14%, var(--color-paper-2))", mark: "var(--color-ink)" },
   { name: "Silver", fill: "color-mix(in srgb, var(--color-ink) 52%, var(--color-paper-2))", mark: "var(--color-paper)" },
   { name: "White", fill: "color-mix(in srgb, var(--color-ink) 94%, var(--color-paper))", mark: "var(--color-paper)" },
-  { name: "Blue", fill: "var(--color-accent)", mark: "var(--color-paper)" },
+  { name: "Blue", fill: "var(--color-brand)", mark: "var(--color-paper)" },
 ];
 const SIZES = [
   { label: "128 GB", price: 249 },
@@ -166,7 +166,7 @@ export default function VariantPicker() {
                   pick(n);
                   sw.current[n]?.focus();
                 }}
-                className="relative h-6 w-6 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-accent/60 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+                className="relative h-6 w-6 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
               >
                 <span className="absolute inset-0 rounded-full shadow-[inset_0_0_0_1px_rgb(255_255_255/0.12)]" style={{ background: o.fill }} />
               </button>
@@ -192,7 +192,7 @@ export default function VariantPicker() {
                   takeOver();
                   setSize(i);
                 }}
-                className={`relative z-10 h-8 rounded-[7px] text-[12.5px] font-medium tabular-nums outline-none transition-colors duration-500 focus-visible:ring-2 focus-visible:ring-accent/60 ${size === i ? "text-paper" : "text-mute hover:text-ink"}`}
+                className={`relative z-10 h-8 rounded-[7px] text-[12.5px] font-medium tabular-nums outline-none transition-colors duration-500 focus-visible:ring-2 focus-visible:ring-brand/60 ${size === i ? "text-paper" : "text-mute hover:text-ink"}`}
               >
                 {s.label}
               </button>

@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 const EASE = "cubic-bezier(.16,1,.3,1)";
@@ -15,7 +14,22 @@ const CartIcon = ({ className = "h-[18px] w-[18px]" }: { className?: string }) =
 );
 
 /** One focused moment: a dot arcs into the cart, the badge pops and the button becomes a stepper. Loops until you take over. */
-export default function AddToCart() {
+export interface AddToCartProps {
+  /** Product photo. Defaults to a neutral Unsplash photo hosted on ui.astabyte.com. */
+  image?: string;
+  imageAlt?: string;
+  name?: string;
+  meta?: string;
+  price?: string;
+}
+
+export default function AddToCart({
+  image = "https://ui.astabyte.com/lab/headphones.jpg",
+  imageAlt = "",
+  name = "Studio headphones",
+  meta = "Audio · Graphite",
+  price = "$189.00",
+}: AddToCartProps = {}) {
   const [count, setCount] = useState(0);
   const [pressed, setPressed] = useState(false);
   const [paused, setPaused] = useState(false);
@@ -65,8 +79,8 @@ export default function AddToCart() {
       width: "12px",
       height: "12px",
       borderRadius: "999px",
-      background: "var(--color-accent)",
-      boxShadow: "0 0 0 4px color-mix(in srgb, var(--color-accent) 22%, transparent)",
+      background: "var(--color-brand)",
+      boxShadow: "0 0 0 4px color-mix(in srgb, var(--color-brand) 22%, transparent)",
       pointerEvents: "none",
       zIndex: "20",
     });
@@ -151,7 +165,7 @@ export default function AddToCart() {
         <span
           ref={badge}
           aria-hidden
-          className="absolute -right-1.5 -top-1.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-accent px-1 text-[10.5px] font-semibold tabular-nums text-paper transition-[opacity,scale] duration-500 motion-reduce:transition-none"
+          className="absolute -right-1.5 -top-1.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-brand px-1 text-[10.5px] font-semibold tabular-nums text-paper transition-[opacity,scale] duration-500 motion-reduce:transition-none"
           style={{ transitionTimingFunction: EASE, opacity: on ? 1 : 0, scale: on ? "1" : "0.4" }}
         >
           {Math.max(count, 1)}
@@ -163,15 +177,15 @@ export default function AddToCart() {
           {/* Product tile */}
           <div className={`relative shrink-0 overflow-hidden rounded-[12px] bg-[#f4f4f4] ${RING}`} style={{ width: "min(38cqw, 62cqh)", aspectRatio: "1" }}>
             {/* Photo: Unsplash (free licence), self-hosted. */}
-            <Image src="/lab/headphones.jpg" alt="" fill sizes="240px" className="object-cover grayscale" draggable={false} />
+            <img src={image} alt={imageAlt} width={480} height={480} loading="lazy" decoding="async" draggable={false} className="absolute inset-0 h-full w-full object-cover grayscale" />
             <span className="absolute bottom-2.5 left-3 font-mono text-[10px] uppercase tracking-wider text-black/45">Nº 04</span>
           </div>
 
           {/* Details + action */}
           <div className="flex min-w-0 flex-1 flex-col">
-            <span className="font-mono text-[10.5px] uppercase tracking-wider text-mute">Audio · Graphite</span>
-            <span className="mt-1.5 truncate text-[clamp(15px,4.4cqw,22px)] font-medium tracking-[-0.02em] text-ink">Studio headphones</span>
-            <span className="mt-0.5 text-[clamp(13px,3.4cqw,16px)] tabular-nums text-ink-2">$189.00</span>
+            <span className="font-mono text-[10.5px] uppercase tracking-wider text-mute">{meta}</span>
+            <span className="mt-1.5 truncate text-[clamp(15px,4.4cqw,22px)] font-medium tracking-[-0.02em] text-ink">{name}</span>
+            <span className="mt-0.5 text-[clamp(13px,3.4cqw,16px)] tabular-nums text-ink-2">{price}</span>
 
             <div ref={from} className="relative mt-[max(14px,5cqh)] h-10 w-full max-w-[220px]">
               <button
@@ -182,7 +196,7 @@ export default function AddToCart() {
                 }}
                 tabIndex={on ? -1 : 0}
                 aria-hidden={on}
-                className={`absolute inset-0 flex items-center justify-center gap-2 rounded-[9px] bg-ink text-[13.5px] font-medium text-paper outline-none transition-[opacity,transform] duration-[600ms] focus-visible:ring-2 focus-visible:ring-accent/60 ${
+                className={`absolute inset-0 flex items-center justify-center gap-2 rounded-[9px] bg-ink text-[13.5px] font-medium text-paper outline-none transition-[opacity,transform] duration-[600ms] focus-visible:ring-2 focus-visible:ring-brand/60 ${
                   on ? "pointer-events-none scale-[0.92] opacity-0" : pressed ? "scale-[0.96]" : ""
                 }`}
                 style={{ transitionTimingFunction: EASE }}
@@ -202,7 +216,7 @@ export default function AddToCart() {
                     takeOver();
                     setCount((c) => Math.max(0, c - 1));
                   }}
-                  className="flex h-8 w-8 items-center justify-center rounded-[7px] text-[17px] text-ink-2 outline-none transition-colors hover:bg-paper hover:text-ink focus-visible:ring-2 focus-visible:ring-accent/60"
+                  className="flex h-8 w-8 items-center justify-center rounded-[7px] text-[17px] text-ink-2 outline-none transition-colors hover:bg-paper hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/60"
                 >
                   −
                 </button>
@@ -219,7 +233,7 @@ export default function AddToCart() {
                     takeOver();
                     add();
                   }}
-                  className="flex h-8 w-8 items-center justify-center rounded-[7px] text-[17px] text-ink-2 outline-none transition-colors hover:bg-paper hover:text-ink focus-visible:ring-2 focus-visible:ring-accent/60"
+                  className="flex h-8 w-8 items-center justify-center rounded-[7px] text-[17px] text-ink-2 outline-none transition-colors hover:bg-paper hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/60"
                 >
                   +
                 </button>

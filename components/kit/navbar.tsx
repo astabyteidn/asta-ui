@@ -61,7 +61,7 @@ function Preview({ kind }: { kind: NonNullable<NavTile["preview"]> }) {
       {kind === "chart" && (
         <div className="flex h-full items-end gap-1.5">
           {[40, 64, 52, 80, 70, 96].map((h, i) => (
-            <span key={i} className={cx(bar, "w-full rounded-[3px] group-hover/tile:bg-accent")} style={{ height: `${h}%`, transitionDelay: `${i * 40}ms` }} />
+            <span key={i} className={cx(bar, "w-full rounded-[3px] group-hover/tile:bg-brand")} style={{ height: `${h}%`, transitionDelay: `${i * 40}ms` }} />
           ))}
         </div>
       )}
@@ -69,7 +69,7 @@ function Preview({ kind }: { kind: NonNullable<NavTile["preview"]> }) {
         <div className="flex flex-col gap-2">
           {[80, 56, 68].map((w, i) => (
             <div key={i} className="flex items-center gap-2">
-              <span className={cx(bar, "h-3 w-3 shrink-0 group-hover/tile:bg-accent")} style={{ transitionDelay: `${i * 60}ms` }} />
+              <span className={cx(bar, "h-3 w-3 shrink-0 group-hover/tile:bg-brand")} style={{ transitionDelay: `${i * 60}ms` }} />
               <span className={cx(bar, "h-1.5")} style={{ width: `${w}%` }} />
             </div>
           ))}
@@ -84,7 +84,7 @@ function Preview({ kind }: { kind: NonNullable<NavTile["preview"]> }) {
             [20, 24],
           ].map(([a, b], i) => (
             <div key={i} className="flex gap-1.5">
-              <span className={cx(bar, "h-1.5 group-hover/tile:bg-accent")} style={{ width: `${a}%`, transitionDelay: `${i * 50}ms` }} />
+              <span className={cx(bar, "h-1.5 group-hover/tile:bg-brand")} style={{ width: `${a}%`, transitionDelay: `${i * 50}ms` }} />
               <span className={cx(bar, "h-1.5")} style={{ width: `${b}%` }} />
             </div>
           ))}
@@ -101,7 +101,7 @@ function Tile({ tile, big }: { tile: NavTile; big: boolean }) {
       data-kit-nav-link
       className={cx(
         "group/tile relative flex flex-col gap-1.5 overflow-hidden rounded-[10px] bg-paper-2 p-4 outline-none transition-[opacity,background-color] duration-300",
-        "group-has-[a:hover]/menu:opacity-55 hover:!opacity-100 focus-visible:ring-2 focus-visible:ring-accent/50",
+        "group-has-[a:hover]/menu:opacity-55 hover:!opacity-100 focus-visible:ring-2 focus-visible:ring-brand/50",
         big ? "min-h-[184px]" : "min-h-[92px]",
       )}
     >
@@ -155,7 +155,7 @@ function Panel({ menu }: { menu: NavMenu }) {
             <a
               href={menu.feature.href}
               data-kit-nav-link
-              className="group/feat relative flex min-h-[200px] flex-col justify-end overflow-hidden rounded-[10px] bg-accent p-4 text-white outline-none transition-opacity duration-300 group-has-[a:hover]/menu:opacity-70 hover:!opacity-100 focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+              className="group/feat relative flex min-h-[200px] flex-col justify-end overflow-hidden rounded-[10px] bg-brand p-4 text-white outline-none transition-opacity duration-300 group-has-[a:hover]/menu:opacity-70 hover:!opacity-100 focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
             >
               <span aria-hidden className={cx("absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/15 transition-transform duration-700 group-hover/feat:scale-125", EASE)} />
               <span aria-hidden className={cx("absolute -right-2 top-12 h-20 w-20 rounded-full bg-white/10 transition-transform duration-700 group-hover/feat:-translate-x-3", EASE)} />
@@ -279,7 +279,7 @@ export function Navbar({ brand, brandHref = "/", items, docs, cta, scrollRoot, c
 
   const menu = shown !== null ? items[shown]?.menu : undefined;
   const trigger =
-    "flex h-8 items-center gap-1 rounded-md px-2.5 text-[13.5px] font-medium text-ink-2 outline-none transition-colors duration-200 hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-accent/50 aria-expanded:bg-paper-2 aria-expanded:text-ink";
+    "flex h-8 items-center gap-1 rounded-md px-2.5 text-[13.5px] font-medium text-ink-2 outline-none transition-colors duration-200 hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50 aria-expanded:bg-paper-2 aria-expanded:text-ink";
 
   return (
     <header
@@ -296,7 +296,7 @@ export function Navbar({ brand, brandHref = "/", items, docs, cta, scrollRoot, c
         @media (prefers-reduced-motion: reduce) { .kit-nav-motion, .kit-nav-motion * { animation: none !important; transition-duration: 0s !important; } }
       `}</style>
       <div className="kit-nav-motion relative flex h-14 items-center gap-3 px-4">
-        <a href={brandHref} className="flex flex-1 items-center gap-2 text-[15px] font-semibold tracking-[-0.02em] text-ink outline-none focus-visible:ring-2 focus-visible:ring-accent/50 rounded-md">
+        <a href={brandHref} className="flex flex-1 items-center gap-2 text-[15px] font-semibold tracking-[-0.02em] text-ink outline-none focus-visible:ring-2 focus-visible:ring-brand/50 rounded-md">
           {brand}
         </a>
 
@@ -367,7 +367,7 @@ export function Navbar({ brand, brandHref = "/", items, docs, cta, scrollRoot, c
             aria-expanded={sheet}
             aria-controls="kit-nav-sheet"
             onClick={() => setSheet((v) => !v)}
-            className="relative flex h-8 w-8 items-center justify-center rounded-md outline-none transition-colors hover:bg-paper-2 focus-visible:ring-2 focus-visible:ring-accent/50 @min-[560px]:hidden"
+            className="relative flex h-8 w-8 items-center justify-center rounded-md outline-none transition-colors hover:bg-paper-2 focus-visible:ring-2 focus-visible:ring-brand/50 @min-[560px]:hidden"
           >
             <span className={cx("absolute h-[1.5px] w-4 rounded-full bg-ink transition-transform duration-500", EASE, sheet ? "rotate-45" : "-translate-y-[3.5px]")} />
             <span className={cx("absolute h-[1.5px] w-4 rounded-full bg-ink transition-transform duration-500", EASE, sheet ? "-rotate-45" : "translate-y-[3.5px]")} />

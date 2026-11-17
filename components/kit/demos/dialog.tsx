@@ -69,7 +69,7 @@ export default function DialogDemo() {
             onKeyDown={(e) => e.key === "Enter" && typed === NAME && confirm()}
             spellCheck={false}
             autoComplete="off"
-            className="mt-2 h-10 w-full rounded-lg bg-paper px-3 font-mono text-[13px] text-ink outline-none shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent)] transition-shadow focus:shadow-[inset_0_0_0_1px_var(--color-accent),0_0_0_4px_color-mix(in_srgb,var(--color-accent)_14%,transparent)]"
+            className="mt-2 h-10 w-full rounded-lg bg-paper px-3 font-mono text-[13px] text-ink outline-none shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent)] transition-shadow focus:shadow-[inset_0_0_0_1px_var(--color-brand),0_0_0_4px_color-mix(in_srgb,var(--color-brand)_14%,transparent)]"
           />
         </label>
       </Dialog>

@@ -1,5 +1,6 @@
 "use client";
 
+import { Checkbox as C } from "radix-ui";
 import { useId, useState, type ReactNode } from "react";
 
 const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(" ");
@@ -18,7 +19,10 @@ export interface CheckboxProps {
   className?: string;
 }
 
-/** A checkbox whose tick draws itself in. `indeterminate` shows a dash (for select-all rows). */
+/**
+ * A checkbox on Radix Checkbox (ARIA, Space to toggle, native form value through `name`) whose tick draws
+ * itself in. `indeterminate` shows a dash (for select-all rows).
+ */
 export function Checkbox({ checked, defaultChecked = false, onCheckedChange, disabled, label, description, id, name, className }: CheckboxProps) {
   const auto = useId();
   const cid = id ?? auto;
@@ -27,26 +31,23 @@ export function Checkbox({ checked, defaultChecked = false, onCheckedChange, dis
   const on = state === true;
   const mixed = state === "indeterminate";
 
-  const toggle = () => {
-    const next = !on; // indeterminate → checked
-    if (checked === undefined) setInner(next);
-    onCheckedChange?.(next);
-  };
-
   const box = (
-    <button
+    <C.Root
       id={cid}
-      type="button"
-      role="checkbox"
-      aria-checked={mixed ? "mixed" : on}
+      name={name}
+      checked={state}
+      onCheckedChange={(v) => {
+        const next = v === true; // indeterminate → checked
+        if (checked === undefined) setInner(next);
+        onCheckedChange?.(next);
+      }}
       aria-describedby={description ? `${cid}-d` : undefined}
       disabled={disabled}
-      onClick={toggle}
       className={cx(
         "group/cb relative grid h-[18px] w-[18px] shrink-0 place-items-center rounded-[6px] outline-none transition-[background-color,box-shadow,transform] duration-200 active:scale-90",
-        "focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:opacity-45",
+        "focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:opacity-45",
         on || mixed
-          ? "bg-accent shadow-[inset_0_1px_0_rgb(255_255_255/0.2),0_1px_2px_rgb(0_0_0/0.2)]"
+          ? "bg-brand shadow-[inset_0_1px_0_rgb(255_255_255/0.2),0_1px_2px_rgb(0_0_0/0.2)]"
           : "bg-paper shadow-[inset_0_0_0_1.5px_color-mix(in_srgb,var(--color-ink)_22%,transparent)] hover:shadow-[inset_0_0_0_1.5px_color-mix(in_srgb,var(--color-ink)_40%,transparent)]",
       )}
     >
@@ -63,10 +64,10 @@ export function Checkbox({ checked, defaultChecked = false, onCheckedChange, dis
         aria-hidden
         className={cx("col-start-1 row-start-1 h-[2.2px] w-2 rounded-full bg-white transition-transform duration-300 ease-[cubic-bezier(.16,1,.3,1)]", mixed ? "scale-x-100" : "scale-x-0")}
       />
-    </button>
+    </C.Root>
   );
 
-  if (!label) return <span className={className}>{box}{name && <input type="hidden" name={name} value={on ? "on" : ""} />}</span>;
+  if (!label) return <span className={className}>{box}</span>;
 
   return (
     <div className={cx("flex items-start gap-3", disabled && "opacity-60", className)}>
@@ -81,7 +82,6 @@ export function Checkbox({ checked, defaultChecked = false, onCheckedChange, dis
           </span>
         )}
       </span>
-      {name && <input type="hidden" name={name} value={on ? "on" : ""} />}
     </div>
   );
 }

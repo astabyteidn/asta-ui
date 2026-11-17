@@ -67,7 +67,7 @@ export default function ElasticString() {
       <svg className="absolute inset-0 h-full w-full overflow-visible">
         <path ref={path} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
       </svg>
-      <span className="label absolute bottom-4 left-0 right-0 text-center text-mute">Pluck the string</span>
+      <span className="font-mono text-[11px] uppercase tracking-[0.08em] absolute bottom-4 left-0 right-0 text-center text-mute">Pluck the string</span>
     </div>
   );
 }

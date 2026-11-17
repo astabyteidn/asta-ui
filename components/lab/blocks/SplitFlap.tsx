@@ -55,7 +55,7 @@ export default function SplitFlap() {
           </span>
         ))}
       </button>
-      <span className="label text-mute">Click to flip</span>
+      <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-mute">Click to flip</span>
     </div>
   );
 }

@@ -121,7 +121,7 @@ export default function CardCheckout() {
         type="button"
         aria-label="Payment card. Click to type a card number"
         onClick={() => input.current?.focus()}
-        className="relative shrink-0 cursor-text rounded-[5%/8%] outline-none [perspective:1100px] focus-visible:ring-2 focus-visible:ring-accent/60"
+        className="relative shrink-0 cursor-text rounded-[5%/8%] outline-none [perspective:1100px] focus-visible:ring-2 focus-visible:ring-brand/60"
         style={{ width: "min(78cqw, 360px, calc((100cqh - 40px) * 1.586))", aspectRatio: "1.586" }}
       >
         <div
@@ -138,7 +138,7 @@ export default function CardCheckout() {
               style={{
                 containerType: "inline-size",
                 background:
-                  "radial-gradient(110% 80% at 100% 0%, color-mix(in srgb, var(--color-accent) 18%, transparent), transparent 62%), linear-gradient(150deg, #1c1c1e, #0b0b0c 75%)",
+                  "radial-gradient(110% 80% at 100% 0%, color-mix(in srgb, var(--color-brand) 18%, transparent), transparent 62%), linear-gradient(150deg, #1c1c1e, #0b0b0c 75%)",
                 boxShadow: "0 30px 60px -28px rgb(0 0 0 / .8), inset 0 0 0 1px rgb(255 255 255 / .1)",
               }}
             >
@@ -222,7 +222,7 @@ export default function CardCheckout() {
         onBlur={() => setUser(false)}
         onChange={(e) => setNum(e.target.value.replace(/\D/g, "").slice(0, 16))}
       />
-      <span className="label shrink-0 text-mute">{user ? "Type a card number" : "Click the card to type"}</span>
+      <span className="font-mono text-[11px] uppercase tracking-[0.08em] shrink-0 text-mute">{user ? "Type a card number" : "Click the card to type"}</span>
     </div>
   );
 }

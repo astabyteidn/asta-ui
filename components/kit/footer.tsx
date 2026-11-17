@@ -80,7 +80,7 @@ export function Newsletter({ onSubscribe }: { onSubscribe?: (email: string) => P
         )}
         aria-hidden={state !== "done"}
       >
-        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-accent text-white">
+        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brand text-white">
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <path d="m3.5 8.5 3 3 6-7" strokeDasharray="16" style={{ strokeDashoffset: state === "done" ? 0 : 16, transition: "stroke-dashoffset .5s .2s" }} />
           </svg>
@@ -151,7 +151,7 @@ export function Footer({ brand, wordmark, columns, tagline, onSubscribe, legal, 
                   <li key={l.label}>
                     <a
                       href={l.href}
-                      className="group/fl inline-flex items-center gap-1 rounded text-[13.5px] text-paper/80 outline-none transition-colors hover:text-paper focus-visible:ring-2 focus-visible:ring-accent/60"
+                      className="group/fl inline-flex items-center gap-1 rounded text-[13.5px] text-paper/80 outline-none transition-colors hover:text-paper focus-visible:ring-2 focus-visible:ring-brand/60"
                     >
                       {l.label}
                       <span aria-hidden className={cx("-translate-x-1 text-[11px] opacity-0 transition-[translate,opacity] duration-300 group-hover/fl:translate-x-0 group-hover/fl:opacity-60", EASE)}>

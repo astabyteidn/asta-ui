@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { Avatar as A } from "radix-ui";
+import type { ReactNode } from "react";
 
 const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(" ");
 
@@ -19,9 +20,9 @@ const STATUS: Record<AvatarStatus, string> = { online: "#30a46c", away: "#f5a524
 // Fallback fills: the name picks one, so the same person always gets the same colour.
 const FILLS = [
   "bg-ink text-paper",
-  "bg-accent text-white",
+  "bg-brand text-white",
   "bg-paper-2 text-ink shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent)]",
-  "bg-[color-mix(in_srgb,var(--color-accent)_14%,var(--color-paper))] text-accent",
+  "bg-[color-mix(in_srgb,var(--color-brand)_14%,var(--color-paper))] text-brand",
   "bg-[color-mix(in_srgb,var(--color-ink)_70%,var(--color-paper))] text-paper",
 ];
 
@@ -46,20 +47,23 @@ export interface AvatarProps {
   className?: string;
 }
 
+/**
+ * A person or workspace, on Radix Avatar: the image only appears once it has loaded (no broken-image flash),
+ * and initials on a fill picked from the name show while it loads or if it fails.
+ */
 export function Avatar({ name, src, size = "md", status, shape = "circle", className }: AvatarProps) {
-  const [broken, setBroken] = useState(false);
   const s = SIZE[size];
   const round = shape === "circle" ? "rounded-full" : "rounded-[30%]";
   return (
     <span className={cx("relative inline-flex shrink-0", s.box, className)} role="img" aria-label={status ? `${name} (${status})` : name}>
-      <span className={cx("flex h-full w-full select-none items-center justify-center overflow-hidden font-medium tracking-[-0.02em]", round, s.text, !src || broken ? fillFor(name) : "bg-paper-2")}>
-        {src && !broken ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={src} alt="" onError={() => setBroken(true)} className="h-full w-full object-cover" />
-        ) : (
-          initials(name)
-        )}
-      </span>
+      <A.Root className={cx("flex h-full w-full select-none overflow-hidden bg-paper-2 font-medium tracking-[-0.02em]", round, s.text)}>
+        {src && <A.Image src={src} alt="" className="h-full w-full object-cover animate-[kit-av-in_.3s_ease-out] motion-reduce:animate-none" />}
+        <A.Fallback delayMs={src ? 250 : undefined} className={cx("flex h-full w-full items-center justify-center", fillFor(name))}>
+          {initials(name)}
+        </A.Fallback>
+      </A.Root>
+      {/* React 19 dedupes this by href, so a group of avatars adds it once. */}
+      <style href="kit-avatar" precedence="default">{`@keyframes kit-av-in { from { opacity: 0 } }`}</style>
       {status && (
         <span
           aria-hidden

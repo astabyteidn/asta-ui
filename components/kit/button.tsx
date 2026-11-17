@@ -1,5 +1,6 @@
 "use client";
 
+import { Slot } from "radix-ui";
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
 
 const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(" ");
@@ -10,7 +11,7 @@ export type ButtonSize = "xs" | "sm" | "md" | "lg";
 const BASE =
   "group/btn relative inline-flex shrink-0 select-none items-center [&_svg]:shrink-0 justify-center whitespace-nowrap font-medium tracking-[-0.01em] outline-none " +
   "transition-[background-color,color,box-shadow,transform,opacity] duration-200 ease-out active:scale-[0.97] " +
-  "focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-paper " +
+  "focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 focus-visible:ring-offset-paper " +
   "disabled:pointer-events-none disabled:opacity-45 aria-disabled:pointer-events-none aria-disabled:opacity-45";
 
 // A light top edge and a soft drop give the filled buttons a little body without a gradient.
@@ -18,7 +19,7 @@ const LIFT = "shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_1px_2px_rgb(0_0_0/0.
 
 const VARIANT: Record<ButtonVariant, string> = {
   solid: `bg-ink text-paper ${LIFT} hover:bg-[color-mix(in_srgb,var(--color-ink)_84%,var(--color-paper))]`,
-  accent: `bg-accent text-white ${LIFT} hover:bg-[color-mix(in_srgb,var(--color-accent)_88%,black)]`,
+  accent: `bg-brand text-white ${LIFT} hover:bg-[color-mix(in_srgb,var(--color-brand)_88%,black)]`,
   danger: `bg-[#e5484d] text-white ${LIFT} hover:bg-[#d13d42]`,
   outline:
     "bg-paper text-ink shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent),0_1px_2px_rgb(0_0_0/0.05)] " +
@@ -54,6 +55,11 @@ interface Own {
   iconOnly?: boolean;
   /** A keyboard hint at the end, e.g. "⌘K". */
   kbd?: string;
+  /**
+   * Style the single child element as the button instead of rendering one (Radix Slot), e.g. a router link:
+   * `<Button asChild><Link href="/docs">Docs</Link></Button>`. Icons, `kbd` and `loading` are ignored.
+   */
+  asChild?: boolean;
   className?: string;
   children?: ReactNode;
 }
@@ -74,9 +80,16 @@ export function Spinner({ className = "" }: { className?: string }) {
   );
 }
 
-/** Renders an `<a>` when `href` is given, otherwise a `<button type="button">`. */
+/** Renders an `<a>` when `href` is given, the child element with `asChild`, otherwise a `<button type="button">`. */
 export function Button(props: ButtonProps) {
-  const { variant = "solid", size = "md", shape, loading, iconLeft, iconRight, nudge, iconOnly, kbd, className, children, ...rest } = props;
+  const { variant = "solid", size = "md", shape, loading, iconLeft, iconRight, nudge, iconOnly, kbd, asChild, className, children, ...rest } = props;
+  if (asChild) {
+    return (
+      <Slot.Root {...(rest as ButtonHTMLAttributes<HTMLElement>)} className={cx(buttonClass({ variant, size, shape, iconOnly }), className)}>
+        {children}
+      </Slot.Root>
+    );
+  }
   const filled = variant === "solid" || variant === "accent" || variant === "danger";
   const content = (
     <>

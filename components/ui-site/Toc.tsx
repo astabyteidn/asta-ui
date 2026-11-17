@@ -35,6 +35,15 @@ export default function Toc({ items }: { items: { id: string; title: string; dep
             <li key={i.id}>
               <a
                 href={`#${i.id}`}
+                onClick={(e) => {
+                  const el = document.getElementById(i.id);
+                  if (!el || e.metaKey || e.ctrlKey) return;
+                  e.preventDefault();
+                  setActive(i.id);
+                  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+                  el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+                  history.replaceState(null, "", `#${i.id}`);
+                }}
                 className={`flex h-7 items-center text-[13px] transition-colors ${i.depth ? "pl-7" : "pl-4"} ${active === i.id ? "text-ink" : "text-mute hover:text-ink"}`}
               >
                 {i.title}

@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import CodeTabs from "@/components/ui-site/CodeTabs";
+import CopyPrompt from "@/components/ui-site/CopyPrompt";
 import InstallCommand from "@/components/ui-site/InstallCommand";
 import { Live } from "@/components/ui-site/Live";
 import PreviewTabs from "@/components/ui-site/PreviewTabs";
 import Toc from "@/components/ui-site/Toc";
 import { kitItems } from "@/lib/kit";
 import { labBlocks } from "@/lib/lab";
+import { componentPrompt, importLines } from "@/lib/prompts";
 import { uiItems } from "@/lib/ui-catalog";
 import { highlight } from "@/lib/ui-highlight";
 import { getDemo, getSource, getTheme } from "@/lib/ui-source";
@@ -36,6 +38,7 @@ const TOC = [
   { id: "installation", title: "Installation" },
   { id: "cli", title: "shadcn CLI", depth: 1 },
   { id: "manual", title: "Manual", depth: 1 },
+  { id: "prompt", title: "Prompt for AI", depth: 1 },
   { id: "usage", title: "Usage" },
 ];
 
@@ -65,11 +68,13 @@ export default async function UiComponent({ params }: Props) {
   const use = demo
     ? { name: "page.tsx", path: "app/page.tsx", code: demo, html: await highlight(demo, "page.tsx") }
     : await usage(block.title, files[0].name, slug);
+  const prompt = componentPrompt(block, importLines(use.code), deps.includes("radix-ui"));
+  const promptFile = { name: "prompt.txt", path: "prompt.txt", code: prompt, html: await highlight(prompt, "prompt.txt") };
 
   return (
     <div className="flex gap-12">
       <article className="min-w-0 flex-1 pb-10 pt-6 lg:pt-8">
-        <div className="flex items-center gap-2 text-[13px] text-mute">
+        <div className="ui-enter flex items-center gap-2 text-[13px] text-mute">
           <Link href="/" className="transition-colors hover:text-ink">
             Components
           </Link>
@@ -77,23 +82,24 @@ export default async function UiComponent({ params }: Props) {
           <span>{block.group}</span>
           <span aria-hidden className="text-mute/50">/</span>
           <span className="truncate text-ink">{block.title}</span>
-          <div className="ml-auto flex gap-1">
-            <Link href={`/${prev.slug}`} className="btn btn-quiet btn-sm btn-icon" aria-label={`Previous: ${prev.title}`} title={prev.title}>
+          <div className="ml-auto flex items-center gap-1">
+            <CopyPrompt text={prompt} className="mr-1 hidden sm:inline-flex" />
+            <Link href={`/${prev.slug}`} prefetch className="btn btn-quiet btn-sm btn-icon" aria-label={`Previous: ${prev.title}`} title={prev.title}>
               <span className="btn-arrow back" />
             </Link>
-            <Link href={`/${next.slug}`} className="btn btn-quiet btn-sm btn-icon" aria-label={`Next: ${next.title}`} title={next.title}>
+            <Link href={`/${next.slug}`} prefetch className="btn btn-quiet btn-sm btn-icon" aria-label={`Next: ${next.title}`} title={next.title}>
               <span className="btn-arrow" />
             </Link>
           </div>
         </div>
 
-        <h1 className="display ui-rise mt-6 text-[clamp(2.4rem,5vw,4.2rem)]">{block.title}</h1>
-        <p className="ui-rise mt-4 max-w-2xl text-[clamp(1.05rem,1.4vw,1.2rem)] leading-snug text-ink-2" style={{ animationDelay: "80ms" }}>
+        <h1 className="display ui-enter mt-6 text-[clamp(2.4rem,5vw,4.2rem)] [--i:1]">{block.title}</h1>
+        <p className="ui-enter mt-4 max-w-2xl text-[clamp(1.05rem,1.4vw,1.2rem)] leading-snug text-ink-2 [--i:2]">
           {block.description}
         </p>
 
         {kit && (
-          <ul className="ui-rise mt-6 flex flex-wrap gap-1.5" style={{ animationDelay: "140ms" }} aria-label="Included">
+          <ul className="ui-enter mt-6 flex flex-wrap gap-1.5 [--i:3]" aria-label="Included">
             {kit.parts.map((p) => (
               <li key={p} className="rounded-[5px] bg-paper-2 px-2.5 py-1 font-mono text-[11.5px] text-ink-2">
                 {p}
@@ -102,13 +108,13 @@ export default async function UiComponent({ params }: Props) {
           </ul>
         )}
 
-        <section id="preview" className="mt-10 scroll-mt-10">
+        <section id="preview" className="ui-enter mt-10 scroll-mt-10 [--i:4]">
           <PreviewTabs
             id={block.id}
             hint={block.hint}
             tone={isKit ? "light" : "dark"}
-            preview={<Live slug={slug} />}
-            code={<CodeTabs files={files.slice(0, 1)} tall />}
+            preview={<Live slug={slug} eager ssr={isKit} />}
+            code={<CodeTabs files={files.slice(0, 1)} fill />}
           />
         </section>
 
@@ -147,6 +153,19 @@ export default async function UiComponent({ params }: Props) {
             </p>
             <div className="mt-4">
               <CodeTabs files={files} />
+            </div>
+          </li>
+          <li id="prompt" className="scroll-mt-10">
+            <h3 className="text-[17px] font-medium tracking-[-0.01em]">Or ask your AI agent</h3>
+            <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-mute">
+              Paste this into Claude Code, Cursor, Codex, v0 or Lovable and fill in the last line. More in{" "}
+              <Link href="/prompts" className="text-ink underline decoration-line underline-offset-4 transition-colors hover:text-accent">
+                Prompts
+              </Link>
+              .
+            </p>
+            <div className="mt-4">
+              <CodeTabs files={[promptFile]} peek={200} wrap />
             </div>
           </li>
         </ol>

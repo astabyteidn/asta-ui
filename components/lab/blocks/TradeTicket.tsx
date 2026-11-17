@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const UP = "var(--color-accent)";
+const UP = "var(--color-brand)";
 const DOWN = "var(--color-ink)";
 const EASE = "cubic-bezier(.16,1,.3,1)";
 const PRICE = 1842.5;

@@ -108,25 +108,33 @@ function installPath(rel: string, slug: string, entry: string): string {
 
 /**
  * Design tokens in shadcn's shape: colours as CSS variables (shadcn maps `--paper` to `--color-paper`, so
- * classes like `bg-paper` work) and eases straight into `@theme`. Same values in light and dark: the
- * components are dark-first.
+ * classes like `bg-paper` work) and eases straight into `@theme`. Every item ships the same values, because
+ * tokens are global: the ui site's light palette (white, black, a little blue) for `:root` and its dark
+ * palette for `.dark`. Motion blocks are designed on dark surfaces, so they look their best under `.dark`.
  */
-async function cssVars(light = false) {
+async function cssVars() {
   const css = await readFile(path.join(/*turbopackIgnore: true*/ ROOT, "app/globals.css"), "utf8");
-  const theme0 = css.match(/@theme \{([\s\S]*?)\n\}/)?.[1] ?? "";
-  // Kit items ship the ui site's light palette (white, black, a little blue) on top of the base tokens.
-  const block = light ? theme0 + (css.match(/\.ui-light \{([\s\S]*?)\n\}/)?.[1] ?? "") : theme0;
-  const colors: Record<string, string> = {};
+  const base = css.match(/@theme \{([\s\S]*?)\n\}/)?.[1] ?? "";
+  const pick = (block: string) => {
+    const out: Record<string, string> = {};
+    // `accent` is the ui site's own token; components use `brand`, so they never clash with shadcn's `--accent`.
+    for (const m of block.matchAll(/--color-([a-z0-9-]+):\s*([^;]+);/g)) if (m[1] !== "accent") out[m[1]] = m[2].trim();
+    return out;
+  };
+  const baseColors = pick(base);
+  const light = { ...baseColors, ...pick(css.match(/\.ui-light \{([\s\S]*?)\n\}/)?.[1] ?? "") };
+  const dark = { ...baseColors, ...pick(css.match(/\.ui-dark \{([\s\S]*?)\n\}/)?.[1] ?? "") };
   const theme: Record<string, string> = {};
-  for (const m of block.matchAll(/--color-([a-z0-9-]+):\s*([^;]+);/g)) colors[m[1]] = m[2].trim();
-  for (const m of block.matchAll(/--(ease-[a-z0-9-]+):\s*([^;]+);/g)) theme[m[1]] = m[2].trim();
-  return { theme, light: colors, dark: colors };
+  for (const m of base.matchAll(/--(ease-[a-z0-9-]+):\s*([^;]+);/g)) theme[m[1]] = m[2].trim();
+  return { theme, light, dark };
 }
 
-export async function registryItem(slug: string, meta: { title: string; description: string }, kit = false) {
+export async function registryItem(slug: string, meta: { title: string; description: string }) {
   const src = await getSource(slug);
   const entry = (await slugToFile()).get(slug);
   if (!src || !entry) return null;
+  const vars = await cssVars();
+  const tokens = new Set(Object.keys(vars.light));
   const files = await Promise.all(
     src.files.map(async (f) => {
       let content = f.code;
@@ -134,6 +142,9 @@ export async function registryItem(slug: string, meta: { title: string; descript
         const local = await resolveLocal(m[1], f.name);
         if (local) content = content.replace(`"${m[1]}"`, `"@/${installPath(local, slug, entry).replace(/\.(tsx|ts)$/, "")}"`);
       }
+      // In the installed project `--color-x` is `var(--x)` resolved once on :root, so a nested `.dark` wouldn't
+      // reach raw `var(--color-x)` in inline styles and arbitrary values. Point those at `--x`, which `.dark` sets.
+      content = content.replace(/var\(--color-([a-z0-9-]+)\)/g, (m, name: string) => (tokens.has(name) ? `var(--${name})` : m));
       const target = installPath(f.name, slug, entry);
       return { path: `registry/astabyte/${target}`, content, type: target.startsWith("lib/") ? "registry:lib" : "registry:component", target };
     }),
@@ -147,6 +158,15 @@ export async function registryItem(slug: string, meta: { title: string; descript
     author: "Astabyte <https://astabyte.com>",
     dependencies: src.packages.filter((p) => p !== "react" && p !== "react-dom"),
     files,
-    cssVars: await cssVars(kit),
+    cssVars: vars,
   };
+}
+
+/** The tokens as the CSS a manual install pastes in: what the shadcn CLI would merge into the stylesheet. */
+export async function getTokensCss(): Promise<string> {
+  const { theme, light, dark } = await cssVars();
+  const vars = (o: Record<string, string>) => Object.entries(o).map(([k, v]) => `  --${k}: ${v};`).join("\n");
+  const map = Object.keys(light).map((k) => `  --color-${k}: var(--${k});`).join("\n");
+  const eases = Object.entries(theme).map(([k, v]) => `  --${k}: ${v};`).join("\n");
+  return `@import "tailwindcss";\n\n@custom-variant dark (&:is(.dark *));\n\n@theme inline {\n${map}\n${eases}\n}\n\n:root {\n${vars(light)}\n}\n\n.dark {\n${vars(dark)}\n}\n`;
 }

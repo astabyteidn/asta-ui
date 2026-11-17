@@ -27,7 +27,7 @@ export default function SpinnerDemo() {
         </div>
         <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-[13px] text-ink-2">
           <span className="flex items-center gap-2">
-            <Spinner className="text-accent" /> Syncing
+            <Spinner className="text-brand" /> Syncing
           </span>
           <span className="flex items-center gap-2">
             <Spinner variant="dots" className="w-[1.4em] text-mute" /> Typing

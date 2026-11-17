@@ -97,12 +97,12 @@ export function BillingSwitch({ value, onChange, saving }: { value: Billing; onC
             }
           }}
           className={cx(
-            "relative z-10 flex h-8 items-center gap-1.5 rounded-[7px] px-4 text-[13px] font-medium capitalize outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-accent/50",
+            "relative z-10 flex h-8 items-center gap-1.5 rounded-[7px] px-4 text-[13px] font-medium capitalize outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-brand/50",
             value === b ? "text-ink" : "text-mute hover:text-ink",
           )}
         >
           {b}
-          {b === "yearly" && saving && <span className="rounded-[4px] bg-accent px-1.5 text-[10.5px] leading-[18px] text-white">{saving}</span>}
+          {b === "yearly" && saving && <span className="rounded-[4px] bg-brand px-1.5 text-[10.5px] leading-[18px] text-white">{saving}</span>}
         </button>
       ))}
     </div>
@@ -140,7 +140,7 @@ export function Pricing({ plans, currency = "$", saving, defaultBilling = "month
             >
               <div className="flex items-center justify-between gap-2">
                 <h3 className="text-[15px] font-medium tracking-[-0.01em]">{p.name}</h3>
-                {hi && <span className="rounded-[5px] bg-accent px-2 py-0.5 text-[11px] font-medium text-white">{p.highlight}</span>}
+                {hi && <span className="rounded-[5px] bg-brand px-2 py-0.5 text-[11px] font-medium text-white">{p.highlight}</span>}
               </div>
               <p className={cx("mt-1 text-[12.5px] leading-snug", hi ? "text-paper/60" : "text-mute")}>{p.description}</p>
               <div className="mt-5 flex items-end gap-1">
@@ -165,7 +165,7 @@ export function Pricing({ plans, currency = "$", saving, defaultBilling = "month
               <ul className="mt-5 flex flex-col gap-2">
                 {p.features.map((f) => (
                   <li key={f} className={cx("flex gap-2 text-[13px] leading-snug", hi ? "text-paper/85" : "text-ink-2")}>
-                    <span className={hi ? "text-accent" : "text-ink"}>
+                    <span className={hi ? "text-brand" : "text-ink"}>
                       <Check />
                     </span>
                     {f}

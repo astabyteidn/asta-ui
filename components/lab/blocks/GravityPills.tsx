@@ -175,7 +175,7 @@ export default function GravityPills() {
   return (
     <div className="relative h-full w-full">
       <canvas ref={ref} className="absolute inset-0 h-full w-full cursor-grab [touch-action:none] active:cursor-grabbing" aria-label="Throwable words" />
-      <span className="label pointer-events-none absolute left-4 top-3 text-mute">Grab &amp; throw · double-click to drop again</span>
+      <span className="font-mono text-[11px] uppercase tracking-[0.08em] pointer-events-none absolute left-4 top-3 text-mute">Grab &amp; throw · double-click to drop again</span>
     </div>
   );
 }

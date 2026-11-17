@@ -1,6 +1,7 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import { RadioGroup as R } from "radix-ui";
+import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
 const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(" ");
 
@@ -24,7 +25,7 @@ export interface SegmentedControlProps {
 
 /**
  * A pill slides between options. While it travels it stretches toward the target and settles back,
- * which reads as a small squash rather than a plain slide.
+ * which reads as a small squash rather than a plain slide. Built on Radix Radio Group, so ← → move and select.
  */
 export function SegmentedControl({ segments, value, defaultValue, onChange, size = "md", full, label, className }: SegmentedControlProps) {
   const [inner, setInner] = useState(defaultValue ?? segments[0]?.value);
@@ -46,8 +47,7 @@ export function SegmentedControl({ segments, value, defaultValue, onChange, size
     return () => ro.disconnect();
   }, [index]);
 
-  const pick = (i: number) => {
-    const v = segments[i].value;
+  const pick = (v: string) => {
     if (v === current) return;
     setSquash(true);
     setTimeout(() => setSquash(false), 180);
@@ -55,21 +55,14 @@ export function SegmentedControl({ segments, value, defaultValue, onChange, size
     onChange?.(v);
   };
 
-  const onKey = (e: KeyboardEvent, i: number) => {
-    const step = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
-    if (!step) return;
-    e.preventDefault();
-    const n = (i + step + segments.length) % segments.length;
-    pick(n);
-    refs.current[n]?.focus();
-  };
-
   const h = size === "sm" ? "h-8 text-[13px]" : "h-10 text-[14px]";
 
   return (
-    <div
+    <R.Root
       ref={box}
-      role="radiogroup"
+      value={current}
+      onValueChange={pick}
+      orientation="horizontal"
       aria-label={label}
       className={cx(
         "relative inline-flex rounded-[10px] bg-paper-2 p-1 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_6%,transparent)]",
@@ -87,19 +80,14 @@ export function SegmentedControl({ segments, value, defaultValue, onChange, size
       {segments.map((s, i) => {
         const on = i === index;
         return (
-          <button
+          <R.Item
             key={s.value}
+            value={s.value}
             ref={(el) => {
               refs.current[i] = el;
             }}
-            type="button"
-            role="radio"
-            aria-checked={on}
-            tabIndex={on ? 0 : -1}
-            onClick={() => pick(i)}
-            onKeyDown={(e) => onKey(e, i)}
             className={cx(
-              "relative z-10 inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-[7px] font-medium tracking-[-0.01em] outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-accent/50 [&_svg]:h-[1.05em] [&_svg]:w-[1.05em]",
+              "relative z-10 inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-[7px] font-medium tracking-[-0.01em] outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-brand/50 [&_svg]:h-[1.05em] [&_svg]:w-[1.05em]",
               h,
               size === "sm" ? "px-3" : "px-4",
               full && "flex-1",
@@ -108,10 +96,10 @@ export function SegmentedControl({ segments, value, defaultValue, onChange, size
           >
             {s.icon}
             {s.label}
-          </button>
+          </R.Item>
         );
       })}
-    </div>
+    </R.Root>
   );
 }
 

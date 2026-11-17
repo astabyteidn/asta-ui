@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
   output: "standalone",
   reactCompiler: true,
   poweredByHeader: false,
-  // Extra hosts allowed to load the dev server (comma separated), e.g. DEV_ORIGINS=192.168.1.5
+  // Extra hosts allowed to load the dev server (comma separated), e.g. DEV_ORIGINS=my-box.local
   allowedDevOrigins: ["127.0.0.1", ...(process.env.DEV_ORIGINS?.split(",").filter(Boolean) ?? [])],
   // Pin the workspace root: a stray package.json/lockfile in a parent folder otherwise makes Turbopack pick that.
   turbopack: { root: path.resolve(__dirname) },

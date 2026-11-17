@@ -24,7 +24,7 @@ export default function SpotlightGrid() {
             className="relative aspect-square overflow-hidden rounded-xl bg-ink p-px [background-image:radial-gradient(140px_circle_at_var(--x,-200px)_var(--y,-200px),var(--color-signal),transparent_60%)]"
           >
             <div className="flex h-full w-full items-end rounded-[11px] bg-ink p-2.5 [background-image:radial-gradient(160px_circle_at_var(--x,-200px)_var(--y,-200px),color-mix(in_srgb,var(--color-signal)_18%,transparent),transparent_60%)]">
-              <span className="label text-paper/70">{t}</span>
+              <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-paper/70">{t}</span>
             </div>
           </div>
         ))}

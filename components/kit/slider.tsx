@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { Slider as S } from "radix-ui";
+import { useState } from "react";
 
 const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(" ");
 
@@ -8,6 +9,8 @@ export interface SliderProps {
   value?: number;
   defaultValue?: number;
   onValueChange?: (v: number) => void;
+  /** Fires once when the user lets go (pointer up or a key press). */
+  onValueCommit?: (v: number) => void;
   min?: number;
   max?: number;
   step?: number;
@@ -16,65 +19,68 @@ export interface SliderProps {
   /** Format the value in the bubble and for screen readers. */
   format?: (v: number) => string;
   disabled?: boolean;
+  /** Form field name. */
+  name?: string;
   "aria-label"?: string;
   "aria-labelledby"?: string;
   className?: string;
 }
 
-/** A range slider with a value bubble that pops up while you drag, hover or focus it. */
+// The thumb is 20px wide and Radix keeps it inside the track, so its centre runs from 10px to width-10px.
+const HALF = 10;
+
+/**
+ * A range slider on Radix Slider (pointer, touch, arrows, Page Up/Down, Home/End, ARIA, form value) with a
+ * value bubble that pops up while you drag, hover or focus it. Clicks and key presses glide; drags follow
+ * the pointer exactly.
+ */
 export function Slider({
   value,
   defaultValue = 50,
   onValueChange,
+  onValueCommit,
   min = 0,
   max = 100,
   step = 1,
   ticks,
   format = (v) => String(v),
   disabled,
+  name,
   className,
   ...aria
 }: SliderProps) {
-  const track = useRef<HTMLDivElement>(null);
   const [inner, setInner] = useState(defaultValue);
   const [drag, setDrag] = useState(false);
   const v = value ?? inner;
   const k = (v - min) / (max - min);
-
-  const set = (n: number) => {
-    const snapped = Math.min(max, Math.max(min, Math.round((n - min) / step) * step + min));
-    const clean = Number(snapped.toFixed(6));
-    if (clean === v) return;
-    if (value === undefined) setInner(clean);
-    onValueChange?.(clean);
-  };
-  const fromPointer = (x: number) => {
-    const r = track.current!.getBoundingClientRect();
-    set(min + ((x - r.left) / r.width) * (max - min));
-  };
-
   const marks = ticks === true ? Math.round((max - min) / step) + 1 : typeof ticks === "number" ? ticks : 0;
+  // Only glide when the value jumps (a click on the track or a key), not while dragging.
+  const glide = !drag && "[&>span:has(>[role=slider])]:transition-[left] [&>span:has(>[role=slider])]:duration-200 [&>span:has(>[role=slider])]:ease-out";
 
   return (
-    <div className={cx("relative w-full select-none pt-7", disabled && "pointer-events-none opacity-45", className)}>
-      <div
-        ref={track}
-        className="group/sl relative h-6 cursor-pointer touch-none"
-        onPointerDown={(e) => {
-          e.currentTarget.setPointerCapture(e.pointerId);
-          setDrag(true);
-          fromPointer(e.clientX);
-          (e.currentTarget.querySelector("[role=slider]") as HTMLElement | null)?.focus();
+    <div className={cx("relative w-full select-none pt-7", className)}>
+      <S.Root
+        value={[v]}
+        onValueChange={([n]) => {
+          if (value === undefined) setInner(n);
+          onValueChange?.(n);
         }}
-        onPointerMove={(e) => drag && fromPointer(e.clientX)}
+        onValueCommit={([n]) => onValueCommit?.(n)}
+        onPointerDown={() => setDrag(true)}
         onPointerUp={() => setDrag(false)}
-        onPointerCancel={() => setDrag(false)}
+        onLostPointerCapture={() => setDrag(false)}
+        min={min}
+        max={max}
+        step={step}
+        disabled={disabled}
+        name={name}
+        className={cx("group/sl relative flex h-6 cursor-pointer touch-none items-center data-[disabled]:pointer-events-none data-[disabled]:opacity-45", glide, "motion-reduce:[&>span]:!transition-none")}
       >
-        <div className="absolute inset-x-0 top-1/2 h-1.5 -translate-y-1/2 overflow-hidden rounded-full bg-[color-mix(in_srgb,var(--color-ink)_12%,transparent)]">
-          <div className={cx("h-full rounded-full bg-accent", !drag && "transition-[width] duration-200 ease-out")} style={{ width: `${k * 100}%` }} />
-        </div>
+        <S.Track className="relative h-1.5 grow overflow-hidden rounded-full bg-[color-mix(in_srgb,var(--color-ink)_12%,transparent)]">
+          <S.Range className={cx("absolute h-full rounded-full bg-brand", !drag && "transition-[right] duration-200 ease-out motion-reduce:transition-none")} />
+        </S.Track>
         {marks > 1 && (
-          <div aria-hidden className="pointer-events-none absolute inset-x-[3px] top-1/2 -translate-y-1/2">
+          <div aria-hidden className="pointer-events-none absolute top-1/2 -translate-y-1/2" style={{ left: HALF, right: HALF }}>
             {Array.from({ length: marks }, (_, i) => {
               const at = i / (marks - 1);
               return (
@@ -87,53 +93,29 @@ export function Slider({
             })}
           </div>
         )}
-        <div className={cx("absolute top-1/2", !drag && "transition-[left] duration-200 ease-out")} style={{ left: `${k * 100}%` }}>
-          <div
-            role="slider"
-            tabIndex={disabled ? -1 : 0}
-            aria-valuemin={min}
-            aria-valuemax={max}
-            aria-valuenow={v}
-            aria-valuetext={format(v)}
-            aria-disabled={disabled || undefined}
-            {...aria}
-            onKeyDown={(e) => {
-              const big = Math.max(step, (max - min) / 10);
-              const map: Record<string, number> = {
-                ArrowRight: v + step,
-                ArrowUp: v + step,
-                ArrowLeft: v - step,
-                ArrowDown: v - step,
-                PageUp: v + big,
-                PageDown: v - big,
-                Home: min,
-                End: max,
-              };
-              if (e.key in map) {
-                e.preventDefault();
-                set(map[e.key]);
-              }
-            }}
-            className={cx(
-              "peer/th h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white outline-none",
-              "shadow-[0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent),0_1px_3px_rgb(0_0_0/0.2),0_4px_10px_-2px_rgb(0_0_0/0.2)]",
-              "transition-transform duration-300 ease-[cubic-bezier(.34,1.56,.64,1)] focus-visible:ring-4 focus-visible:ring-accent/30",
-              drag ? "scale-110" : "group-hover/sl:scale-105",
-            )}
-          />
+        <S.Thumb
+          {...aria}
+          aria-valuetext={format(v)}
+          className={cx(
+            "group/th relative block h-5 w-5 rounded-full bg-white outline-none",
+            "shadow-[0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent),0_1px_3px_rgb(0_0_0/0.2),0_4px_10px_-2px_rgb(0_0_0/0.2)]",
+            "transition-transform duration-300 ease-[cubic-bezier(.34,1.56,.64,1)] focus-visible:ring-4 focus-visible:ring-brand/30",
+            drag ? "scale-110" : "group-hover/sl:scale-105",
+          )}
+        >
           <span
             aria-hidden
             className={cx(
-              "pointer-events-none absolute bottom-[18px] left-0 origin-bottom -translate-x-1/2 whitespace-nowrap rounded-lg bg-ink px-2 py-1 text-[12px] font-medium tabular-nums text-paper",
-              "shadow-[0_4px_12px_-4px_rgb(0_0_0/0.4)] transition-[transform,opacity] duration-300 ease-[cubic-bezier(.34,1.56,.64,1)]",
-              drag ? "scale-100 opacity-100" : "scale-75 opacity-0 group-hover/sl:scale-100 group-hover/sl:opacity-100 peer-focus-visible/th:scale-100 peer-focus-visible/th:opacity-100",
+              "pointer-events-none absolute bottom-[26px] left-1/2 origin-bottom -translate-x-1/2 whitespace-nowrap rounded-lg bg-ink px-2 py-1 text-[12px] font-medium tabular-nums text-paper",
+              "shadow-[0_4px_12px_-4px_rgb(0_0_0/0.4)] transition-[scale,opacity] duration-300 ease-[cubic-bezier(.34,1.56,.64,1)]",
+              drag ? "scale-100 opacity-100" : "scale-75 opacity-0 group-hover/sl:scale-100 group-hover/sl:opacity-100 group-focus-visible/th:scale-100 group-focus-visible/th:opacity-100",
             )}
           >
             {format(v)}
             <span className="absolute left-1/2 top-full -translate-x-1/2 border-x-[5px] border-t-[5px] border-x-transparent border-t-ink" />
           </span>
-        </div>
-      </div>
+        </S.Thumb>
+      </S.Root>
     </div>
   );
 }

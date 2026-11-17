@@ -96,14 +96,14 @@ export default function PixelReveal() {
   return (
     <div className="relative h-full w-full overflow-hidden">
       <div className="absolute inset-0 grid place-items-center p-6 text-center">
-        <p className="display text-[clamp(2rem,4.2vw,3.2rem)] text-signal">
+        <p className="font-medium leading-[0.92] tracking-[-0.05em] text-[clamp(2rem,4.2vw,3.2rem)] text-signal">
           Made by
           <br />
           hand.
         </p>
       </div>
       <canvas ref={ref} className="absolute inset-0 h-full w-full [touch-action:none]" aria-label="Rub to reveal" />
-      <span className="label pointer-events-none absolute bottom-3 left-4 text-mute">Rub to reveal</span>
+      <span className="font-mono text-[11px] uppercase tracking-[0.08em] pointer-events-none absolute bottom-3 left-4 text-mute">Rub to reveal</span>
     </div>
   );
 }

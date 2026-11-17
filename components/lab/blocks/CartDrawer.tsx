@@ -146,7 +146,7 @@ export default function CartDrawer() {
           <div className="relative min-w-0 text-[clamp(14px,4.2cqmin,18px)] font-medium leading-tight text-ink">
             {free ? (
               <span key="free" className="lab-cd-anim flex items-center gap-2 text-ink" style={{ animation: `lab-cd-swap .6s ${EASE} both` }}>
-                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-paper">
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand text-paper">
                   <Check />
                 </span>
                 Free shipping unlocked
@@ -166,7 +166,7 @@ export default function CartDrawer() {
               className="absolute inset-0 origin-left rounded-[3px] transition-transform will-change-transform motion-reduce:transition-none"
               style={{
                 transform: `scaleX(${pct})`,
-                background: "var(--color-accent)",
+                background: "var(--color-brand)",
                 transitionDuration: leaving ? "900ms" : "800ms",
                 transitionTimingFunction: leaving ? "cubic-bezier(.65,0,.35,1)" : EASE,
               }}
@@ -217,7 +217,7 @@ export default function CartDrawer() {
                 takeOver();
                 setN((v) => (v >= CATALOG.length ? 1 : v + 1));
               }}
-              className="flex h-[clamp(34px,11cqmin,46px)] shrink-0 items-center gap-1 whitespace-nowrap rounded-[9px] px-2.5 text-[13px] text-mute shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent)] border border-dashed border-transparent outline-none transition-colors hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-accent/60"
+              className="flex h-[clamp(34px,11cqmin,46px)] shrink-0 items-center gap-1 whitespace-nowrap rounded-[9px] px-2.5 text-[13px] text-mute shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent)] border border-dashed border-transparent outline-none transition-colors hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/60"
             >
               + add
             </button>

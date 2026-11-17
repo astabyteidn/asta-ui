@@ -43,7 +43,7 @@ export default function BubbleWrap() {
           />
         ))}
       </div>
-      <div className="label flex items-center gap-3 text-mute">
+      <div className="font-mono text-[11px] uppercase tracking-[0.08em] flex items-center gap-3 text-mute">
         <span className="tabular-nums">{left} left</span>
         <span>·</span>
         <button type="button" onClick={() => setPopped(Array(COLS * ROWS).fill(false))} className={left === 0 ? "text-signal" : "hover:text-ink"}>

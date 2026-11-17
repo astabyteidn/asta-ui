@@ -32,8 +32,8 @@ function Toggle({ checked, onChange, label, hint }: { checked: boolean; onChange
         aria-checked={checked}
         onClick={() => onChange(!checked)}
         className={cx(
-          "group relative h-6 w-10 shrink-0 rounded-full outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-paper",
-          checked ? "bg-accent" : "bg-[color-mix(in_srgb,var(--color-ink)_16%,transparent)]",
+          "group relative h-6 w-10 shrink-0 rounded-full outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 focus-visible:ring-offset-paper",
+          checked ? "bg-brand" : "bg-[color-mix(in_srgb,var(--color-ink)_16%,transparent)]",
         )}
       >
         <span
@@ -83,14 +83,14 @@ function ThemePicker({ value, onChange }: { value: Settings["theme"]; onChange: 
               e.preventDefault();
             }}
             className={cx(
-              "flex flex-col items-start gap-2 rounded-[10px] p-2 text-left outline-none transition-shadow duration-300 focus-visible:ring-2 focus-visible:ring-accent/50",
-              on ? "shadow-[inset_0_0_0_2px_var(--color-accent)]" : `${RING} hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_26%,transparent)]`,
+              "flex flex-col items-start gap-2 rounded-[10px] p-2 text-left outline-none transition-shadow duration-300 focus-visible:ring-2 focus-visible:ring-brand/50",
+              on ? "shadow-[inset_0_0_0_2px_var(--color-brand)]" : `${RING} hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_26%,transparent)]`,
             )}
           >
             <span className={cx("h-10 w-full rounded-lg shadow-[inset_0_0_0_1px_rgb(0_0_0/0.08)]", t.swatch)} />
             <span className="flex w-full items-center justify-between px-0.5 text-[13px] text-ink">
               {t.label}
-              <span className={cx("h-3.5 w-3.5 rounded-full transition-all duration-300", on ? "bg-accent shadow-[inset_0_0_0_3.5px_var(--color-accent),inset_0_0_0_6px_white]" : RING)} />
+              <span className={cx("h-3.5 w-3.5 rounded-full transition-all duration-300", on ? "bg-brand shadow-[inset_0_0_0_3.5px_var(--color-brand),inset_0_0_0_6px_white]" : RING)} />
             </span>
           </button>
         );
@@ -108,7 +108,7 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-const inputCls = cx("h-10 w-full rounded-lg bg-paper px-3 text-[14px] text-ink outline-none transition-shadow placeholder:text-mute focus-visible:ring-2 focus-visible:ring-accent/50", RING);
+const inputCls = cx("h-10 w-full rounded-lg bg-paper px-3 text-[14px] text-ink outline-none transition-shadow placeholder:text-mute focus-visible:ring-2 focus-visible:ring-brand/50", RING);
 
 /* ---------- the panel ---------- */
 
@@ -266,7 +266,7 @@ export const SettingsPanel = forwardRef<SettingsPanelHandle, SettingsPanelProps>
                 </>
               ) : (
                 <>
-                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand" />
                   <span className="truncate">Unsaved changes</span>
                 </>
               )}

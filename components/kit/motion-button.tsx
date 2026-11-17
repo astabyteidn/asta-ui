@@ -7,7 +7,7 @@ const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).jo
 const EASE = "ease-[cubic-bezier(.16,1,.3,1)]";
 const BASE =
   "group/mb relative inline-flex h-11 shrink-0 select-none items-center justify-center gap-2 whitespace-nowrap rounded-[10px] px-5 text-[14px] font-medium tracking-[-0.01em] outline-none " +
-  "transition-[transform,background-color,color,box-shadow] duration-300 active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:pointer-events-none disabled:opacity-45";
+  "transition-[transform,background-color,color,box-shadow] duration-300 active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:pointer-events-none disabled:opacity-45";
 const RING = "shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent)]";
 const LIFT = "shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_1px_2px_rgb(0_0_0/0.16),0_6px_14px_-8px_rgb(0_0_0/0.45)]";
 
@@ -97,7 +97,7 @@ export function ArrowButton({ children, className, ...rest }: Btn) {
       <span
         aria-hidden
         className={cx(
-          "absolute right-1.5 top-1.5 h-8 w-8 rounded-[7px] bg-accent transition-[width] duration-500 group-hover/mb:w-[calc(100%-12px)] group-focus-visible/mb:w-[calc(100%-12px)]",
+          "absolute right-1.5 top-1.5 h-8 w-8 rounded-[7px] bg-brand transition-[width] duration-500 group-hover/mb:w-[calc(100%-12px)] group-focus-visible/mb:w-[calc(100%-12px)]",
           EASE,
         )}
       />
@@ -121,7 +121,7 @@ export function ShineButton({ children, className, ...rest }: Btn) {
       {...rest}
       onPointerEnter={() => setK((v) => v + 1)}
       onFocus={() => setK((v) => v + 1)}
-      className={cx(BASE, "kit-motion overflow-hidden bg-accent text-white", LIFT, className)}
+      className={cx(BASE, "kit-motion overflow-hidden bg-brand text-white", LIFT, className)}
     >
       <Styles />
       <span
@@ -146,7 +146,7 @@ export function BeamButton({ children, className, ...rest }: Btn) {
       >
         <span
           className="absolute inset-0 [animation:kit-beam_3s_linear_infinite] group-hover/mb:[animation-duration:1.2s]"
-          style={{ background: "conic-gradient(from 0deg, transparent 0 32%, var(--color-accent) 50%, transparent 50% 82%, var(--color-accent) 100%)" }}
+          style={{ background: "conic-gradient(from 0deg, transparent 0 32%, var(--color-brand) 50%, transparent 50% 82%, var(--color-brand) 100%)" }}
         />
       </span>
       <span className="relative inline-flex h-full w-full items-center justify-center gap-2 rounded-md bg-paper px-5 text-ink">{children}</span>

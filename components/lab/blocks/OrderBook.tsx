@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const UP = "var(--color-accent)";
+const UP = "var(--color-brand)";
 const DOWN = "var(--color-ink-2)";
 const LEVELS = 5;
 const TICK = 0.01;

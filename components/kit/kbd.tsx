@@ -87,7 +87,7 @@ export function Kbd({ children, size = "md", pressed, live, className }: KbdProp
         "inline-flex select-none items-center justify-center bg-paper font-sans font-medium text-ink-2",
         "shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent),inset_0_-2px_0_color-mix(in_srgb,var(--color-ink)_12%,transparent)]",
         "transition-[transform,box-shadow,background-color,color] duration-100 ease-out",
-        "data-[pressed]:translate-y-px data-[pressed]:bg-paper-2 data-[pressed]:text-accent data-[pressed]:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-accent)_45%,transparent)]",
+        "data-[pressed]:translate-y-px data-[pressed]:bg-paper-2 data-[pressed]:text-brand data-[pressed]:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-brand)_45%,transparent)]",
         SIZE[size],
         className,
       )}

@@ -16,7 +16,7 @@ const SIZE: Record<InputSize, string> = {
 const RING: Record<InputState, string> = {
   default:
     "shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent)] hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_24%,transparent)] " +
-    "focus-within:!shadow-[inset_0_0_0_1px_var(--color-accent),0_0_0_4px_color-mix(in_srgb,var(--color-accent)_16%,transparent)]",
+    "focus-within:!shadow-[inset_0_0_0_1px_var(--color-brand),0_0_0_4px_color-mix(in_srgb,var(--color-brand)_16%,transparent)]",
   error: "shadow-[inset_0_0_0_1px_#e5484d] focus-within:shadow-[inset_0_0_0_1px_#e5484d,0_0_0_4px_rgb(229_72_77/0.16)]",
   success: "shadow-[inset_0_0_0_1px_#30a46c] focus-within:shadow-[inset_0_0_0_1px_#30a46c,0_0_0_4px_rgb(48_164_108/0.16)]",
 };
@@ -94,7 +94,7 @@ export function Input({ size = "md", state = "default", iconLeft, iconRight, cle
           aria-label="Clear"
           onClick={clear}
           className={cx(
-            "grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[color-mix(in_srgb,var(--color-ink)_9%,transparent)] text-ink-2 outline-none transition-[transform,opacity] duration-300 ease-[cubic-bezier(.16,1,.3,1)] hover:bg-[color-mix(in_srgb,var(--color-ink)_16%,transparent)] focus-visible:ring-2 focus-visible:ring-accent/50",
+            "grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[color-mix(in_srgb,var(--color-ink)_9%,transparent)] text-ink-2 outline-none transition-[transform,opacity] duration-300 ease-[cubic-bezier(.16,1,.3,1)] hover:bg-[color-mix(in_srgb,var(--color-ink)_16%,transparent)] focus-visible:ring-2 focus-visible:ring-brand/50",
             value ? "scale-100 opacity-100" : "pointer-events-none scale-50 opacity-0",
           )}
         >
@@ -123,7 +123,7 @@ export function PasswordInput(props: Omit<InputProps, "type" | "iconRight">) {
           onClick={() => setShow((v) => !v)}
           aria-label={show ? "Hide password" : "Show password"}
           aria-pressed={show}
-          className="-mr-1 grid h-7 w-7 place-items-center rounded-lg text-mute outline-none transition-colors hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-accent/50"
+          className="-mr-1 grid h-7 w-7 place-items-center rounded-lg text-mute outline-none transition-colors hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50"
         >
           <svg viewBox="0 0 16 16" className="!h-4 !w-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8Z" />

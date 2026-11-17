@@ -69,7 +69,7 @@ export default function BadgeDemo() {
           <button
             type="button"
             onClick={() => setInbox((n) => n + 1)}
-            className="relative inline-flex h-10 items-center gap-2 rounded-lg bg-paper px-4 text-[14px] font-medium shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent)] outline-none transition-transform active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-accent/50"
+            className="relative inline-flex h-10 items-center gap-2 rounded-lg bg-paper px-4 text-[14px] font-medium shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent)] outline-none transition-transform active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-brand/50"
           >
             Inbox
             <CountBadge count={inbox} />

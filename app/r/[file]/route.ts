@@ -26,6 +26,6 @@ export async function GET(_req: Request, { params }: { params: Promise<{ file: s
     });
   }
   const block = uiItems.find((b) => `${b.slug}.json` === file);
-  const item = block && (await registryItem(block.slug, block, block.source === "kit"));
+  const item = block && (await registryItem(block.slug, block));
   return item ? Response.json(item) : new Response("Not found", { status: 404 });
 }

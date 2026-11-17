@@ -56,7 +56,7 @@ export default function MorseTap() {
           {text}
           <span className="animate-pulse text-signal">_</span>
         </span>
-        <button type="button" onClick={() => setText("")} className="label text-mute hover:text-ink">
+        <button type="button" onClick={() => setText("")} className="font-mono text-[11px] uppercase tracking-[0.08em] text-mute hover:text-ink">
           Clear
         </button>
       </div>
@@ -75,13 +75,13 @@ export default function MorseTap() {
         onContextMenu={(e) => e.preventDefault()}
         className={`relative grid h-20 w-20 select-none place-items-center border transition-all duration-100 [touch-action:none] ${down ? "scale-95 border-signal bg-signal text-paper" : "border-line bg-paper-2 text-ink"}`}
       >
-        <span className="label">Tap</span>
+        <span className="font-mono text-[11px] uppercase tracking-[0.08em]">Tap</span>
       </button>
       <div className="flex h-5 items-center gap-1.5">
         {seq.split("").map((c, i) => (
           <span key={i} className={`bg-signal ${c === "." ? "h-1.5 w-1.5" : "h-1.5 w-5"}`} />
         ))}
-        {!seq && <span className="label text-mute">··· −−− ··· = SOS</span>}
+        {!seq && <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-mute">··· −−− ··· = SOS</span>}
       </div>
     </div>
   );

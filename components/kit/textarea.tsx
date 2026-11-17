@@ -33,7 +33,7 @@ export function Textarea({ limit, maxRows = 10, rows = 3, className, ...rest }: 
 
   const left = limit ? limit - value.length : 0;
   const k = limit ? Math.min(1, value.length / limit) : 0;
-  const tone = !limit ? "" : left < 0 ? "#e5484d" : left <= Math.max(10, limit * 0.1) ? "#f5a524" : "var(--color-accent)";
+  const tone = !limit ? "" : left < 0 ? "#e5484d" : left <= Math.max(10, limit * 0.1) ? "#f5a524" : "var(--color-brand)";
   const C = 2 * Math.PI * 7;
 
   return (
@@ -42,7 +42,7 @@ export function Textarea({ limit, maxRows = 10, rows = 3, className, ...rest }: 
         "relative w-full rounded-xl bg-paper text-ink transition-shadow duration-200",
         left < 0
           ? "shadow-[inset_0_0_0_1px_#e5484d]"
-          : "shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent)] hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_24%,transparent)] focus-within:!shadow-[inset_0_0_0_1px_var(--color-accent),0_0_0_4px_color-mix(in_srgb,var(--color-accent)_16%,transparent)]",
+          : "shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent)] hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_24%,transparent)] focus-within:!shadow-[inset_0_0_0_1px_var(--color-brand),0_0_0_4px_color-mix(in_srgb,var(--color-brand)_16%,transparent)]",
         rest.disabled && "opacity-50",
         className,
       )}
