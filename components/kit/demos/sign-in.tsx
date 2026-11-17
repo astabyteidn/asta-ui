@@ -1,0 +1,16 @@
+"use client";
+
+import { SignInCard } from "@/components/kit/sign-in";
+
+export default function SignInDemo() {
+  return (
+    <div className="relative flex min-h-[420px] w-full items-center justify-center p-4 sm:p-8">
+      <SignInCard
+        title="Welcome back"
+        subtitle="Sign in to continue to your workspace."
+        // Pretend to call the API. Reject with an Error to show a message above the button.
+        onSubmit={() => new Promise((resolve) => setTimeout(resolve, 1300))}
+      />
+    </div>
+  );
+}

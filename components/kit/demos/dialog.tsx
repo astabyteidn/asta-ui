@@ -1,0 +1,79 @@
+"use client";
+
+import { useState } from "react";
+import { Button } from "@/components/kit/button";
+import { Dialog } from "@/components/kit/dialog";
+
+const NAME = "acme-web";
+
+export default function DialogDemo() {
+  const [open, setOpen] = useState(false);
+  const [typed, setTyped] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [deleted, setDeleted] = useState(false);
+
+  const close = (v: boolean) => {
+    setOpen(v);
+    if (!v) setTyped("");
+  };
+  const confirm = () => {
+    setBusy(true);
+    setTimeout(() => {
+      setBusy(false);
+      setDeleted(true);
+      close(false);
+    }, 900);
+  };
+
+  return (
+    <div className="relative flex min-h-[420px] w-full flex-col items-center justify-center gap-4 overflow-hidden p-6 sm:p-10">
+      <div className="flex w-full max-w-sm items-center justify-between gap-4 rounded-xl bg-paper p-4 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_10%,transparent)]">
+        <div className="min-w-0">
+          <p className={`truncate font-mono text-[13px] ${deleted ? "text-mute line-through" : "text-ink"}`}>{NAME}</p>
+          <p className="mt-0.5 text-[12px] text-mute">{deleted ? "Deleted just now" : "Production · 12 deploys"}</p>
+        </div>
+        {deleted ? (
+          <Button size="sm" variant="soft" onClick={() => setDeleted(false)}>
+            Restore
+          </Button>
+        ) : (
+          <Button size="sm" variant="outline" className="text-[#e5484d]" onClick={() => setOpen(true)}>
+            Delete
+          </Button>
+        )}
+      </div>
+
+      <Dialog
+        contained
+        open={open}
+        onOpenChange={close}
+        title="Delete this project?"
+        description="This removes every deploy and domain. It cannot be undone."
+        footer={
+          <>
+            <Button variant="outline" onClick={() => close(false)}>
+              Cancel
+            </Button>
+            <Button variant="danger" disabled={typed !== NAME} loading={busy} onClick={confirm}>
+              Delete project
+            </Button>
+          </>
+        }
+      >
+        <label className="block text-[13px] text-ink-2">
+          Type <span className="font-mono text-ink">{NAME}</span> to confirm
+          <input
+            data-autofocus
+            value={typed}
+            onChange={(e) => setTyped(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && typed === NAME && confirm()}
+            spellCheck={false}
+            autoComplete="off"
+            className="mt-2 h-10 w-full rounded-lg bg-paper px-3 font-mono text-[13px] text-ink outline-none shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent)] transition-shadow focus:shadow-[inset_0_0_0_1px_var(--color-accent),0_0_0_4px_color-mix(in_srgb,var(--color-accent)_14%,transparent)]"
+          />
+        </label>
+      </Dialog>
+      <p className="text-[12px] text-mute">Tab stays inside the dialog · Esc closes it</p>
+    </div>
+  );
+}

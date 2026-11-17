@@ -1,0 +1,174 @@
+"use client";
+
+import { useRef, useState, type FormEvent, type ReactNode } from "react";
+import { Button } from "@/components/kit/button";
+
+const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(" ");
+const EASE = "ease-[cubic-bezier(.16,1,.3,1)]";
+
+export interface FooterColumn {
+  heading: string;
+  links: { label: string; href: string }[];
+}
+
+export interface FooterProps {
+  brand: ReactNode;
+  /** Big word along the bottom edge. */
+  wordmark: string;
+  columns: FooterColumn[];
+  tagline?: string;
+  /** Called with the email; resolve to confirm, reject to show an error. */
+  onSubscribe?: (email: string) => Promise<void>;
+  legal?: ReactNode;
+  className?: string;
+}
+
+/** Email field that turns into a confirmation in place. */
+export function Newsletter({ onSubscribe }: { onSubscribe?: (email: string) => Promise<void> }) {
+  const [email, setEmail] = useState("");
+  const [state, setState] = useState<"idle" | "busy" | "done" | "error">("idle");
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setState("error");
+    setState("busy");
+    try {
+      await (onSubscribe?.(email) ?? new Promise((r) => setTimeout(r, 900)));
+      setState("done");
+    } catch {
+      setState("error");
+    }
+  };
+  return (
+    <div className="relative">
+      <form
+        onSubmit={submit}
+        noValidate
+        aria-hidden={state === "done" || undefined}
+        className={cx(
+          "flex h-11 items-center gap-1 rounded-[10px] bg-paper/10 p-1 pl-4 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-paper)_14%,transparent)] transition-[opacity,transform,box-shadow] duration-500 focus-within:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-paper)_45%,transparent)]",
+          EASE,
+          state === "done" && "pointer-events-none -translate-y-2 opacity-0",
+          state === "error" && "shadow-[inset_0_0_0_1px_#e5484d]",
+        )}
+      >
+        <label htmlFor="kit-footer-email" className="sr-only">
+          Email address
+        </label>
+        <input
+          id="kit-footer-email"
+          type="email"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (state === "error") setState("idle");
+          }}
+          placeholder="you@company.com"
+          aria-invalid={state === "error" || undefined}
+          aria-describedby="kit-footer-msg"
+          tabIndex={state === "done" ? -1 : undefined}
+          className="min-w-0 flex-1 bg-transparent text-[14px] text-paper outline-none placeholder:text-paper/40"
+        />
+        <Button type="submit" variant="accent" size="sm" shape="pill" loading={state === "busy"} className="shadow-none" tabIndex={state === "done" ? -1 : undefined}>
+          Subscribe
+        </Button>
+      </form>
+      <p
+        className={cx(
+          "absolute inset-0 flex items-center gap-2 pl-1 text-[14px] text-paper transition-[opacity,transform] duration-500",
+          EASE,
+          state === "done" ? "opacity-100" : "pointer-events-none translate-y-2 opacity-0",
+        )}
+        aria-hidden={state !== "done"}
+      >
+        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-accent text-white">
+          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d="m3.5 8.5 3 3 6-7" strokeDasharray="16" style={{ strokeDashoffset: state === "done" ? 0 : 16, transition: "stroke-dashoffset .5s .2s" }} />
+          </svg>
+        </span>
+        You&apos;re in. First letter lands next week.
+      </p>
+      <p id="kit-footer-msg" role="status" className="mt-2 h-4 text-[12px] text-[#ff8a8d]">
+        {state === "error" ? "That doesn't look like an email address." : ""}
+      </p>
+    </div>
+  );
+}
+
+/** Letters near the pointer lift a little and brighten; the rest stay put. */
+function Wordmark({ text }: { text: string }) {
+  const box = useRef<HTMLDivElement>(null);
+  const move = (x: number | null) => {
+    const el = box.current;
+    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    for (const s of el.querySelectorAll<HTMLSpanElement>("span[data-l]")) {
+      if (x === null) {
+        s.style.transform = "";
+        s.style.opacity = "";
+        continue;
+      }
+      const r = s.getBoundingClientRect();
+      const k = Math.max(0, 1 - Math.abs(x - (r.left + r.width / 2)) / (r.width * 2.5));
+      s.style.transform = `translateY(${-k * 14}%)`;
+      s.style.opacity = String(0.22 + k * 0.78);
+    }
+  };
+  return (
+    <div
+      ref={box}
+      aria-hidden
+      onPointerMove={(e) => move(e.clientX)}
+      onPointerLeave={() => move(null)}
+      className="-mb-[0.18em] mt-6 flex select-none justify-center overflow-hidden pt-[0.1em] text-[clamp(3rem,19.5cqw,13rem)] font-semibold leading-[0.9] tracking-[-0.06em]"
+    >
+      {text.split("").map((c, i) => (
+        <span key={i} data-l className={cx("inline-block opacity-[0.22] transition-[transform,opacity] duration-500", EASE)}>
+          {c}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+/**
+ * Footer on an inverted panel: brand and newsletter, link columns, legal line and a big wordmark that
+ * reacts to the pointer. Columns go 2-up below 620px of container width (wrap it in `@container`).
+ */
+export function Footer({ brand, wordmark, columns, tagline, onSubscribe, legal, className }: FooterProps) {
+  return (
+    <footer className={cx("@container overflow-hidden rounded-2xl bg-ink px-6 pt-8 text-paper sm:px-8", className)}>
+      <div className="grid gap-8 @min-[620px]:grid-cols-[1.3fr_2fr]">
+        <div className="flex min-w-0 flex-col gap-4">
+          <div className="flex items-center gap-2 text-[15px] font-semibold tracking-[-0.02em]">{brand}</div>
+          {tagline && <p className="max-w-[30ch] text-[13.5px] leading-relaxed text-paper/60">{tagline}</p>}
+          <Newsletter onSubscribe={onSubscribe} />
+        </div>
+        <nav aria-label="Footer" className="grid grid-cols-2 gap-6 @min-[420px]:grid-cols-3">
+          {columns.map((c) => (
+            <div key={c.heading}>
+              <p className="text-[12px] text-paper/45">{c.heading}</p>
+              <ul className="mt-3 flex flex-col gap-2">
+                {c.links.map((l) => (
+                  <li key={l.label}>
+                    <a
+                      href={l.href}
+                      className="group/fl inline-flex items-center gap-1 rounded text-[13.5px] text-paper/80 outline-none transition-colors hover:text-paper focus-visible:ring-2 focus-visible:ring-accent/60"
+                    >
+                      {l.label}
+                      <span aria-hidden className={cx("-translate-x-1 text-[11px] opacity-0 transition-[translate,opacity] duration-300 group-hover/fl:translate-x-0 group-hover/fl:opacity-60", EASE)}>
+                        ↗
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </nav>
+      </div>
+      {legal && <div className="mt-8 flex flex-wrap justify-between gap-2 text-[12px] text-paper/45">{legal}</div>}
+      <Wordmark text={wordmark} />
+    </footer>
+  );
+}
+
+export default Footer;

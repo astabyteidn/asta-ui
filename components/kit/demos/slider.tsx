@@ -1,0 +1,35 @@
+"use client";
+
+import { useState } from "react";
+import { Slider } from "@/components/kit/slider";
+
+export default function SliderDemo() {
+  const [budget, setBudget] = useState(24);
+  const [weeks, setWeeks] = useState(6);
+
+  return (
+    <div className="flex min-h-[420px] w-full items-center justify-center p-6 sm:p-10">
+      <div className="flex w-full max-w-md flex-col gap-8">
+        <div>
+          <div className="flex items-baseline justify-between">
+            <span id="budget" className="text-[13px] font-medium text-ink">
+              Budget
+            </span>
+            <span className="text-[13px] tabular-nums text-mute">${budget}k</span>
+          </div>
+          <Slider aria-labelledby="budget" value={budget} onValueChange={setBudget} min={5} max={100} format={(v) => `$${v}k`} />
+        </div>
+        <div>
+          <div className="flex items-baseline justify-between">
+            <span id="weeks" className="text-[13px] font-medium text-ink">
+              Timeline
+            </span>
+            <span className="text-[13px] tabular-nums text-mute">{weeks} weeks</span>
+          </div>
+          <Slider aria-labelledby="weeks" value={weeks} onValueChange={setWeeks} min={2} max={12} step={2} ticks format={(v) => `${v} wk`} />
+        </div>
+        <p className="text-[12.5px] text-mute">Drag, click the track, or focus a thumb and use the arrow keys, Page Up/Down, Home and End.</p>
+      </div>
+    </div>
+  );
+}

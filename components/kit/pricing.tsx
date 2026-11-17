@@ -1,0 +1,183 @@
+"use client";
+
+import { useLayoutEffect, useRef, useState } from "react";
+import { Button } from "@/components/kit/button";
+
+const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(" ");
+
+export type Billing = "monthly" | "yearly";
+
+export interface Plan {
+  name: string;
+  description: string;
+  /** Price per month for each billing period. */
+  price: Record<Billing, number>;
+  features: string[];
+  cta: { label: string; href: string };
+  /** The recommended plan gets the dark card and a badge. */
+  highlight?: string;
+}
+
+export interface PricingProps {
+  plans: Plan[];
+  currency?: string;
+  /** Badge next to "Yearly", e.g. "−20%". */
+  saving?: string;
+  defaultBilling?: Billing;
+  className?: string;
+}
+
+const EASE = "ease-[cubic-bezier(.16,1,.3,1)]";
+
+/** One digit as a vertical strip of 0–9 that slides to the new value. */
+function Digit({ d, delay }: { d: number; delay: number }) {
+  return (
+    <span className="relative inline-block h-[1em] w-[0.62em] overflow-hidden">
+      <span
+        className={cx("absolute inset-x-0 top-0 flex flex-col transition-transform duration-700 motion-reduce:transition-none", EASE)}
+        style={{ transform: `translateY(${-d * 10}%)`, transitionDelay: `${delay}ms` }}
+      >
+        {Array.from({ length: 10 }, (_, n) => (
+          <span key={n} className="block h-[1em] text-center leading-[1em]">
+            {n}
+          </span>
+        ))}
+      </span>
+    </span>
+  );
+}
+
+/** A number whose digits roll, right to left, when it changes. Screen readers get the plain value. */
+export function RollingNumber({ value, className = "" }: { value: number; className?: string }) {
+  const digits = String(Math.max(0, Math.round(value))).split("").map(Number);
+  return (
+    <span className={cx("inline-flex tabular-nums", className)}>
+      <span className="sr-only">{value}</span>
+      <span aria-hidden className="inline-flex">
+        {digits.map((d, i) => (
+          <Digit key={digits.length - i} d={d} delay={(digits.length - 1 - i) * 60} />
+        ))}
+      </span>
+    </span>
+  );
+}
+
+/** Two options with a pill that slides between them. */
+export function BillingSwitch({ value, onChange, saving }: { value: Billing; onChange: (b: Billing) => void; saving?: string }) {
+  const refs = useRef<Record<Billing, HTMLButtonElement | null>>({ monthly: null, yearly: null });
+  const [pill, setPill] = useState({ x: 0, w: 0 });
+  useLayoutEffect(() => {
+    const el = refs.current[value];
+    if (el) setPill({ x: el.offsetLeft, w: el.offsetWidth });
+  }, [value]);
+  return (
+    <div role="radiogroup" aria-label="Billing period" className="relative inline-flex rounded-[10px] bg-paper-2 p-1 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_8%,transparent)]">
+      <span
+        aria-hidden
+        className={cx("absolute bottom-1 top-1 rounded-[7px] bg-paper shadow-[0_1px_2px_rgb(0_0_0/0.12),0_0_0_1px_color-mix(in_srgb,var(--color-ink)_8%,transparent)] transition-[transform,width] duration-500", EASE)}
+        style={{ transform: `translateX(${pill.x - 4}px)`, width: pill.w, left: 4 }}
+      />
+      {(["monthly", "yearly"] as const).map((b) => (
+        <button
+          key={b}
+          ref={(el) => {
+            refs.current[b] = el;
+          }}
+          type="button"
+          role="radio"
+          aria-checked={value === b}
+          tabIndex={value === b ? 0 : -1}
+          onClick={() => onChange(b)}
+          onKeyDown={(e) => {
+            if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) {
+              e.preventDefault();
+              const next = b === "monthly" ? "yearly" : "monthly";
+              onChange(next);
+              refs.current[next]?.focus();
+            }
+          }}
+          className={cx(
+            "relative z-10 flex h-8 items-center gap-1.5 rounded-[7px] px-4 text-[13px] font-medium capitalize outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-accent/50",
+            value === b ? "text-ink" : "text-mute hover:text-ink",
+          )}
+        >
+          {b}
+          {b === "yearly" && saving && <span className="rounded-[4px] bg-accent px-1.5 text-[10.5px] leading-[18px] text-white">{saving}</span>}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+const Check = () => (
+  <svg viewBox="0 0 16 16" className="mt-[3px] h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="m3.5 8.5 3 3 6-7" />
+  </svg>
+);
+
+/**
+ * Plans with a monthly / yearly switch. Prices roll digit by digit to the new amount; the highlighted
+ * plan sits on an inverted card. Cards stack below 540px of container width (wrap it in `@container`).
+ */
+export function Pricing({ plans, currency = "$", saving, defaultBilling = "monthly", className }: PricingProps) {
+  const [billing, setBilling] = useState<Billing>(defaultBilling);
+  return (
+    <div className={cx("flex w-full flex-col items-center gap-6", className)}>
+      <BillingSwitch value={billing} onChange={setBilling} saving={saving} />
+      <div className="grid w-full gap-3 @min-[540px]:grid-cols-3">
+        {plans.map((p) => {
+          const hi = !!p.highlight;
+          return (
+            <div
+              key={p.name}
+              className={cx(
+                "relative flex flex-col rounded-xl p-4 @min-[700px]:p-5 transition-transform duration-500",
+                EASE,
+                hi
+                  ? "bg-ink text-paper shadow-[0_24px_50px_-24px_rgb(0_0_0/0.5)] @min-[540px]:-translate-y-2"
+                  : "bg-paper text-ink shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_12%,transparent)]",
+              )}
+            >
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="text-[15px] font-medium tracking-[-0.01em]">{p.name}</h3>
+                {hi && <span className="rounded-[5px] bg-accent px-2 py-0.5 text-[11px] font-medium text-white">{p.highlight}</span>}
+              </div>
+              <p className={cx("mt-1 text-[12.5px] leading-snug", hi ? "text-paper/60" : "text-mute")}>{p.description}</p>
+              <div className="mt-5 flex items-end gap-1">
+                <span className="flex items-start font-medium leading-none tracking-[-0.04em]">
+                  <span className="mr-0.5 mt-1 text-[20px]">{currency}</span>
+                  <RollingNumber value={p.price[billing]} className="text-[40px]" />
+                </span>
+                <span className={cx("pb-1 text-[12px]", hi ? "text-paper/55" : "text-mute")}>/ month</span>
+              </div>
+              <p className={cx("mt-1.5 h-4 text-[11.5px] transition-opacity duration-300", hi ? "text-paper/55" : "text-mute", billing === "yearly" && p.price.yearly > 0 ? "opacity-100" : "opacity-0")}>
+                Billed {currency}
+                {p.price.yearly * 12} a year
+              </p>
+              <Button
+                href={p.cta.href}
+                variant={hi ? "accent" : "outline"}
+                shape="pill"
+                className={cx("mt-5 w-full", hi && "shadow-none")}
+              >
+                {p.cta.label}
+              </Button>
+              <ul className="mt-5 flex flex-col gap-2">
+                {p.features.map((f) => (
+                  <li key={f} className={cx("flex gap-2 text-[13px] leading-snug", hi ? "text-paper/85" : "text-ink-2")}>
+                    <span className={hi ? "text-accent" : "text-ink"}>
+                      <Check />
+                    </span>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+export default Pricing;
