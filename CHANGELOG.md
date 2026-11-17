@@ -2,6 +2,11 @@
 
 Releases are git tags (`vX.Y.Z`); pushing a tag deploys ui.astabyte.com. Merging to `main` does not.
 
+## 0.2.1 — 2026-11-18
+
+- **Release:** the npm package is published by GitHub Actions through Trusted Publishing. No npm token in CI.
+- **Package build:** types come from one tsc run, so building the package takes seconds and fits in CI memory.
+
 ## 0.2.0 — 2026-11-17
 
 - **Radix or Base UI:** every interactive component now also ships on [Base UI](https://base-ui.com) (`@base-ui/react`), with the same props, look and motion: accordion, avatar, button (`asChild` via `useRender`), checkbox, command palette, dialog, dropdown menu, radio group, segmented control, select (plain and searchable), slider, switch, tabs, tooltip and the AI prompt box (`textarea-aui-008`). Components that use them (pricing, navbar, footer, sign-in, settings panel) come in both builds too.
