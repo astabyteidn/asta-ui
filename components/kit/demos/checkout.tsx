@@ -1,0 +1,32 @@
+"use client";
+
+import { Checkout, type CheckoutLineItem } from "@/components/kit/checkout";
+
+const ITEMS: CheckoutLineItem[] = [
+  { id: "i1", name: "Linen overshirt", variant: "Oat · M", price: 68, qty: 1 },
+  { id: "i2", name: "Everyday tote", variant: "Charcoal", price: 34, qty: 1 },
+  { id: "i3", name: "Wool socks", variant: "Pack of 3", price: 18, qty: 2 },
+];
+
+/** Fake payment: waits a moment, declines any card ending in 0000. */
+const pay = ({ details }: { details: { cardNumber: string } }) =>
+  new Promise<void>((resolve, reject) =>
+    setTimeout(() => (details.cardNumber.endsWith("0000") ? reject(new Error("Your card was declined. Try another card.")) : resolve()), 1400),
+  );
+
+export default function CheckoutDemo() {
+  return (
+    <div className="flex min-h-[420px] w-full flex-col items-center justify-center gap-4 p-4 sm:p-8">
+      <div className="w-full max-w-[860px]">
+        <Checkout
+          items={ITEMS}
+          taxRate={0.08}
+          promoCodes={{ WELCOME10: 0.1 }}
+          defaultDetails={{ email: "rani@studio.dev", name: "Rani Pratama", address: "Jl. Kenanga 12", city: "Bandung", postal: "40115" }}
+          onPay={pay}
+        />
+      </div>
+      <p className="text-center text-[12.5px] text-mute">Any 16 digits and a future date work. End the card with 0000 to see a decline. Try the code WELCOME10.</p>
+    </div>
+  );
+}

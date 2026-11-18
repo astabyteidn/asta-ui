@@ -1,0 +1,33 @@
+"use client";
+
+import { useState } from "react";
+import { Button } from "@/components/kit/button";
+import { StatCard } from "@/components/kit/stat-card";
+
+const WEEKS = [
+  { revenue: 48250, orders: 1284, refunds: 1.8, trend: [31, 34, 33, 38, 36, 41, 44, 48] },
+  { revenue: 52910, orders: 1391, refunds: 1.6, trend: [34, 33, 38, 36, 41, 44, 48, 53] },
+];
+
+export default function StatCardDemo() {
+  const [w, setW] = useState(0);
+  const week = WEEKS[w];
+
+  return (
+    <div className="flex min-h-[420px] w-full items-center justify-center p-6 sm:p-10">
+      <div className="flex w-full max-w-3xl flex-col gap-4">
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-[15px] font-medium tracking-[-0.01em] text-ink">{w ? "This week" : "Last week"}</p>
+          <Button size="sm" variant="outline" onClick={() => setW(w ? 0 : 1)}>
+            {w ? "Show last week" : "Show this week"}
+          </Button>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-3">
+          <StatCard label="Revenue" value={week.revenue} format={{ style: "currency", currency: "USD", maximumFractionDigits: 0 }} delta={w ? 9.7 : 12.4} deltaLabel="vs prior week" data={week.trend} />
+          <StatCard label="Orders" value={week.orders} delta={w ? 8.3 : 4.1} deltaLabel="vs prior week" data={[9, 11, 10, 12, 11, 13, 12, w ? 14 : 13]} />
+          <StatCard label="Refund rate" value={week.refunds} suffix="%" format={{ maximumFractionDigits: 1, minimumFractionDigits: 1 }} delta={w ? -11.1 : -0.4} deltaLabel="vs prior week" data={[2.4, 2.2, 2.3, 2.0, 1.9, 2.0, 1.8, week.refunds]} />
+        </div>
+      </div>
+    </div>
+  );
+}

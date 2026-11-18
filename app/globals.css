@@ -522,6 +522,53 @@ svg.ic-copied { animation: ic-pop .5s cubic-bezier(.16,1,.3,1) both; }
 .icon-hover:is(:hover, :focus-visible) [data-icon="rocket"] { animation-name: ic-xy; }
 .icon-hover:is(:hover, :focus-visible) [data-icon="thumbs-up"] { --r: -14deg; transform-origin: 30% 80%; animation-name: ic-tilt; }
 
+@keyframes ic-press { 40% { transform: scale(.86) } }
+@keyframes ic-grow-y { 0% { transform: scaleY(1) } 40% { transform: scaleY(.55) } 100% { transform: scaleY(1) } }
+@keyframes ic-xd { 40% { transform: translate(2px, 2px) } }
+@keyframes ic-swing { 35% { transform: rotate(28deg) } 70% { transform: rotate(-6deg) } }
+.icon-hover:is(:hover, :focus-visible) [data-icon="users"] > :is(:nth-child(3), :nth-child(4)) { --d: 1.5px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="unlock"] > :nth-child(2) { --d: -2px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="eye-off"] > :nth-child(3) { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="camera"], [data-icon="target"]) > :nth-child(2) { animation-name: ic-press; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="award"] > :nth-child(1) { animation-name: ic-press; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="headphones"], [data-icon="music"]) { --r: -8deg; animation-name: ic-tilt; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="bag"], [data-icon="briefcase"]) > :nth-child(2) { --d: -1.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="receipt"] > :is(:nth-child(2), :nth-child(3)) { animation-name: ic-grow; transform-origin: left center; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="receipt"] > :nth-child(3) { animation-delay: .08s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="chart-bar"] > :not(:first-child) { animation-name: ic-grow-y; transform-origin: center bottom; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="chart-bar"] > :nth-child(3) { animation-delay: .06s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="chart-bar"] > :nth-child(4) { animation-delay: .12s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="pie-chart"] > :nth-child(2) { animation-name: ic-xy; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="trending-up"] { animation-name: ic-xy; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="trending-down"] { animation-name: ic-xd; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="database"] > :nth-child(1) { --d: -1.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="server"] > :is(:nth-child(3), :nth-child(4)) { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="server"] > :nth-child(4) { animation-delay: .1s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="git-branch"] > :nth-child(3) { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="cpu"] > :nth-child(2) { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="truck"] { --d: 2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="compass"] > :nth-child(2) { transform-box: view-box; transform-origin: 12px 12px; animation-name: ic-swing; animation-duration: .9s; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="map"], [data-icon="monitor"]) { --d: -2px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="navigation"]) { animation-name: ic-xy; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="at-sign"] { --r: 12deg; animation-name: ic-tilt; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="hash"] > :is(:nth-child(1), :nth-child(2)) { animation-name: ic-grow; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="hash"] > :nth-child(2) { animation-delay: .06s; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="paperclip"], [data-icon="smartphone"]) { animation-name: ic-wiggle; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="printer"] > :nth-child(3) { --d: 2px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="scissors"] > :nth-child(3) { --r: 6deg; transform-origin: left center; animation-name: ic-tilt; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="scissors"] > :nth-child(4) { --r: -6deg; transform-origin: left center; animation-name: ic-tilt; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="crop"] > :nth-child(1) { --d: -1.5px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="crop"] > :nth-child(2) { --d: 1.5px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="film"] > :is(:nth-child(2), :nth-child(3), :nth-child(4)) { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="umbrella"] { --r: -8deg; transform-origin: 50% 85%; animation-name: ic-tilt; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="coffee"] > :is(:nth-child(3), :nth-child(4)) { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="coffee"] > :nth-child(4) { animation-delay: .1s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="leaf"] { --r: -8deg; transform-origin: 20% 80%; animation-name: ic-tilt; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="droplet"], [data-icon="flame"]) { transform-origin: 50% 90%; animation-name: ic-squish; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="anchor"] { transform-origin: 50% 20%; animation-name: ic-wiggle; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="inbox"] > :nth-child(2) { --d: 1.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="archive"] > :nth-child(1) { --d: -2px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="power"] > :nth-child(1) { --d: -1.5px; animation-name: ic-y; }
 @media (prefers-reduced-motion: reduce) { svg.ic-copied { animation: none; } .icon-hover svg[data-icon], .icon-hover svg[data-icon] > * { animation: none !important; } }
 
 .kbd {

@@ -1,0 +1,141 @@
+"use client";
+
+import { useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
+import { avatarFill, initials } from "@/components/kit/avatar";
+
+const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(" ");
+
+export interface AvatarStackPerson {
+  name: string;
+  /** Image URL. Falls back to initials if missing or it fails to load. */
+  src?: string;
+}
+
+export interface AvatarStackProps {
+  people: AvatarStackPerson[];
+  /** Avatars shown before the rest fold into "+N". */
+  max?: number;
+  size?: "sm" | "md" | "lg";
+  /** Makes "+N" a button, e.g. to open the full member list. */
+  onOverflowClick?: () => void;
+  /** Accessible name for the group. Defaults to "N people". */
+  label?: string;
+  className?: string;
+}
+
+const SIZES = {
+  sm: { box: 28, text: "text-[11px]", overlap: -8 },
+  md: { box: 36, text: "text-[13px]", overlap: -10 },
+  lg: { box: 44, text: "text-[15px]", overlap: -12 },
+};
+
+function Face({ person, text }: { person: AvatarStackPerson; text: string }) {
+  const [broken, setBroken] = useState<string | null>(null);
+  const showImg = person.src && broken !== person.src;
+  return (
+    <span className={cx("flex h-full w-full select-none items-center justify-center overflow-hidden rounded-full font-medium tracking-[-0.02em]", !showImg && avatarFill(person.name), text)}>
+      {showImg ? <img src={person.src} alt="" draggable={false} onError={() => setBroken(person.src!)} className="h-full w-full object-cover" /> : initials(person.name)}
+    </span>
+  );
+}
+
+function Tip({ children }: { children: string }) {
+  return (
+    <span
+      aria-hidden
+      className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-2 max-w-[220px] -translate-x-1/2 translate-y-1 truncate whitespace-nowrap rounded-[6px] bg-ink px-2 py-1 text-[12px] font-medium leading-none text-paper opacity-0 transition-[opacity,translate] duration-200 ease-[cubic-bezier(.16,1,.3,1)] group-hover/face:translate-y-0 group-hover/face:opacity-100 group-focus-visible/face:translate-y-0 group-focus-visible/face:opacity-100 motion-reduce:transition-none"
+    >
+      {children}
+    </span>
+  );
+}
+
+/**
+ * Overlapping avatars. Hover the stack and it spreads a little, hover one face and it lifts and shows the
+ * name. People past `max` fold into "+N". The stack is one tab stop and arrow keys move between faces.
+ */
+export function AvatarStack({ people, max = 4, size = "md", onOverflowClick, label, className }: AvatarStackProps) {
+  const s = SIZES[size];
+  const cap = Math.max(1, max);
+  // Showing "+1" would hide a face that fits in the same space, so only fold two or more.
+  const shown = people.length - cap === 1 ? people : people.slice(0, cap);
+  const rest = people.slice(shown.length);
+  const items = shown.length + (rest.length ? 1 : 0);
+  const restNames = rest.map((p) => p.name);
+  const restText = restNames.length > 3 ? `${restNames.slice(0, 3).join(", ")} and ${restNames.length - 3} more` : restNames.join(", ");
+
+  const root = useRef<HTMLUListElement>(null);
+  const [focusIdx, setFocusIdx] = useState(0);
+  const stop = Math.min(focusIdx, items - 1);
+
+  const onKey = (e: KeyboardEvent) => {
+    let i = stop;
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") i = Math.min(items - 1, stop + 1);
+    else if (e.key === "ArrowLeft" || e.key === "ArrowUp") i = Math.max(0, stop - 1);
+    else if (e.key === "Home") i = 0;
+    else if (e.key === "End") i = items - 1;
+    else return;
+    e.preventDefault();
+    setFocusIdx(i);
+    root.current?.querySelectorAll<HTMLElement>("[data-face]")[i]?.focus();
+  };
+
+  const face = "group/face relative block rounded-full outline-none shadow-[0_0_0_2px_var(--color-paper)] focus-visible:shadow-[0_0_0_2px_var(--color-paper),0_0_0_4px_var(--color-brand)]";
+  const li = (i: number) =>
+    cx(
+      "relative transition-[translate] duration-500 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none",
+      "group-hover/stack:translate-x-[calc(var(--i)*5px)] group-focus-within/stack:translate-x-[calc(var(--i)*5px)]",
+      "hover:z-10 focus-within:z-10 [&:hover>*]:-translate-y-1 [&:focus-within>*]:-translate-y-1",
+      i > 0 && "-ml-[var(--o)]",
+    );
+  const vars = (i: number) => ({ "--i": i, "--o": `${-s.overlap}px` }) as CSSProperties;
+
+  // "+N" is a button when it does something, else a labelled image.
+  const Overflow = onOverflowClick ? "button" : "span";
+
+  if (!people.length) return null;
+
+  return (
+    <ul ref={root} aria-label={label ?? `${people.length} ${people.length === 1 ? "person" : "people"}`} onKeyDown={onKey} className={cx("group/stack flex items-center", className)}>
+      {shown.map((p, i) => (
+        <li key={`${p.name}-${i}`} className={li(i)} style={vars(i)}>
+          <span
+            data-face
+            role="img"
+            aria-label={p.name}
+            tabIndex={i === stop ? 0 : -1}
+            onFocus={() => setFocusIdx(i)}
+            className={cx(face, "transition-[translate] duration-300 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none")}
+            style={{ width: s.box, height: s.box }}
+          >
+            <Face person={p} text={s.text} />
+            <Tip>{p.name}</Tip>
+          </span>
+        </li>
+      ))}
+      {rest.length > 0 && (
+        <li className={li(shown.length)} style={vars(shown.length)}>
+          <Overflow
+            {...(onOverflowClick ? { type: "button" as const, onClick: onOverflowClick } : { role: "img" })}
+            data-face
+            aria-label={`${rest.length} more: ${restText}`}
+            tabIndex={shown.length === stop ? 0 : -1}
+            onFocus={() => setFocusIdx(shown.length)}
+            className={cx(
+              face,
+              "flex items-center justify-center bg-paper-2 font-medium tabular-nums text-ink-2 duration-300 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none",
+              onOverflowClick ? "transition-[translate,color] hover:text-ink" : "transition-[translate]",
+              s.text,
+            )}
+            style={{ width: s.box, height: s.box }}
+          >
+            +{rest.length}
+            <Tip>{restText}</Tip>
+          </Overflow>
+        </li>
+      )}
+    </ul>
+  );
+}
+
+export default AvatarStack;
