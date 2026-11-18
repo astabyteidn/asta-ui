@@ -34,7 +34,8 @@ export const initials = (name: string) =>
     .map((p) => p[0]!.toUpperCase())
     .join("");
 
-const fillFor = (name: string) => FILLS[[...name].reduce((n, c) => n + c.charCodeAt(0), 0) % FILLS.length];
+/** The fallback fill classes for a name. The same name always gets the same fill. */
+export const avatarFill = (name: string) => FILLS[[...name].reduce((n, c) => n + c.charCodeAt(0), 0) % FILLS.length];
 
 export interface AvatarProps {
   name: string;
@@ -58,7 +59,7 @@ export function Avatar({ name, src, size = "md", status, shape = "circle", class
     <span className={cx("relative inline-flex shrink-0", s.box, className)} role="img" aria-label={status ? `${name} (${status})` : name}>
       <A.Root className={cx("flex h-full w-full select-none overflow-hidden bg-paper-2 font-medium tracking-[-0.02em]", round, s.text)}>
         {src && <A.Image src={src} alt="" className="h-full w-full object-cover animate-[kit-av-in_.3s_ease-out] motion-reduce:animate-none" />}
-        <A.Fallback delay={src ? 250 : undefined} className={cx("flex h-full w-full items-center justify-center", fillFor(name))}>
+        <A.Fallback delay={src ? 250 : undefined} className={cx("flex h-full w-full items-center justify-center", avatarFill(name))}>
           {initials(name)}
         </A.Fallback>
       </A.Root>

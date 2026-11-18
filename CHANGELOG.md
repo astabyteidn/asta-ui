@@ -2,9 +2,15 @@
 
 Releases are git tags (`vX.Y.Z`); pushing a tag deploys ui.astabyte.com. Merging to `main` does not.
 
-## 0.2.2 — 2026-11-18
+## 0.3.0 — 2026-11-18
 
-- **Icons:** 50 new icons, 90 in total. Layout, actions, status, media, files, devices and a few fun ones. Each has its own hover move, like the clock hand that spins, the wifi bars that light up one by one and the loader that turns.
+- **Kit, 30 → 68 components.**
+  - **Atoms:** rating, progress (`ProgressBar`, `ProgressRing`), alert, breadcrumb, pagination, copy button (`ClipboardButton`), toggle group, range slider, color picker, avatar group (`AvatarStack`) and inline edit.
+  - **Molecules:** date picker, combobox, stepper, file upload, OTP input, popover, drawer, password input (`PasswordField`), timeline, carousel, stat card, empty state, context menu, hover card, tree view, image compare and announcement bar.
+  - **Organisms:** data table, sidebar, kanban board, onboarding checklist, comments, AI chat, event calendar, checkout, team members and notification center.
+  - Names that already existed in the package keep their old meaning. The new ones get their own names, shown in brackets above.
+- **Motion lab, 24 → 34 cards:** plan switcher, shipment tracker, payment received, wishlist, chat thread, seat picker, now playing, booking slots, notification stack and token swap.
+- **Icons, 40 → 131.** 91 new icons, each with its own small hover move: the clock hand spins, the wifi bars light up one by one, the compass needle swings.
 
 ## 0.2.1 — 2026-11-18
 
