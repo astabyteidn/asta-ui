@@ -30,6 +30,17 @@ Works with `npx`, `bunx` and `yarn dlx` too. Under the hood it calls the [shadcn
 
 Set `ASTA_UI_URL` to point at another registry host (e.g. a local dev server).
 
+## Agent skills
+
+```sh
+npx asta-ui@latest skills install    # astabyte-ui, astabyte-design, astabyte-skills-update → ~/.claude/skills
+npx asta-ui@latest skills update     # update copies that changed (checks ~/.claude, ./.claude and .agents)
+npx asta-ui@latest skills status
+npx asta-ui@latest skills auto       # Claude Code SessionStart hook, once a day; --off removes it
+```
+
+MCP server: `https://ui.astabyte.com/mcp` (Streamable HTTP, no key).
+
 ## Import it (library)
 
 ```sh

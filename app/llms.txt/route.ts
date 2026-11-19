@@ -26,11 +26,13 @@ Also an npm component library: \`pnpm add asta-ui radix-ui\` then \`import { Dia
 
 - [Introduction](${SITE}/introduction): what the kit is and how it differs from a package.
 - [Installation](${SITE}/installation): CLI setup per framework, Radix or Base UI, the npm package, registry URLs, manual install and tokens.
-- [AI agents](${SITE}/skill): the agent skill, llms.txt and the shadcn MCP server.
+- [AI agents](${SITE}/skill): agent skills that update themselves, the Astabyte MCP server, llms.txt and the shadcn MCP server.
 - [Prompts](${SITE}/prompts): copy-ready prompts to set up the kit or build a trading dashboard, checkout, settings page, landing page or sign-in with it.
 - [Icons](${SITE}/icons): Astabyte Icons, a small hand-drawn set with a hover motion each. Click to copy the SVG.
 - [Logos](${SITE}/logos): ${LOGOS.length} logos of well-known tools, frameworks and brands as 24×24 SVG (Simple Icons data, CC0). Copy as SVG or a React component, mono or brand colour.
 - [Agent skill (SKILL.md)](${SITE}/skill.md): rules and the full catalogue in one file.
+- [MCP server](${SITE}/mcp): Streamable HTTP, no auth, read-only. Tools: search_components, get_component, get_setup, get_design_guide, get_use_cases, get_skills. Claude Code: \`claude mcp add --transport http astabyte-ui ${SITE}/mcp\`.
+- [Skills manifest](${SITE}/skills.json): every agent skill with a content hash; update local copies with \`npx -y asta-ui@latest skills update\`.
 - [Registry index (Radix)](${SITE}/r/registry.json)
 - [Registry index (Base UI)](${SITE}/r/base/registry.json)
 
