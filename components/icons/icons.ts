@@ -2,7 +2,10 @@
  * Astabyte icons. 24×24 grid, 1.75 stroke, round caps and joins, drawn with currentColor.
  * Each entry is the inner SVG markup, so the same data feeds <Icon>, the /icons page and the copied SVG.
  */
-export const ICONS = {
+import { UI_ICONS } from "./icons-ui";
+import { WORLD_ICONS } from "./icons-world";
+
+const CORE = {
   "arrow-right": '<path d="M4 12h15"/><path d="m13 6 6 6-6 6"/>',
   "arrow-left": '<path d="M20 12H5"/><path d="m11 6-6 6 6 6"/>',
   "arrow-up": '<path d="M12 20V5"/><path d="m6 11 6-6 6 6"/>',
@@ -135,6 +138,8 @@ export const ICONS = {
   archive: '<rect x="3" y="4.5" width="18" height="4" rx="1"/><path d="M5 8.5v10A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5v-10"/><path d="M10 12h4"/>',
   power: '<path d="M12 3.5v8"/><path d="M7 6.5a7.5 7.5 0 1 0 10 0"/>',
 } as const;
+
+export const ICONS = { ...CORE, ...UI_ICONS, ...WORLD_ICONS } as const;
 
 export type IconName = keyof typeof ICONS;
 

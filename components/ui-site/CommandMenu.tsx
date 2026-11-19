@@ -30,6 +30,7 @@ export default function CommandMenu() {
     return [
       ...GUIDES.map((g) => ({ id: g.href, label: g.title, group: "Get started", icon: <Icon name="book" />, onSelect: go(g.href) })),
       { id: "/icons", label: "Astabyte Icons", group: "Icons", icon: <Icon name="sparkle" />, keywords: "svg icon set arrow", onSelect: go("/icons") },
+      { id: "/logos", label: "Brand logos", group: "Icons", icon: <Icon name="grid" />, keywords: "logo brand svg github react stripe simple icons", onSelect: go("/logos") },
       ...uiItems.map((b) => ({
         id: b.slug,
         label: b.title,
@@ -56,11 +57,11 @@ export default function CommandMenu() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="icon-hover btn btn-quiet btn-sm hidden w-56 !justify-start text-mute md:inline-flex"
+        className="icon-hover btn btn-quiet btn-sm hidden w-44 !justify-start text-mute md:inline-flex xl:w-56"
         aria-label="Search components"
       >
         <Icon name="search" className="h-3.5 w-3.5" />
-        <span className="font-normal text-mute">Search components</span>
+        <span className="font-normal text-mute">Search<span className="hidden xl:inline"> components</span></span>
         <span className="kbd ml-auto">⌘K</span>
       </button>
       <button type="button" onClick={() => setOpen(true)} className="icon-hover btn btn-ghost btn-sm btn-icon md:hidden" aria-label="Search components">

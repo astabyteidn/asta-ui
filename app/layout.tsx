@@ -1,13 +1,15 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "./icons-ui.css";
+import "./icons-world.css";
 import Link from "next/link";
 import Mark from "@/components/site/Mark";
 import PageviewTracker from "@/components/site/PageviewTracker";
 import CommandMenu from "@/components/ui-site/CommandMenu";
 import GitHubStars from "@/components/ui-site/GitHubStars";
 import MobileMenu from "@/components/ui-site/MobileMenu";
-import Icon from "@/components/icons/Icon";
+import SiteNav from "@/components/ui-site/SiteNav";
 import { PRIMITIVE_SCRIPT } from "@/lib/primitive";
 import { VERSION } from "@/lib/version";
 
@@ -36,31 +38,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="ui-light antialiased">
     <div className="flex min-h-svh flex-col">
       <PageviewTracker prefix="/ui" />
-      <header className="ui-header px-shell sticky top-0 z-40 flex h-16 items-center gap-3 sm:gap-6">
-        <Link href="/" className="flex shrink-0 items-center gap-2.5 text-[16px] font-medium tracking-[-0.01em]">
-          <Mark className="h-5 w-5 text-ink" />
+      <header className="ui-header px-shell sticky top-0 z-40 flex h-14 items-center gap-3 sm:gap-5">
+        <Link href="/" className="nav-logo flex shrink-0 items-center gap-2 text-[15px] font-medium tracking-[-0.01em]">
+          <Mark className="h-[18px] w-[18px] text-ink" />
           Astabyte
-          <span className="hidden rounded-[5px] bg-paper-2 px-2 font-mono text-[11.5px] leading-5 text-mute sm:inline">UI</span>
-          <span className="rounded-[5px] bg-brand/10 px-2 font-mono text-[11.5px] leading-5 text-brand">Beta</span>
+          <span className="rounded-[5px] bg-brand/10 px-1.5 font-mono text-[11px] leading-[18px] text-brand">UI</span>
         </Link>
-        <nav className="hidden items-center gap-1 md:flex">
-          <Link href="/introduction" className="btn btn-ghost btn-sm font-normal">
-            Docs
-          </Link>
-          <Link href="/#kit" className="btn btn-ghost btn-sm font-normal">
-            Kit
-          </Link>
-          <Link href="/#components" className="btn btn-ghost btn-sm font-normal">
-            Motion
-          </Link>
-          <Link href="/icons" className="btn btn-ghost btn-sm font-normal">
-            Icons
-          </Link>
-          <a href={`${STUDIO}/?utm_source=ui`} className="icon-hover btn btn-ghost btn-sm font-normal">
-            Studio <Icon name="arrow-up-right" className="h-3.5 w-3.5 text-mute" />
-          </a>
-        </nav>
-        <div className="ml-auto flex items-center gap-1 sm:gap-2">
+        <SiteNav />
+        <div className="ml-auto flex items-center gap-1.5">
           <CommandMenu />
           <GitHubStars />
           <a href={`${STUDIO}/contact?utm_source=ui`} className="btn btn-primary btn-sm hidden sm:inline-flex">

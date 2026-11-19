@@ -123,6 +123,7 @@ function Index({ items, onNavigate }: { items: UiItem[]; onNavigate?: () => void
 
   return (
     <div>
+      <div className="sticky top-0 z-10 -mx-1.5 bg-paper px-1.5 pb-3 pt-4 after:pointer-events-none after:absolute after:inset-x-0 after:top-full after:h-5 after:bg-gradient-to-b after:from-paper after:to-transparent">
       <label className="flex h-10 items-center gap-2 rounded-lg bg-paper px-3 text-[14px] text-mute shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_10%,transparent),0_1px_2px_rgb(0_0_0/0.04)] transition-shadow focus-within:shadow-[inset_0_0_0_1px_var(--color-accent),0_0_0_3px_color-mix(in_srgb,var(--color-accent)_15%,transparent)]">
         <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
           <circle cx="7" cy="7" r="4.5" />
@@ -165,8 +166,9 @@ function Index({ items, onNavigate }: { items: UiItem[]; onNavigate?: () => void
           </button>
         ))}
       </div>
+      </div>
 
-      <div ref={nav} className="relative mt-6" onPointerLeave={() => setHover(null)}>
+      <div ref={nav} className="relative mt-4" onPointerLeave={() => setHover(null)}>
         <span
           ref={slab}
           aria-hidden
@@ -266,7 +268,7 @@ export default function Sidebar({ items }: { items: UiItem[] }) {
 
   return (
     <>
-      <aside ref={aside} className="sticky top-16 hidden h-[calc(100svh-4rem)] w-60 shrink-0 overflow-y-auto pb-12 pt-4 [scrollbar-width:none] lg:block" data-lenis-prevent>
+      <aside ref={aside} className="sticky top-14 hidden h-[calc(100svh-3.5rem)] -ml-1.5 w-[15.75rem] shrink-0 overflow-y-auto px-1.5 pb-12 [scrollbar-width:none] lg:block" data-lenis-prevent>
         <Index items={items} />
         <a href="https://astabyte.com/contact?utm_source=ui&utm_campaign=sidebar" className="group mt-10 block rounded-[10px] bg-paper-2 p-4">
           <span className="label text-accent">Astabyte studio</span>
@@ -277,7 +279,7 @@ export default function Sidebar({ items }: { items: UiItem[] }) {
         </a>
       </aside>
 
-      <div className="sticky top-16 z-30 -mx-[var(--gutter)] bg-paper/90 px-[var(--gutter)] py-2 backdrop-blur lg:hidden">
+      <div className="sticky top-14 z-30 -mx-[var(--gutter)] bg-paper/90 px-[var(--gutter)] py-2 backdrop-blur lg:hidden">
         <button type="button" onClick={() => setOpen(true)} className="btn btn-quiet btn-sm w-full !justify-start">
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
             <path d="M2 4h12M2 8h12M2 12h7" />

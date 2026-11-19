@@ -1,0 +1,203 @@
+/* Hover motions for components/icons/icons-ui.ts. Reuses the ic-* keyframes in globals.css (transform and opacity only).
+   The duration, easing and reduced-motion rules come from globals.css too. Two diagonal nudges are added here. */
+@keyframes icu-ul { 40% { transform: translate(-2.5px, -2.5px) } }
+@keyframes icu-dl { 40% { transform: translate(-2.5px, 2.5px) } }
+
+/* Arrows */
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="chevron-left"], [data-icon="chevrons-left"], [data-icon="corner-down-left"], [data-icon="reply"], [data-icon="reply-all"], [data-icon="backspace"], [data-icon="skip-back"]) { --d: -3px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="chevrons-right"], [data-icon="corner-up-right"], [data-icon="forward"], [data-icon="send-horizontal"], [data-icon="skip-forward"]) { animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="chevron-up"], [data-icon="chevrons-up"]) { --d: -3px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="chevrons-down"] { animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="arrow-up-left"] { animation-name: icu-ul; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="arrow-down-left"] { animation-name: icu-dl; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="arrow-down-right"] { animation-name: ic-xd; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="arrow-left-right"] > :is(:nth-child(1), :nth-child(2)) { --d: -2.5px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="arrow-left-right"] > :is(:nth-child(3), :nth-child(4)) { --d: 2.5px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="arrow-up-down"] > :is(:nth-child(1), :nth-child(2)) { --d: -2.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="arrow-up-down"] > :is(:nth-child(3), :nth-child(4)) { --d: 2.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="arrow-circle-right"] > :not(:first-child) { --d: 2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="arrow-circle-left"] > :not(:first-child) { --d: -2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="arrow-circle-up"] > :not(:first-child) { --d: -2px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="arrow-circle-down"] > :not(:first-child) { --d: 2px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="move"], [data-icon="minimize"], [data-icon="fullscreen-exit"], [data-icon="grid-3"], [data-icon="square"], [data-icon="circle"], [data-icon="pointer"], [data-icon="type"], [data-icon="stop"], [data-icon="shield-empty"]) { animation-name: ic-press; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="fullscreen"] { animation-name: ic-beat; }
+
+/* Interface */
+.icon-hover:is(:hover, :focus-visible) [data-icon="sidebar-right"] > :nth-child(2) { --d: -2.5px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="sidebar-collapse"] > :nth-child(3) { --d: -2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="sidebar-expand"] > :nth-child(3) { --d: 2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="panel-top"] > :nth-child(2) { --d: 2px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="panel-bottom"] > :nth-child(2) { --d: -2px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="layout"] > :nth-child(3) { --d: 2.5px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="columns"], [data-icon="rows"]) > :nth-child(2) { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="window"] > :is(:nth-child(3), :nth-child(4)) { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="window"] > :nth-child(4) { animation-delay: .08s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="kanban"] > :not(:first-child) { transform-origin: center top; animation-name: ic-grow-y; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="kanban"], [data-icon="list-ordered"], [data-icon="audio-lines"], [data-icon="signal-bars"], [data-icon="captions"], [data-icon="message-dots"], [data-icon="more-circle"], [data-icon="password"], [data-icon="keyboard"]) > :nth-child(3) { animation-delay: .06s; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="kanban"], [data-icon="list-ordered"], [data-icon="audio-lines"], [data-icon="signal-bars"], [data-icon="captions"], [data-icon="message-dots"], [data-icon="more-circle"], [data-icon="password"], [data-icon="keyboard"]) > :nth-child(4) { animation-delay: .12s; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="audio-lines"], [data-icon="captions"], [data-icon="keyboard"]) > :nth-child(5) { animation-delay: .18s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="sort-up"] > :is(:nth-child(4), :nth-child(5)) { --d: -3px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="sort-down"] > :is(:nth-child(4), :nth-child(5)) { --d: 3px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="grip-vertical"], [data-icon="grip-horizontal"]) > * { animation-name: ic-bob; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="grip-vertical"], [data-icon="grip-horizontal"]) > :is(:nth-child(3), :nth-child(4)) { animation-delay: .06s; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="grip-vertical"], [data-icon="grip-horizontal"]) > :is(:nth-child(5), :nth-child(6)) { animation-delay: .12s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="more-circle"] > :not(:first-child) { animation-name: ic-bob; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="zoom-in"], [data-icon="zoom-out"]) { animation-name: ic-zoom; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="scan"] > :nth-child(5) { --d: -4px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="focus"], [data-icon="face-id"]) > :nth-child(5) { animation-name: ic-press; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="sliders"] > :is(:nth-child(3), :nth-child(9)) { --d: 3px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="sliders"] > :nth-child(6) { --d: -3px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="qr-code"] > * { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="qr-code"] > :nth-child(2) { animation-delay: .06s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="qr-code"] > :nth-child(3) { animation-delay: .12s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="qr-code"] > :nth-child(n+4) { animation-delay: .18s; }
+
+/* Actions */
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="pen-line"], [data-icon="edit-square"]) > :nth-child(2) { animation-name: ic-wiggle; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="eraser"], [data-icon="tags"], [data-icon="tablet"], [data-icon="gamepad"]) { animation-name: ic-wiggle; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="rotate-ccw"], [data-icon="history"]) { animation-name: ic-spin-back; animation-duration: .8s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="sync"] { animation-name: ic-spin; animation-duration: .8s; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="clipboard"], [data-icon="clipboard-check"], [data-icon="clipboard-text"]) > :nth-child(2) { --d: -1.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="clipboard-check"] > :nth-child(3) { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="clipboard-text"] > :is(:nth-child(3), :nth-child(4)) { transform-origin: left center; animation-name: ic-grow; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="clipboard-text"] > :nth-child(4) { animation-delay: .08s; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="cloud-upload"], [data-icon="share-up"], [data-icon="export"]) > :is(:nth-child(2), :nth-child(3)) { --d: -3px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="cloud-download"] > :is(:nth-child(2), :nth-child(3)), .icon-hover:is(:hover, :focus-visible) [data-icon="import"] > :is(:nth-child(1), :nth-child(2)) { --d: 3px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="cloud-off"], [data-icon="pin-off"], [data-icon="phone-off"], [data-icon="bell-off"], [data-icon="mic-off"], [data-icon="camera-off"], [data-icon="video-off"], [data-icon="wifi-off"], [data-icon="shield-off"], [data-icon="link-off"]) > :last-child { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="save"] > :nth-child(2) { --d: -1.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="pin"], [data-icon="bookmark-plus"], [data-icon="bookmark-check"], [data-icon="file-empty"], [data-icon="laptop"], [data-icon="pilcrow"]) { animation-name: ic-bob; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="bookmark-plus"], [data-icon="bookmark-check"]) > :not(:first-child) { animation-name: ic-pop; animation-delay: .08s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="flag-triangle"] > :nth-child(2) { transform-origin: left center; animation-name: ic-squish; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="funnel"] { transform-origin: center top; animation-name: ic-squish; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="funnel-x"] > :is(:nth-child(2), :nth-child(3)), .icon-hover:is(:hover, :focus-visible) :is([data-icon="plus-circle"], [data-icon="plus-square"], [data-icon="x-circle"], [data-icon="volume-x"]) > :is(:nth-child(2), :nth-child(3)) { animation-name: ic-spin90; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="minus-circle"] > :nth-child(2) { animation-name: ic-grow; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="check-square"], [data-icon="check-circle"]) > :nth-child(2) { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="wand"] > :is(:nth-child(1), :nth-child(2)) { --r: -12deg; transform-box: view-box; transform-origin: 4px 20px; animation-name: ic-tilt; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="wand"] > :nth-child(n+3) { animation-name: ic-pop; animation-delay: .1s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="wand"] > :nth-child(n+5) { animation-delay: .18s; }
+
+/* Text */
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="bold"], [data-icon="heading"], [data-icon="heading-1"], [data-icon="heading-2"], [data-icon="chat"], [data-icon="activity"]) { animation-name: ic-squish; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="italic"] > :nth-child(3) { --r: 12deg; animation-name: ic-tilt; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="underline"], [data-icon="strikethrough"]) > :nth-child(2) { animation-name: ic-grow; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="list-ordered"] > :nth-child(-n+3) { transform-origin: right center; animation-name: ic-grow; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="list-checks"], [data-icon="check-double"]) > :nth-last-child(-n+2) { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="list-checks"], [data-icon="check-double"]) > :last-child { animation-delay: .1s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="quote"] > * { animation-name: ic-bob; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="quote"] > :nth-child(2) { animation-delay: .08s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="align-left"] > :is(:nth-child(2), :nth-child(4)) { transform-origin: left center; animation-name: ic-grow; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="align-center"] > :is(:nth-child(2), :nth-child(4)) { animation-name: ic-grow; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="align-right"] > :is(:nth-child(2), :nth-child(4)) { transform-origin: right center; animation-name: ic-grow; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="align-justify"] > * { animation-name: ic-grow; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="align-left"], [data-icon="align-center"], [data-icon="align-right"]) > :nth-child(4), .icon-hover:is(:hover, :focus-visible) [data-icon="align-justify"] > :nth-child(3) { animation-delay: .08s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="align-justify"] > :nth-child(2) { animation-delay: .04s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="align-justify"] > :nth-child(4) { animation-delay: .12s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="indent"] > :nth-child(5) { --d: 2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="outdent"] > :nth-child(5) { --d: -2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="link-off"] > :nth-child(1) { animation-name: ic-xy; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="link-off"] > :nth-child(2) { animation-name: icu-dl; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="table"] > :nth-child(n+2) { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="table"] > :nth-child(3) { animation-delay: .08s; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="code-square"], [data-icon="file-code"]) > :nth-last-child(2) { --d: -2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="code-square"], [data-icon="file-code"]) > :last-child { --d: 2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="text-cursor"] { animation-name: ic-cursor; animation-duration: 1s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="text-wrap"] > :nth-child(3) { --d: -2px; animation-name: ic-x; }
+
+/* Files */
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="file-plus"], [data-icon="file-minus"], [data-icon="file-check"], [data-icon="file-x"], [data-icon="file-pdf"], [data-icon="folder-plus"], [data-icon="folder-minus"], [data-icon="folder-check"], [data-icon="mail-plus"], [data-icon="mail-check"], [data-icon="user-plus"], [data-icon="user-minus"], [data-icon="user-check"], [data-icon="user-x"], [data-icon="shield-x"], [data-icon="shield-alert"], [data-icon="shield-lock"]) > :nth-child(n+3) { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="folder-plus"], [data-icon="folder-minus"], [data-icon="folder-check"], [data-icon="shield-x"], [data-icon="shield-alert"], [data-icon="shield-lock"]) > :nth-child(2) { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="file-down"] > :nth-child(n+3) { --d: 2px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="file-up"] > :nth-child(n+3) { --d: -2px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="file-image"] > :nth-child(3) { --d: -1.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="file-image"] > :nth-child(4) { transform-origin: center bottom; animation-name: ic-squish; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="file-video"] > :nth-child(3) { animation-name: ic-press; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="file-audio"], [data-icon="megaphone"]) { --r: -8deg; animation-name: ic-tilt; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="file-zip"] > :nth-child(n+3) { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="file-zip"] > :nth-child(4) { animation-delay: .06s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="file-zip"] > :nth-child(5) { animation-delay: .12s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="file-zip"] > :nth-child(6) { --d: -1.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="file-spreadsheet"] > :nth-child(n+4) { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="file-search"] > :nth-child(n+3) { animation-name: ic-zoom; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="files"] > :nth-child(3) { --d: -1.5px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="folder-open"] > :nth-child(2) { transform-origin: center bottom; animation-name: ic-squish; }
+
+/* Communication */
+.icon-hover:is(:hover, :focus-visible) [data-icon="mail-open"] > :nth-child(2) { --d: 1.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="messages"] > :nth-child(1) { --d: -1.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="messages"] > :nth-child(2) { --d: 1.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="message-dots"] > :not(:first-child) { animation-name: ic-bob; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="phone-call"], [data-icon="bell-ring"]) { transform-origin: 50% 15%; animation-name: ic-ring; animation-duration: .9s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="phone-call"] { transform-origin: center; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="phone-call"] > :nth-child(n+2) { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="phone-incoming"] > :nth-child(n+2) { animation-name: icu-dl; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="phone-outgoing"] > :nth-child(n+2) { animation-name: ic-xy; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="phone-off"], .icon-hover:is(:hover, :focus-visible) [data-icon="alert-octagon"] { animation-name: ic-shake; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="inbox-in"] > :is(:nth-child(1), :nth-child(2)) { --d: 2.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="megaphone"] { transform-origin: 20% 50%; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="megaphone"] > :nth-child(3) { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="voicemail"]) > :is(:nth-child(1), :nth-child(2)) { animation-name: ic-press; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="rss"], [data-icon="cast"]) > * { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="rss"] > :nth-child(2), .icon-hover:is(:hover, :focus-visible) [data-icon="cast"] > :nth-child(3) { animation-delay: .08s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="rss"] > :nth-child(1), .icon-hover:is(:hover, :focus-visible) [data-icon="cast"] > :nth-child(2) { animation-delay: .16s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="cast"] > :nth-child(1) { animation-name: none; }
+
+/* Media */
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="play-circle"], [data-icon="pause-circle"], [data-icon="stop-circle"], [data-icon="record"], [data-icon="speaker"], [data-icon="webcam"]) > :nth-child(2) { animation-name: ic-press; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="pause-circle"] > :nth-child(3) { animation-name: ic-press; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="fast-forward"] > * { --d: 2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="rewind"] > * { --d: -2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="fast-forward"], [data-icon="rewind"]) > :nth-child(2) { animation-delay: .08s; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="repeat"], [data-icon="repeat-one"]) > :nth-child(-n+2) { --d: 2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="repeat"], [data-icon="repeat-one"]) > :is(:nth-child(3), :nth-child(4)) { --d: -2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="repeat-one"] > :nth-child(5) { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="shuffle"] > :is(:nth-child(4), :nth-child(5)) { --d: 2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="volume-low"] > :nth-child(2) { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="airplay"] > :nth-child(2) { --d: -2px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="disc"], [data-icon="life-buoy"], [data-icon="spinner"]) { animation-name: ic-spin; animation-duration: 1s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="audio-lines"] > * { animation-name: ic-grow-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="signal-bars"] > * { transform-origin: center bottom; animation-name: ic-grow-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="list-music"] > :nth-child(n+4) { --r: -10deg; animation-name: ic-tilt; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="captions"] > :nth-child(n+2) { transform-origin: left center; animation-name: ic-grow; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="pip"] > :nth-child(2) { --d: -2px; animation-name: ic-x; }
+
+/* Devices */
+.icon-hover:is(:hover, :focus-visible) [data-icon="watch"] > :nth-child(4) { transform-box: view-box; transform-origin: 12px 12px; animation-name: ic-spin; animation-duration: 1s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="timer"] > :nth-child(2) { transform-box: view-box; transform-origin: 12px 13.5px; animation-name: ic-spin; animation-duration: 1s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="tv"] > :nth-child(2) { transform-origin: center bottom; animation-name: ic-wiggle; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="keyboard"] > :nth-child(n+2) { animation-name: ic-press; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="mouse"] > :nth-child(2) { --d: 2px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="hard-drive"] > :nth-child(n+3) { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="hard-drive"] > :nth-child(4) { animation-delay: .1s; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="battery-low"], [data-icon="battery-medium"]) > :nth-child(n+3) { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="battery-medium"] > :nth-child(4) { animation-delay: .08s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="battery-charging"] > :nth-child(3), .icon-hover:is(:hover, :focus-visible) [data-icon="bluetooth"] { animation-name: ic-flash; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="wifi-low"], [data-icon="wifi-medium"]) > * { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="wifi-medium"] > :nth-child(1) { animation-delay: .12s; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="wifi-low"], [data-icon="wifi-medium"]) > :nth-last-child(2) { animation-delay: .06s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="plug"] > :is(:nth-child(1), :nth-child(2)) { --d: 1.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="router"] > :is(:nth-child(4), :nth-child(5)) { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="router"] > :nth-child(5) { animation-delay: .1s; }
+
+/* Users & security */
+.icon-hover:is(:hover, :focus-visible) [data-icon="user-circle"] > :is(:nth-child(2), :nth-child(3)) { animation-name: ic-bob; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="id-card"] > :is(:nth-child(4), :nth-child(5)) { transform-origin: left center; animation-name: ic-grow; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="id-card"] > :nth-child(5) { animation-delay: .08s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="lock-keyhole"] > :nth-child(2) { --d: -2px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="fingerprint"] > * { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="fingerprint"] > :nth-child(2) { animation-delay: .06s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="fingerprint"] > :nth-child(3) { animation-delay: .12s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="fingerprint"] > :nth-child(4) { animation-delay: .18s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="face-id"] > :is(:nth-child(5), :nth-child(6)) { animation-name: ic-blink; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="password"] > :nth-child(n+2) { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="password"] > :nth-child(5) { animation-name: ic-cursor; animation-duration: 1s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="eye-closed"] > :nth-child(n+2) { animation-name: ic-bob; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="safe"] > :nth-child(2) { animation-name: ic-spin90; }
+
+/* Status */
+.icon-hover:is(:hover, :focus-visible) [data-icon="alert-circle"] > :not(:first-child) { animation-name: ic-bob; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="toggle-left"] > :nth-child(2) { --d: 9px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="toggle-right"] > :nth-child(2) { --d: -9px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="ban"] { animation-name: ic-spin90; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="circle-dot"] > :nth-child(2) { animation-name: ic-beat; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="thumbs-down"] { --r: 14deg; transform-origin: 30% 20%; animation-name: ic-tilt; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="hourglass"] { animation-name: ic-spin; animation-duration: 1s; }

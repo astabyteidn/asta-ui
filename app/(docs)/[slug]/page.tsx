@@ -314,7 +314,7 @@ export default async function UiComponent({ params }: Props) {
         </nav>
       </article>
 
-      <aside className="sticky top-16 hidden h-[calc(100svh-4rem)] w-56 shrink-0 overflow-y-auto pb-10 pt-8 [scrollbar-width:none] xl:block">
+      <aside className="sticky top-14 hidden h-[calc(100svh-3.5rem)] w-56 shrink-0 overflow-y-auto pb-10 pt-8 [scrollbar-width:none] xl:block">
         <Toc items={TOC} />
         <dl className="mt-10 rounded-[10px] bg-paper-2 p-4 text-[14px]">
           <p className="label mb-3 flex justify-between text-mute">
