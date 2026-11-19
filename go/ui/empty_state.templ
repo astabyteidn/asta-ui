@@ -1,0 +1,152 @@
+package ui
+
+// EmptyStateAction is a button under an EmptyState.
+type EmptyStateAction struct {
+	Label string
+	// Href renders a link instead of a button.
+	Href string
+	Icon templ.Component
+	// Attrs go on the button, e.g. hx-get or ui.Opens("new-item").
+	Attrs templ.Attributes
+}
+
+// EmptyStateProps configures EmptyState. Every field is optional.
+type EmptyStateProps struct {
+	// Variant: "no-data" (default), "no-results" or "error".
+	Variant string
+	// Title overrides the variant's default title.
+	Title string
+	// Description overrides the variant's default text.
+	Description string
+	// Query is the search, shown in the "no-results" title.
+	Query     string
+	Primary   *EmptyStateAction
+	Secondary *EmptyStateAction
+	// Illustration replaces the built-in drawing.
+	Illustration templ.Component
+	// Size: "md" (default) or "sm".
+	Size  string
+	Class string
+	Attrs templ.Attributes
+}
+
+type esStroke struct {
+	d      string
+	accent bool
+}
+
+// Each drawing is a few strokes on a 120 × 88 grid. Accent strokes use the brand blue.
+var esArt = map[string][]esStroke{
+	"no-data": {
+		{d: "M30 44 60 30l30 14-30 14Z"},
+		{d: "M30 44v22l30 14 30-14V44"},
+		{d: "M60 58v22"},
+		{d: "M30 44l-9 10 30 14 9-10"},
+		{d: "M90 44l9 10-30 14-9-10"},
+		{d: "M60 8v10M55 13h10", accent: true},
+	},
+	"no-results": {
+		{d: "M26 14h40a4 4 0 0 1 4 4v46a4 4 0 0 1-4 4H26a4 4 0 0 1-4-4V18a4 4 0 0 1 4-4Z"},
+		{d: "M31 28h28M31 38h20M31 48h24"},
+		{d: "M94 56a14 14 0 1 1-28 0 14 14 0 1 1 28 0Z", accent: true},
+		{d: "M90 66l10 10", accent: true},
+	},
+	"error": {
+		{d: "M6 52h26"},
+		{d: "M32 42h12v20H32Z"},
+		{d: "M44 47h8M44 57h8"},
+		{d: "M72 40h12v24H72Z"},
+		{d: "M84 52h30"},
+		{d: "M66 47h6M66 57h6"},
+		{d: "M59 33v6M59 65v6", accent: true},
+	},
+}
+
+func esVariant(v string) string {
+	if _, ok := esArt[v]; ok {
+		return v
+	}
+	return "no-data"
+}
+
+func esTitle(p EmptyStateProps) string {
+	if p.Title != "" {
+		return p.Title
+	}
+	switch esVariant(p.Variant) {
+	case "no-results":
+		if p.Query != "" {
+			return "No results for “" + p.Query + "”"
+		}
+		return "No results"
+	case "error":
+		return "This didn’t load"
+	}
+	return "Nothing here yet"
+}
+
+func esDescription(p EmptyStateProps) string {
+	if p.Description != "" {
+		return p.Description
+	}
+	switch esVariant(p.Variant) {
+	case "no-results":
+		return "Try a shorter search or check the spelling."
+	case "error":
+		return "Something went wrong on our side. Try again in a moment."
+	}
+	return "Create your first item and it will show up here."
+}
+
+func esStrokeColor(accent bool) string {
+	if accent {
+		return "stroke-brand"
+	}
+	return "stroke-[color-mix(in_srgb,var(--ink)_34%,transparent)]"
+}
+
+// EmptyState is what a list shows when it has nothing to show. The drawing fades in, then the title,
+// the text and up to two actions rise in. An htmx swap plays it again.
+// The React version draws its lines in. Here the drawing fades in instead, so motion stays transform and opacity.
+//
+//	@ui.EmptyState(ui.EmptyStateProps{Variant: "no-results", Query: q, Secondary: &ui.EmptyStateAction{Label: "Clear search", Href: "/projects"}})
+templ EmptyState(p EmptyStateProps) {
+	{{ sm := p.Size == "sm" }}
+	{{ variant := esVariant(p.Variant) }}
+	<div
+		role={ or(when(variant == "error", "alert"), "status") }
+		class={ cx("flex flex-col items-center text-center motion-reduce:[&_*]:!animate-none", or(when(sm, "px-4 py-8"), "px-6 py-12"), p.Class) }
+		{ p.Attrs... }
+	>
+		if p.Illustration != nil {
+			@p.Illustration
+		} else {
+			<div class={ cx("relative flex items-center justify-center", or(when(sm, "h-20 w-28"), "h-28 w-40")) } aria-hidden="true">
+				<span class="absolute h-[78%] w-[66%] rounded-full bg-paper-2 animate-[asta-scale-in_.8s_cubic-bezier(.16,1,.3,1)_both]"></span>
+				<svg viewBox="0 0 120 88" class="relative h-full w-full overflow-visible animate-[asta-scale-in_.8s_cubic-bezier(.16,1,.3,1)_.12s_both]" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+					for _, s := range esArt[variant] {
+						<path d={ s.d } class={ esStrokeColor(s.accent) }></path>
+					}
+				</svg>
+			</div>
+		}
+		<h3 class={ cx("font-medium tracking-[-0.02em] text-ink animate-[asta-rise_.6s_cubic-bezier(.16,1,.3,1)_.38s_both]", or(when(sm, "mt-3 text-[14.5px]"), "mt-5 text-[17px]")) }>{ esTitle(p) }</h3>
+		<p class={ cx("max-w-[34ch] leading-relaxed text-mute animate-[asta-rise_.6s_cubic-bezier(.16,1,.3,1)_.46s_both]", or(when(sm, "mt-1 text-[12.5px]"), "mt-1.5 text-[13.5px]")) }>{ esDescription(p) }</p>
+		if p.Primary != nil || p.Secondary != nil {
+			<div class={ cx("flex flex-wrap items-center justify-center gap-2 animate-[asta-rise_.6s_cubic-bezier(.16,1,.3,1)_.54s_both]", or(when(sm, "mt-4"), "mt-6")) }>
+				if p.Primary != nil {
+					@esButton(*p.Primary, "solid", sm)
+				}
+				if p.Secondary != nil {
+					@esButton(*p.Secondary, "ghost", sm)
+				}
+			</div>
+		}
+	</div>
+}
+
+templ esButton(a EmptyStateAction, variant string, sm bool) {
+	@Button(ButtonProps{Variant: variant, Size: or(when(sm, "xs"), "sm"), Href: a.Href, IconLeft: a.Icon, Attrs: a.Attrs}) {
+		{ a.Label }
+	}
+}

@@ -1,0 +1,200 @@
+package ui
+
+import "strconv"
+
+// MotionButtonProps configures MotionButton.
+type MotionButtonProps struct {
+	// Variant picks the motion:
+	//   "roll"    the label rolls up letter by letter on hover (default)
+	//   "fill"    a circle of colour grows from where the pointer came in
+	//   "arrow"   the arrow's square grows to fill the button while the label slides over
+	//   "shine"   a streak of light sweeps across on hover, and once on load
+	//   "beam"    a beam of light runs around the border, faster on hover
+	//   "press"   a chunky key that travels down when pressed
+	//   "copy"    copies Value; the icon turns into a check and the label says "Copied"
+	//   "confirm" two steps: the first click asks, a draining bar shows the time left, the second confirms
+	Variant string
+	// Label is the text. Required for "roll". Default "Copy" for "copy" and "Delete" for "confirm".
+	Label string
+	// Value is the text "copy" puts on the clipboard.
+	Value string
+	// ConfirmLabel is the second step of "confirm". Default "Click again to confirm".
+	ConfirmLabel string
+	// DoneLabel shows after "confirm". Default "Deleted".
+	DoneLabel string
+	// Timeout is how long "confirm" waits for the second click, in milliseconds. Default 3000.
+	Timeout int
+	// Href renders a link instead of a button (not for "copy" and "confirm").
+	Href     string
+	Type     string
+	Disabled bool
+	Class    string
+	// Attrs go on the element. "confirm" fires "asta:confirm" on the second click, so use
+	// hx-trigger="asta:confirm" with hx-delete or hx-post to act on it.
+	Attrs templ.Attributes
+}
+
+const (
+	mbBase = "group/mb relative inline-flex h-11 shrink-0 select-none items-center justify-center gap-2 whitespace-nowrap rounded-[10px] px-5 text-[14px] font-medium tracking-[-0.01em] outline-none " +
+		"transition-[transform,background-color,color,box-shadow] duration-300 active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 focus-visible:ring-offset-paper " +
+		"disabled:pointer-events-none disabled:opacity-45"
+	mbRing = "shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)]"
+	mbLift = "shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_1px_2px_rgb(0_0_0/0.16),0_6px_14px_-8px_rgb(0_0_0/0.45)]"
+	mbEase = "ease-[cubic-bezier(.16,1,.3,1)]"
+	mbKey  = "!rounded-[9px] bg-ink text-paper !duration-100 active:!scale-100 " +
+		"shadow-[0_5px_0_color-mix(in_srgb,var(--ink)_55%,black),0_8px_16px_-6px_rgb(0_0_0/0.45)] " +
+		"-translate-y-[2px] hover:-translate-y-[3px] hover:shadow-[0_6px_0_color-mix(in_srgb,var(--ink)_55%,black),0_10px_18px_-6px_rgb(0_0_0/0.45)] " +
+		"active:translate-y-[3px] active:shadow-[0_0_0_color-mix(in_srgb,var(--ink)_55%,black),0_2px_4px_-2px_rgb(0_0_0/0.45)]"
+)
+
+var mbVariant = map[string]string{
+	"roll":    "bg-ink text-paper " + mbLift,
+	"fill":    "overflow-hidden bg-paper text-ink " + mbRing,
+	"arrow":   "overflow-hidden bg-paper-2 !pl-5 !pr-1.5 text-ink " + mbRing,
+	"shine":   "overflow-hidden bg-brand text-white " + mbLift,
+	"beam":    "overflow-hidden bg-[color-mix(in_srgb,var(--ink)_10%,transparent)] !p-[1.5px]",
+	"press":   mbKey,
+	"copy":    "bg-paper text-ink " + mbRing,
+	"confirm": "overflow-hidden bg-paper text-[#e5484d] " + mbRing + " data-[stage=ask]:bg-[#e5484d] data-[stage=ask]:text-white data-[stage=ask]:shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_1px_2px_rgb(0_0_0/0.16),0_6px_14px_-8px_rgb(0_0_0/0.45)] data-[stage=done]:bg-paper-2 data-[stage=done]:text-ink-2 data-[stage=done]:shadow-none",
+}
+
+func mbVar(p MotionButtonProps) string {
+	if _, ok := mbVariant[p.Variant]; ok {
+		return p.Variant
+	}
+	return "roll"
+}
+
+// MotionButtonClass returns the classes of a motion button, for elements you render yourself.
+func MotionButtonClass(p MotionButtonProps) string {
+	return cx(mbBase, "asta-motion", mbVariant[mbVar(p)], p.Class)
+}
+
+func mbLabel(p MotionButtonProps) string {
+	switch mbVar(p) {
+	case "copy":
+		return or(p.Label, "Copy")
+	case "confirm":
+		return or(p.Label, "Delete")
+	}
+	return p.Label
+}
+
+func mbAttrs(p MotionButtonProps) templ.Attributes {
+	a := attrs(p.Attrs)
+	v := mbVar(p)
+	a["data-asta-mb"] = v
+	switch v {
+	case "roll":
+		if _, ok := a["aria-label"]; !ok {
+			a["aria-label"] = p.Label
+		}
+	case "copy":
+		a["data-value"] = p.Value
+	case "confirm":
+		a["data-stage"] = "idle"
+		a["data-timeout"] = strconv.Itoa(max(500, or0(p.Timeout, 3000)))
+		a["aria-live"] = "polite"
+	}
+	return a
+}
+
+func or0(a, b int) int {
+	if a != 0 {
+		return a
+	}
+	return b
+}
+
+func mbDelay(i int) templ.SafeCSS {
+	return templ.SafeCSS("transition-delay:" + strconv.Itoa(i*18) + "ms")
+}
+
+// MotionButton is a button with a signature motion: a rolling label, a fill that follows the pointer, a growing
+// arrow, a shine, a running beam, a chunky key, copy-to-clipboard or a two-step confirm. Hover and press are CSS;
+// fill, shine, copy and confirm use a few lines of the kit script. All respect reduced motion.
+//
+//	@ui.MotionButton(ui.MotionButtonProps{Variant: "arrow", Label: "Start a project", Href: "/contact"})
+//	@ui.MotionButton(ui.MotionButtonProps{Variant: "confirm", Attrs: templ.Attributes{"hx-delete": "/projects/1", "hx-trigger": "asta:confirm"}})
+templ MotionButton(p MotionButtonProps) {
+	if p.Href != "" && mbVar(p) != "copy" && mbVar(p) != "confirm" {
+		<a href={ templ.SafeURL(p.Href) } class={ MotionButtonClass(p) } { mbAttrs(p)... }>
+			@mbBody(p)
+		</a>
+	} else {
+		<button type={ or(p.Type, "button") } disabled?={ p.Disabled } class={ MotionButtonClass(p) } { mbAttrs(p)... }>
+			@mbBody(p)
+		</button>
+	}
+}
+
+templ mbBody(p MotionButtonProps) {
+	switch mbVar(p) {
+		case "roll":
+			<span aria-hidden="true" class="relative block overflow-hidden leading-[1.25]">
+				<span class="flex">
+					for i, l := range []rune(p.Label) {
+						<span class={ cx("relative inline-block whitespace-pre transition-transform duration-500 group-hover/mb:-translate-y-full group-focus-visible/mb:-translate-y-full motion-reduce:transition-none after:absolute after:left-0 after:top-full after:content-[attr(data-l)]", mbEase) } style={ mbDelay(i) } data-l={ string(l) }>{ string(l) }</span>
+					}
+				</span>
+			</span>
+		case "fill":
+			<span aria-hidden="true" class="asta-mb-fill absolute inset-0 bg-ink"></span>
+			<span class="relative inline-flex items-center gap-2 transition-colors duration-300 group-hover/mb:text-paper group-focus-visible/mb:text-paper">{ p.Label }</span>
+		case "arrow":
+			<span aria-hidden="true" class="asta-mb-grow absolute inset-1.5 rounded-[7px] bg-brand"></span>
+			<span class={ cx("relative transition-[transform,color] duration-500 group-hover/mb:translate-x-1 group-hover/mb:text-white group-focus-visible/mb:text-white", mbEase) }>{ p.Label }</span>
+			<span class="relative ml-2 grid h-8 w-8 place-items-center overflow-hidden text-white">
+				@mbArrow(cx("col-start-1 row-start-1 transition-transform duration-500 group-hover/mb:translate-x-6", mbEase))
+				@mbArrow(cx("col-start-1 row-start-1 -translate-x-6 transition-transform duration-500 group-hover/mb:translate-x-0", mbEase))
+			</span>
+		case "shine":
+			<span aria-hidden="true" class="asta-mb-shine pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-white/45 to-transparent"></span>
+			<span class="relative inline-flex items-center gap-2">{ p.Label }</span>
+		case "beam":
+			<span aria-hidden="true" class="absolute left-1/2 top-1/2 aspect-square w-[300%] -translate-x-1/2 -translate-y-1/2">
+				<span class="asta-mb-beam absolute inset-0"></span>
+			</span>
+			<span class="relative inline-flex h-full w-full items-center justify-center gap-2 rounded-md bg-paper px-5 text-ink">{ p.Label }</span>
+		case "press":
+			{ p.Label }
+		case "copy":
+			<span class="relative grid h-4 w-4 place-items-center">
+				<svg viewBox="0 0 16 16" class={ cx("col-start-1 row-start-1 h-4 w-4 transition-[transform,opacity] duration-300 group-data-[done]/mb:scale-50 group-data-[done]/mb:opacity-0", mbEase) } fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+					<rect x="5" y="5" width="8.5" height="8.5" rx="2"></rect>
+					<path d="M10.5 5V3.8A1.8 1.8 0 0 0 8.7 2H3.8A1.8 1.8 0 0 0 2 3.8v4.9a1.8 1.8 0 0 0 1.8 1.8H5"></path>
+				</svg>
+				<svg viewBox="0 0 16 16" class="asta-mb-pop col-start-1 row-start-1 hidden h-4 w-4 text-[#30a46c] group-data-[done]/mb:block" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<path d="M3.5 8.5l3 3 6-7"></path>
+				</svg>
+			</span>
+			<span class="relative block h-[1.25em] overflow-hidden leading-[1.25]">
+				<span class={ cx("flex flex-col transition-transform duration-500 group-data-[done]/mb:-translate-y-1/2", mbEase) }>
+					<span>{ mbLabel(p) }</span>
+					<span aria-hidden="true">Copied</span>
+				</span>
+			</span>
+			<span role="status" class="sr-only" data-asta-mb-status></span>
+		case "confirm":
+			<span aria-hidden="true" class="asta-mb-drain absolute inset-x-0 bottom-0 hidden h-[3px] origin-left bg-white/60 group-data-[stage=ask]/mb:block"></span>
+			<span class="asta-mb-pop relative hidden items-center gap-2 group-data-[stage=idle]/mb:inline-flex">
+				<svg viewBox="0 0 16 16" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+					<path d="M2.5 4.5h11M6.5 7v4.5M9.5 7v4.5M4 4.5l.7 8.2a1.5 1.5 0 0 0 1.5 1.3h3.6a1.5 1.5 0 0 0 1.5-1.3l.7-8.2M6 4.5V3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1.5"></path>
+				</svg>
+				{ mbLabel(p) }
+			</span>
+			<span class="asta-mb-pop relative hidden items-center gap-2 group-data-[stage=ask]/mb:inline-flex">{ or(p.ConfirmLabel, "Click again to confirm") }</span>
+			<span class="asta-mb-pop relative hidden items-center gap-2 group-data-[stage=done]/mb:inline-flex">
+				<svg viewBox="0 0 16 16" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<path d="M3.5 8.5l3 3 6-7"></path>
+				</svg>
+				{ or(p.DoneLabel, "Deleted") }
+			</span>
+	}
+}
+
+templ mbArrow(class string) {
+	<svg viewBox="0 0 16 16" class={ cx("h-4 w-4", class) } fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+		<path d="M3 8h10M9 4l4 4-4 4"></path>
+	</svg>
+}

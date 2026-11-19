@@ -1,0 +1,69 @@
+package ui
+
+import "strconv"
+
+// ContextMenuProps configures ContextMenu. Children are the area that listens for the right-click.
+type ContextMenuProps struct {
+	// ID names the menu panel. Optional.
+	ID string
+	// Menu is the menu's items: MenuItem, MenuCheckbox, MenuRadio, MenuSub, MenuLabel and MenuSeparator.
+	Menu templ.Component
+	// Label is the accessible name of the menu.
+	Label string
+	// LongPress is the touch long-press time in ms. Default 500.
+	LongPress int
+	// Disabled turns the menu off and leaves the browser's own menu in place.
+	Disabled bool
+	// MenuClass goes on the menu panel.
+	MenuClass string
+	// Class goes on the area.
+	Class string
+	// Attrs go on the area.
+	Attrs templ.Attributes
+}
+
+const (
+	// Context menus are a touch denser than dropdowns: 32px rows, 13px text.
+	contextPanel = "min-w-[220px] select-none shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent),0_14px_36px_-14px_rgb(0_0_0/0.3),0_4px_10px_-6px_rgb(0_0_0/0.12)] " +
+		"[&_[role^=menuitem]]:h-8 [&_[role^=menuitem]]:rounded-lg [&_[role^=menuitem]]:text-[13px]"
+)
+
+// ContextMenu opens a menu at the pointer on right-click, on a long press on touch, or with Shift+F10 or the
+// Menu key. It grows from the corner nearest the pointer, flips to stay on screen, and can nest submenus.
+// Arrows, Home, End, type-ahead, Enter, Escape and focus return work.
+//
+//	@ui.ContextMenu(ui.ContextMenuProps{Label: "File actions", Menu: fileMenu()}) {
+//		<div class="h-40 rounded-xl bg-paper-2">Right-click here</div>
+//	}
+templ ContextMenu(p ContextMenuProps) {
+	<div
+		data-asta-context-menu
+		tabindex="0"
+		if p.LongPress > 0 {
+			data-long-press={ strconv.Itoa(p.LongPress) }
+		}
+		data-disabled?={ p.Disabled }
+		class={ cx("outline-none [-webkit-touch-callout:none] focus-visible:ring-2 focus-visible:ring-brand/50", p.Class) }
+		{ p.Attrs... }
+	>
+		{ children... }
+		<div
+			role="menu"
+			popover="manual"
+			tabindex="-1"
+			data-asta-mpanel
+			aria-orientation="vertical"
+			if p.ID != "" {
+				id={ p.ID }
+			}
+			if p.Label != "" {
+				aria-label={ p.Label }
+			}
+			class={ cx(floatPanel, contextPanel, p.MenuClass) }
+		>
+			if p.Menu != nil {
+				@p.Menu
+			}
+		</div>
+	</div>
+}

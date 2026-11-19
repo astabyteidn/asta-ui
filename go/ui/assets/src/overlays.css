@@ -1,0 +1,124 @@
+/* Overlays: what Tailwind can't say. Keyframes, @starting-style, ::backdrop and top-layer transitions. */
+
+@keyframes asta-nav-slide {
+  from { opacity: 0; transform: translateX(calc(var(--asta-dir, 1) * 24px)); }
+}
+@keyframes asta-nav-sheet { from { opacity: 0; transform: translateY(-6px); } }
+@keyframes asta-nav-rise { from { opacity: 0; transform: translateY(6px); } }
+@keyframes asta-announce-in { from { opacity: 0; transform: translateY(100%); } }
+@keyframes asta-announce-out { to { opacity: 0; transform: translateY(-100%); } }
+@keyframes asta-announce-close { to { opacity: 0; transform: translateY(-100%); } }
+@keyframes asta-step-next { from { opacity: 0; transform: translateX(24px); } }
+@keyframes asta-step-back { from { opacity: 0; transform: translateX(-24px); } }
+
+/* Anchored panels in the top layer (popover, hover card, dropdown, context menu): grow from the trigger. */
+.asta-float {
+  opacity: 0;
+  transform: translate(var(--asta-nx, 0px), var(--asta-ny, -4px)) scale(0.96);
+  transition:
+    opacity 0.14s ease-in,
+    transform 0.16s ease-in,
+    overlay 0.16s allow-discrete,
+    display 0.16s allow-discrete;
+}
+.asta-float:popover-open {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.2s ease-out,
+    transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+    overlay 0.32s allow-discrete,
+    display 0.32s allow-discrete;
+}
+@starting-style {
+  .asta-float:popover-open {
+    opacity: 0;
+    transform: translate(var(--asta-nx, 0px), var(--asta-ny, -4px)) scale(0.96);
+  }
+}
+/* The hover card rises a little more softly. */
+.asta-float.asta-lift { transform: translateY(6px) scale(0.98); }
+.asta-float.asta-lift:popover-open { transform: none; }
+@starting-style {
+  .asta-float.asta-lift:popover-open { transform: translateY(6px) scale(0.98); }
+}
+.asta-float::backdrop { display: none; }
+
+/* Drawer: slides in from its edge. Opacity stays 1 so only the slide shows; core's 320ms fallback ends the close. */
+.asta-dialog.asta-drawer,
+.asta-dialog.asta-drawer[open]:not([data-closing]) {
+  opacity: 1;
+}
+.asta-dialog.asta-drawer {
+  transform: translateX(calc(100% + 16px));
+  transition:
+    transform 0.3s cubic-bezier(0.7, 0, 0.84, 0),
+    overlay 0.32s allow-discrete,
+    display 0.32s allow-discrete;
+}
+.asta-dialog.asta-drawer[data-side="left"] { transform: translateX(calc(-100% - 16px)); }
+.asta-dialog.asta-drawer[data-side="bottom"] { transform: translateY(calc(100% + 16px)); }
+.asta-dialog.asta-drawer[open]:not([data-closing]) {
+  transform: none;
+  transition:
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    overlay 0.5s allow-discrete,
+    display 0.5s allow-discrete;
+}
+@starting-style {
+  .asta-dialog.asta-drawer[open] { opacity: 1; transform: translateX(calc(100% + 16px)); }
+  .asta-dialog.asta-drawer[data-side="left"][open] { transform: translateX(calc(-100% - 16px)); }
+  .asta-dialog.asta-drawer[data-side="bottom"][open] { transform: translateY(calc(100% + 16px)); }
+}
+.asta-dialog.asta-drawer[open]:not([data-closing])::backdrop {
+  opacity: var(--asta-drawer-fade, 1);
+}
+:root:has(dialog.asta-drawer[open]) { overflow: hidden; }
+
+/* Command palette drops in from above. */
+.asta-dialog.asta-cmd { transform: translateY(-8px) scale(0.97); }
+.asta-dialog.asta-cmd[open]:not([data-closing]) { transform: none; }
+@starting-style {
+  .asta-dialog.asta-cmd[open] { transform: translateY(-8px) scale(0.97); }
+}
+
+/* Navbar: the background scales between panel sizes, new content slides in from the side you moved toward. */
+[data-asta-nav-bg] {
+  transform-origin: top center;
+  transition: transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.asta-nav-slide { animation: asta-nav-slide 0.36s cubic-bezier(0.16, 1, 0.3, 1); }
+[data-asta-nav-sheet]:not([hidden]) { animation: asta-nav-sheet 0.32s cubic-bezier(0.16, 1, 0.3, 1); }
+details[open] > .asta-nav-sec { animation: asta-nav-rise 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* Announcement bar: messages rise in, the old one leaves upward; closing lifts the bar away. */
+[data-asta-announce-msg] { opacity: 0; pointer-events: none; }
+[data-asta-announce-msg][data-state="cur"],
+[data-asta-announce-msg][data-state="in"] { opacity: 1; pointer-events: auto; }
+[data-asta-announce-msg][data-state="in"] { animation: asta-announce-in 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+[data-asta-announce-msg][data-state="out"] { animation: asta-announce-out 0.4s cubic-bezier(0.7, 0, 0.84, 0); }
+[data-asta-announce][data-state="closed"] {
+  pointer-events: none;
+  animation: asta-announce-close 0.36s cubic-bezier(0.7, 0, 0.84, 0) forwards;
+}
+
+/* Stepper: the next panel comes from the side you're heading. */
+.asta-step-next { animation: asta-step-next 0.42s cubic-bezier(0.16, 1, 0.3, 1); }
+.asta-step-back { animation: asta-step-back 0.42s cubic-bezier(0.16, 1, 0.3, 1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .asta-float,
+  .asta-dialog.asta-drawer,
+  .asta-dialog.asta-cmd,
+  [data-asta-nav-bg],
+  .asta-nav-slide,
+  [data-asta-nav-sheet],
+  details[open] > .asta-nav-sec,
+  [data-asta-announce-msg],
+  [data-asta-announce],
+  .asta-step-next,
+  .asta-step-back {
+    transition: none !important;
+    animation: none !important;
+  }
+}

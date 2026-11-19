@@ -29,9 +29,9 @@ export default function UiHome() {
   return (
     <>
       <section className="px-shell pb-16 pt-12 sm:pb-20 sm:pt-20">
-        <Link href="#kit" className="ui-rise btn btn-quiet btn-sm max-w-full !pl-1 font-normal text-ink-2">
+        <Link href="/go" className="ui-rise btn btn-quiet btn-sm max-w-full !pl-1 font-normal text-ink-2">
           <span className="shrink-0 rounded-[5px] bg-accent px-2 font-mono text-[11.5px] uppercase leading-5 tracking-wider text-white">New</span>
-          <span className="truncate">Tool dock, file card, workspace switcher and a properties panel</span>
+          <span className="truncate">The whole kit for Go + htmx, and as plain CSS</span>
           <span className="btn-arrow" />
         </Link>
         <h1 className="display mt-10 text-[clamp(2.9rem,7.4vw,7.2rem)] leading-[1.02]">
@@ -52,8 +52,8 @@ export default function UiHome() {
         <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-end">
           <div>
             <p className="ui-rise max-w-xl text-[clamp(1.05rem,1.4vw,1.2rem)] leading-relaxed text-ink-2" style={{ animationDelay: "420ms" }}>
-              A React kit built up from the smallest piece, plus a lab of motion experiments with physics and real resistance. Tuned by hand for{" "}
-              <b className="font-semibold text-ink">pointer, touch and keys.</b> Add one with the shadcn CLI and the code is yours.
+              A component kit built up from the smallest piece, plus a lab of motion experiments with physics and real resistance. Tuned by hand
+              for <b className="font-semibold text-ink">pointer, touch and keys.</b> Use it in React, in Go with htmx, or as plain CSS in any HTML.
             </p>
             <div className="ui-rise mt-8 flex flex-wrap items-center gap-3" style={{ animationDelay: "520ms" }}>
               <Link href="#kit" className="btn btn-primary btn-lg">
@@ -66,7 +66,17 @@ export default function UiHome() {
           </div>
           <div className="ui-rise" style={{ animationDelay: "600ms" }}>
             <CopyChip text="pnpm dlx asta-ui@latest add button" label="pnpm dlx asta-ui add button" />
-            <p className="mt-3 flex items-center gap-2 text-[13px] text-mute">
+            <p className="mt-3 text-[13px] text-mute">
+              Not on React?{" "}
+              <Link href="/go" className="text-ink underline decoration-accent underline-offset-[3px]">
+                Go + htmx
+              </Link>{" "}
+              ·{" "}
+              <Link href="/css" className="text-ink underline decoration-accent underline-offset-[3px]">
+                HTML + CSS
+              </Link>
+            </p>
+            <p className="mt-2 flex items-center gap-2 text-[13px] text-mute">
               <span className="kbd">Click</span> the framed word to swap it
             </p>
           </div>
@@ -85,8 +95,8 @@ export default function UiHome() {
           <div className="rounded-xl bg-paper-2 px-5 py-4">
             <dt className="sr-only">Stack</dt>
             <dd>
-              <span className="display block text-[clamp(1.8rem,3vw,2.6rem)]">React 19</span>
-              <span className="mt-1 block text-[14px] text-mute">Tailwind v4 · Radix or Base UI</span>
+              <span className="display block text-[clamp(1.8rem,3vw,2.6rem)] tabular-nums">3</span>
+              <span className="mt-1 block text-[14px] text-mute">stacks: React, Go + htmx, HTML + CSS</span>
             </dd>
           </div>
         </dl>
@@ -122,8 +132,8 @@ export default function UiHome() {
           {[
             ["Physics, not tweens", "Springs, inertia and friction, so things settle the way objects do."],
             ["Every input", "Pointer, touch and keyboard each get a proper path, not an afterthought."],
-            ["Copy or install", "Drop the file in your repo with one command, or pnpm add asta-ui and import it."],
-            ["Yours to change", "Plain React + Tailwind v4. Read it, fork it, ship it."],
+            ["Copy or install", "Drop the file in your repo with one command, pnpm add asta-ui, or go get the Go module."],
+            ["Any stack", "React + Tailwind v4, templ components for Go + htmx, or plain CSS classes for any HTML."],
           ].map(([t, d], i) => (
             <div key={t} className="rounded-xl bg-paper-2 p-6">
               <span className="label tabular-nums text-accent">{String(i + 1).padStart(2, "0")}</span>

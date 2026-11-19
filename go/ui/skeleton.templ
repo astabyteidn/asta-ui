@@ -1,0 +1,78 @@
+package ui
+
+// SkeletonProps configures Skeleton. Every field is optional.
+type SkeletonProps struct {
+	// Shape: "line" (default, text), "circle" (avatar) or "block" (image, card).
+	Shape string
+	// Width is any CSS length, e.g. "62%" or "36px". A circle uses it for its height too.
+	Width string
+	// Height is any CSS length.
+	Height string
+	Class  string
+	Attrs  templ.Attributes
+}
+
+var skeletonShape = map[string]string{
+	"line":   "h-3 rounded-full",
+	"circle": "aspect-square shrink-0 self-start rounded-full",
+	"block":  "rounded-[10px]",
+}
+
+func skeletonStyle(p SkeletonProps) map[string]string {
+	s := map[string]string{}
+	if p.Width != "" {
+		s["width"] = p.Width
+	}
+	h := p.Height
+	if h == "" && p.Shape == "circle" {
+		h = p.Width
+	}
+	if h != "" {
+		s["height"] = h
+	}
+	return s
+}
+
+// Skeleton is a placeholder with a soft light sweeping across it. It is hidden from screen readers.
+// With reduced motion the sweep stops.
+//
+//	@ui.Skeleton(ui.SkeletonProps{Shape: "circle", Width: "36px"})
+templ Skeleton(p SkeletonProps) {
+	<span
+		aria-hidden="true"
+		class={ cx("relative block overflow-hidden bg-[color-mix(in_srgb,var(--ink)_7%,transparent)]",
+			"before:absolute before:inset-0 before:bg-[linear-gradient(100deg,transparent_20%,color-mix(in_srgb,var(--paper)_70%,transparent)_50%,transparent_80%)] before:content-['']",
+			"before:animate-[asta-skeleton-shimmer_1.6s_cubic-bezier(.4,0,.2,1)_infinite] motion-reduce:before:hidden",
+			pick(skeletonShape, p.Shape, "line"), p.Class) }
+		style={ skeletonStyle(p) }
+		{ p.Attrs... }
+	></span>
+}
+
+// SkeletonText is several lines of text. The last one is shorter, like a real paragraph.
+//
+//	@ui.SkeletonText(3, "")
+templ SkeletonText(lines int, class string) {
+	<span class={ cx("flex flex-col gap-2", class) } aria-hidden="true">
+		for i := 0; i < lines; i++ {
+			@Skeleton(SkeletonProps{Width: or(when(i == lines-1, "62%"), "100%")})
+		}
+	</span>
+}
+
+// SkeletonCard is a ready-made card placeholder: an image, an avatar, a title and two lines.
+//
+//	@ui.SkeletonCard("")
+templ SkeletonCard(class string) {
+	<div role="status" aria-label="Loading" class={ cx("flex w-full flex-col gap-4 rounded-xl bg-paper p-3 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent)]", class) }>
+		@Skeleton(SkeletonProps{Shape: "block", Class: "aspect-[16/9] w-full"})
+		<div class="flex items-center gap-3 px-1">
+			@Skeleton(SkeletonProps{Shape: "circle", Width: "36px"})
+			<div class="flex flex-1 flex-col gap-2">
+				@Skeleton(SkeletonProps{Width: "55%"})
+				@Skeleton(SkeletonProps{Width: "35%", Class: "!h-2.5"})
+			</div>
+		</div>
+		@SkeletonText(2, "px-1 pb-1")
+	</div>
+}

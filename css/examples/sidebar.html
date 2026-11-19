@@ -1,0 +1,33 @@
+<!-- Needs asta.js: the collapse toggle (data-collapsed), the active indicator and the workspace menu are scripted. -->
+<div style="display:flex;height:520px;width:100%;overflow:hidden;border-radius:12px;background:var(--paper)">
+  <aside aria-label="Sidebar" data-asta-sidebar data-auto-rail class="asta-sidebar">
+    <div class="asta-sidebar-ws" data-asta-dropdown data-asta-ws>
+      <button type="button" class="asta-sidebar-item asta-sidebar-ws-trigger" data-asta-dropdown-trigger aria-haspopup="menu" aria-expanded="false">
+        <span class="asta-sidebar-slot"><span data-ws-logo-out aria-hidden="true" class="asta-sidebar-ws-logo">A</span></span>
+        <span class="asta-sidebar-label asta-sidebar-ws-text"><span data-ws-name-out class="asta-sidebar-ws-name">Astabyte</span><span data-ws-plan-out class="asta-sidebar-ws-plan">Pro plan</span></span>
+        <svg class="asta-sidebar-ws-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5.5 6 2.5-2.5L10.5 6M5.5 10l2.5 2.5 2.5-2.5"/></svg>
+        <span aria-hidden="true" data-ws-name-out class="asta-sidebar-tip">Astabyte</span>
+      </button>
+      <div role="menu" popover="manual" tabindex="-1" data-asta-mpanel aria-label="Switch workspace" class="asta-float asta-dropdown-panel asta-sidebar-ws-panel">
+        <p class="asta-sidebar-ws-heading">Workspaces</p>
+        <button type="button" role="menuitemradio" tabindex="-1" aria-checked="true" data-group="workspace" data-value="studio" data-ws-name="Astabyte" data-ws-plan="Pro plan" class="asta-sidebar-ws-option"><span aria-hidden="true" class="asta-sidebar-ws-option-logo">A</span><span class="asta-sidebar-ws-option-text"><span>Astabyte</span><span>Pro plan</span></span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg></button>
+        <button type="button" role="menuitemradio" tabindex="-1" aria-checked="false" data-group="workspace" data-value="labs" data-ws-name="Astabyte Labs" data-ws-plan="Free" class="asta-sidebar-ws-option"><span aria-hidden="true" class="asta-sidebar-ws-option-logo">A</span><span class="asta-sidebar-ws-option-text"><span>Astabyte Labs</span><span>Free</span></span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg></button>
+      </div>
+    </div>
+    <nav aria-label="Main" data-asta-sidebar-nav class="asta-sidebar-nav"><div>
+      <span data-asta-sidebar-indicator aria-hidden="true" class="asta-sidebar-indicator"></span>
+      <div class="asta-sidebar-group"><ul>
+        <li><button type="button" data-asta-sidebar-item="home" class="asta-sidebar-link"><span class="asta-sidebar-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 7 8 2.5 13.5 7v6.5h-11z"/></svg></span><span class="asta-sidebar-label">Home</span><span aria-hidden="true" class="asta-sidebar-tip">Home</span></button></li>
+        <li><button type="button" data-asta-sidebar-item="inbox" aria-current="page" class="asta-sidebar-link"><span class="asta-sidebar-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 9.5h3l1 1.5h3l1-1.5h3M2.5 9.5 4 3.5h8l1.5 6v3h-11z"/></svg><span aria-hidden="true" class="asta-sidebar-dot"></span></span><span class="asta-sidebar-label">Inbox</span><span class="asta-sidebar-badge">4</span><span aria-hidden="true" class="asta-sidebar-tip">Inbox</span></button></li>
+        <li><button type="button" data-asta-sidebar-item="search" class="asta-sidebar-link"><span class="asta-sidebar-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9zM10.5 10.5 13.5 13.5"/></svg></span><span class="asta-sidebar-label">Search</span><span aria-hidden="true" class="asta-sidebar-tip">Search</span></button></li>
+      </ul></div>
+      <div class="asta-sidebar-group"><div class="asta-sidebar-group-label"><span>Workspace</span><span aria-hidden="true"></span></div><ul>
+        <li><button type="button" data-asta-sidebar-item="reports" class="asta-sidebar-link"><span class="asta-sidebar-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13V8M8 13V3M13 13V6"/></svg></span><span class="asta-sidebar-label">Reports</span><span aria-hidden="true" class="asta-sidebar-tip">Reports</span></button></li>
+        <li><button type="button" data-asta-sidebar-item="settings" class="asta-sidebar-link"><span class="asta-sidebar-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2"/></svg></span><span class="asta-sidebar-label">Settings</span><span aria-hidden="true" class="asta-sidebar-tip">Settings</span></button></li>
+      </ul></div>
+    </div></nav>
+    <button type="button" data-asta-sidebar-toggle aria-pressed="false" aria-label="Collapse sidebar" class="asta-sidebar-item asta-sidebar-toggle"><span class="asta-sidebar-slot"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 3.5h11v9h-11zM6 3.5v9M10.5 6.5 9 8l1.5 1.5"/></svg></span><span class="asta-sidebar-label">Collapse</span><span aria-hidden="true" class="asta-sidebar-tip">Expand</span></button>
+    <div class="asta-sidebar-user"><span class="asta-sidebar-slot"><span class="asta-avatar asta-avatar-sm" role="img" aria-label="Sam Rivera"><span class="asta-avatar-face">SR</span></span></span><span class="asta-sidebar-label asta-sidebar-user-text"><span>Sam Rivera</span><span>sam@astabyte.com</span></span></div>
+  </aside>
+  <div style="flex:1;padding:24px;font-size:14px;color:var(--mute)">Content</div>
+</div>

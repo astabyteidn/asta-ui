@@ -1,6 +1,6 @@
 {
   "name": "asta-ui",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Astabyte UI: motion-first React + Tailwind v4 components (Radix or Base UI). Install as a package, or copy the source with the CLI.",
   "keywords": [
     "astabyte",
@@ -49,6 +49,7 @@
       "types": "./dist/base/*.d.ts",
       "import": "./dist/base/*.js"
     },
+    "./css/*": "./css/*",
     "./*": {
       "types": "./dist/*.d.ts",
       "import": "./dist/*.js"
@@ -61,6 +62,7 @@
   "files": [
     "bin",
     "dist",
+    "css",
     "README.md",
     "LICENSE"
   ],

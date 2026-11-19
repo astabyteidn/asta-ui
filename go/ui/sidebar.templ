@@ -1,0 +1,261 @@
+package ui
+
+import "strconv"
+
+// SidebarProps configures Sidebar. Put it in a parent with a height, e.g. a full-height flex row.
+type SidebarProps struct {
+	// ID names the sidebar. Optional.
+	ID string
+	// Workspaces fill the switcher at the top. Leave it empty to hide the switcher.
+	Workspaces []SidebarWorkspace
+	// Workspace is the ID of the current workspace. Default the first one.
+	Workspace string
+	// Groups are the sections of items, in order.
+	Groups []SidebarGroup
+	// Active is the ID of the current item. The indicator slides to it.
+	Active string
+	// Collapsed starts it as the 64px icon rail.
+	Collapsed bool
+	// NoAutoRail keeps it wide on phones. By default it starts as the rail below 640px of viewport width.
+	NoAutoRail bool
+	// User is shown at the bottom. Empty Name hides it.
+	User SidebarUser
+	// Class is merged onto the root element.
+	Class string
+	// Attrs go on the <aside>. It fires "asta:collapse" (detail: collapsed) when it folds or unfolds.
+	Attrs templ.Attributes
+}
+
+// SidebarWorkspace is one workspace of the Sidebar switcher.
+type SidebarWorkspace struct {
+	// ID identifies it.
+	ID string
+	// Name is the display name.
+	Name string
+	// Plan is muted text under the name, e.g. "Pro plan".
+	Plan string
+	// Href makes picking it a link. Without it, use Attrs (hx-post…) or listen for "asta:change".
+	Href string
+	// Attrs are spread onto the root element (hx-*, data-*).
+	Attrs templ.Attributes
+}
+
+// SidebarGroup is a labelled block of Sidebar items.
+type SidebarGroup struct {
+	// Label is the visible text.
+	Label string
+	// Items are rendered in order.
+	Items []SidebarItem
+}
+
+// SidebarItem is one entry of the Sidebar.
+type SidebarItem struct {
+	// ID matches SidebarProps.Active.
+	ID string
+	// Label is the visible text.
+	Label string
+	// Icon is an optional leading icon.
+	Icon templ.Component
+	// Badge is a small count on the right. In the rail it becomes a dot. 0 hides it.
+	Badge int
+	// Href makes it a link. Without it, it is a button: use Attrs (hx-get…) to load the page.
+	Href string
+	// Attrs are spread onto the root element (hx-*, data-*).
+	Attrs templ.Attributes
+}
+
+// SidebarUser is the signed-in person at the bottom of the Sidebar.
+type SidebarUser struct {
+	// Name is the display name.
+	Name string
+	// Email is shown under the name.
+	Email string
+	// Src is the avatar image URL. Initials show without it.
+	Src string
+}
+
+const (
+	sbEase  = "ease-[cubic-bezier(.16,1,.3,1)]"
+	sbItem  = "group/item relative flex h-9 w-full items-center rounded-lg text-left text-[13.5px] outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-brand/50"
+	sbLabel = "min-w-0 flex-1 overflow-hidden whitespace-nowrap text-left transition-[opacity,translate] duration-300 " + sbEase + " delay-75 group-data-[collapsed]/sb:pointer-events-none group-data-[collapsed]/sb:-translate-x-1 group-data-[collapsed]/sb:opacity-0 group-data-[collapsed]/sb:delay-0"
+	sbTip   = "pointer-events-none absolute left-[calc(100%+10px)] top-1/2 z-20 hidden -translate-x-1 -translate-y-1/2 whitespace-nowrap rounded-md bg-ink px-2 py-1 text-[12px] text-paper opacity-0 transition-[opacity,translate] duration-200 " + sbEase + " group-data-[collapsed]/sb:block group-hover/item:translate-x-0 group-hover/item:opacity-100 group-focus-visible/item:translate-x-0 group-focus-visible/item:opacity-100"
+)
+
+func sbCurrent(p SidebarProps) SidebarWorkspace {
+	for _, w := range p.Workspaces {
+		if w.ID == p.Workspace {
+			return w
+		}
+	}
+	if len(p.Workspaces) > 0 {
+		return p.Workspaces[0]
+	}
+	return SidebarWorkspace{}
+}
+
+func sbInitial(name string) string {
+	for _, r := range name {
+		return string(r)
+	}
+	return ""
+}
+
+func sbItemClass(on bool) string {
+	return cx(sbItem, or(when(on, "text-ink"), "text-ink-2 hover:bg-[color-mix(in_srgb,var(--ink)_4%,transparent)] hover:text-ink"),
+		"aria-[current=page]:text-ink aria-[current=page]:hover:bg-transparent")
+}
+
+// Sidebar is an app sidebar: a workspace switcher, grouped navigation with a sliding active indicator, and the
+// signed-in person at the bottom. It folds to a 64px icon rail where labels fade out and tooltips take over.
+// Arrow keys move between items. On phones it starts as the rail.
+//
+//	@ui.Sidebar(ui.SidebarProps{Workspaces: ws, Groups: groups, Active: "inbox", User: ui.SidebarUser{Name: "Sam Rivera", Email: "sam@astabyte.com"}})
+templ Sidebar(p SidebarProps) {
+	{{ cur := sbCurrent(p) }}
+	<aside
+		aria-label="Sidebar"
+		data-asta-sidebar
+		if p.ID != "" {
+			id={ p.ID }
+		}
+		data-collapsed?={ p.Collapsed }
+		data-auto-rail?={ !p.NoAutoRail }
+		class={ cx("group/sb relative flex h-full w-[248px] shrink-0 flex-col bg-paper-2 px-3 py-3 data-[collapsed]:w-16", p.Class) }
+		{ p.Attrs... }
+	>
+		if len(p.Workspaces) > 0 {
+			<div data-asta-dropdown data-asta-ws class="group/dd relative">
+				<button
+					type="button"
+					data-asta-dropdown-trigger
+					aria-haspopup="menu"
+					aria-expanded="false"
+					class={ cx(sbItem, "h-11 hover:bg-[color-mix(in_srgb,var(--ink)_5%,transparent)] group-data-[open]/dd:bg-[color-mix(in_srgb,var(--ink)_5%,transparent)]") }
+				>
+					<span class="flex w-10 shrink-0 justify-center">
+						<span data-ws-logo-out aria-hidden="true" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-[7px] bg-ink text-[12.5px] font-semibold tracking-[-0.02em] text-paper">{ sbInitial(cur.Name) }</span>
+					</span>
+					<span class={ cx(sbLabel, "flex flex-col leading-tight") }>
+						<span data-ws-name-out class="truncate text-[13.5px] font-medium text-ink">{ cur.Name }</span>
+						<span data-ws-plan-out hidden?={ cur.Plan == "" } class="truncate text-[11.5px] text-mute">{ cur.Plan }</span>
+					</span>
+					@ovIcon("m5.5 6 2.5-2.5L10.5 6M5.5 10l2.5 2.5 2.5-2.5", "mr-2 h-4 w-4 shrink-0 text-mute transition-opacity duration-300 group-data-[collapsed]/sb:opacity-0")
+					<span aria-hidden="true" data-ws-name-out class={ sbTip }>{ cur.Name }</span>
+				</button>
+				<div role="menu" popover="manual" tabindex="-1" data-asta-mpanel aria-label="Switch workspace" class={ cx(floatPanel, "w-[232px]") }>
+					<p class="px-2 pb-1.5 pt-1 text-[11.5px] text-mute">Workspaces</p>
+					for _, w := range p.Workspaces {
+						@sbWorkspace(w, w.ID == cur.ID)
+					}
+				</div>
+			</div>
+		}
+		<nav aria-label="Main" data-asta-sidebar-nav class="mt-4 min-h-0 flex-1">
+			<div class="relative">
+				<span data-asta-sidebar-indicator aria-hidden="true" class={ "absolute inset-x-0 top-0 h-9 rounded-lg bg-paper opacity-0 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_8%,transparent),0_1px_2px_rgb(0_0_0/0.06)] transition-[transform,opacity] duration-500 motion-reduce:transition-none " + sbEase }></span>
+				for gi, g := range p.Groups {
+					<div class={ when(gi > 0, "mt-3") }>
+						if g.Label != "" {
+							<div class="relative flex h-7 items-center px-3">
+								<span class="text-[11.5px] text-mute transition-opacity duration-300 group-data-[collapsed]/sb:opacity-0">{ g.Label }</span>
+								<span aria-hidden="true" class="absolute left-1/2 h-px w-3 -translate-x-1/2 bg-[color-mix(in_srgb,var(--ink)_14%,transparent)] opacity-0 transition-opacity duration-300 group-data-[collapsed]/sb:opacity-100"></span>
+							</div>
+						}
+						<ul class="flex flex-col gap-0.5">
+							for _, it := range g.Items {
+								<li>
+									@sbNavItem(it, it.ID == p.Active)
+								</li>
+							}
+						</ul>
+					</div>
+				}
+			</div>
+		</nav>
+		<button type="button" data-asta-sidebar-toggle aria-pressed={ boolString(p.Collapsed) } aria-label={ or(when(p.Collapsed, "Expand sidebar"), "Collapse sidebar") } class={ cx(sbItem, "text-mute hover:bg-[color-mix(in_srgb,var(--ink)_4%,transparent)] hover:text-ink") }>
+			<span class="flex w-10 shrink-0 justify-center">
+				@ovIcon("M2.5 3.5h11v9h-11zM6 3.5v9M10.5 6.5 9 8l1.5 1.5", "h-4 w-4 transition-transform duration-500 "+sbEase+" group-data-[collapsed]/sb:-scale-x-100")
+			</span>
+			<span class={ sbLabel }>Collapse</span>
+			<span aria-hidden="true" class={ sbTip }>Expand</span>
+		</button>
+		if p.User.Name != "" {
+			<div class="mt-2 flex h-12 items-center rounded-lg">
+				<span class="flex w-10 shrink-0 justify-center">
+					@Avatar(AvatarProps{Name: p.User.Name, Src: p.User.Src, Size: "sm"})
+				</span>
+				<span class={ cx(sbLabel, "flex flex-col pl-1 leading-tight") }>
+					<span class="truncate text-[13px] font-medium text-ink">{ p.User.Name }</span>
+					<span class="truncate text-[11.5px] text-mute">{ p.User.Email }</span>
+				</span>
+			</div>
+		}
+	</aside>
+}
+
+templ sbWorkspace(w SidebarWorkspace, on bool) {
+	if w.Href != "" {
+		<a role="menuitemradio" tabindex="-1" href={ templ.SafeURL(w.Href) } aria-checked={ boolString(on) } data-group="workspace" data-value={ w.ID } data-ws-name={ w.Name } data-ws-plan={ w.Plan } class="group/item flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 text-left outline-none transition-colors hover:bg-paper-2 focus:bg-paper-2" { w.Attrs... }>
+			@sbWorkspaceBody(w)
+		</a>
+	} else {
+		<button type="button" role="menuitemradio" tabindex="-1" aria-checked={ boolString(on) } data-group="workspace" data-value={ w.ID } data-ws-name={ w.Name } data-ws-plan={ w.Plan } class="group/item flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 text-left outline-none transition-colors hover:bg-paper-2 focus:bg-paper-2" { w.Attrs... }>
+			@sbWorkspaceBody(w)
+		</button>
+	}
+}
+
+templ sbWorkspaceBody(w SidebarWorkspace) {
+	<span aria-hidden="true" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-[7px] bg-paper text-[12.5px] font-semibold tracking-[-0.02em] text-ink shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent)] group-aria-checked/item:bg-ink group-aria-checked/item:text-paper group-aria-checked/item:shadow-none">{ sbInitial(w.Name) }</span>
+	<span class="flex min-w-0 flex-1 flex-col leading-tight">
+		<span class="truncate text-[13.5px] text-ink">{ w.Name }</span>
+		if w.Plan != "" {
+			<span class="truncate text-[11.5px] text-mute">{ w.Plan }</span>
+		}
+	</span>
+	@ovIcon("M3.5 8.5l3 3 6-7", "hidden h-4 w-4 shrink-0 text-brand group-aria-checked/item:block")
+}
+
+templ sbNavItem(it SidebarItem, on bool) {
+	if it.Href != "" {
+		<a
+			href={ templ.SafeURL(it.Href) }
+			data-asta-sidebar-item={ it.ID }
+			if on {
+				aria-current="page"
+			}
+			class={ sbItemClass(on) }
+			{ it.Attrs... }
+		>
+			@sbNavItemBody(it)
+		</a>
+	} else {
+		<button
+			type="button"
+			data-asta-sidebar-item={ it.ID }
+			if on {
+				aria-current="page"
+			}
+			class={ sbItemClass(on) }
+			{ it.Attrs... }
+		>
+			@sbNavItemBody(it)
+		</button>
+	}
+}
+
+templ sbNavItemBody(it SidebarItem) {
+	<span class="relative flex w-10 shrink-0 justify-center text-mute transition-colors duration-300 group-hover/item:text-ink group-aria-[current=page]/item:text-brand [&_svg]:h-4 [&_svg]:w-4">
+		if it.Icon != nil {
+			@it.Icon
+		}
+		if it.Badge > 0 {
+			<span aria-hidden="true" class={ "absolute right-2 top-0 h-1.5 w-1.5 scale-50 rounded-full bg-brand opacity-0 shadow-[0_0_0_2px_var(--paper-2)] transition-[opacity,transform] duration-300 group-data-[collapsed]/sb:scale-100 group-data-[collapsed]/sb:opacity-100 " + sbEase }></span>
+		}
+	</span>
+	<span class={ cx(sbLabel, "relative") }>{ it.Label }</span>
+	if it.Badge > 0 {
+		<span class="relative mr-2 rounded-md bg-[color-mix(in_srgb,var(--ink)_6%,transparent)] px-1.5 text-[11.5px] tabular-nums leading-5 text-mute transition-opacity duration-300 group-data-[collapsed]/sb:opacity-0">{ strconv.Itoa(it.Badge) }</span>
+	}
+	<span aria-hidden="true" class={ sbTip }>{ it.Label }</span>
+}

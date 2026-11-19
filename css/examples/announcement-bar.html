@@ -1,0 +1,19 @@
+<!-- Needs asta.js: rotates the messages every data-interval ms and handles dismiss. -->
+<div style="display:flex;flex-direction:column;gap:12px;overflow:hidden;border-radius:12px">
+  <div role="region" aria-label="Announcement" data-asta-announce data-interval="3500" class="asta-announcement">
+    <span aria-hidden="true" class="asta-announcement-spacer"></span>
+    <div aria-live="off" data-asta-announce-track class="asta-announcement-track">
+      <div data-asta-announce-msg data-state="cur" class="asta-announcement-slide"><p class="asta-announcement-text"><span class="asta-announcement-badge">New</span><span>Astabyte UI now ships a CSS-only layer.</span><a href="#announcement-bar" class="asta-announcement-link">Learn more<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8h9M9 4.5 12.5 8 9 11.5"/></svg></a></p></div>
+      <div data-asta-announce-msg aria-hidden="true" class="asta-announcement-slide"><p class="asta-announcement-text"><span>Dark mode follows your system.</span><a href="#announcement-bar" class="asta-announcement-link">Try it<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8h9M9 4.5 12.5 8 9 11.5"/></svg></a></p></div>
+    </div>
+    <button type="button" data-asta-announce-close aria-label="Dismiss announcement" class="asta-announcement-close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="m4.5 4.5 7 7m0-7-7 7"/></svg></button>
+  </div>
+  <div role="region" aria-label="Announcement" data-asta-announce class="asta-announcement asta-announcement-brand">
+    <span aria-hidden="true" class="asta-announcement-spacer"></span>
+    <div class="asta-announcement-single"><p class="asta-announcement-text"><span>Launch week starts Monday.</span><a href="#announcement-bar" class="asta-announcement-link">Learn more<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8h9M9 4.5 12.5 8 9 11.5"/></svg></a></p></div>
+    <button type="button" data-asta-announce-close aria-label="Dismiss announcement" class="asta-announcement-close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="m4.5 4.5 7 7m0-7-7 7"/></svg></button>
+  </div>
+  <div role="region" aria-label="Announcement" data-asta-announce class="asta-announcement asta-announcement-subtle">
+    <div class="asta-announcement-single"><p class="asta-announcement-text"><span class="asta-announcement-badge">Beta</span><span>Server search in the command palette.</span></p></div>
+  </div>
+</div>

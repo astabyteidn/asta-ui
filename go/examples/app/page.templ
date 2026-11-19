@@ -1,0 +1,255 @@
+package main
+
+import (
+	"fmt"
+	"strconv"
+
+	ui "github.com/astabyteidn/asta-ui/go/ui"
+)
+
+templ layout(title string) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="utf-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1"/>
+			<title>{ title }</title>
+			@ui.Head()
+		</head>
+		<body class="min-h-screen bg-paper text-ink antialiased">
+			{ children... }
+		</body>
+	</html>
+}
+
+templ page(v membersView, set Settings, f inviteForm) {
+	@layout("Team · Astabyte") {
+		<main class="mx-auto flex max-w-[880px] flex-col gap-8 px-4 py-10 sm:px-6 sm:py-14">
+			<header class="flex flex-wrap items-center justify-between gap-4">
+				<div class="flex items-center gap-3">
+					@ui.Avatar(ui.AvatarProps{Name: "Astabyte", Shape: "square", Size: "lg"})
+					<div>
+						<h1 class="text-[22px] font-medium tracking-[-0.03em]">Astabyte team</h1>
+						<p class="text-[14px] text-mute">Who can see and change your workspace.</p>
+					</div>
+				</div>
+				<div class="flex items-center gap-2">
+					// hx-on is JavaScript, so it is written in the markup: templ strips it from Attrs maps.
+					<button type="button" class={ ui.ButtonClass(ui.ButtonProps{Variant: "ghost", IconOnly: true}) } aria-label="Toggle dark mode" hx-on:click="document.documentElement.classList.toggle('dark')">
+						@iconMoon()
+					</button>
+					@ui.Button(ui.ButtonProps{Variant: "accent", IconLeft: iconPlus(), Kbd: "I", Attrs: ui.Opens("invite")}) {
+						Invite
+					}
+				</div>
+			</header>
+			@ui.Alert(ui.AlertProps{Title: "This is a demo", Dismissible: true}) {
+				The team lives in memory and resets when the binary restarts.
+			}
+			@ui.Tabs(ui.TabsProps{ID: "team", Label: "Team", Tabs: []ui.Tab{
+				{Value: "members", Label: "Members", Content: membersSection(v)},
+				{Value: "settings", Label: "Settings", Content: settingsForm(set)},
+			}})
+		</main>
+		@ui.Dialog(ui.DialogProps{ID: "invite", Title: "Invite a teammate", Description: "They get an email with a link to join."}) {
+			@inviteFormView(f)
+		}
+		<script>
+			document.addEventListener("keydown", (e) => {
+				if (e.key === "i" && !e.metaKey && !e.ctrlKey && !e.target.closest("input,textarea,select,[contenteditable]")) asta.open("invite");
+			});
+		</script>
+	}
+}
+
+// membersSection reloads itself when a handler sends the "members-changed" event.
+templ membersSection(v membersView) {
+	<section id="members" class="flex flex-col gap-4" hx-get={ fmt.Sprintf("/members?page=%d", v.Page) } hx-trigger="members-changed from:body" hx-swap="outerHTML">
+		<p class="text-[13px] text-mute">
+			{ strconv.Itoa(v.Total) } people
+			if v.Invited > 0 {
+				· { strconv.Itoa(v.Invited) } invited
+			}
+		</p>
+		@ui.Table(ui.TableProps{Label: "Members"}) {
+			@ui.THead() {
+				@ui.TH() {
+					Name
+				}
+				@ui.TH(ui.THProps{Width: "120px"}) {
+					Role
+				}
+				@ui.TH(ui.THProps{Width: "120px"}) {
+					Status
+				}
+				@ui.TH(ui.THProps{Width: "56px", Align: "right"}) {
+					<span class="sr-only">Actions</span>
+				}
+			}
+			@ui.TBody() {
+				if len(v.Members) == 0 {
+					@ui.TableEmpty(ui.TableEmptyProps{Cols: 4, Title: "No one here yet", Text: "Invite a teammate to get started."})
+				}
+				for _, m := range v.Members {
+					@memberRow(m, v.Page)
+				}
+			}
+		}
+		if v.Pages > 1 {
+			@ui.Pagination(ui.PaginationProps{
+				Page:      v.Page,
+				Total:     v.Pages,
+				Href:      pageHref,
+				HxTarget:  "#members",
+				LinkAttrs: templ.Attributes{"hx-swap": "outerHTML"},
+			})
+		}
+	</section>
+}
+
+templ memberRow(m Member, page int) {
+	@ui.TR() {
+		@ui.TD() {
+			<div class="flex items-center gap-3">
+				@ui.Avatar(ui.AvatarProps{Name: m.Name, Size: "sm"})
+				<div class="min-w-0">
+					<div class="truncate font-medium">{ m.Name }</div>
+					<div class="truncate text-[13px] text-mute">{ m.Email }</div>
+				</div>
+			</div>
+		}
+		@ui.TD() {
+			@ui.Badge(ui.BadgeProps{Tone: roleTone(m.Role), Size: "sm"}) {
+				{ m.Role }
+			}
+		}
+		@ui.TD() {
+			if m.Status == "invited" {
+				@ui.Badge(ui.BadgeProps{Tone: "warning", Dot: true, Size: "sm"}) {
+					Invited
+				}
+			} else {
+				@ui.Badge(ui.BadgeProps{Tone: "success", Dot: true, Size: "sm"}) {
+					Active
+				}
+			}
+		}
+		@ui.TD(ui.TDProps{Align: "right"}) {
+			if m.Role != "Owner" {
+				@ui.Menu(ui.MenuProps{IconOnly: true, Icon: iconMore(), AriaLabel: "Actions for " + m.Name, Variant: "ghost", Size: "sm", Align: "end"}) {
+					@ui.MenuLabel("Change role")
+					for _, r := range roles {
+						@ui.MenuItem(ui.MenuItemProps{Disabled: r == m.Role, Attrs: rowAction("hx-post", m, page, "/role", r)}) {
+							{ r }
+						}
+					}
+					@ui.MenuSeparator()
+					@ui.MenuItem(ui.MenuItemProps{Danger: true, Attrs: rowAction("hx-delete", m, page, "", "")}) {
+						Remove
+					}
+				}
+			}
+		}
+	}
+}
+
+templ inviteFormView(f inviteForm) {
+	<form hx-post="/invite" hx-target="this" hx-swap="outerHTML" class="flex flex-col gap-4">
+		@ui.Field(ui.FieldProps{Label: "Name", For: "invite-name", Required: true, Error: f.Errors["name"]}) {
+			@ui.Input(ui.InputProps{ID: "invite-name", Name: "name", Value: f.Name, Placeholder: "Ayu Lestari", State: errState(f.Errors["name"]), Attrs: templ.Attributes{"autocomplete": "off"}})
+		}
+		@ui.Field(ui.FieldProps{Label: "Email", For: "invite-email", Required: true, Error: f.Errors["email"], Hint: "Work email works best."}) {
+			@ui.Input(ui.InputProps{ID: "invite-email", Name: "email", Type: "email", Value: f.Email, Placeholder: "ayu@astabyte.com", State: errState(f.Errors["email"])})
+		}
+		@ui.Field(ui.FieldProps{Label: "Role", For: "invite-role", Error: f.Errors["role"]}) {
+			@ui.Select(ui.SelectProps{ID: "invite-role", Name: "role", Value: f.Role, Options: roleOptions(), State: errState(f.Errors["role"])})
+		}
+		@ui.DialogFooter() {
+			@ui.Button(ui.ButtonProps{Variant: "ghost", Attrs: ui.Closes()}) {
+				Cancel
+			}
+			@ui.Button(ui.ButtonProps{Variant: "accent", Type: "submit"}) {
+				Send invite
+			}
+		}
+	</form>
+}
+
+templ settingsForm(s Settings) {
+	<form hx-post="/settings" hx-swap="none" class="flex flex-col gap-6">
+		@ui.Card(ui.CardProps{Title: "Notifications", Description: "What lands in your inbox."}) {
+			<div class="flex flex-col gap-4">
+				@ui.Switch(ui.SwitchProps{ID: "notify", Name: "notify", Checked: s.Notify, Label: "New members", Description: "Email me when someone joins."})
+				@ui.Switch(ui.SwitchProps{ID: "digest", Name: "digest", Checked: s.Digest, Label: "Weekly digest", Description: "One email on Monday with the week's changes."})
+			</div>
+		}
+		@ui.Card(ui.CardProps{Title: "Plan", Description: "Seats and billing."}) {
+			<div class="flex flex-col gap-6">
+				@ui.RadioGroup(ui.RadioGroupProps{Name: "plan", Value: s.Plan, Columns: 3, Label: "Plan", Options: []ui.RadioOption{
+					{Value: "starter", Label: "Starter", Description: "For a few people.", Aside: "$0"},
+					{Value: "team", Label: "Team", Description: "Roles and invites.", Aside: "$8"},
+					{Value: "scale", Label: "Scale", Description: "SSO and audit log.", Aside: "$16"},
+				}})
+				@ui.Field(ui.FieldProps{Label: "Seats", For: "seats", Hint: "From 1 to 50. You pay for what you set."}) {
+					@ui.Slider(ui.SliderProps{ID: "seats", Name: "seats", Value: s.Seats, Min: 1, Max: 50, Step: 1, Ticks: 5})
+				}
+			</div>
+		}
+		<div class="flex justify-end">
+			@ui.Button(ui.ButtonProps{Variant: "solid", Type: "submit"}) {
+				Save settings
+			}
+		</div>
+	</form>
+}
+
+func rowAction(verb string, m Member, page int, path, role string) templ.Attributes {
+	a := templ.Attributes{
+		verb:        fmt.Sprintf("/members/%d%s?page=%d", m.ID, path, page),
+		"hx-target": "#members",
+		"hx-swap":   "outerHTML",
+	}
+	if role != "" {
+		a["hx-vals"] = fmt.Sprintf(`{"role":%q}`, role)
+	} else {
+		a["hx-confirm"] = "Remove " + m.Name + " from the team?"
+	}
+	return a
+}
+
+func roleTone(role string) string {
+	switch role {
+	case "Owner":
+		return "accent"
+	case "Admin":
+		return "neutral"
+	}
+	return ""
+}
+
+func roleOptions() []ui.SelectOption {
+	o := make([]ui.SelectOption, len(roles))
+	for i, r := range roles {
+		o[i] = ui.SelectOption{Value: r, Label: r}
+	}
+	return o
+}
+
+func errState(msg string) string {
+	if msg != "" {
+		return "error"
+	}
+	return ""
+}
+
+templ iconPlus() {
+	<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"></path></svg>
+}
+
+templ iconMoon() {
+	<svg viewBox="0 0 16 16" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 9.5A5.5 5.5 0 1 1 6.5 2.5a4.5 4.5 0 0 0 7 7Z"></path></svg>
+}
+
+templ iconMore() {
+	<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><circle cx="3.5" cy="8" r="1.3"></circle><circle cx="8" cy="8" r="1.3"></circle><circle cx="12.5" cy="8" r="1.3"></circle></svg>
+}

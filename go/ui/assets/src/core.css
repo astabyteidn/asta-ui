@@ -1,0 +1,120 @@
+/* Hand-written CSS for the parts Tailwind classes can't express: native dialog, toasts, menus, keyframes.
+ * Motion is transform and opacity only, with the kit's one easing. */
+
+@keyframes asta-field-in {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes asta-badge-ping { 0% { transform: scale(1); opacity: 0.7 } 100% { transform: scale(3); opacity: 0 } }
+@keyframes asta-pop { 0% { transform: scale(0.4) } 60% { transform: scale(1.15) } 100% { transform: scale(1) } }
+@keyframes asta-fade { from { opacity: 0 } }
+@keyframes asta-rise { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
+@keyframes asta-scale-in { from { opacity: 0; transform: scale(0.85) } }
+@keyframes asta-spinner-dot { 0%, 80%, 100% { transform: scale(0.55); opacity: 0.35 } 40% { transform: scale(1); opacity: 1 } }
+@keyframes asta-spinner-bar { 0%, 100% { transform: scaleY(0.35) } 50% { transform: scaleY(1) } }
+@keyframes asta-progress-sweep { from { transform: translateX(-100%) } to { transform: translateX(260%) } }
+@keyframes asta-skeleton-shimmer { from { transform: translateX(-100%) } to { transform: translateX(100%) } }
+
+/* Dialog: enters from a little below, scaled down. @starting-style gives the entry transition. */
+.asta-dialog {
+  opacity: 0;
+  transform: translateY(12px) scale(0.96);
+  transition:
+    opacity 0.26s ease-in,
+    transform 0.32s cubic-bezier(0.7, 0, 0.84, 0),
+    overlay 0.32s allow-discrete,
+    display 0.32s allow-discrete;
+}
+.asta-dialog[open]:not([data-closing]) {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.3s ease-out,
+    transform 0.52s cubic-bezier(0.16, 1, 0.3, 1),
+    overlay 0.52s allow-discrete,
+    display 0.52s allow-discrete;
+}
+@starting-style {
+  .asta-dialog[open] {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+}
+.asta-dialog::backdrop {
+  background: rgb(10 10 10 / 0.38);
+  opacity: 0;
+  transition:
+    opacity 0.26s ease-in,
+    overlay 0.32s allow-discrete,
+    display 0.32s allow-discrete;
+}
+.asta-dialog[open]:not([data-closing])::backdrop {
+  opacity: 1;
+  transition:
+    opacity 0.3s ease-out,
+    overlay 0.3s allow-discrete,
+    display 0.3s allow-discrete;
+}
+@starting-style {
+  .asta-dialog[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+/* Toasts: asta.js sets transform, opacity and height inline; this is the timing. */
+.asta-toast {
+  transition:
+    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.3s ease,
+    height 0.35s cubic-bezier(0.16, 1, 0.3, 1); /* perf-ok: the tucked stack clamps to the front toast */
+}
+
+/* Menus drop in from the trigger. data-up flips them above it. */
+[data-asta-menu] > [role="menu"] {
+  opacity: 0;
+  transform: translateY(-4px) scale(0.97);
+  transform-origin: top;
+  transition:
+    opacity 0.14s ease-in,
+    transform 0.16s ease-in;
+}
+[data-asta-menu][data-open] > [role="menu"] {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.2s ease-out,
+    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@starting-style {
+  [data-asta-menu][data-open] > [role="menu"] {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.97);
+  }
+}
+[data-asta-menu][data-up] > [role="menu"] {
+  top: auto;
+  bottom: 100%;
+  margin-top: 0;
+  margin-bottom: 6px;
+  transform-origin: bottom;
+}
+/* data-align="end" pins the menu to the trigger's right edge, so it grows from that corner. */
+[data-asta-menu][data-align="end"] > [role="menu"] {
+  transform-origin: top right;
+}
+[data-asta-menu][data-align="end"][data-up] > [role="menu"] {
+  transform-origin: bottom right;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .asta-dialog,
+  .asta-dialog::backdrop,
+  .asta-toast,
+  [data-asta-menu] > [role="menu"] {
+    transition: none !important;
+    animation: none !important;
+  }
+}

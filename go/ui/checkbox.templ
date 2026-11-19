@@ -1,0 +1,89 @@
+package ui
+
+// CheckboxProps configures Checkbox. Attrs go on the native <input type="checkbox">.
+type CheckboxProps struct {
+	// ID links the description to the box for screen readers.
+	ID   string
+	Name string
+	// Value is what the form posts when checked. The browser default is "on".
+	Value   string
+	Checked bool
+	// Indeterminate shows a dash, for select-all rows. It is visual only.
+	// Screen readers hear "not checked", because the real indeterminate state needs JavaScript.
+	Indeterminate bool
+	Disabled      bool
+	Required      bool
+	Label         string
+	Description   string
+	Class         string
+	Attrs         templ.Attributes
+}
+
+const (
+	checkboxInput = "peer col-start-1 row-start-1 h-[18px] w-[18px] cursor-pointer appearance-none rounded-[6px] bg-paper outline-none " +
+		"shadow-[inset_0_0_0_1.5px_color-mix(in_srgb,var(--ink)_22%,transparent)] hover:shadow-[inset_0_0_0_1.5px_color-mix(in_srgb,var(--ink)_40%,transparent)] " +
+		"transition-[background-color,box-shadow,scale] duration-200 ease-[cubic-bezier(.16,1,.3,1)] active:scale-90 motion-reduce:transition-none " +
+		"checked:bg-brand checked:shadow-[inset_0_1px_0_rgb(255_255_255/0.2),0_1px_2px_rgb(0_0_0/0.2)] checked:hover:shadow-[inset_0_1px_0_rgb(255_255_255/0.2),0_1px_2px_rgb(0_0_0/0.2)] " +
+		"data-[indeterminate]:bg-brand data-[indeterminate]:shadow-[inset_0_1px_0_rgb(255_255_255/0.2),0_1px_2px_rgb(0_0_0/0.2)] " +
+		"focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 focus-visible:ring-offset-paper " +
+		"disabled:cursor-not-allowed disabled:opacity-45"
+)
+
+// Checkbox is a native checkbox, so it posts with the form and works without JavaScript.
+// The tick pops in with a small scale.
+//
+//	@ui.Checkbox(ui.CheckboxProps{ID: "terms", Name: "terms", Label: "I agree to the Astabyte terms", Required: true})
+templ Checkbox(p CheckboxProps) {
+	if p.Label == "" {
+		<span class={ cx("inline-grid", p.Class) }>
+			@checkboxBox(p)
+		</span>
+	} else {
+		<label class={ cx("flex items-start gap-3", or(when(p.Disabled, "opacity-60"), "cursor-pointer"), p.Class) }>
+			<span class="flex pt-px">
+				@checkboxBox(p)
+			</span>
+			<span class="min-w-0">
+				<span class="block select-none text-[14px] leading-5 text-ink">{ p.Label }</span>
+				if p.Description != "" {
+					<span
+						if p.ID != "" {
+							id={ p.ID + "-d" }
+						}
+						class="mt-0.5 block text-[13px] leading-snug text-mute"
+					>{ p.Description }</span>
+				}
+			</span>
+		</label>
+	}
+}
+
+templ checkboxBox(p CheckboxProps) {
+	<span class="relative grid h-[18px] w-[18px] shrink-0 place-items-center">
+		<input
+			type="checkbox"
+			if p.ID != "" {
+				id={ p.ID }
+			}
+			if p.Name != "" {
+				name={ p.Name }
+			}
+			if p.Value != "" {
+				value={ p.Value }
+			}
+			if p.ID != "" && p.Description != "" && p.Label != "" {
+				aria-describedby={ p.ID + "-d" }
+			}
+			checked?={ p.Checked }
+			disabled?={ p.Disabled }
+			required?={ p.Required }
+			data-indeterminate?={ p.Indeterminate && !p.Checked }
+			class={ checkboxInput }
+			{ p.Attrs... }
+		/>
+		<svg viewBox="0 0 16 16" class="pointer-events-none col-start-1 row-start-1 h-3 w-3 scale-50 text-white opacity-0 transition-[opacity,scale] duration-300 ease-[cubic-bezier(.16,1,.3,1)] peer-checked:scale-100 peer-checked:opacity-100 motion-reduce:transition-none" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+			<path d="M3.5 8.5l3 3 6-7"></path>
+		</svg>
+		<span aria-hidden="true" class="pointer-events-none col-start-1 row-start-1 h-[2.2px] w-2 scale-x-0 rounded-full bg-white transition-[scale] duration-300 ease-[cubic-bezier(.16,1,.3,1)] peer-data-[indeterminate]:scale-x-100 peer-checked:!scale-x-0 motion-reduce:transition-none"></span>
+	</span>
+}

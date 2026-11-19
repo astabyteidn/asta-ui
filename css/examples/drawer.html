@@ -1,0 +1,43 @@
+<!-- Needs asta.js: data-asta-open opens the drawer, data-asta-close/Escape/backdrop close it, the handle drags the bottom sheet. -->
+<div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+  <button class="asta-btn asta-btn-outline" data-asta-open="ex-drawer-right"><span class="asta-btn-label">Open right</span></button>
+  <button class="asta-btn asta-btn-outline" data-asta-open="ex-drawer-left"><span class="asta-btn-label">Open left</span></button>
+  <button class="asta-btn asta-btn-outline" data-asta-open="ex-drawer-bottom"><span class="asta-btn-label">Bottom sheet</span></button>
+
+  <dialog id="ex-drawer-right" class="asta-dialog asta-drawer" data-side="right" aria-labelledby="ex-drawer-right-title" aria-describedby="ex-drawer-right-desc">
+    <div class="asta-drawer-inner">
+      <div class="asta-drawer-header"><div>
+        <h2 id="ex-drawer-right-title" class="asta-drawer-title">Invite people</h2>
+        <p id="ex-drawer-right-desc" class="asta-drawer-description">They get an email with a link to join Astabyte.</p>
+      </div></div>
+      <div class="asta-drawer-body">
+        <div class="asta-field"><label class="asta-label" for="ex-inv">Email</label><label class="asta-input"><input class="asta-input-control" id="ex-inv" type="email" placeholder="sam@astabyte.com"></label><p class="asta-hint">Invites expire after seven days.</p></div>
+      </div>
+      <div class="asta-drawer-footer">
+        <button class="asta-btn asta-btn-outline" data-asta-close><span class="asta-btn-label">Cancel</span></button>
+        <button class="asta-btn asta-btn-accent"><span class="asta-btn-label">Send invite</span></button>
+      </div>
+    </div>
+    <button type="button" class="asta-drawer-close" data-asta-close aria-label="Close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8"/></svg></button>
+  </dialog>
+
+  <dialog id="ex-drawer-left" class="asta-dialog asta-drawer" data-side="left" aria-labelledby="ex-drawer-left-title">
+    <div class="asta-drawer-inner">
+      <div class="asta-drawer-header"><div><h2 id="ex-drawer-left-title" class="asta-drawer-title">Filters</h2></div></div>
+      <div class="asta-drawer-body"><p style="font-size:14px;color:var(--ink-2)">Pick what to show in the list.</p></div>
+    </div>
+    <button type="button" class="asta-drawer-close" data-asta-close aria-label="Close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8"/></svg></button>
+  </dialog>
+
+  <dialog id="ex-drawer-bottom" class="asta-dialog asta-drawer" data-side="bottom" aria-labelledby="ex-drawer-bottom-title" aria-describedby="ex-drawer-bottom-desc">
+    <div class="asta-drawer-inner">
+      <div class="asta-drawer-handle" data-asta-drawer-handle aria-hidden="true"><span></span></div>
+      <div class="asta-drawer-header"><div>
+        <h2 id="ex-drawer-bottom-title" class="asta-drawer-title">Share file</h2>
+        <p id="ex-drawer-bottom-desc" class="asta-drawer-description">Drag the handle down to close.</p>
+      </div></div>
+      <div class="asta-drawer-body"><p style="font-size:14px;color:var(--ink-2)">Anyone with the link can view.</p></div>
+    </div>
+    <button type="button" class="asta-drawer-close" data-asta-close aria-label="Close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8"/></svg></button>
+  </dialog>
+</div>

@@ -15,6 +15,8 @@ import { componentPrompt, importLines } from "@/lib/prompts";
 import { uiItems } from "@/lib/ui-catalog";
 import { variantItemsOf } from "@/lib/variant-items";
 import { highlight } from "@/lib/ui-highlight";
+import { goUsage } from "@/lib/go-usage";
+import { htmlUsage } from "@/lib/html-usage";
 import { primitiveLabel, type Primitive } from "@/lib/primitive";
 import { getDemo, getPackageExport, getSource, getTheme, hasBase } from "@/lib/ui-source";
 
@@ -46,6 +48,7 @@ const TOC_BASE = [
   { id: "prompt", title: "Prompt for AI", depth: 1 },
   { id: "usage", title: "Usage" },
 ];
+const GO_REPO = "https://github.com/astabyteidn/asta-ui/blob/main/go";
 
 /** Everything on the page that depends on the primitive: files, packages, usage code and the prompt. */
 async function build(slug: string, block: (typeof uiItems)[number], theme: string | null, p: Primitive, primitives: boolean) {
@@ -105,9 +108,35 @@ export default async function UiComponent({ params }: Props) {
       return { v, dual: vdual, r, b: vdual ? await one("base") : r };
     }),
   );
+  const go = isKit ? goUsage(slug) : null;
+  const html = isKit ? htmlUsage(slug) : null;
+  const tocBase = [
+    ...TOC_BASE.slice(0, 6),
+    ...(go ? [{ id: "go", title: "Go + htmx", depth: 1 }] : []),
+    ...(html ? [{ id: "html", title: "HTML + CSS", depth: 1 }] : []),
+    TOC_BASE[6],
+  ];
   const TOC = vars.length
-    ? [TOC_BASE[0], { id: "variants", title: `Variants (${vars.length})` }, ...vars.map(({ v }) => ({ id: v.id, title: `${v.id} · ${v.variant.name}`, depth: 1 })), ...TOC_BASE.slice(1)]
-    : TOC_BASE;
+    ? [tocBase[0], { id: "variants", title: `Variants (${vars.length})` }, ...vars.map(({ v }) => ({ id: v.id, title: `${v.id} · ${v.variant.name}`, depth: 1 })), ...tocBase.slice(1)]
+    : tocBase;
+  const goFiles = go
+    ? await Promise.all(
+        [
+          { name: "page.templ", code: go.templ, lang: "templ" },
+          ...(go.handler ? [{ name: "handlers.go", code: go.handler, lang: "go" }] : []),
+          { name: "Terminal", code: "go get github.com/astabyteidn/asta-ui/go@latest", lang: "sh" },
+        ].map(async (f) => ({ name: f.name, path: `go-${f.name}`, code: f.code, html: await highlight(f.code, `x.${f.lang}`) })),
+      )
+    : [];
+  const HEAD = `<link rel="stylesheet" href="https://ui.astabyte.com/cdn/asta.css" />\n<script src="https://ui.astabyte.com/cdn/asta.js" defer></script>`;
+  const htmlFiles = html
+    ? await Promise.all(
+        [
+          { name: "index.html", code: html },
+          { name: "head.html", code: HEAD },
+        ].map(async (f) => ({ name: f.name, path: `html-${f.name}`, code: f.code, html: await highlight(f.code, "x.html") })),
+      )
+    : [];
   const promptFile = async (code: string) => ({ name: "prompt.txt", path: "prompt.txt", code, html: await highlight(code, "prompt.txt") });
   const [promptR, promptB] = await Promise.all([promptFile(R.prompt), promptFile(B.prompt)]);
   /** Radix and Base UI versions of a block, or just the one when the item has no primitives. */
@@ -283,6 +312,46 @@ export default async function UiComponent({ params }: Props) {
               {pv(<CodeTabs files={[promptR]} peek={200} wrap />, <CodeTabs files={[promptB]} peek={200} wrap />)}
             </div>
           </li>
+          {go && (
+            <li id="go" className="scroll-mt-10">
+              <h3 className="text-[18px] font-medium tracking-[-0.01em]">Or use it from Go + htmx</h3>
+              <p className="mt-2 max-w-2xl text-[16px] leading-relaxed text-mute">
+                Not on React? The same component ships as templ in the Go module, with its CSS and JS embedded. Source in{" "}
+                <a href={`${GO_REPO}/ui/${go.file}`} className="text-ink underline decoration-line underline-offset-4 transition-colors hover:text-accent">
+                  go/ui/{go.file}
+                </a>
+                . Set up once with the{" "}
+                <Link href="/go" className="text-ink underline decoration-line underline-offset-4 transition-colors hover:text-accent">
+                  Go + htmx
+                </Link>{" "}
+                guide. The full demo, with its handlers, is in{" "}
+                <a href={`${GO_REPO}/examples/gallery/${go.demo}`} className="text-ink underline decoration-line underline-offset-4 transition-colors hover:text-accent">
+                  examples/gallery/{go.demo}
+                </a>
+                .
+              </p>
+              <div className="mt-4">
+                <CodeTabs files={goFiles} />
+              </div>
+            </li>
+          )}
+          {html && (
+            <li id="html" className="scroll-mt-10">
+              <h3 className="text-[18px] font-medium tracking-[-0.01em]">Or use plain HTML + CSS</h3>
+              <p className="mt-2 max-w-2xl text-[16px] leading-relaxed text-mute">
+                For Django, Rails, Laravel, Go <Code>html/template</Code> or a static page. Load <Code>asta.css</Code> and{" "}
+                <Code>asta.js</Code> once (the <Code>head.html</Code> tab), then paste the markup. The{" "}
+                <Code>ui.astabyte.com/cdn</Code> link is temporary: pin a version from jsDelivr for production. More in{" "}
+                <Link href="/css" className="text-ink underline decoration-line underline-offset-4 transition-colors hover:text-accent">
+                  HTML + CSS
+                </Link>
+                .
+              </p>
+              <div className="mt-4">
+                <CodeTabs files={htmlFiles} />
+              </div>
+            </li>
+          )}
         </ol>
 
         <h2 id="usage" className="display mt-20 scroll-mt-10 text-[clamp(1.6rem,2.6vw,2.2rem)]">

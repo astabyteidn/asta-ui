@@ -1,0 +1,25 @@
+<!-- The newsletter form needs a server (POST, e.g. hx-post) and asta.js for the done/error states; the rest is static. -->
+<footer class="asta-footer">
+    <div class="asta-footer-grid">
+      <div class="asta-footer-intro">
+        <div class="asta-footer-brand"><span style="display:grid;height:24px;width:24px;place-items:center;border-radius:6px;background:var(--brand);font-size:12px;font-weight:600;color:#fff">A</span><span>Astabyte</span></div>
+        <p class="asta-footer-tagline">Web apps and the kit behind them.</p>
+        <div class="asta-newsletter" data-asta-newsletter data-state="idle">
+          <form class="asta-newsletter-form" novalidate>
+            <label for="ex-newsletter-email" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Email address</label>
+            <input id="ex-newsletter-email" class="asta-newsletter-input" type="email" name="email" placeholder="you@company.com" autocomplete="email" aria-describedby="ex-newsletter-email-msg">
+            <button type="submit" class="asta-btn asta-btn-accent asta-btn-sm asta-btn-pill"><span class="asta-btn-label">Subscribe</span></button>
+          </form>
+          <p aria-hidden="true" data-asta-newsletter-done class="asta-newsletter-done"><span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3.5 8.5 3 3 6-7" pathLength="1" stroke-dasharray="1"/></svg></span>You're in. First letter lands next week.</p>
+          <p id="ex-newsletter-email-msg" role="status" class="asta-newsletter-msg"><span class="asta-newsletter-error">That doesn't look like an email address.</span><span class="asta-newsletter-done-sr">You're in. First letter lands next week.</span></p>
+        </div>
+      </div>
+      <nav aria-label="Footer" class="asta-footer-nav">
+        <div><p class="asta-footer-heading">Product</p><ul class="asta-footer-links"><li><a href="#footer" class="asta-footer-link">Kit <span aria-hidden="true">↗</span></a></li><li><a href="#footer" class="asta-footer-link">Motion <span aria-hidden="true">↗</span></a></li></ul></div>
+        <div><p class="asta-footer-heading">Company</p><ul class="asta-footer-links"><li><a href="#footer" class="asta-footer-link">About <span aria-hidden="true">↗</span></a></li><li><a href="#footer" class="asta-footer-link">Contact <span aria-hidden="true">↗</span></a></li></ul></div>
+        <div><p class="asta-footer-heading">Resources</p><ul class="asta-footer-links"><li><a href="#footer" class="asta-footer-link">Docs <span aria-hidden="true">↗</span></a></li><li><a href="#footer" class="asta-footer-link">GitHub <span aria-hidden="true">↗</span></a></li></ul></div>
+      </nav>
+    </div>
+    <div class="asta-footer-legal"><span>© 2026 Astabyte</span><span style="display:flex;gap:16px"><a href="#footer">Privacy</a><a href="#footer">Terms</a></span></div>
+    <div data-asta-wordmark aria-hidden="true" class="asta-footer-wordmark"><span data-l>A</span><span data-l>s</span><span data-l>t</span><span data-l>a</span><span data-l>b</span><span data-l>y</span><span data-l>t</span><span data-l>e</span></div>
+  </footer>

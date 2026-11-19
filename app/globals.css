@@ -652,6 +652,13 @@ svg.ic-copied { animation: ic-pop .5s cubic-bezier(.16,1,.3,1) both; }
 .doc-body > ul > li::before { content: ""; position: absolute; left: 0; top: 0.7em; width: 6px; height: 6px; background: var(--color-signal); }
 .doc-body strong { color: var(--color-ink); font-weight: 500; }
 .doc-body p code, .doc-body li code { background: var(--color-paper-2); padding: 0.1rem 0.35rem; font-family: var(--font-mono); font-size: 0.82em; color: var(--color-ink); word-break: break-word; }
+.doc-body > section > p, .doc-body > section > ul { margin-top: 1rem; font-size: 17px; line-height: 1.7; color: var(--color-ink-2); }
+.doc-body > section > ul, .changelog-sub { display: flex; flex-direction: column; gap: 0.6rem; }
+.doc-body > section > ul > li, .changelog-sub > li { position: relative; padding-left: 1.4rem; }
+.doc-body > section > ul > li::before { content: ""; position: absolute; left: 0; top: 0.7em; width: 6px; height: 6px; background: var(--color-signal); }
+.changelog-sub { margin-top: 0.6rem; font-size: 16px; }
+.changelog-sub > li::before { content: ""; position: absolute; left: 0.1rem; top: 0.75em; width: 6px; height: 1.5px; background: var(--color-mute); }
+.doc-body li a { color: var(--color-ink); text-decoration: underline; text-decoration-color: var(--color-accent); text-underline-offset: 3px; }
 .doc-body p a { color: var(--color-ink); text-decoration: underline; text-decoration-color: var(--color-accent); text-underline-offset: 3px; }
 
 /* ui.astabyte.com: white, black and white, with a little blue (`accent`). Stages and code stay dark (`.ui-dark`),

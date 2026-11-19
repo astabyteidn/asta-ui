@@ -1,0 +1,67 @@
+<!-- Needs asta.js: mega panel switching and sizing, the scrolled state and the phone sheet are scripted. -->
+<div style="width:100%;overflow:hidden;border-radius:12px;background:var(--paper)">
+  <header class="asta-navbar" data-asta-navbar style="position:static">
+    <div class="asta-navbar-bar">
+      <a href="#navbar" class="asta-navbar-brand"><span style="display:grid;height:24px;width:24px;place-items:center;border-radius:6px;background:var(--brand);font-size:12px;font-weight:600;color:#fff">A</span><span>Astabyte</span></a>
+      <nav aria-label="Main" data-asta-nav-zone class="asta-navbar-nav"><ul>
+        <li><button type="button" class="asta-navbar-trigger" data-asta-nav-trigger="0" aria-expanded="false" aria-controls="ex-nav-demo-panel">Product<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4"/></svg></button></li>
+        <li><button type="button" class="asta-navbar-trigger" data-asta-nav-trigger="1" aria-expanded="false" aria-controls="ex-nav-demo-panel">Resources<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4"/></svg></button></li>
+        <li><a href="#navbar" class="asta-navbar-trigger" data-asta-nav-link>Pricing</a></li>
+      </ul></nav>
+      <div class="asta-navbar-actions">
+        <div>
+          <a href="#navbar" data-asta-nav-docs class="asta-btn asta-btn-ghost asta-btn-sm asta-btn-pill asta-navbar-docs">Docs</a>
+          <a href="#navbar" class="asta-btn asta-btn-sm asta-btn-pill asta-navbar-cta"><span class="asta-btn-label">Get started</span></a>
+        </div>
+        <button type="button" class="asta-navbar-burger" data-asta-nav-burger aria-label="Open menu" aria-expanded="false" aria-controls="ex-nav-demo-sheet"><span></span><span></span></button>
+      </div>
+      <div id="ex-nav-demo-panel" data-asta-nav-zone data-asta-nav-surface class="asta-navbar-surface">
+        <div class="asta-navbar-pop">
+          <div data-asta-nav-bg class="asta-navbar-bg"></div>
+          <div>
+            <div data-asta-nav-panel="0" hidden class="asta-navbar-panel" style="width:min(560px,calc(100cqw - 24px))">
+              <div class="asta-navbar-menu"><div class="asta-navbar-grid asta-navbar-cols-2">
+                <a href="#navbar" data-asta-nav-link class="asta-navbar-tile asta-navbar-tile-tall"><span class="asta-navbar-tile-head">Analytics<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4"/></svg></span><span class="asta-navbar-tile-desc">See what people do, without cookies.</span>
+                  <div aria-hidden="true" class="asta-navbar-preview"><div class="asta-navbar-chart"><span class="asta-navbar-bar-fill" style="height:40%"></span><span class="asta-navbar-bar-fill" style="height:64%;transition-delay:40ms"></span><span class="asta-navbar-bar-fill" style="height:52%;transition-delay:80ms"></span><span class="asta-navbar-bar-fill" style="height:80%;transition-delay:120ms"></span><span class="asta-navbar-bar-fill" style="height:70%;transition-delay:160ms"></span><span class="asta-navbar-bar-fill" style="height:96%;transition-delay:200ms"></span></div></div></a>
+                <a href="#navbar" data-asta-nav-link class="asta-navbar-tile asta-navbar-tile-tall"><span class="asta-navbar-tile-head">Inbox<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4"/></svg></span><span class="asta-navbar-tile-desc">Every inquiry in one list.</span>
+                  <div aria-hidden="true" class="asta-navbar-preview"><div class="asta-navbar-list"><div><span class="asta-navbar-bar-fill"></span><span class="asta-navbar-bar-fill" style="width:80%"></span></div><div><span class="asta-navbar-bar-fill" style="transition-delay:60ms"></span><span class="asta-navbar-bar-fill" style="width:56%"></span></div><div><span class="asta-navbar-bar-fill" style="transition-delay:120ms"></span><span class="asta-navbar-bar-fill" style="width:68%"></span></div></div></div></a>
+                <a href="#navbar" data-asta-nav-link class="asta-navbar-tile asta-navbar-tile-tall"><span class="asta-navbar-tile-head">API<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4"/></svg></span><span class="asta-navbar-tile-desc">Typed, versioned, documented.</span>
+                  <div aria-hidden="true" class="asta-navbar-preview"><div class="asta-navbar-lines"><div><span class="asta-navbar-bar-fill" style="width:20%"></span><span class="asta-navbar-bar-fill" style="width:50%"></span></div><div><span class="asta-navbar-bar-fill" style="width:36%;transition-delay:50ms"></span><span class="asta-navbar-bar-fill" style="width:30%"></span></div><div><span class="asta-navbar-bar-fill" style="width:28%;transition-delay:100ms"></span><span class="asta-navbar-bar-fill" style="width:44%"></span></div></div></div></a>
+                <a href="#navbar" data-asta-nav-link class="asta-navbar-tile asta-navbar-tile-tall"><span class="asta-navbar-tile-head">CMS<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4"/></svg></span><span class="asta-navbar-tile-desc">Edit the site without a deploy.</span>
+                  <div aria-hidden="true" class="asta-navbar-preview"><div class="asta-navbar-list"><div><span class="asta-navbar-bar-fill"></span><span class="asta-navbar-bar-fill" style="width:80%"></span></div><div><span class="asta-navbar-bar-fill"></span><span class="asta-navbar-bar-fill" style="width:56%"></span></div></div></div></a>
+              </div></div>
+            </div>
+            <div data-asta-nav-panel="1" hidden class="asta-navbar-panel" style="width:min(620px,calc(100cqw - 24px))">
+              <div class="asta-navbar-menu"><div class="asta-navbar-grid asta-navbar-cols-3">
+                <div class="asta-navbar-col"><span class="asta-navbar-col-heading">Learn</span>
+                  <a href="#navbar" data-asta-nav-link class="asta-navbar-col-link"><span class="asta-navbar-col-title">Docs<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4"/></svg></span></a>
+                  <a href="#navbar" data-asta-nav-link class="asta-navbar-col-link"><span class="asta-navbar-col-title">Guides<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4"/></svg></span><span class="asta-navbar-col-desc">Step by step.</span></a>
+                </div>
+                <div class="asta-navbar-col"><span class="asta-navbar-col-heading">Company</span>
+                  <a href="#navbar" data-asta-nav-link class="asta-navbar-col-link"><span class="asta-navbar-col-title">About<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4"/></svg></span></a>
+                  <a href="#navbar" data-asta-nav-link class="asta-navbar-col-link"><span class="asta-navbar-col-title">Contact<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4"/></svg></span></a>
+                </div>
+                <a href="#navbar" data-asta-nav-link class="asta-navbar-feature"><span class="asta-navbar-orb" aria-hidden="true"></span><span class="asta-navbar-orb" aria-hidden="true"></span><span class="asta-navbar-feature-title">Astabyte UI 0.8</span><span class="asta-navbar-feature-desc">A CSS-only layer is here.</span><span class="asta-navbar-feature-cta">Read the notes<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4"/></svg></span></a>
+              </div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="ex-nav-demo-sheet" data-asta-nav-sheet hidden class="asta-navbar-sheet">
+      <ul>
+        <li><details class="asta-navbar-sec"><summary>Product<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4"/></svg></summary>
+          <div class="asta-nav-sec asta-navbar-sec-links">
+            <a href="#navbar" class="asta-navbar-sheet-link"><span><span class="asta-navbar-sheet-title">Analytics</span> <span class="asta-navbar-sheet-desc">See what people do, without cookies.</span></span></a>
+            <a href="#navbar" class="asta-navbar-sheet-link"><span><span class="asta-navbar-sheet-title">Inbox</span> <span class="asta-navbar-sheet-desc">Every inquiry in one list.</span></span></a>
+          </div></details></li>
+        <li><a href="#navbar" class="asta-navbar-sheet-item">Pricing</a></li>
+      </ul>
+      <div class="asta-navbar-sheet-actions">
+        <a href="#navbar" class="asta-btn asta-btn-outline asta-btn-pill"><span class="asta-btn-label">Docs</span></a>
+        <a href="#navbar" class="asta-btn asta-btn-pill"><span class="asta-btn-label">Get started</span></a>
+      </div>
+    </div>
+  </header>
+  <div style="height:460px"></div>
+</div>

@@ -1,0 +1,21 @@
+<!-- Needs asta.js: opens the menu and copies the picked workspace name, plan and logo into the trigger. -->
+<div><div style="width:16rem;max-width:100%;border-radius:12px;background:var(--paper);padding:8px">
+  <div class="asta-ws" data-asta-dropdown data-asta-ws data-match>
+    <button type="button" class="asta-ws-trigger" data-asta-dropdown-trigger aria-haspopup="menu" aria-expanded="false" id="ex-ws-one-trigger" aria-controls="ex-ws-one">
+      <span data-ws-logo-out class="asta-ws-logo-sm"><span aria-hidden="true" class="asta-ws-initial">A</span></span>
+      <span data-ws-name-out class="asta-ws-name">Astabyte</span>
+      <span data-ws-plan-out class="asta-ws-plan">Pro</span>
+      <svg class="asta-ws-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg>
+    </button>
+    <div role="menu" popover="manual" tabindex="-1" data-asta-mpanel aria-label="Workspaces" id="ex-ws-one" class="asta-float asta-dropdown-panel asta-ws-panel">
+      <div class="asta-ws-account"><p>Sam Rivera</p><p>sam@astabyte.com</p></div>
+      <button type="button" role="menuitemradio" tabindex="-1" aria-checked="true" data-group="workspace" data-value="studio" data-ws-name="Astabyte" data-ws-plan="Pro" class="asta-ws-row"><span data-ws-logo-box class="asta-ws-logo"><span aria-hidden="true" class="asta-ws-initial">A</span></span><span class="asta-ws-row-text"><span><span class="asta-ws-row-name">Astabyte</span><span class="asta-ws-row-plan">Pro</span></span><span class="asta-ws-row-meta">12 members</span></span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg></button>
+      <button type="button" role="menuitemradio" tabindex="-1" aria-checked="false" data-group="workspace" data-value="labs" data-ws-name="Astabyte Labs" data-ws-plan="" class="asta-ws-row"><span data-ws-logo-box class="asta-ws-logo"><span aria-hidden="true" class="asta-ws-initial">A</span></span><span class="asta-ws-row-text"><span><span class="asta-ws-row-name">Astabyte Labs</span></span><span class="asta-ws-row-meta">3 members</span></span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg></button>
+      <button type="button" role="menuitemradio" tabindex="-1" aria-checked="false" data-group="workspace" data-value="client" data-ws-name="Client work" data-ws-plan="Team" class="asta-ws-row"><span data-ws-logo-box class="asta-ws-logo"><span aria-hidden="true" class="asta-ws-initial">C</span></span><span class="asta-ws-row-text"><span><span class="asta-ws-row-name">Client work</span><span class="asta-ws-row-plan">Team</span></span><span class="asta-ws-row-meta">8 members</span></span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg></button>
+      <a role="menuitem" tabindex="-1" href="#workspace-switcher" class="asta-menu-item asta-ws-create"><span class="asta-menu-item-text"><span style="display:inline-flex;align-items:center;gap:10px"><span class="asta-ws-create-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9"/></svg></span>New workspace</span></span></a>
+      <div class="asta-ws-footer"><div role="separator" class="asta-menu-separator"></div>
+        <button type="button" role="menuitem" tabindex="-1" class="asta-menu-item"><span class="asta-menu-item-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2.5H3v11h3M10 5l3 3-3 3M13 8H6"/></svg></span><span class="asta-menu-item-text">Sign out</span></button>
+      </div>
+    </div>
+  </div>
+</div></div>

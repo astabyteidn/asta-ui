@@ -1,0 +1,117 @@
+package main
+
+import "github.com/astabyteidn/asta-ui/go/ui"
+
+var blkPlans = []ui.PricingPlan{
+	{Name: "Starter", Description: "For side projects and trying things out.", Monthly: 0, Yearly: 0, Features: []string{"1 project", "Community support", "7-day history"}, CTALabel: "Start free", CTAHref: "#blocks-pricing"},
+	{Name: "Team", Description: "For small teams shipping every week.", Monthly: 24, Yearly: 19, Features: []string{"Unlimited projects", "Preview links", "90-day history", "Email support"}, CTALabel: "Start trial", CTAHref: "#blocks-pricing", Highlight: "Popular"},
+	{Name: "Business", Description: "For larger teams with stricter needs.", Monthly: 89, Yearly: 71, Features: []string{"Everything in Team", "SSO and audit log", "Priority support"}, CTALabel: "Talk to us", CTAHref: "#blocks-pricing"},
+}
+
+templ blkRotateIcon() {
+	<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+		<path d="M12.5 6A5 5 0 1 0 13 9.5M12.5 2.5V6H9"></path>
+	</svg>
+}
+
+templ blkAddButton() {
+	<button type="button" aria-label="Add fill" class="grid h-6 w-6 place-items-center rounded-[5px] text-mute hover:bg-paper-2 hover:text-ink">
+		<svg viewBox="0 0 16 16" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+			<path d="M8 3v10M3 8h10"></path>
+		</svg>
+	</button>
+}
+
+// blocksGallery shows the blocks components. Each demo is wrapped in @demo("<id>", "<Title>").
+templ blocksGallery() {
+	@demo("blocks-ai-chat", "AI chat") {
+		<div class="w-full max-w-[640px]">
+			@ui.AIChat(ui.AIChatProps{
+				Title:       "Astabyte assistant",
+				Action:      "/demo/blocks/chat",
+				Suggestions: []string{"Summarise this week", "Draft a welcome email", "Explain how this chat works"},
+			})
+		</div>
+	}
+	@demo("blocks-sign-in", "Sign-in") {
+		<div class="w-full max-w-[420px]">
+			@ui.SignIn(blkSignInProps())
+		</div>
+	}
+	@demo("blocks-onboarding", "Onboarding") {
+		<div class="w-full max-w-[520px]">
+			@ui.Onboarding(blkOnboardingProps())
+		</div>
+	}
+	@demo("blocks-pricing", "Pricing") {
+		<div class="w-full">
+			@ui.Pricing(ui.PricingProps{Plans: blkPlans, Saving: "−20%"})
+		</div>
+	}
+	@demo("blocks-checkout", "Checkout") {
+		<div class="w-full">
+			<p class="mb-3 text-[13px] text-mute">No real payment. Try promo code WELCOME10 and any 16-digit card number.</p>
+			<div class="rounded-xl bg-paper p-5 sm:p-7">
+				@ui.Checkout(blkCheckoutProps())
+			</div>
+		</div>
+	}
+	@demo("blocks-properties", "Properties panel") {
+		<div class="w-full max-w-[280px]">
+			@ui.PropertiesPanel(ui.PropertiesPanelProps{Kind: "Frame", Title: "Hero card", Action: "/demo/blocks/properties"}) {
+				@ui.PropSection(ui.PropSectionProps{Title: "Layout"}) {
+					@ui.PropRow(ui.PropRowProps{Label: "Position"}) {
+						@ui.PropNumber(ui.PropNumberProps{Name: "x", Label: "X", AriaLabel: "X position", Value: 24})
+						@ui.PropNumber(ui.PropNumberProps{Name: "y", Label: "Y", AriaLabel: "Y position", Value: 80})
+					}
+					@ui.PropRow(ui.PropRowProps{Label: "Size"}) {
+						@ui.PropNumber(ui.PropNumberProps{Name: "w", Label: "W", AriaLabel: "Width", Value: 320, HasMin: true})
+						@ui.PropNumber(ui.PropNumberProps{Name: "h", Label: "H", AriaLabel: "Height", Value: 200, HasMin: true})
+					}
+					@ui.PropRow(ui.PropRowProps{Label: "Corners"}) {
+						@ui.PropNumber(ui.PropNumberProps{Name: "rotate", Icon: blkRotateIcon(), AriaLabel: "Rotation", Value: 0, Unit: "°", HasMin: true, Min: -180, HasMax: true, Max: 180})
+						@ui.PropNumber(ui.PropNumberProps{Name: "radius", Label: "R", AriaLabel: "Corner radius", Value: 12, HasMin: true, Unit: "px"})
+					}
+				}
+				@ui.PropSection(ui.PropSectionProps{Title: "Fill", Action: blkAddButton()}) {
+					@ui.PropRow(ui.PropRowProps{Label: "Colour", Cols: 1}) {
+						@ui.PropColor(ui.PropColorProps{Name: "fill", Value: "#2f54eb", Label: "Fill"})
+					}
+					@ui.PropRow(ui.PropRowProps{Label: "Opacity", Cols: 1}) {
+						@ui.PropNumber(ui.PropNumberProps{Name: "opacity", Label: "%", AriaLabel: "Opacity", Value: 100, HasMin: true, HasMax: true, Max: 100})
+					}
+				}
+				@ui.PropSection(ui.PropSectionProps{Title: "Effects", Closed: true}) {
+					@ui.PropRow(ui.PropRowProps{Label: "Blur", Cols: 1}) {
+						@ui.PropNumber(ui.PropNumberProps{Name: "blur", Label: "B", AriaLabel: "Blur", Value: 0, Step: 0.5, Precision: 1, HasMin: true, Unit: "px"})
+					}
+				}
+			}
+		</div>
+	}
+	@demo("blocks-settings", "Settings panel") {
+		<div class="w-full max-w-[520px]">
+			@ui.SettingsPanel(ui.SettingsPanelProps{ID: "settings-demo", Action: "/demo/blocks/settings"}) {
+				@ui.SettingsSection(ui.SettingsSectionProps{Title: "Appearance"}) {
+					@ui.SettingsTheme(ui.SettingsThemeProps{Value: "system"})
+				}
+				@ui.SettingsSection(ui.SettingsSectionProps{Title: "Notifications", Description: "Choose what Astabyte emails you about."}) {
+					@ui.Switch(ui.SwitchProps{ID: "set-digest", Name: "digest", Label: "Weekly digest", Description: "A summary of your projects every Monday.", Checked: true})
+					@ui.Switch(ui.SwitchProps{ID: "set-mentions", Name: "mentions", Label: "Mentions", Description: "When someone mentions you in a comment."})
+				}
+				@ui.SettingsSection(ui.SettingsSectionProps{Title: "Region"}) {
+					@ui.SettingsRow(ui.SettingsRowProps{Label: "Language", For: "set-lang"}) {
+						<div class="w-[160px]">
+							@ui.Select(ui.SelectProps{ID: "set-lang", Name: "lang", Size: "sm", Value: "en", Options: []ui.SelectOption{{Value: "en", Label: "English"}, {Value: "id", Label: "Bahasa Indonesia"}}})
+						</div>
+					}
+				}
+			}
+		</div>
+	}
+	@demo("blocks-team", "Team members") {
+		<div class="w-full max-w-[640px] rounded-xl bg-paper p-5 sm:p-6">
+			@ui.TeamMembers(blkTeamProps())
+		</div>
+	}
+}

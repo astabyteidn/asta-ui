@@ -1,0 +1,43 @@
+<!-- Needs asta.js: data-asta-open or Cmd/Ctrl+K opens it; filtering, highlighting, the result count and arrow keys are scripted. -->
+<div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+  <button class="asta-btn asta-btn-outline" data-asta-open="ex-cmd-one"><span class="asta-btn-label">Search <kbd class="asta-btn-kbd">⌘K</kbd></span></button>
+  <dialog id="ex-cmd-one" class="asta-dialog asta-cmd" data-asta-command data-hotkey="k" aria-label="Command palette">
+    <div class="asta-cmd-inner">
+      <div class="asta-cmd-search">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3" stroke-linecap="round"/></svg>
+        <input type="text" name="q" class="asta-cmd-input" data-asta-command-input autocomplete="off" spellcheck="false" placeholder="Type a command or search…" role="combobox" aria-expanded="true" aria-controls="ex-cmd-one-list" aria-autocomplete="list">
+        <kbd class="asta-cmd-esc">Esc</kbd>
+      </div>
+      <div class="asta-cmd-scroll" data-asta-command-scroll>
+        <div id="ex-cmd-one-list" role="listbox" aria-label="Results" data-asta-command-list>
+          <div role="group" aria-label="Pages" data-asta-command-group class="asta-cmd-group">
+            <p aria-hidden="true" class="asta-cmd-heading">Pages</p>
+            <div data-asta-command-items>
+              <a role="option" aria-selected="false" href="#command-palette" data-asta-command-item data-keywords="" class="asta-cmd-item"><span class="asta-cmd-item-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 7 8 2.5 13.5 7v6.5h-11z"/></svg></span><span class="asta-cmd-item-label" data-asta-command-label>Home</span><svg class="asta-cmd-item-enter" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 4v4.5a1.5 1.5 0 0 1-1.5 1.5H3.5M6 7l-2.5 3L6 13"/></svg></a>
+              <div role="option" aria-selected="false" data-asta-command-item data-keywords="mail messages" class="asta-cmd-item"><span class="asta-cmd-item-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 9.5h3l1 1.5h3l1-1.5h3M2.5 9.5 4 3.5h8l1.5 6v3h-11z"/></svg></span><span class="asta-cmd-item-label" data-asta-command-label>Inbox</span><kbd class="asta-cmd-item-kbd">G I</kbd><svg class="asta-cmd-item-enter" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 4v4.5a1.5 1.5 0 0 1-1.5 1.5H3.5M6 7l-2.5 3L6 13"/></svg></div>
+              <div role="option" aria-selected="false" data-asta-command-item data-keywords="analytics" class="asta-cmd-item"><span class="asta-cmd-item-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13V8M8 13V3M13 13V6"/></svg></span><span class="asta-cmd-item-label" data-asta-command-label>Reports</span><svg class="asta-cmd-item-enter" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 4v4.5a1.5 1.5 0 0 1-1.5 1.5H3.5M6 7l-2.5 3L6 13"/></svg></div>
+            </div>
+          </div>
+          <div role="group" aria-label="Actions" data-asta-command-group class="asta-cmd-group">
+            <p aria-hidden="true" class="asta-cmd-heading">Actions</p>
+            <div data-asta-command-items>
+              <div role="option" aria-selected="false" data-asta-command-item data-keywords="" class="asta-cmd-item"><span class="asta-cmd-item-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 3.5v9M3.5 8h9"/></svg></span><span class="asta-cmd-item-label" data-asta-command-label>New project</span><kbd class="asta-cmd-item-kbd">⌘N</kbd><svg class="asta-cmd-item-enter" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 4v4.5a1.5 1.5 0 0 1-1.5 1.5H3.5M6 7l-2.5 3L6 13"/></svg></div>
+              <div role="option" aria-selected="false" data-asta-command-item data-keywords="" data-asta-open="ex-drawer-right" class="asta-cmd-item"><span class="asta-cmd-item-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM3 13.5c.8-2.3 2.7-3.5 5-3.5s4.2 1.2 5 3.5"/></svg></span><span class="asta-cmd-item-label" data-asta-command-label>Invite people</span><svg class="asta-cmd-item-enter" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 4v4.5a1.5 1.5 0 0 1-1.5 1.5H3.5M6 7l-2.5 3L6 13"/></svg></div>
+            </div>
+          </div>
+        </div>
+        <div data-asta-command-empty hidden role="status" class="asta-cmd-empty">
+          <span class="asta-cmd-empty-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3M5.5 7h3"/></svg></span>
+          <p class="asta-cmd-empty-title">No results for “<span data-asta-command-q></span>”</p>
+          <p class="asta-cmd-empty-hint">Try a shorter word, or fewer letters.</p>
+        </div>
+      </div>
+      <div class="asta-cmd-footer">
+        <span class="asta-cmd-hint"><kbd>↑↓</kbd>Navigate</span>
+        <span class="asta-cmd-hint"><kbd>↵</kbd>Open</span>
+        <span class="asta-cmd-hint"><kbd>Esc</kbd>Close</span>
+        <span class="asta-cmd-count" data-asta-command-count></span>
+      </div>
+    </div>
+  </dialog>
+</div>

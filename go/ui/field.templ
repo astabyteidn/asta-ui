@@ -1,0 +1,136 @@
+package ui
+
+// InputProps configures Input. Attrs go on the <input> itself (hx-get, hx-trigger, autocomplete…).
+type InputProps struct {
+	ID   string
+	Name string
+	// Type: "text" (default), "email", "password", "search", "number", "url", "tel"…
+	Type        string
+	Value       string
+	Placeholder string
+	// Size: "sm", "md" (default) or "lg".
+	Size string
+	// State: "" (default), "error" or "success".
+	State    string
+	Disabled bool
+	Required bool
+	ReadOnly bool
+	// IconLeft sits before the text, e.g. a search icon.
+	IconLeft templ.Component
+	// Trailing sits after the text, e.g. a unit or a small button.
+	Trailing templ.Component
+	// Class goes on the wrapper.
+	Class string
+	Attrs templ.Attributes
+}
+
+var inputSize = map[string]string{
+	"sm": "h-8 rounded-md px-2.5 text-[13px] gap-2",
+	"md": "h-10 rounded-lg px-3 text-[14px] gap-2.5",
+	"lg": "h-12 rounded-[9px] px-4 text-[15px] gap-3",
+}
+
+var inputRing = map[string]string{
+	"default": "shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)] hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_24%,transparent)] " +
+		"focus-within:!shadow-[inset_0_0_0_1px_var(--brand),0_0_0_4px_color-mix(in_srgb,var(--brand)_16%,transparent)]",
+	"error":   "shadow-[inset_0_0_0_1px_#e5484d] focus-within:shadow-[inset_0_0_0_1px_#e5484d,0_0_0_4px_rgb(229_72_77/0.16)]",
+	"success": "shadow-[inset_0_0_0_1px_#30a46c] focus-within:shadow-[inset_0_0_0_1px_#30a46c,0_0_0_4px_rgb(48_164_108/0.16)]",
+}
+
+// InputClass returns the wrapper classes of an input, for controls you render yourself.
+func InputClass(size, state string) string {
+	return cx("group/in relative flex w-full items-center bg-paper text-ink transition-shadow duration-200", pick(inputSize, size, "md"), pick(inputRing, state, "default"))
+}
+
+// Input is a text field. Wrap it in Field for a label, a hint and an error.
+templ Input(p InputProps) {
+	<label class={ cx(InputClass(p.Size, p.State), when(p.Disabled, "pointer-events-none opacity-50"), p.Class) }>
+		if p.IconLeft != nil {
+			<span class="flex shrink-0 text-mute transition-colors group-focus-within/in:text-ink [&_svg]:h-4 [&_svg]:w-4">
+				@p.IconLeft
+			</span>
+		}
+		<input
+			id={ p.ID }
+			name={ p.Name }
+			type={ or(p.Type, "text") }
+			value={ p.Value }
+			placeholder={ p.Placeholder }
+			disabled?={ p.Disabled }
+			required?={ p.Required }
+			readonly?={ p.ReadOnly }
+			aria-invalid?={ p.State == "error" }
+			class="h-full min-w-0 flex-1 bg-transparent outline-none placeholder:text-mute"
+			{ p.Attrs... }
+		/>
+		if p.State == "error" {
+			<svg viewBox="0 0 16 16" class="h-4 w-4 shrink-0 text-[#e5484d]" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+				<circle cx="8" cy="8" r="6.25"></circle>
+				<path d="M8 5v3.5M8 11h.01"></path>
+			</svg>
+		}
+		if p.State == "success" {
+			<svg viewBox="0 0 16 16" class="h-4 w-4 shrink-0 text-[#30a46c]" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<path d="M4 8.5l2.5 2.5L12 5.5"></path>
+			</svg>
+		}
+		if p.Trailing != nil {
+			<span class="flex shrink-0 text-mute [&_svg]:h-4 [&_svg]:w-4">
+				@p.Trailing
+			</span>
+		}
+	</label>
+}
+
+// FieldProps configures Field.
+type FieldProps struct {
+	Label string
+	// For is the id of the control, so clicking the label focuses it.
+	For      string
+	Required bool
+	// Hint is muted help text under the control.
+	Hint string
+	// Error replaces the hint and turns red. Set the control's State to "error" too.
+	Error string
+	// Counter is shown on the right of the label, e.g. "12/80".
+	Counter string
+	Class   string
+	Attrs   templ.Attributes
+}
+
+// Field puts a label, a hint and an error around any control.
+//
+//	@ui.Field(ui.FieldProps{Label: "Email", For: "email", Error: errs["email"]}) {
+//		@ui.Input(ui.InputProps{ID: "email", Name: "email", Type: "email", State: state})
+//	}
+templ Field(p FieldProps) {
+	<div class={ cx("flex flex-col gap-1.5", p.Class) } { p.Attrs... }>
+		if p.Label != "" || p.Counter != "" {
+			<div class="flex items-baseline justify-between gap-3">
+				if p.Label != "" {
+					<label for={ p.For } class="text-[13px] font-medium tracking-[-0.01em] text-ink">
+						{ p.Label }
+						if p.Required {
+							<span class="ml-0.5 text-[#e5484d]" aria-hidden="true">*</span>
+						}
+					</label>
+				}
+				if p.Counter != "" {
+					<span class="text-[12px] tabular-nums text-mute">{ p.Counter }</span>
+				}
+			</div>
+		}
+		{ children... }
+		if p.Error != "" {
+			<p class="flex items-start gap-1.5 text-[12.5px] leading-snug text-[#e5484d] animate-[asta-field-in_.3s_cubic-bezier(.16,1,.3,1)_both]" role="alert">
+				<svg viewBox="0 0 16 16" class="mt-px h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+					<circle cx="8" cy="8" r="6.25"></circle>
+					<path d="M8 5v3.5M8 11h.01"></path>
+				</svg>
+				{ p.Error }
+			</p>
+		} else if p.Hint != "" {
+			<p class="text-[12.5px] leading-snug text-mute">{ p.Hint }</p>
+		}
+	</div>
+}

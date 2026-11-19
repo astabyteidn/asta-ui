@@ -1,0 +1,5 @@
+<!-- Needs asta.js: it builds the toasts. Call asta.toast() from a click, send HX-Trigger {"asta:toast": {...}} from the server, or render a <template data-asta-toast> after a redirect. -->
+<div style="display:flex;flex-wrap:wrap;gap:12px">
+  <button type="button" class="asta-btn asta-btn-outline" onclick="asta.toast({ title: 'Saved', description: 'Astabyte settings updated.', tone: 'success' })"><span class="asta-btn-label">Show toast</span></button>
+  <button type="button" class="asta-btn asta-btn-outline" hx-post="/settings" hx-swap="none"><span class="asta-btn-label">Save (server toast)</span></button>
+</div>

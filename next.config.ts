@@ -15,6 +15,19 @@ const nextConfig: NextConfig = {
     const api = process.env.API_PROXY_URL;
     return api ? [{ source: "/api/:path*", destination: `${api}/api/:path*` }] : [];
   },
+  // Temporary CDN for the HTML + CSS layer (public/cdn, written by `bun run css`). The paths are unversioned, so keep
+  // the cache short; other sites load these files, so allow any origin.
+  async headers() {
+    return [
+      {
+        source: "/cdn/:file*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=3600, stale-while-revalidate=86400" },
+          { key: "Access-Control-Allow-Origin", value: "*" },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

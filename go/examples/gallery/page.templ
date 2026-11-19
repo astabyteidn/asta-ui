@@ -1,0 +1,38 @@
+package main
+
+import ui "github.com/astabyteidn/asta-ui/go/ui"
+
+templ page() {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="utf-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1"/>
+			<title>Gallery · Astabyte UI for Go</title>
+			@ui.Head()
+		</head>
+		<body class="min-h-screen bg-paper text-ink antialiased">
+			<main class="mx-auto flex max-w-[1080px] flex-col gap-16 px-4 py-10 sm:px-6">
+				<header class="flex items-center justify-between gap-4">
+					<h1 class="text-[22px] font-medium tracking-[-0.03em]">Astabyte UI for Go</h1>
+					<button type="button" class={ ui.ButtonClass(ui.ButtonProps{Variant: "outline", Size: "sm"}) } hx-on:click="document.documentElement.classList.toggle('dark')">Dark</button>
+				</header>
+				@coreGallery()
+				@formsGallery()
+				@overlaysGallery()
+				@dataGallery()
+				@blocksGallery()
+			</main>
+		</body>
+	</html>
+}
+
+// demo is one component on the gallery page. The id is the component's name, so /#combobox jumps to it.
+templ demo(id, title string) {
+	<section id={ id } class="flex scroll-mt-8 flex-col gap-4">
+		<h2 class="font-mono text-[12px] uppercase tracking-[0.08em] text-mute">{ title }</h2>
+		<div class="flex flex-wrap items-start gap-4 rounded-xl bg-paper-2 p-6">
+			{ children... }
+		</div>
+	</section>
+}

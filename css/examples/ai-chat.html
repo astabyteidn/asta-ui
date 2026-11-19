@@ -1,0 +1,21 @@
+<!-- Needs asta.js and a server: the form posts via htmx to /chat, which streams the reply into [data-asta-chat-list]. -->
+<div style="max-width:720px">
+<div id="chat" data-asta-chat class="asta-ai-chat">
+<p class="asta-sr-only" aria-live="polite" data-asta-chat-status></p>
+<header class="asta-ai-chat-header"><span aria-hidden="true" class="asta-ai-chat-mark"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.5c.4 2.9 1.6 4.1 4.5 4.5-2.9.4-4.1 1.6-4.5 4.5-.4-2.9-1.6-4.1-4.5-4.5C6.4 5.6 7.6 4.4 8 1.5Z"/><path d="M12.5 10c.2 1.4.8 2 2.2 2.2-1.4.2-2 .8-2.2 2.2-.2-1.4-.8-2-2.2-2.2 1.4-.2 2-.8 2.2-2.2Z" opacity=".55"/></svg></span><h3 class="asta-ai-chat-title">Astabyte assistant</h3></header>
+<div data-asta-chat-log role="log" aria-label="Conversation" class="asta-ai-chat-log">
+<div data-asta-chat-empty class="asta-ai-chat-empty"><p class="asta-ai-chat-greeting">How can I help?</p>
+<div class="asta-ai-chat-suggestions"><button type="button" data-asta-chat-suggest="Summarise this week" class="asta-ai-chat-suggest">Summarise this week</button><button type="button" data-asta-chat-suggest="Draft a welcome email" class="asta-ai-chat-suggest">Draft a welcome email</button><button type="button" data-asta-chat-suggest="Explain how this chat works" class="asta-ai-chat-suggest">Explain how this chat works</button></div></div>
+<ol id="chat-list" data-asta-chat-list class="asta-ai-chat-list"></ol>
+</div>
+<template data-asta-chat-pending>
+<li data-role="user" class="asta-ai-chat-user asta-ai-chat-in"><p class="asta-ai-chat-bubble"></p></li>
+<li data-role="assistant" class="asta-ai-chat-reply asta-ai-chat-in" data-asta-chat-stream="pending" aria-busy="true"><span aria-hidden="true" class="asta-ai-chat-mark"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.5c.4 2.9 1.6 4.1 4.5 4.5-2.9.4-4.1 1.6-4.5 4.5-.4-2.9-1.6-4.1-4.5-4.5C6.4 5.6 7.6 4.4 8 1.5Z"/><path d="M12.5 10c.2 1.4.8 2 2.2 2.2-1.4.2-2 .8-2.2 2.2-.2-1.4-.8-2-2.2-2.2 1.4-.2 2-.8 2.2-2.2Z" opacity=".55"/></svg></span><div class="asta-ai-chat-body"><span role="img" data-asta-chat-dots class="asta-ai-chat-dots" aria-label="Thinking"><span></span><span></span><span></span></span><p data-asta-chat-text class="asta-ai-chat-text hidden"></p></div></li>
+</template>
+<form action="/chat" method="post" hx-post="/chat" hx-target="#chat-list" hx-swap="beforeend" hx-indicator="find [data-asta-chat-send]" data-asta-chat-form class="asta-ai-chat-form">
+<div class="asta-ai-chat-composer"><label for="chat-input" class="asta-sr-only">Message</label>
+<textarea id="chat-input" name="prompt" rows="1" placeholder="Ask anything" data-asta-chat-input class="asta-ai-chat-input"></textarea>
+<button type="submit" aria-label="Send" data-asta-chat-send class="asta-ai-chat-send"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg><span aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-opacity="0.25" stroke-width="2"/><path d="M14 8a6 6 0 0 0-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></button></div>
+<p class="asta-ai-chat-note">Replies can be wrong. Check anything important.</p>
+</form></div>
+</div>
