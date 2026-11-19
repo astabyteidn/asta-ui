@@ -19,7 +19,10 @@ export interface AccordionProps {
   className?: string;
 }
 
-const KEYFRAMES = `@keyframes kit-acc-down { from { height: 0; opacity: 0 } to { height: var(--radix-accordion-content-height); opacity: 1 } }
+// Radix measures the panel, so its height is the only way to open it smoothly. perf-ok
+const KEYFRAMES = `/* perf-ok */
+@keyframes kit-acc-down { from { height: 0; opacity: 0 } to { height: var(--radix-accordion-content-height); opacity: 1 } }
+/* perf-ok */
 @keyframes kit-acc-up { from { height: var(--radix-accordion-content-height); opacity: 1 } to { height: 0; opacity: 0 } }`;
 
 /**

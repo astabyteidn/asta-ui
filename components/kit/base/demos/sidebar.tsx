@@ -39,17 +39,17 @@ export default function SidebarDemo() {
       <div className="flex h-[460px] w-full max-w-[860px] overflow-hidden rounded-xl bg-paper shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_12%,transparent),0_24px_60px_-30px_rgb(0_0_0/0.35)]">
         <Sidebar
           workspaces={[
-            { id: "north", name: "Northwind", plan: "Team plan" },
-            { id: "halcyon", name: "Halcyon Labs", plan: "Pro plan" },
-            { id: "fieldnote", name: "Fieldnote", plan: "Free" },
+            { id: "north", name: "Astabyte", plan: "Team plan" },
+            { id: "halcyon", name: "Personal", plan: "Pro plan" },
+            { id: "Astabyte", name: "Side project", plan: "Free" },
           ]}
           groups={GROUPS}
           active={page}
           onNavigate={setPage}
-          user={{ name: "Rani Pratama", email: "rani@northwind.dev" }}
+          user={{ name: "Rani Pratama", email: "rani@astabyte.com" }}
         />
         <main className="min-w-0 flex-1 p-6">
-          <p className="text-[12px] text-mute">Northwind</p>
+          <p className="text-[12px] text-mute">Astabyte</p>
           <h3 className="mt-1 text-[20px] font-medium tracking-[-0.02em] text-ink">{title}</h3>
           <div className="mt-6 grid gap-3 sm:grid-cols-3">
             {Array.from({ length: 3 }, (_, i) => (

@@ -3,7 +3,7 @@
 import { HoverCard } from "@/components/kit/hover-card";
 
 const PEOPLE = {
-  maya: { name: "Maya Lindqvist", handle: "maya", initials: "ML", bio: "Design systems at Northwind. Writes about type, spacing and calm interfaces.", following: 182, followers: "4.1k" },
+  maya: { name: "Maya Lindqvist", handle: "maya", initials: "ML", bio: "Design systems at Astabyte. Writes about type, spacing and calm interfaces.", following: 182, followers: "4.1k" },
   jonah: { name: "Jonah Reyes", handle: "jonah", initials: "JR", bio: "Frontend engineer. Motion, accessibility and fast pages.", following: 96, followers: "1.8k" },
 };
 

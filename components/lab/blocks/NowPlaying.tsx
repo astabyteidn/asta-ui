@@ -37,7 +37,7 @@ const TRACKS: Track[] = [
   },
   {
     title: "Soft Meridian",
-    artist: "Lumen Coast",
+    artist: "Low Tide",
     len: 199,
     start: 47,
     bg: `radial-gradient(circle at 70% 25%, color-mix(in srgb, ${BRAND} 60%, white), ${BRAND} 55%, color-mix(in srgb, ${BRAND} 60%, black))`,

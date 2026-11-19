@@ -45,7 +45,7 @@ export default function FieldDemo() {
           />
         </Field>
         <Field label="Company" aside="Optional">
-          <input placeholder="Acme Inc." className={fieldInputClass} />
+          <input placeholder="Astabyte" className={fieldInputClass} />
         </Field>
         <Button type="submit" variant={done ? "outline" : "solid"} className="mt-1 w-full">
           {done ? "✓ Looks good" : "Create account"}

@@ -22,7 +22,7 @@ export default function Demo() {
           ))}
         </ul>
         <ChatComposer onSend={({ text, files }) => setMsgs((all) => [...all, { id: Date.now(), text, files: files.map((f) => f.name) }])} />
-        <style>{`@keyframes demo-msg { from { opacity: 0; transform: translateY(8px) scale(.98) } }`}</style>
+        <style href="asta-demo-textarea-aui-003" precedence="asta">{`@keyframes demo-msg { from { opacity: 0; transform: translateY(8px) scale(.98) } }`}</style>
       </div>
     </div>
   );

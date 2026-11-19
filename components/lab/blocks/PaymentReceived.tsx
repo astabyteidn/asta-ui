@@ -19,7 +19,7 @@ const INCOMING: Tx[] = [
   { id: 2, name: "Juniper Studio", amount: 342.5, via: "Transfer" },
   { id: 3, name: "R. Okafor", amount: 46.2, via: "Card ·· 0937" },
   { id: 4, name: "Northfield Goods", amount: 219.99, via: "Transfer" },
-  { id: 5, name: "Lumen Bakery", amount: 18.75, via: "Card ·· 1150" },
+  { id: 5, name: "Corner Bakery", amount: 18.75, via: "Card ·· 1150" },
   { id: 6, name: "Atlas Rentals", amount: 512, via: "Transfer" },
   { id: 7, name: "K. Tanaka", amount: 89.4, via: "Card ·· 7718" },
   { id: 8, name: "Harbor Supply", amount: 264.1, via: "Transfer" },

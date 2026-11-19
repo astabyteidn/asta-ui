@@ -5,7 +5,7 @@ Source of **ui.astabyte.com**: a component kit and a motion lab, shipped as a sh
 ## Before you finish
 
 ```sh
-bunx tsc --noEmit && bun run lint && bun run skill && bun run base --check && bun run build
+bunx tsc --noEmit && bun run lint && bun run skill && bun run base --check && bun run perf && bun run build
 ```
 
 ## Where things live
@@ -32,6 +32,15 @@ bunx tsc --noEmit && bun run lint && bun run skill && bun run base --check && bu
 **Motion lab.** Real use cases (trading, payments, ecommerce) that look like finished product UI and fill the card. One focused, looping motion moment per card. Fake data and brands only.
 
 **Motion.** Transform and opacity only. One easing, `cubic-bezier(.16,1,.3,1)`, or springs. Loops fade out instead of snapping. Respect reduced motion. Keyframes go in `<style href="asta-<name>" precedence="asta">` so React hoists them once. A bare `<style>` inside a popup recalculates the whole page on open.
+
+**Performance.** Every component must stay smooth on a mid-range phone. `bun run perf` (`scripts/perf-check.ts`) enforces the static part and runs in CI. Errors fail the build, warnings are for review.
+- Animate `transform` and `opacity` only. `@keyframes` that change width, height, top, left, margin or padding are errors. Layout transitions are warnings; mark a deliberate one (an accordion panel, an auto-grow field) with a `perf-ok` comment.
+- Loops (`requestAnimationFrame`, `setInterval`) pause when the element is offscreen (IntersectionObserver) or the tab is hidden, and stop on unmount. Every listener, observer and interval is cleaned up.
+- No layout reads (`getBoundingClientRect`, `offsetWidth`) inside per-frame callbacks. Measure once, or on resize.
+- Keyframes go in `<style href precedence="asta">`, never a bare `<style>`.
+- Images are webp, sized (`width`/`height`) and `loading="lazy"`. Long lists (100+ items) render in chunks or with `content-visibility`.
+- No new runtime dependencies for a component. Budgets: a component file 28 KB, a demo 14 KB.
+- Pages: previews mount only near the viewport and keep their height when unmounted (`components/ui-site/Live.tsx`), so scrolling never jumps.
 
 **Look.**
 - White ground, black and white, one blue (`brand` #2f54eb). No lime, green, red or gold. Market up = blue, down = neutral.

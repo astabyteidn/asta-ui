@@ -30,6 +30,8 @@ jobs:
           git diff --exit-code skills/ || { echo "skills/ is stale: run 'bun run skill' and commit"; exit 1; }
       - name: Base UI tree is up to date
         run: bun run base --check
+      - name: Performance rules
+        run: bun run perf
       - name: npm package (packages/asta-ui) builds and matches the kit version
         run: |
           node --check packages/asta-ui/bin/asta-ui.mjs

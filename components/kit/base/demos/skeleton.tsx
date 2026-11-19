@@ -8,7 +8,7 @@ import { Skeleton, SkeletonCard, SkeletonText } from "@/components/kit/skeleton"
 function Loaded() {
   return (
     <div className="flex w-full animate-[kit-fade_.5s_cubic-bezier(.16,1,.3,1)] flex-col gap-4 rounded-xl bg-paper p-3 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_10%,transparent)]">
-      <style>{`@keyframes kit-fade { from { opacity: 0; transform: translateY(4px) } }`}</style>
+      <style href="asta-demo-skeleton" precedence="asta">{`@keyframes kit-fade { from { opacity: 0; transform: translateY(4px) } }`}</style>
       <div className="flex aspect-[16/9] w-full items-end rounded-[10px] bg-brand p-4">
         <span className="text-[22px] font-medium leading-none tracking-[-0.03em] text-white">Field notes, vol. 3</span>
       </div>

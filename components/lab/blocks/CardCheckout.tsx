@@ -188,7 +188,7 @@ export default function CardCheckout() {
                   </g>
                 ))}
               </svg>
-              <div className="absolute right-[7%] top-[7%] text-[3.6cqw] tracking-[0.04em] text-black/55">Northwind</div>
+              <div className="absolute right-[7%] top-[7%] text-[3.6cqw] tracking-[0.04em] text-black/55">Astabyte</div>
               <div className="absolute left-[8%] top-[34%] h-[11cqw] w-[15cqw] rounded-[2cqw] bg-gradient-to-br from-[#ececea] to-[#cdcdc9] shadow-[inset_0_0_0_1px_rgb(0_0_0/0.12)]">
                 <span className="absolute inset-x-[32%] inset-y-0 border-x border-black/15" />
                 <span className="absolute inset-x-0 top-1/2 border-t border-black/15" />

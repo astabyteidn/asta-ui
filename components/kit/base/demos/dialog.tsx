@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/kit/base/button";
 import { Dialog } from "@/components/kit/base/dialog";
 
-const NAME = "acme-web";
+const NAME = "astabyte-web";
 
 export default function DialogDemo() {
   const [open, setOpen] = useState(false);
