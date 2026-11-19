@@ -2,6 +2,10 @@
 
 Releases are git tags (`vX.Y.Z`); pushing a tag deploys ui.astabyte.com. Merging to `main` does not.
 
+## 0.9.1 — 2026-11-19
+
+- **Temporary CDN updates faster.** https://ui.astabyte.com/cdn/asta.css and `asta.js` now cache for 10 minutes without a day-long stale window, so a release shows up there within minutes instead of hours. Pinned jsDelivr links are unchanged.
+
 ## 0.9.0 — 2026-11-19
 
 - **One way in besides React: HTML + CSS.** The Go + htmx templ port is gone. The CSS layer already covers Go (`html/template`), Django, Rails, Laravel and htmx with the same look, so keeping a second copy of every component wasn't worth it. https://ui.astabyte.com/go now redirects to https://ui.astabyte.com/css.

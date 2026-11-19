@@ -20,13 +20,14 @@ const nextConfig: NextConfig = {
     return [{ source: "/go", destination: "/css", permanent: true }];
   },
   // Temporary CDN for the HTML + CSS layer (public/cdn, written by `bun run css`). The paths are unversioned, so keep
-  // the cache short; other sites load these files, so allow any origin.
+  // the cache short. No long stale-while-revalidate: Cloudflare kept serving the old file for hours with it (the VPS
+  // in front already serves a stale copy when the homelab is down). Other sites load these files, so allow any origin.
   async headers() {
     return [
       {
         source: "/cdn/:file*",
         headers: [
-          { key: "Cache-Control", value: "public, max-age=3600, stale-while-revalidate=86400" },
+          { key: "Cache-Control", value: "public, max-age=600, stale-while-revalidate=60" },
           { key: "Access-Control-Allow-Origin", value: "*" },
         ],
       },
