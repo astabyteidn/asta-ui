@@ -222,7 +222,7 @@ export default function Candlestick() {
           setOhlc(null);
         }}
       >
-        <canvas ref={canvas} className="block" aria-label="Live candlestick chart for ACME / USD" role="img" />
+        <canvas ref={canvas} className="block" aria-label="Live candlestick chart for ASTA / USD" role="img" />
       </div>
       <div className="pointer-events-none absolute left-5 top-5 font-mono text-[11px] tabular-nums sm:left-6">
         {ohlc ? (
@@ -231,7 +231,7 @@ export default function Candlestick() {
             <span style={{ color: ohlc.c >= ohlc.o ? "var(--color-brand)" : "var(--color-ink-2)" }}>{f(ohlc.c)}</span>
           </span>
         ) : (
-          <span className="uppercase tracking-[0.12em] text-mute">ACME / USD · 1m</span>
+          <span className="uppercase tracking-[0.12em] text-mute">ASTA / USD · 1m</span>
         )}
       </div>
     </div>

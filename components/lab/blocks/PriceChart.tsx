@@ -210,7 +210,7 @@ export default function PriceChart() {
   return (
     <div className="relative flex h-full w-full flex-col p-5 sm:p-6">
       <div className="relative z-10">
-        <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-mute">ACME / USD</p>
+        <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-mute">ASTA / USD</p>
         <div className="mt-2 flex flex-wrap items-center gap-3">
           <span className="text-[clamp(1.9rem,5.5vw,3rem)] font-medium leading-none tracking-[-0.04em] text-ink">
             <Roll text={price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />

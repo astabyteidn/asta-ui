@@ -6,7 +6,7 @@ const UP = "var(--color-brand)";
 const DOWN = "var(--color-ink)";
 const EASE = "cubic-bezier(.16,1,.3,1)";
 const PRICE = 1842.5;
-const BALANCE = { buy: 4600, sell: 2.4 }; // USD to spend / ACME to sell
+const BALANCE = { buy: 4600, sell: 2.4 }; // USD to spend / ASTA to sell
 const DETENTS = [0, 25, 50, 75, 100];
 
 type Side = "buy" | "sell";
@@ -124,7 +124,7 @@ export default function TradeTicket() {
         <div className="text-center">
           <div className="text-[clamp(2.2rem,7vw,3.4rem)] font-medium leading-none tracking-[-0.045em] text-ink tabular-nums">
             {amount.toFixed(3)}
-            <span className="ml-2 text-[0.42em] font-normal tracking-normal text-mute">ACME</span>
+            <span className="ml-2 text-[0.42em] font-normal tracking-normal text-mute">ASTA</span>
           </div>
           <p className="mt-2 font-mono text-[12px] tabular-nums text-mute">≈ ${usd.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
         </div>
@@ -191,7 +191,7 @@ export default function TradeTicket() {
           style={{ background: color }}
         >
           <span className={`absolute flex items-center gap-2 transition-[transform,opacity] duration-500 ease-[cubic-bezier(.16,1,.3,1)] ${phase === "idle" ? "translate-y-0 opacity-100" : "-translate-y-4 opacity-0"}`}>
-            <span className="capitalize">{side}</span> ACME
+            <span className="capitalize">{side}</span> ASTA
           </span>
           <span className={`absolute transition-[transform,opacity] duration-500 ease-[cubic-bezier(.16,1,.3,1)] ${phase === "sending" ? "scale-100 opacity-100" : "scale-50 opacity-0"}`}>
             <svg viewBox="0 0 16 16" className="h-5 w-5 animate-spin" fill="none" aria-hidden>
