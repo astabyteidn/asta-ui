@@ -41,8 +41,7 @@ bun run dev    # http://localhost:3792
 | Docs pages | `app/(docs)/` |
 | npm package and CLI | `packages/asta-ui/` |
 | Agent skills | `skills/` |
-| Go + htmx package | `go/` (see [go/README.md](go/README.md)) |
-| HTML + CSS layer | `packages/asta-ui/css/` (sources in `css/src/`), examples in `css/examples/` |
+| HTML + CSS layer | `packages/asta-ui/css/`: classes in `css/src/`, runtime JS and state CSS in `css/runtime/`, examples in `css/examples/` |
 
 [CLAUDE.md](CLAUDE.md) has the full map. It's written for AI agents, but it reads fine for people too.
 
@@ -75,9 +74,7 @@ Some files are generated. Don't edit them by hand, and don't forget to regenerat
 |---|---|
 | Added, renamed or re-described a component | `bun run skill` |
 | A Radix component that has a Base UI twin | `bun run base` |
-| A `.templ` file in `go/ui` | `cd go && templ generate`, then `bun run go` |
-| A file in `go/ui/assets/src/` | `bun run go`, then `bun run css` |
-| A file in `packages/asta-ui/css/src/` | `bun run css` |
+| A file in `packages/asta-ui/css/src/` or `css/runtime/` | `bun run css` |
 
 CI fails if a generated file is stale.
 
@@ -87,10 +84,10 @@ CI fails if a generated file is stale.
 bunx tsc --noEmit && bun run lint && bun run skill && bun run base --check && bun run perf && bun run build
 ```
 
-Changed anything in `go/`? Also run:
+Changed the HTML + CSS layer? Also run:
 
 ```sh
-(cd go && templ generate && go vet ./... && go test ./...) && bun run go --check && bun run css --check
+bun run css --check
 ```
 
 `bun run perf` prints warnings too. Errors fail the build. Warnings are for review, but don't add new ones without a reason. Mark a deliberate layout transition with a `perf-ok` comment.

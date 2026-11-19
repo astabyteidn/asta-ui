@@ -26,14 +26,14 @@ let hl: Promise<HighlighterCore> | null = null;
 const get = () =>
   (hl ??= createHighlighterCore({
     themes: [theme],
-    langs: [import("@shikijs/langs/tsx"), import("@shikijs/langs/css"), import("@shikijs/langs/go"), import("@shikijs/langs/templ"), import("@shikijs/langs/html")],
+    langs: [import("@shikijs/langs/tsx"), import("@shikijs/langs/css"), import("@shikijs/langs/go"), import("@shikijs/langs/html")],
     engine: createJavaScriptRegexEngine(),
   }));
 
 export async function highlight(code: string, file: string): Promise<string> {
   // Shell commands stay plain: as tsx, the `//` in a URL would read as a comment.
   const ext = file.slice(file.lastIndexOf(".") + 1);
-  const lang = ext === "css" || ext === "go" || ext === "templ" || ext === "html" ? ext : ext === "sh" || ext === "txt" ? "text" : "tsx";
+  const lang = ext === "css" || ext === "go" || ext === "html" ? ext : ext === "sh" || ext === "txt" ? "text" : "tsx";
   // Tab stops count from the line-number gutter, so a leading tab shows as about one space. Show two spaces per tab;
   // the copy button still copies the original code, tabs and all.
   const shown = code.replace(/^\t+/gm, (t) => "  ".repeat(t.length));

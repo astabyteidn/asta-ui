@@ -1,9 +1,9 @@
 /* Blocks: sign-in, onboarding, pricing, AI chat, checkout, properties and settings panels, team members.
- * Class lists mirror go/ui/<name>.templ. Embedded controls use the core classes (asta-btn, asta-input, asta-field,
+ * Class lists mirror the React kit. Embedded controls use the core classes (asta-btn, asta-input, asta-field,
  * asta-select, asta-switch, asta-checkbox, asta-avatar, asta-progress). The runtime CSS keys on the data-asta-*
  * attributes, so keep them in the markup. Modifiers come after the base class so they win. */
 
-/* ---- Sign-in (sign_in.templ) ----
+/* ---- Sign-in ----
  * <div id="sign-in" data-asta-sign-in class="asta-sign-in"><form class="asta-sign-in-form" hx-post="/sign-in" hx-target="#sign-in" hx-swap="outerHTML">
  *   <h3 class="asta-sign-in-title">Welcome back</h3> … <button type="submit" class="asta-btn asta-sign-in-submit">…</button></form></div>
  * A field with an error: wrap its asta-input in <div class="asta-sign-in-shake">. */
@@ -91,7 +91,7 @@
   }
 }
 
-/* ---- Onboarding (onboarding.templ) ----
+/* ---- Onboarding ----
  * <div id="onboarding" data-asta-onboarding class="asta-onboarding"><div data-asta-onboarding-list> <div class="asta-onboarding-head">…</div>
  *   <ol class="asta-onboarding-steps"><li data-asta-onboarding-step class="asta-onboarding-step"><button data-asta-onboarding-toggle
  *   aria-expanded="true" aria-controls="s1" class="asta-onboarding-toggle">…</button><div id="s1" role="region" class="asta-onboarding-panel">…</div></li></ol></div></div>
@@ -207,7 +207,7 @@
   }
 }
 
-/* ---- Pricing (pricing.templ) ----
+/* ---- Pricing ----
  * <div data-asta-pricing class="asta-plans"><div role="radiogroup" class="asta-plans-period"><span data-asta-pricing-pill class="asta-plans-pill"></span>
  *   <label class="asta-plans-option"><input type="radio" name="billing" value="monthly" checked class="sr-only">Monthly</label>…</div>
  *   <div class="asta-plans-grid"><div class="asta-plans-card">…</div><div class="asta-plans-card asta-plans-card-featured">…</div></div></div>
@@ -315,7 +315,7 @@
   }
 }
 
-/* ---- AI chat (ai_chat.templ) ----
+/* ---- AI chat ----
  * <div id="chat" data-asta-chat class="asta-ai-chat"> <header class="asta-ai-chat-header">…</header>
  *   <div data-asta-chat-log role="log" class="asta-ai-chat-log"><div data-asta-chat-empty class="asta-ai-chat-empty">…</div><ol data-asta-chat-list class="asta-ai-chat-list">…</ol></div>
  *   <form data-asta-chat-form class="asta-ai-chat-form" hx-post="/chat" hx-target="#chat-list" hx-swap="beforeend">…</form></div>
@@ -450,7 +450,7 @@
   @apply mt-2 text-center text-[11.5px] text-mute;
 }
 
-/* ---- Checkout (checkout.templ) ----
+/* ---- Checkout ----
  * <form id="checkout" data-asta-checkout class="asta-checkout-form" hx-post="/checkout" hx-target="#checkout" hx-swap="outerHTML">
  *   <div class="asta-checkout-main"><div class="asta-checkout-steps"><fieldset class="asta-checkout-section">…</fieldset>…</div></div>
  *   <aside data-asta-checkout-summary class="asta-checkout-summary">…</aside></form>
@@ -623,7 +623,7 @@
   }
 }
 
-/* ---- Properties panel (properties_panel.templ) ----
+/* ---- Properties panel ----
  * <form data-asta-props class="asta-properties" hx-post="/props" hx-trigger="change" hx-swap="none"><div class="asta-properties-header">…</div>
  *   <div class="asta-properties-body"><details open class="asta-prop-section"><summary class="asta-prop-summary">…Layout</summary>
  *   <div data-asta-props-body class="asta-prop-content"><div class="asta-prop-row"><span class="asta-prop-label">Size</span><div class="asta-prop-cells">
@@ -712,7 +712,7 @@
   @apply h-full min-w-0 flex-1 bg-transparent px-2 font-mono text-[11.5px] uppercase outline-none;
 }
 
-/* ---- Settings panel (settings_panel.templ) ----
+/* ---- Settings panel ----
  * <form data-asta-settings class="asta-settings-panel" hx-post="/settings" hx-swap="none" hx-indicator="find [data-asta-settings-save]">
  *   <div class="asta-settings-body"><section class="asta-settings-section">…<div class="asta-settings-row">…</div></section></div>
  *   <div data-asta-settings-bar class="asta-settings-savebar">…</div></form>
@@ -813,7 +813,7 @@
   }
 }
 
-/* ---- Team members (team_members.templ) ----
+/* ---- Team members ----
  * <div id="team" data-asta-team class="asta-team-members"><header class="asta-team-header">…</header>
  *   <form class="asta-team-invite" hx-post="/team/invite" hx-target="#team" hx-swap="outerHTML">…</form>
  *   <h4 class="asta-team-heading">Members</h4><ul><li data-asta-team-row="u1" class="asta-team-member"><div class="asta-team-row">…</div></li></ul></div>

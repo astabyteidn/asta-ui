@@ -2,6 +2,13 @@
 
 Releases are git tags (`vX.Y.Z`); pushing a tag deploys ui.astabyte.com. Merging to `main` does not.
 
+## 0.9.0 — 2026-11-19
+
+- **One way in besides React: HTML + CSS.** The Go + htmx templ port is gone. The CSS layer already covers Go (`html/template`), Django, Rails, Laravel and htmx with the same look, so keeping a second copy of every component wasn't worth it. https://ui.astabyte.com/go now redirects to https://ui.astabyte.com/css.
+  - Coming from the Go module: link `asta.css` and `asta.js` and use the `asta-*` classes in your templates. The markup is on every component page under "HTML + CSS". `go/v0.8.0` stays on the Go proxy but gets no updates.
+  - The runtime (`asta.js`) moved to `packages/asta-ui/css/runtime/`. It behaves the same, and htmx swaps still need no re-init.
+- **HTML + CSS guide:** new sections for server templates (Go, Django, Rails) and htmx.
+
 ## 0.8.0 — 2026-11-19
 
 - **Go + htmx.** The whole main kit as [templ](https://templ.guide) components in the Go module `github.com/astabyteidn/asta-ui/go`: forms, overlays, navigation, data views, feedback and blocks, 100+ components in all. CSS, JS and htmx 2 are embedded, so a Go app still ships as one binary. Docs at https://ui.astabyte.com/go.

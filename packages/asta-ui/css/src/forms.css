@@ -1,9 +1,9 @@
 /* Forms: combobox, date picker, colour picker, number, OTP, password, tags, range, rating, upload, inline edit,
- * segmented control, toggle group, copy button. Class lists mirror go/ui/<name>.templ.
+ * segmented control, toggle group, copy button. Class lists mirror the React kit.
  * asta.js finds these parts by their data-asta-* attributes, so keep those. Runtime classes named in
- * go/ui/assets/src/forms.css (asta-combo-chip, asta-date-cal, asta-otp-shake, asta-pw-slash…) stay in the markup too. */
+ * runtime/forms.css (asta-combo-chip, asta-date-cal, asta-otp-shake, asta-pw-slash…) stay in the markup too. */
 
-/* ---- Combobox (combobox.templ) ----
+/* ---- Combobox ----
  * <div class="asta-combobox" data-asta-combo="single" data-name="framework">
  *   <div class="asta-combobox-box" data-asta-combo-box><input class="asta-combobox-input" data-asta-combo-input role="combobox" …>
  *   <button class="asta-combobox-toggle" data-asta-combo-toggle>…</button></div>
@@ -79,7 +79,7 @@
   }
 }
 
-/* ---- Date picker (date_picker.templ) ----
+/* ---- Date picker ----
  * <div class="asta-date-picker" data-asta-date="single" data-placeholder="Pick a date">
  *   <button class="asta-date-picker-trigger" data-asta-date-trigger aria-haspopup="dialog" aria-expanded="false" aria-controls="d-cal">
  *     <svg class="asta-date-picker-icon">…</svg><span class="asta-date-picker-text asta-date-picker-placeholder" data-asta-date-text>Pick a date</span></button>
@@ -115,7 +115,7 @@
   @apply shadow-[0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent),0_12px_32px_-8px_rgb(0_0_0/0.22),0_4px_8px_-4px_rgb(0_0_0/0.08)];
 }
 
-/* ---- Colour picker (color_picker.templ) ----
+/* ---- Colour picker ----
  * <div class="asta-color-picker" data-asta-color data-columns="5">
  *   <div class="asta-color-picker-swatches" role="radiogroup" style="grid-template-columns:repeat(5,28px);gap:10px">
  *     <label class="asta-color-picker-swatch"><input type="radio" name="c" value="#2f54eb"><span class="asta-color-picker-ring"></span>
@@ -175,7 +175,7 @@
   @apply w-14 text-[12px] text-mute opacity-0 transition-opacity duration-200 data-[on]:opacity-100;
 }
 
-/* ---- Number input (number_input.templ) ----
+/* ---- Number input ----
  * <div class="asta-number-input" data-asta-number data-min="1" data-max="20" data-step="1">
  *   <button class="asta-number-input-step" data-asta-number-step="-1" aria-label="Decrease">…</button>
  *   <div class="asta-number-input-view" role="spinbutton" tabindex="0" data-asta-number-view aria-valuenow="4">
@@ -227,7 +227,7 @@
   }
 }
 
-/* ---- OTP input (otp_input.templ) ----
+/* ---- OTP input ----
  * <div class="asta-otp-input" data-asta-otp>
  *   <div class="asta-otp-input-boxes" aria-hidden="true" data-asta-otp-boxes>
  *     <span class="asta-otp-input-wave" data-asta-otp-wave style="--asta-otp-i:0ms"><span class="asta-otp-input-box" data-asta-otp-box></span></span>…
@@ -262,7 +262,7 @@
   @apply absolute inset-0 h-full w-full cursor-text bg-transparent text-[16px] text-transparent caret-transparent opacity-0 outline-none disabled:cursor-not-allowed;
 }
 
-/* ---- Segmented control (segmented_control.templ) ----
+/* ---- Segmented control ----
  * <div class="asta-segmented" role="radiogroup" data-asta-segmented aria-label="View">
  *   <label class="asta-segmented-item"><input type="radio" name="view" value="list" checked>
  *     <span class="asta-segmented-pill" data-asta-ind></span><span class="asta-segmented-label">List</span></label>…
@@ -298,7 +298,7 @@
   }
 }
 
-/* ---- Toggle group (toggle_group.templ) ----
+/* ---- Toggle group ----
  * <div class="asta-toggle-group" role="radiogroup" data-asta-toggle="single" aria-label="Align">
  *   <label class="asta-toggle-group-item"><input type="radio" name="align" value="left" checked aria-label="Left">
  *     <span class="asta-toggle-group-ind" data-asta-ind></span><span class="asta-toggle-group-icon">svg</span></label>…
@@ -360,7 +360,7 @@
   }
 }
 
-/* ---- Copy button (copy_button.templ) ----
+/* ---- Copy button ----
  * <button class="asta-copy-button asta-copy-button-text" data-asta-copy="npm i asta-ui" data-timeout="1600" data-state="idle" data-copied="Copied">
  *   <span class="asta-copy-button-icons" aria-hidden="true"><svg class="asta-copy-button-copy">…</svg>
  *     <svg class="asta-copy-button-done"><path class="asta-copy-tick" pathLength="1" d="m3.5 8.5 3 3 6-7"/></svg></span>
@@ -444,7 +444,7 @@
   }
 }
 
-/* ---- Password input (password_input.templ) ----
+/* ---- Password input ----
  * <div class="asta-password" data-asta-password data-strength="0">
  *   <label class="asta-password-label" for="pw">Password</label>
  *   <div class="asta-password-box"><input class="asta-password-input" id="pw" type="password" data-asta-password-input aria-describedby="pw-help">
@@ -525,7 +525,7 @@
   }
 }
 
-/* ---- Tag input (tag_input.templ) ----
+/* ---- Tag input ----
  * <div class="asta-tag-input" data-asta-tags data-name="tags" data-max="8" data-placeholder="Add a tag">
  *   <div class="asta-tag-input-head"><label class="asta-tag-input-label" for="tags">Tags</label><span class="asta-tag-input-count" data-asta-tags-count aria-live="polite">2/8</span></div>
  *   <div class="asta-tag-input-box" data-asta-tags-box><ul class="asta-tag-input-list" data-asta-tags-list>
@@ -577,7 +577,7 @@
   }
 }
 
-/* ---- Range slider (range_slider.templ) ----
+/* ---- Range slider ----
  * <div class="asta-range-slider" data-asta-range data-gap="10" data-prefix="$">
  *   <div class="asta-range-slider-body"><div class="asta-range-slider-track" data-asta-range-track>
  *     <span class="asta-range-slider-rail"></span>
@@ -634,7 +634,7 @@
   @apply z-10;
 }
 
-/* ---- Rating (rating.templ) ----
+/* ---- Rating ----
  * <div class="asta-rating" role="radiogroup" aria-label="Rating" data-asta-rating data-value="3" data-clear>
  *   <input type="radio" name="stars" value="0" aria-label="No rating">
  *   <span class="asta-rating-star" data-asta-star data-fill="full" style="width:24px;height:24px">
@@ -688,7 +688,7 @@
   @apply absolute inset-y-0 right-0 w-1/2 cursor-pointer;
 }
 
-/* ---- File upload (file_upload.templ) ----
+/* ---- File upload ----
  * <div class="asta-file-upload" data-asta-upload data-accept="image/*,.pdf" data-max-size="5242880" data-max-files="4">
  *   <label class="asta-file-upload-zone" data-asta-upload-zone><span class="asta-file-upload-icon">svg</span>
  *     <span class="asta-file-upload-text"><span class="asta-file-upload-title"><span class="asta-file-upload-idle">Drop files here or <span class="asta-file-upload-browse">browse</span></span>
@@ -799,7 +799,7 @@
   }
 }
 
-/* ---- Inline edit (inline_edit.templ) ----
+/* ---- Inline edit ----
  * <span class="asta-inline-edit" data-asta-inline>
  *   <button class="asta-inline-edit-view" data-asta-inline-view aria-label="Name: Astabyte. Edit"><span class="asta-inline-edit-text" data-asta-inline-text>Astabyte</span>
  *     <svg class="asta-inline-edit-pencil">…</svg></button>

@@ -1,7 +1,7 @@
 /* Core: buttons, fields, dialog, menu, tabs, badges and the other small parts.
- * Class lists mirror go/ui/<name>.templ. Modifiers come after the base class so they win. */
+ * Class lists mirror the React kit. Modifiers come after the base class so they win. */
 
-/* ---- Button (button.templ) ----
+/* ---- Button ----
  * <button class="asta-btn asta-btn-accent asta-btn-sm"><span class="asta-btn-label">Save</span></button>
  * Variants: (solid) accent danger outline soft ghost link. Sizes: xs sm (md) lg. Also asta-btn-icon, asta-btn-pill.
  * Loading: aria-busy="true" or htmx's .htmx-request shows .asta-btn-spinner over the label. */
@@ -76,7 +76,7 @@
   }
 }
 
-/* ---- Input (field.templ) ----
+/* ---- Input ----
  * <label class="asta-input"><span class="asta-input-icon"><svg/></span><input class="asta-input-control" name="q"></label>
  * Sizes: asta-input-sm, asta-input-lg. States: asta-input-error, asta-input-success, or aria-invalid="true" on the
  * input. A disabled input dims the whole field. */
@@ -120,7 +120,7 @@
   }
 }
 
-/* ---- Field (field.templ) ----
+/* ---- Field ----
  * <div class="asta-field"><div class="asta-field-head"><label class="asta-label" for="email">Email</label></div>
  *   …control… <p class="asta-hint">We never share it.</p></div>
  * asta-error replaces the hint (role="alert", optional leading svg). asta-counter sits on the right of the head. */
@@ -149,7 +149,7 @@
   @apply text-[12.5px] leading-snug text-mute;
 }
 
-/* ---- Textarea (textarea.templ) ----
+/* ---- Textarea ----
  * <div class="asta-textarea"><textarea class="asta-textarea-control" rows="3"></textarea></div>
  * asta-textarea-error (or aria-invalid="true"). asta-textarea-auto on the control grows with its content. */
 .asta-textarea {
@@ -169,7 +169,7 @@
   @apply [field-sizing:content] overflow-y-auto min-h-[calc(3lh+24px)] max-h-[calc(10lh+24px)];
 }
 
-/* ---- Select (select.templ) ----
+/* ---- Select ----
  * <div class="asta-select"><select class="asta-select-control">…</select><svg class="asta-select-icon"/></div>
  * asta-select-sm, asta-select-error (or aria-invalid="true"). An empty-value option shows as a muted placeholder. */
 .asta-select {
@@ -200,7 +200,7 @@
   }
 }
 
-/* ---- Checkbox (checkbox.templ) ----
+/* ---- Checkbox ----
  * <label class="asta-checkbox"><span class="asta-checkbox-box"><input type="checkbox" class="asta-checkbox-input">
  *   <svg class="asta-checkbox-check"/><span class="asta-checkbox-dash"></span></span>
  *   <span><span class="asta-checkbox-label">Email me</span><span class="asta-checkbox-desc">…</span></span></label>
@@ -250,7 +250,7 @@
   @apply mt-0.5 block text-[13px] leading-snug text-mute;
 }
 
-/* ---- Radio group (radio.templ) ----
+/* ---- Radio group ----
  * <div role="radiogroup" class="asta-radio-group"><label class="asta-radio"><span class="asta-radio-row">
  *   <span class="asta-radio-dot"><input type="radio" class="asta-radio-input" name="plan"><span class="asta-radio-mark"></span></span>
  *   <span class="asta-radio-label">Pro</span><span class="asta-radio-aside">$12</span></span>
@@ -305,7 +305,7 @@
   @apply pl-7 text-[13px] leading-snug text-mute;
 }
 
-/* ---- Switch (switch.templ) ----
+/* ---- Switch ----
  * <label class="asta-switch"><span><span class="asta-switch-label">Alerts</span><span class="asta-switch-desc">…</span></span>
  *   <span class="asta-switch-track"><input type="checkbox" role="switch" class="asta-switch-input"><span class="asta-switch-thumb"></span></span></label>
  * A bare asta-switch-track works without a label. Sizes: asta-switch-sm, asta-switch-lg on the label or the track. */
@@ -357,7 +357,7 @@
   }
 }
 
-/* ---- Slider (slider.templ) ----
+/* ---- Slider ----
  * <div class="asta-slider"><input type="range" class="asta-slider-input" min="0" max="100" value="40">
  *   <div class="asta-slider-ticks" aria-hidden="true"><span class="asta-slider-tick" style="left:0%"></span>…</div></div> */
 .asta-slider {
@@ -386,7 +386,7 @@
   @apply absolute top-0 h-1 w-1 -translate-x-1/2 rounded-full bg-[color-mix(in_srgb,var(--ink)_28%,transparent)];
 }
 
-/* ---- Badge (badge.templ) ----
+/* ---- Badge ----
  * <span class="asta-badge asta-badge-success"><span class="asta-badge-dot"></span>Live</span>
  * Variants: (soft) solid outline. Tones: (neutral) accent success warning danger. Size: asta-badge-sm.
  * asta-badge-dot can hold <span class="asta-badge-ping"></span> for a pulse. asta-badge-remove is the × button.
@@ -454,7 +454,7 @@
   @apply inline-flex h-[18px] min-w-[18px] animate-[asta-pop_.4s_cubic-bezier(.16,1,.3,1)] items-center justify-center rounded-[5px] bg-[#e5484d] px-1 text-[10.5px] font-semibold tabular-nums leading-none text-white shadow-[0_0_0_2px_var(--paper)] motion-reduce:animate-none;
 }
 
-/* ---- Dialog (dialog.templ) ----
+/* ---- Dialog ----
  * <button data-asta-open="invite">Invite</button>
  * <dialog id="invite" class="asta-dialog" aria-labelledby="invite-title">
  *   <button type="button" class="asta-dialog-close" data-asta-close aria-label="Close"><svg/></button>
@@ -485,7 +485,7 @@
   @apply mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end;
 }
 
-/* ---- Menu (menu.templ) ----
+/* ---- Menu ----
  * <div class="asta-menu" data-asta-menu>
  *   <button class="asta-btn asta-btn-outline asta-menu-trigger" data-asta-menu-trigger aria-haspopup="menu" aria-expanded="false">
  *     Actions<svg class="asta-menu-chevron"/></button>
@@ -545,7 +545,7 @@
   @apply mx-1 my-1.5 h-px bg-[color-mix(in_srgb,var(--ink)_8%,transparent)];
 }
 
-/* ---- Tabs (tabs.templ) ----
+/* ---- Tabs ----
  * <div class="asta-tabs" data-asta-tabs><div role="tablist" class="asta-tabs-list">
  *   <span class="asta-tabs-line" aria-hidden="true"></span><span class="asta-tabs-indicator" data-asta-tab-indicator aria-hidden="true"></span>
  *   <button role="tab" class="asta-tab" id="t-a" aria-controls="p-a" aria-selected="true">Overview<span class="asta-tab-count">4</span></button>…</div>
@@ -617,7 +617,7 @@
   }
 }
 
-/* ---- Table (table.templ) ----
+/* ---- Table ----
  * <div class="asta-table-wrap"><div class="asta-table-scroll"><table class="asta-table">
  *   <thead><tr><th class="asta-th" scope="col">Name</th><th class="asta-th asta-th-right">Amount</th></tr></thead>
  *   <tbody><tr class="asta-tr"><td class="asta-td">Astabyte</td><td class="asta-td asta-td-right">$1,200</td></tr></tbody></table></div></div>

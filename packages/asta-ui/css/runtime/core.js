@@ -1,4 +1,4 @@
-/* Astabyte UI for Go + htmx. One small script, no dependencies.
+/* Astabyte UI runtime for the HTML + CSS layer. One small script, no dependencies.
  * Everything is wired with event delegation on document, so markup swapped in by htmx works without re-init.
  *   Dialog  <dialog class="asta-dialog">, opened by [data-asta-open="id"], closed by [data-asta-close]
  *   Toast   asta.toast({ title, description, tone, duration, action: { label, href | event, detail } }),

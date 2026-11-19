@@ -401,7 +401,7 @@ export const onCreateWebpackConfig: GatsbyNode["onCreateWebpackConfig"] = ({ act
       next={{ href: "/button", title: "Button" }}
     >
       <p>
-        Not on React? Use the <Link href="/go">Go + htmx</Link> module or the <Link href="/css">HTML + CSS</Link> layer instead.
+        Not on React? Use the <Link href="/css">HTML + CSS</Link> layer instead, from Go, Django, Rails, Laravel or htmx.
       </p>
 
       <h2 id="primitive">Radix or Base UI</h2>

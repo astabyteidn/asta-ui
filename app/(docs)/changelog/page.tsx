@@ -61,11 +61,11 @@ export default function ChangelogPage() {
   return (
     <DocPage
       title="Changelog"
-      lead="What changed in each release, newest first. The npm package, the Go module and this site share one version."
+      lead="What changed in each release, newest first. The npm package and this site share one version."
       toc={list.map((r) => ({ id: id(r.version), title: `v${r.version}` }))}
     >
       <p>
-        Pin a version with <code>asta-ui@{list[0]?.version}</code> on npm or <code>go get …/go@v{list[0]?.version}</code>. Tags and notes are
+        Pin a version with <code>asta-ui@{list[0]?.version}</code> on npm or jsDelivr. Tags and notes are
         also on <a href={`${REPO}/releases`}>GitHub releases</a>.
       </p>
 
