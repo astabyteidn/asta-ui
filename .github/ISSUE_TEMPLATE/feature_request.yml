@@ -1,0 +1,39 @@
+name: Feature request
+description: A new component, a new option, or a better way to do something.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: Tell us the real product case. "A checkout for a SaaS plan" beats "a fancy card".
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you building
+      description: The screen or flow, and what's missing today.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: What you'd like
+      description: How it should look and behave. Links to examples are welcome.
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - New kit component
+        - New motion lab component
+        - New option on an existing component
+        - Docs, CLI or agent skills
+        - Something else
+    validations:
+      required: true
+  - type: checkboxes
+    id: help
+    attributes:
+      label: Want to build it?
+      options:
+        - label: I'd like to open a PR for this.

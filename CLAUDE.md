@@ -65,9 +65,12 @@ Tags deploy. `main` does not.
 - **check:** versions match the tag, then builds and runs `npm pack --dry-run`
 - **deploy:** pushes the image `asta-ui:<version>` to our registry, calls the Portainer webhook with `?tag=<version>`, waits for `https://ui.astabyte.com/healthz`
 - **publish-cli:** `npm publish --provenance` (skipped if that version already exists)
+- **release:** creates the GitHub Release `vX.Y.Z` with that version's `CHANGELOG.md` section (`scripts/release-notes.sh`). So the changelog heading must be `## X.Y.Z — date`, or the job fails.
 
 Rollback means calling the webhook with an older tag. Production is a single Docker service behind nginx.
 
 Commits: English, one line, Conventional Commits, no body, no trailers.
+
+Contributor docs: `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `SUPPORT.md`, `.github/ISSUE_TEMPLATE/`, `.github/PULL_REQUEST_TEMPLATE.md`. Keep `CONTRIBUTING.md` in step with the rules above when they change.
 
 Pageviews go to the Astabyte API (`POST /api/analytics/collect`, routed by nginx), with a `/ui` prefix.

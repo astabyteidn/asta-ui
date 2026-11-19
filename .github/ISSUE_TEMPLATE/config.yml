@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Docs
+    url: https://ui.astabyte.com/introduction
+    about: Every component with a live demo, the code and the props.
+  - name: Report a security problem
+    url: https://github.com/astabyteidn/asta-ui/security/advisories/new
+    about: Please report security problems privately, not in a public issue.

@@ -118,3 +118,24 @@ jobs:
           v=$(node -p "require('./package.json').version")
           if npm view "asta-ui@$v" version > /dev/null 2>&1; then echo "asta-ui@$v already on npm"; exit 0; fi
           npm publish --provenance --access public
+
+  # A GitHub Release for every tag, with the notes from CHANGELOG.md, so each version shows on the repo page.
+  release:
+    needs: publish-cli
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v') && github.repository == 'astabyteidn/asta-ui'
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create or update the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          scripts/release-notes.sh "$TAG" > notes.md
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            gh release edit "$TAG" --title "$TAG" --notes-file notes.md
+          else
+            gh release create "$TAG" --title "$TAG" --notes-file notes.md --verify-tag --latest
+          fi
