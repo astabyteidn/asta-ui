@@ -21,6 +21,7 @@ export const baseDemos: Record<string, ComponentType> = {
   "dropdown-menu": load(() => import("./demos/dropdown-menu")),
   "empty-state": load(() => import("./demos/empty-state")),
   "field": load(() => import("./demos/field")),
+  "file-card": load(() => import("./demos/file-card")),
   "footer": load(() => import("./demos/footer")),
   "kanban": load(() => import("./demos/kanban")),
   "navbar": load(() => import("./demos/navbar")),
