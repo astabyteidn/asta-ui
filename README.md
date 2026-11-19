@@ -5,7 +5,7 @@
 **React components that feel good to use.**
 Copy them into your project, or install them from npm.
 
-[Website](https://ui.astabyte.com) · [Docs](https://ui.astabyte.com/introduction) · [Icons](https://ui.astabyte.com/icons) · [Changelog](CHANGELOG.md)
+[Website](https://ui.astabyte.com) · [Docs](https://ui.astabyte.com/introduction) · [Icons](https://ui.astabyte.com/icons) · [Releases](https://github.com/astabyteidn/asta-ui/releases) · [Changelog](CHANGELOG.md)
 
 </div>
 
@@ -99,20 +99,17 @@ Also: [llms.txt](https://ui.astabyte.com/llms.txt) · [prompts](https://ui.astab
 
 ## Contributing
 
+PRs are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ```sh
 bun install
 bun run dev    # http://localhost:3792
 ```
 
-`main` is protected. Open a PR, and CI has to pass before it merges.
-
-Before you push:
-
-```sh
-bunx tsc --noEmit && bun run lint && bun run skill && bun run base --check && bun run build
-```
-
-Read [CLAUDE.md](CLAUDE.md) for where things live and the rules for motion and colour.
+- Questions and help: [SUPPORT.md](SUPPORT.md)
+- Security problems: [SECURITY.md](SECURITY.md), never a public issue
+- Everyone follows the [Code of Conduct](CODE_OF_CONDUCT.md)
+- Every version is on the [Releases](https://github.com/astabyteidn/asta-ui/releases) page
 
 ## License
 

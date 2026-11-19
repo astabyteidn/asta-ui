@@ -1,0 +1,71 @@
+name: Bug report
+description: Something is broken or looks wrong.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. A small repro gets it fixed much faster.
+        Security problem? Don't post it here. Read [SECURITY.md](https://github.com/astabyteidn/asta-ui/blob/main/SECURITY.md).
+  - type: input
+    id: component
+    attributes:
+      label: Component
+      description: The slug from the URL, e.g. `price-chart` or `dialog`.
+      placeholder: price-chart
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you saw, and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: How to reproduce
+      description: Steps, or a link to a repo, StackBlitz or CodeSandbox.
+      placeholder: |
+        1. Install with `pnpm dlx asta-ui@latest add dialog`
+        2. Open the dialog on a phone
+        3. ...
+    validations:
+      required: true
+  - type: dropdown
+    id: install
+    attributes:
+      label: How you installed it
+      options:
+        - CLI copy (asta-ui add)
+        - shadcn registry
+        - npm library (import from "asta-ui")
+        - Copied from the site
+        - Not installed, it's broken on ui.astabyte.com
+    validations:
+      required: true
+  - type: dropdown
+    id: primitive
+    attributes:
+      label: Primitive
+      options:
+        - Radix
+        - Base UI
+        - Not sure
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Run `npx asta-ui@latest --version`, or check your package.json.
+      placeholder: 0.7.0
+  - type: input
+    id: env
+    attributes:
+      label: Browser and device
+      placeholder: Safari 19, iPhone 16
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else
+      description: Screenshots, a short clip, console errors.
