@@ -46,9 +46,35 @@ Full guide: [Installation](https://ui.astabyte.com/installation).
 
 ## For AI agents
 
+Two skills live in [`skills/`](skills):
+
+| Skill | What it does |
+|---|---|
+| [`astabyte-ui`](skills/astabyte-ui/SKILL.md) | Installs and uses the components |
+| [`astabyte-design`](skills/astabyte-design/SKILL.md) | Teaches the Astabyte look: colour, type, motion, copy |
+
+Install them with the [skills](https://github.com/vercel-labs/skills) CLI:
+
 ```sh
-npx skills add astabyteidn/asta-ui
+npx skills add astabyteidn/asta-ui                            # pick from both
+npx skills add astabyteidn/asta-ui --skill astabyte-design   # just one
 ```
+
+Or copy a skill folder by hand:
+
+| Agent | Personal | Project |
+|---|---|---|
+| Claude Code | `~/.claude/skills/` | `.claude/skills/` |
+| Codex | `~/.agents/skills/` | `.agents/skills/` |
+| Gemini CLI | `~/.gemini/skills/` or `~/.agents/skills/` | `.gemini/skills/` or `.agents/skills/` |
+| Pi | `~/.pi/agent/skills/` or `~/.agents/skills/` | `.pi/skills/` or `.agents/skills/` |
+
+```sh
+git clone --depth 1 https://github.com/astabyteidn/asta-ui
+cp -r asta-ui/skills/astabyte-design ~/.agents/skills/
+```
+
+Gemini CLI can also install straight from git: `gemini skills install https://github.com/astabyteidn/asta-ui.git --path skills/astabyte-design`.
 
 Also: [llms.txt](https://ui.astabyte.com/llms.txt) · [prompts](https://ui.astabyte.com/prompts) · [skill.md](https://ui.astabyte.com/skill.md)
 
