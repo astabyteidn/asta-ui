@@ -1,0 +1,919 @@
+/* Blocks: sign-in, onboarding, pricing, AI chat, checkout, properties and settings panels, team members.
+ * Class lists mirror go/ui/<name>.templ. Embedded controls use the core classes (asta-btn, asta-input, asta-field,
+ * asta-select, asta-switch, asta-checkbox, asta-avatar, asta-progress). The runtime CSS keys on the data-asta-*
+ * attributes, so keep them in the markup. Modifiers come after the base class so they win. */
+
+/* ---- Sign-in (sign_in.templ) ----
+ * <div id="sign-in" data-asta-sign-in class="asta-sign-in"><form class="asta-sign-in-form" hx-post="/sign-in" hx-target="#sign-in" hx-swap="outerHTML">
+ *   <h3 class="asta-sign-in-title">Welcome back</h3> … <button type="submit" class="asta-btn asta-sign-in-submit">…</button></form></div>
+ * A field with an error: wrap its asta-input in <div class="asta-sign-in-shake">. */
+.asta-sign-in {
+  @apply relative w-full max-w-[380px] overflow-hidden rounded-xl bg-paper p-6 text-ink sm:p-7;
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent),0_1px_2px_rgb(0_0_0/0.04),0_18px_40px_-20px_rgb(0_0_0/0.25)];
+}
+.asta-sign-in-form {
+  @apply flex flex-col;
+}
+.asta-sign-in-title {
+  @apply text-[20px] font-medium tracking-[-0.02em] text-ink;
+}
+.asta-sign-in-subtitle {
+  @apply mt-1 text-[14px] leading-snug text-mute;
+}
+.asta-sign-in-providers {
+  @apply mt-6 grid gap-2;
+  &:has(> :nth-child(2)) {
+    @apply grid-cols-2;
+  }
+}
+.asta-sign-in-divider {
+  @apply my-5 flex items-center gap-3 text-[12px] text-mute;
+  &::before,
+  &::after {
+    @apply h-px flex-1 bg-[color-mix(in_srgb,var(--ink)_10%,transparent)] content-[''];
+  }
+}
+.asta-sign-in-spacer {
+  @apply h-6;
+}
+.asta-sign-in-fields {
+  @apply flex flex-col gap-3;
+}
+.asta-sign-in-shake {
+  @apply animate-[asta-blk-shake_.42s_cubic-bezier(.16,1,.3,1)] motion-reduce:animate-none;
+}
+.asta-sign-in-options {
+  @apply mt-3 flex items-center justify-between gap-3 text-[13px];
+}
+.asta-sign-in-link {
+  @apply text-brand outline-none hover:underline focus-visible:underline;
+}
+.asta-sign-in-alert {
+  @apply mt-4 rounded-lg bg-[#e5484d]/10 px-3 py-2 text-[13px] text-[#e5484d] animate-[asta-field-in_.3s_cubic-bezier(.16,1,.3,1)_both];
+}
+.asta-sign-in-submit {
+  @apply mt-5 w-full;
+}
+.asta-sign-in-footer {
+  @apply mt-4 text-center text-[13px] text-mute;
+  & a {
+    @apply font-medium text-ink outline-none hover:underline focus-visible:underline;
+  }
+}
+.asta-sign-in-reveal {
+  @apply flex h-8 w-8 items-center justify-center rounded-lg text-mute outline-none transition-colors hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50;
+  & > svg {
+    @apply h-4 w-4;
+  }
+}
+.asta-sign-in-reveal-slash {
+  @apply origin-center transition-[opacity,transform] duration-300 ease-[cubic-bezier(.16,1,.3,1)];
+  .asta-sign-in-reveal[aria-pressed="true"] & {
+    @apply scale-0 opacity-0;
+  }
+}
+.asta-sign-in-done {
+  @apply flex min-h-[380px] flex-col items-center justify-center text-center animate-[asta-blk-pop_.5s_cubic-bezier(.16,1,.3,1)_both] motion-reduce:animate-none;
+}
+.asta-sign-in-done-icon {
+  @apply flex h-14 w-14 items-center justify-center rounded-full bg-[#30a46c] text-white;
+  & > svg {
+    @apply h-7 w-7 animate-[asta-blk-pop_.5s_.15s_cubic-bezier(.16,1,.3,1)_both] motion-reduce:animate-none;
+  }
+}
+.asta-sign-in-done-title {
+  @apply mt-5 text-[20px] font-medium tracking-[-0.02em] text-ink;
+}
+.asta-sign-in-done-text {
+  @apply mt-1.5 max-w-[26ch] text-[14px] leading-snug text-mute;
+  & strong {
+    @apply font-normal text-ink;
+  }
+}
+
+/* ---- Onboarding (onboarding.templ) ----
+ * <div id="onboarding" data-asta-onboarding class="asta-onboarding"><div data-asta-onboarding-list> <div class="asta-onboarding-head">…</div>
+ *   <ol class="asta-onboarding-steps"><li data-asta-onboarding-step class="asta-onboarding-step"><button data-asta-onboarding-toggle
+ *   aria-expanded="true" aria-controls="s1" class="asta-onboarding-toggle">…</button><div id="s1" role="region" class="asta-onboarding-panel">…</div></li></ol></div></div>
+ * A finished step adds asta-onboarding-step-done. */
+.asta-onboarding {
+  @apply relative w-full max-w-[440px] overflow-hidden rounded-[14px] bg-paper text-ink;
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent),0_18px_40px_-24px_rgb(0_0_0/0.3)];
+}
+.asta-onboarding-done {
+  @apply flex flex-col items-center px-8 py-12 text-center animate-[asta-rise_.5s_cubic-bezier(.16,1,.3,1)_both] motion-reduce:animate-none;
+}
+.asta-onboarding-done-icon {
+  @apply flex h-12 w-12 items-center justify-center rounded-full bg-brand text-white animate-[asta-blk-pop_.6s_.1s_cubic-bezier(.16,1,.3,1)_both] motion-reduce:animate-none;
+  & > svg {
+    @apply h-6 w-6;
+  }
+}
+.asta-onboarding-done-title {
+  @apply mt-5 text-[18px] font-medium tracking-[-0.02em] text-ink;
+}
+.asta-onboarding-done-text {
+  @apply mt-1.5 max-w-[30ch] text-[13.5px] leading-relaxed text-mute;
+}
+.asta-onboarding-done-actions {
+  @apply mt-6 flex gap-2;
+}
+.asta-onboarding-head {
+  @apply px-5 pb-4 pt-5;
+}
+.asta-onboarding-heading {
+  @apply flex items-baseline justify-between gap-4;
+}
+.asta-onboarding-title {
+  @apply text-[15px] font-medium tracking-[-0.01em] text-ink;
+}
+.asta-onboarding-count {
+  @apply text-[12.5px] tabular-nums text-mute;
+}
+.asta-onboarding-subtitle {
+  @apply mt-1 text-[13px] text-mute;
+}
+.asta-onboarding-progress {
+  @apply mt-4;
+}
+.asta-onboarding-steps {
+  @apply px-2 pb-2;
+}
+.asta-onboarding-step {
+  @apply rounded-[10px] transition-colors duration-300;
+  &:has(> [aria-expanded="true"]) {
+    @apply bg-paper-2;
+  }
+}
+.asta-onboarding-toggle {
+  @apply flex w-full items-center gap-3 rounded-[10px] px-3 py-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-brand/50;
+}
+.asta-onboarding-label {
+  @apply flex-1 text-[14px] text-ink transition-colors duration-300;
+  .asta-onboarding-step-done & {
+    @apply text-mute;
+  }
+  .asta-onboarding-step-done [aria-expanded="true"] > & {
+    @apply text-ink;
+  }
+}
+.asta-onboarding-duration {
+  @apply text-[12px] tabular-nums text-mute;
+}
+.asta-onboarding-chevron {
+  @apply h-3.5 w-3.5 shrink-0 text-mute transition-transform duration-300 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  [aria-expanded="true"] > & {
+    @apply rotate-180;
+  }
+}
+.asta-onboarding-mark {
+  @apply relative flex h-5 w-5 shrink-0 items-center justify-center;
+}
+.asta-onboarding-ring {
+  @apply absolute inset-0 scale-100 rounded-full opacity-100 transition-[opacity,transform] duration-300 ease-[cubic-bezier(.16,1,.3,1)];
+  @apply shadow-[inset_0_0_0_1.5px_color-mix(in_srgb,var(--ink)_22%,transparent)];
+  [aria-expanded="true"] & {
+    @apply shadow-[inset_0_0_0_1.5px_var(--ink)];
+  }
+  .asta-onboarding-step-done & {
+    @apply scale-75 opacity-0;
+  }
+}
+.asta-onboarding-tick {
+  @apply absolute inset-0 flex scale-50 items-center justify-center rounded-full bg-brand text-white opacity-0 transition-[opacity,transform] duration-500 ease-[cubic-bezier(.16,1,.3,1)];
+  & > svg {
+    @apply h-3 w-3;
+  }
+  .asta-onboarding-step-done & {
+    @apply scale-100 opacity-100;
+  }
+}
+.asta-onboarding-panel {
+  @apply pb-4 pl-11 pr-4 animate-[asta-rise_.45s_cubic-bezier(.16,1,.3,1)_both] motion-reduce:animate-none;
+}
+.asta-onboarding-desc {
+  @apply text-[13px] leading-relaxed text-mute;
+}
+.asta-onboarding-error {
+  @apply mt-2 text-[12.5px] text-[#e5484d];
+}
+.asta-onboarding-actions {
+  @apply mt-3.5 flex items-center gap-2;
+}
+.asta-onboarding-done-note {
+  @apply flex items-center gap-1.5 text-[12.5px] text-mute;
+  & > svg {
+    @apply h-3.5 w-3.5 text-brand;
+  }
+}
+
+/* ---- Pricing (pricing.templ) ----
+ * <div data-asta-pricing class="asta-plans"><div role="radiogroup" class="asta-plans-period"><span data-asta-pricing-pill class="asta-plans-pill"></span>
+ *   <label class="asta-plans-option"><input type="radio" name="billing" value="monthly" checked class="sr-only">Monthly</label>…</div>
+ *   <div class="asta-plans-grid"><div class="asta-plans-card">…</div><div class="asta-plans-card asta-plans-card-featured">…</div></div></div>
+ * Rolling digits keep the runtime classes: <span class="asta-pricing-digit asta-plans-digit" style="--m:1;--y:0;--dl:0ms">
+ *   <span class="asta-pricing-strip asta-plans-strip"><span>0</span>…<span>9</span><span></span></span></span> */
+.asta-plans {
+  @apply @container flex w-full flex-col items-center gap-6 text-ink;
+}
+.asta-plans-period {
+  @apply relative grid grid-cols-2 rounded-[10px] bg-paper-2 p-1 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_8%,transparent)];
+}
+.asta-plans-pill {
+  @apply absolute bottom-1 left-1 top-1 w-[calc(50%-4px)] rounded-[7px] bg-paper shadow-[0_1px_2px_rgb(0_0_0/0.12),0_0_0_1px_color-mix(in_srgb,var(--ink)_8%,transparent)];
+}
+.asta-plans-option {
+  @apply relative z-10 flex h-8 cursor-pointer items-center justify-center gap-1.5 rounded-[7px] px-4 text-[13px] font-medium text-mute transition-colors duration-300;
+  @apply hover:text-ink has-[:checked]:text-ink has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand/50;
+}
+.asta-plans-saving {
+  @apply rounded-[4px] bg-brand px-1.5 text-[10.5px] leading-[18px] text-white;
+}
+.asta-plans-grid {
+  @apply grid w-full gap-3 @min-[540px]:grid-cols-3;
+}
+.asta-plans-card {
+  @apply relative flex flex-col rounded-xl p-4 @min-[700px]:p-5 transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)];
+  @apply bg-paper text-ink shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_12%,transparent)];
+}
+.asta-plans-card-featured {
+  @apply bg-ink text-paper shadow-[0_24px_50px_-24px_rgb(0_0_0/0.5)] @min-[540px]:-translate-y-2;
+}
+.asta-plans-card-head {
+  @apply flex items-center justify-between gap-2;
+}
+.asta-plans-name {
+  @apply text-[15px] font-medium tracking-[-0.01em];
+}
+.asta-plans-flag {
+  @apply rounded-[5px] bg-brand px-2 py-0.5 text-[11px] font-medium text-white;
+}
+.asta-plans-desc {
+  @apply mt-1 text-[12.5px] leading-snug text-mute;
+  .asta-plans-card-featured & {
+    @apply text-paper/60;
+  }
+}
+.asta-plans-price {
+  @apply mt-5 flex items-end gap-1;
+}
+.asta-plans-amount {
+  @apply flex items-start font-medium leading-none tracking-[-0.04em];
+}
+.asta-plans-currency {
+  @apply mr-0.5 mt-1 text-[20px];
+}
+.asta-plans-number {
+  @apply inline-flex text-[40px] tabular-nums;
+}
+.asta-plans-digits {
+  @apply inline-flex;
+}
+.asta-plans-digit {
+  @apply relative inline-block h-[1em] w-[0.62em] overflow-hidden;
+}
+.asta-plans-strip {
+  @apply absolute inset-x-0 top-0 flex flex-col;
+  & > span {
+    @apply block h-[1em] text-center leading-[1em];
+  }
+}
+.asta-plans-per {
+  @apply pb-1 text-[12px] text-mute;
+  .asta-plans-card-featured & {
+    @apply text-paper/55;
+  }
+}
+.asta-plans-note {
+  @apply mt-1.5 h-4 text-[11.5px] text-mute;
+  .asta-plans-card-featured & {
+    @apply text-paper/55;
+  }
+}
+.asta-plans-note-none {
+  @apply invisible;
+}
+.asta-plans-cta {
+  @apply mt-5 w-full;
+  .asta-plans-card-featured & {
+    @apply shadow-none;
+  }
+}
+.asta-plans-features {
+  @apply mt-5 flex flex-col gap-2;
+}
+.asta-plans-feature {
+  @apply flex gap-2 text-[13px] leading-snug text-ink-2;
+  & > svg {
+    @apply mt-[3px] h-3.5 w-3.5 shrink-0 text-ink;
+  }
+  .asta-plans-card-featured & {
+    @apply text-paper/85;
+    & > svg {
+      @apply text-brand;
+    }
+  }
+}
+
+/* ---- AI chat (ai_chat.templ) ----
+ * <div id="chat" data-asta-chat class="asta-ai-chat"> <header class="asta-ai-chat-header">…</header>
+ *   <div data-asta-chat-log role="log" class="asta-ai-chat-log"><div data-asta-chat-empty class="asta-ai-chat-empty">…</div><ol data-asta-chat-list class="asta-ai-chat-list">…</ol></div>
+ *   <form data-asta-chat-form class="asta-ai-chat-form" hx-post="/chat" hx-target="#chat-list" hx-swap="beforeend">…</form></div>
+ * Messages: <li data-role="user" class="asta-ai-chat-user"><p class="asta-ai-chat-bubble">Hi</p></li> and
+ * <li data-role="assistant" class="asta-ai-chat-reply">…</li>. Add asta-ai-chat-in to messages that arrive live. */
+.asta-ai-chat {
+  @apply flex h-[540px] w-full flex-col overflow-hidden rounded-[14px] bg-paper text-ink;
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_9%,transparent),0_1px_2px_rgb(0_0_0/0.04)];
+}
+.asta-ai-chat-header {
+  @apply flex items-center gap-2.5 px-5 pb-3 pt-4;
+}
+.asta-ai-chat-title {
+  @apply text-[14px] font-medium tracking-[-0.01em] text-ink;
+}
+.asta-ai-chat-mark {
+  @apply grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-[color-mix(in_srgb,var(--brand)_10%,transparent)] text-brand;
+  & > svg {
+    @apply h-3.5 w-3.5;
+  }
+}
+.asta-ai-chat-log {
+  @apply relative min-h-0 flex-1 overflow-y-auto px-5 [scrollbar-width:thin];
+}
+.asta-ai-chat-empty {
+  @apply flex h-full flex-col items-center justify-center pb-6 text-center animate-[asta-blk-in_.5s_cubic-bezier(.16,1,.3,1)];
+}
+.asta-ai-chat-greeting {
+  @apply text-[22px] font-medium tracking-[-0.03em] text-ink;
+}
+.asta-ai-chat-suggestions {
+  @apply mt-6 flex max-w-[440px] flex-wrap justify-center gap-2;
+}
+.asta-ai-chat-suggest {
+  @apply rounded-lg bg-paper-2 px-3 py-2 text-left text-[13px] leading-snug text-ink-2 outline-none transition-[color,background-color,transform] duration-300;
+  @apply animate-[asta-blk-in_.5s_cubic-bezier(.16,1,.3,1)_80ms_both] hover:-translate-y-px hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50;
+  &:nth-child(2) {
+    animation-delay: 130ms;
+  }
+  &:nth-child(3) {
+    animation-delay: 180ms;
+  }
+  &:nth-child(n + 4) {
+    animation-delay: 230ms;
+  }
+}
+.asta-ai-chat-list {
+  @apply flex flex-col gap-6 py-2 empty:py-0;
+}
+.asta-ai-chat-in {
+  @apply animate-[asta-blk-in_.4s_cubic-bezier(.16,1,.3,1)];
+}
+.asta-ai-chat-user {
+  @apply flex justify-end;
+}
+.asta-ai-chat-bubble {
+  @apply max-w-[80%] whitespace-pre-wrap rounded-xl bg-paper-2 px-3.5 py-2.5 text-[14px] leading-relaxed text-ink;
+}
+.asta-ai-chat-reply {
+  @apply flex gap-3;
+}
+.asta-ai-chat-body {
+  @apply min-w-0 flex-1 pt-0.5;
+}
+.asta-ai-chat-text {
+  @apply whitespace-pre-wrap text-[14px] leading-relaxed text-ink;
+}
+.asta-ai-chat-meta {
+  @apply mt-1.5 text-[12.5px] text-mute;
+}
+.asta-ai-chat-tools {
+  @apply -ml-1.5 mt-1.5 flex items-center gap-0.5 opacity-0 transition-opacity duration-300 focus-within:opacity-100;
+  .asta-ai-chat-reply:hover &,
+  .asta-ai-chat-reply:last-child & {
+    @apply opacity-100;
+  }
+}
+.asta-ai-chat-copy {
+  @apply grid h-7 w-7 place-items-center rounded-md text-mute outline-none transition-colors duration-200 hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50;
+  & > svg {
+    @apply h-3.5 w-3.5;
+  }
+  & > svg + svg {
+    @apply hidden animate-[asta-scale-in_.3s_cubic-bezier(.16,1,.3,1)];
+  }
+  &[data-copied] > svg:first-child {
+    @apply hidden;
+  }
+  &[data-copied] > svg + svg {
+    @apply block;
+  }
+}
+.asta-ai-chat-dots {
+  @apply inline-flex h-6 items-center gap-1;
+  & > span {
+    @apply h-1.5 w-1.5 rounded-full bg-mute animate-[asta-blk-dot_1.1s_cubic-bezier(.16,1,.3,1)_infinite];
+  }
+  & > span:nth-child(2) {
+    animation-delay: 140ms;
+  }
+  & > span:nth-child(3) {
+    animation-delay: 280ms;
+  }
+}
+.asta-ai-chat-form {
+  @apply px-4 pb-4 pt-2;
+}
+.asta-ai-chat-composer {
+  @apply flex items-end gap-2 rounded-xl bg-paper p-1.5 pl-3.5 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_12%,transparent)] transition-shadow duration-200;
+  @apply focus-within:shadow-[inset_0_0_0_1px_var(--brand),0_0_0_3px_color-mix(in_srgb,var(--brand)_14%,transparent)];
+}
+.asta-ai-chat-input {
+  @apply block max-h-36 min-h-[36px] flex-1 resize-none bg-transparent py-2 text-[14px] leading-relaxed text-ink outline-none [field-sizing:content] placeholder:text-mute;
+}
+.asta-ai-chat-send {
+  @apply relative grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-brand text-white outline-none transition-[opacity,transform] duration-200 active:scale-95 disabled:opacity-35;
+  @apply focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 focus-visible:ring-offset-paper [&.htmx-request]:pointer-events-none;
+  & > svg {
+    @apply h-4 w-4 transition-opacity;
+  }
+  & > span {
+    @apply absolute inset-0 grid place-items-center opacity-0 transition-opacity [&>svg]:h-4 [&>svg]:w-4 [&>svg]:animate-spin;
+  }
+  &.htmx-request > svg {
+    @apply opacity-0;
+  }
+  &.htmx-request > span {
+    @apply opacity-100;
+  }
+}
+.asta-ai-chat-note {
+  @apply mt-2 text-center text-[11.5px] text-mute;
+}
+
+/* ---- Checkout (checkout.templ) ----
+ * <form id="checkout" data-asta-checkout class="asta-checkout-form" hx-post="/checkout" hx-target="#checkout" hx-swap="outerHTML">
+ *   <div class="asta-checkout-main"><div class="asta-checkout-steps"><fieldset class="asta-checkout-section">…</fieldset>…</div></div>
+ *   <aside data-asta-checkout-summary class="asta-checkout-summary">…</aside></form>
+ * Amounts that roll: <span data-asta-money="total" class="asta-checkout-amount"><span>$84.00</span></span> */
+.asta-checkout-form {
+  @apply grid w-full gap-8 text-ink md:grid-cols-[minmax(0,1fr)_340px] md:gap-10;
+}
+.asta-checkout-main {
+  @apply min-w-0;
+}
+.asta-checkout-done {
+  @apply flex h-full min-h-[420px] flex-col items-start justify-center animate-[asta-blk-in_.5s_cubic-bezier(.16,1,.3,1)];
+}
+.asta-checkout-done-icon {
+  @apply grid h-12 w-12 place-items-center rounded-full bg-brand text-white animate-[asta-blk-pop_.55s_.1s_cubic-bezier(.16,1,.3,1)_both];
+  & > svg {
+    @apply h-5 w-5;
+  }
+}
+.asta-checkout-done-title {
+  @apply mt-6 text-[24px] font-medium tracking-[-0.03em] text-ink;
+}
+.asta-checkout-done-text {
+  @apply mt-2 max-w-[360px] text-[14px] leading-relaxed text-mute;
+}
+.asta-checkout-steps {
+  @apply grid gap-9;
+}
+.asta-checkout-section {
+  @apply min-w-0;
+}
+.asta-checkout-legend {
+  @apply mb-4 flex items-center gap-2.5 text-[14px] font-medium tracking-[-0.01em] text-ink;
+}
+.asta-checkout-num {
+  @apply grid h-5 w-5 place-items-center rounded-md bg-paper-2 text-[11px] tabular-nums text-ink-2;
+}
+.asta-checkout-fields {
+  @apply grid gap-3;
+}
+.asta-checkout-pair {
+  @apply grid grid-cols-2 gap-3;
+}
+.asta-checkout-shipping {
+  @apply mt-1 grid gap-2 sm:grid-cols-2;
+}
+.asta-checkout-option {
+  @apply relative flex cursor-pointer items-start justify-between gap-3 rounded-[10px] p-3 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_12%,transparent)] transition-shadow duration-300;
+  @apply hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_26%,transparent)] has-[:checked]:shadow-[inset_0_0_0_1.5px_var(--brand)] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand/50;
+}
+.asta-checkout-option-label {
+  @apply block text-[13.5px] text-ink;
+}
+.asta-checkout-option-eta {
+  @apply block text-[12px] text-mute;
+}
+.asta-checkout-option-price {
+  @apply text-[13px] tabular-nums text-ink;
+}
+.asta-checkout-card-glyph {
+  @apply !h-3.5 !w-5;
+}
+.asta-checkout-pay {
+  @apply w-full;
+}
+.asta-checkout-note {
+  @apply mt-3 text-center text-[12px] text-mute;
+}
+.asta-checkout-error {
+  @apply mt-3 text-center text-[12.5px] text-[#e5484d] animate-[asta-field-in_.3s_cubic-bezier(.16,1,.3,1)_both];
+}
+.asta-checkout-summary {
+  @apply h-max rounded-[14px] bg-paper-2 p-5 md:sticky md:top-4;
+}
+.asta-checkout-summary-title {
+  @apply text-[14px] font-medium tracking-[-0.01em] text-ink;
+}
+.asta-checkout-items {
+  @apply mt-4 grid gap-4;
+}
+.asta-checkout-item {
+  @apply flex gap-3;
+}
+.asta-checkout-thumb {
+  @apply grid h-14 w-14 shrink-0 place-items-center rounded-[10px] bg-paper object-cover text-[15px] font-medium text-mute;
+}
+.asta-checkout-item-body {
+  @apply min-w-0 flex-1;
+}
+.asta-checkout-item-head {
+  @apply flex items-baseline justify-between gap-3;
+  & > .asta-checkout-amount {
+    @apply text-[13px] text-ink;
+  }
+}
+.asta-checkout-item-name {
+  @apply truncate text-[13.5px] text-ink;
+}
+.asta-checkout-item-variant {
+  @apply text-[12px] text-mute;
+}
+.asta-checkout-amount {
+  @apply inline-flex overflow-hidden tabular-nums;
+  & > span {
+    @apply inline-block;
+  }
+}
+.asta-checkout-qty {
+  @apply -ml-1 mt-1 inline-flex items-center gap-1;
+}
+.asta-checkout-qty-btn {
+  @apply grid h-6 w-6 place-items-center rounded-md text-ink-2 outline-none transition-colors duration-200 hover:bg-paper hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50 disabled:opacity-35 disabled:hover:bg-transparent;
+  & > svg {
+    @apply h-3 w-3;
+  }
+}
+.asta-checkout-qty-text {
+  @apply w-5 text-center text-[12.5px] tabular-nums text-ink;
+}
+.asta-checkout-promo {
+  @apply mt-5;
+}
+.asta-checkout-promo-toggle {
+  @apply w-max cursor-pointer list-none rounded text-[12.5px] text-ink-2 underline decoration-[color-mix(in_srgb,var(--ink)_25%,transparent)] underline-offset-4 outline-none;
+  @apply hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50 [&::-webkit-details-marker]:hidden;
+  details[open] > & {
+    @apply hidden;
+  }
+}
+.asta-checkout-promo-row {
+  @apply flex gap-2 animate-[asta-blk-in_.3s_cubic-bezier(.16,1,.3,1)];
+}
+.asta-checkout-promo-applied {
+  @apply flex items-center justify-between text-[12.5px] text-ink-2;
+  & strong {
+    @apply font-medium text-ink;
+  }
+}
+.asta-checkout-promo-remove {
+  @apply rounded text-mute outline-none hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50 disabled:opacity-40;
+}
+.asta-checkout-promo-msg {
+  @apply mt-1.5 min-h-4 text-[12px] text-mute;
+}
+.asta-checkout-totals {
+  @apply mt-3 grid gap-2;
+  & > div {
+    @apply flex items-baseline justify-between gap-4 text-[13px];
+  }
+  & dt {
+    @apply text-mute;
+  }
+  & dd {
+    @apply text-ink;
+  }
+}
+.asta-checkout-discount {
+  @apply animate-[asta-blk-in_.35s_cubic-bezier(.16,1,.3,1)];
+  & dd {
+    @apply text-brand;
+  }
+}
+.asta-checkout-totals > .asta-checkout-total {
+  @apply mt-3 pt-1;
+  & dt {
+    @apply text-[14px] font-medium text-ink;
+  }
+  & dd {
+    @apply text-[20px] font-medium tracking-[-0.02em];
+  }
+}
+
+/* ---- Properties panel (properties_panel.templ) ----
+ * <form data-asta-props class="asta-properties" hx-post="/props" hx-trigger="change" hx-swap="none"><div class="asta-properties-header">…</div>
+ *   <div class="asta-properties-body"><details open class="asta-prop-section"><summary class="asta-prop-summary">…Layout</summary>
+ *   <div data-asta-props-body class="asta-prop-content"><div class="asta-prop-row"><span class="asta-prop-label">Size</span><div class="asta-prop-cells">
+ *   <label data-asta-prop-scrub class="asta-prop-number">…</label></div></div></div></details></div></form> */
+.asta-properties {
+  @apply w-full overflow-hidden rounded-[12px] bg-paper text-ink shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent),0_12px_32px_-16px_rgb(0_0_0/0.22)];
+}
+.asta-properties-header {
+  @apply flex h-11 items-center gap-2 px-3.5;
+}
+.asta-properties-kind {
+  @apply rounded-[5px] bg-[color-mix(in_srgb,var(--ink)_7%,transparent)] px-1.5 py-0.5 text-[11px] text-ink-2;
+}
+.asta-properties-title {
+  @apply min-w-0 flex-1 truncate text-[13px] font-medium text-ink;
+}
+.asta-properties-body {
+  @apply pb-1.5;
+}
+.asta-prop-section {
+  @apply relative px-3.5 pt-2.5;
+}
+.asta-prop-summary {
+  @apply flex h-7 w-max cursor-pointer list-none items-center gap-1 rounded-[4px] text-[11.5px] font-medium text-ink outline-none focus-visible:shadow-[0_0_0_2px_var(--brand)];
+  & > svg {
+    @apply h-3 w-3 text-mute transition-transform duration-200 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  }
+  .asta-prop-section[open] > & > svg {
+    @apply rotate-90;
+  }
+}
+.asta-prop-action {
+  @apply absolute right-3.5 top-2.5 flex h-7 items-center;
+}
+.asta-prop-content {
+  @apply space-y-1.5 pb-2 pt-1;
+}
+.asta-prop-row {
+  @apply grid grid-cols-1 items-center gap-2;
+  &:has(> .asta-prop-label) {
+    @apply grid-cols-[64px_1fr];
+  }
+}
+.asta-prop-label {
+  @apply truncate text-[11.5px] text-mute;
+}
+.asta-prop-cells {
+  @apply grid grid-cols-2 gap-1.5;
+}
+.asta-prop-cells-1 {
+  @apply grid-cols-1;
+}
+.asta-prop-cells-3 {
+  @apply grid-cols-3;
+}
+.asta-prop-cells-4 {
+  @apply grid-cols-4;
+}
+.asta-prop-number,
+.asta-prop-color {
+  @apply flex h-7 min-w-0 items-center rounded-[6px] bg-[color-mix(in_srgb,var(--ink)_5%,transparent)] text-[12px] text-ink transition-[background-color,box-shadow] duration-150;
+  @apply hover:bg-[color-mix(in_srgb,var(--ink)_8%,transparent)] focus-within:bg-paper focus-within:shadow-[inset_0_0_0_1.5px_var(--brand)];
+  &:has(:disabled) {
+    @apply pointer-events-none opacity-45;
+  }
+}
+.asta-prop-number[data-scrubbing] {
+  @apply bg-paper shadow-[inset_0_0_0_1.5px_var(--brand)];
+}
+.asta-prop-handle {
+  @apply grid h-full w-6 shrink-0 cursor-ew-resize touch-none select-none place-items-center text-[11px] text-mute [&>svg]:h-3.5 [&>svg]:w-3.5;
+}
+.asta-prop-input {
+  @apply h-full min-w-0 flex-1 bg-transparent pr-1.5 font-mono text-[11.5px] tabular-nums outline-none;
+}
+.asta-prop-unit {
+  @apply shrink-0 pr-2 text-[11px] text-mute;
+}
+.asta-prop-swatch {
+  @apply relative ml-1 h-5 w-5 shrink-0 cursor-pointer overflow-hidden rounded-[4px] shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_15%,transparent)];
+  & > input {
+    @apply absolute inset-0 cursor-pointer opacity-0;
+  }
+}
+.asta-prop-hex {
+  @apply h-full min-w-0 flex-1 bg-transparent px-2 font-mono text-[11.5px] uppercase outline-none;
+}
+
+/* ---- Settings panel (settings_panel.templ) ----
+ * <form data-asta-settings class="asta-settings-panel" hx-post="/settings" hx-swap="none" hx-indicator="find [data-asta-settings-save]">
+ *   <div class="asta-settings-body"><section class="asta-settings-section">…<div class="asta-settings-row">…</div></section></div>
+ *   <div data-asta-settings-bar class="asta-settings-savebar">…</div></form>
+ * Autosave: data-autosave hx-trigger="change" on the form and no save bar. */
+.asta-settings-panel {
+  @apply relative w-full max-w-[520px] overflow-hidden rounded-xl bg-paper text-ink;
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent),0_18px_40px_-24px_rgb(0_0_0/0.3)];
+}
+.asta-settings-body {
+  @apply max-h-[440px] overflow-y-auto px-5 pb-24 pt-5 sm:px-6 [&>section+section]:shadow-[inset_0_1px_0_color-mix(in_srgb,var(--ink)_7%,transparent)];
+  .asta-settings-panel[data-autosave] > & {
+    @apply pb-2;
+  }
+}
+.asta-settings-savebar {
+  @apply pointer-events-none absolute inset-x-3 bottom-3;
+}
+.asta-settings-toast {
+  @apply flex items-center gap-2 rounded-[10px] bg-ink py-2 pl-4 pr-2 text-paper shadow-[0_12px_30px_-10px_rgb(0_0_0/0.5)];
+}
+.asta-settings-status {
+  @apply flex min-w-0 flex-1 items-center gap-2 text-[13.5px];
+}
+.asta-settings-saved-msg {
+  @apply flex items-center gap-2;
+  & > svg {
+    @apply h-4 w-4 shrink-0 text-[#30a46c];
+  }
+}
+.asta-settings-unsaved-msg {
+  @apply flex min-w-0 items-center gap-2;
+  & > span:last-child {
+    @apply truncate;
+  }
+}
+.asta-settings-dot {
+  @apply h-1.5 w-1.5 shrink-0 rounded-full bg-brand;
+}
+.asta-settings-actions {
+  @apply flex items-center gap-2;
+}
+.asta-settings-reset {
+  @apply text-paper/70 hover:bg-paper/10 hover:text-paper;
+}
+.asta-settings-section {
+  @apply py-5 first:pt-0;
+}
+.asta-settings-heading {
+  @apply mb-3 text-[12px] font-medium uppercase tracking-[0.06em] text-mute;
+  &:has(+ .asta-settings-desc) {
+    @apply mb-1;
+  }
+}
+.asta-settings-desc {
+  @apply mb-3 text-[13px] leading-snug text-mute;
+}
+.asta-settings-rows {
+  @apply flex flex-col gap-3 [&>label]:py-1;
+}
+.asta-settings-row {
+  @apply flex items-center justify-between gap-4;
+  & > div:first-child {
+    @apply min-w-0;
+  }
+  & > div:last-child {
+    @apply shrink-0;
+  }
+}
+.asta-settings-row-label {
+  @apply block text-[14px] text-ink;
+}
+.asta-settings-row-desc {
+  @apply mt-0.5 text-[12.5px] leading-snug text-mute;
+}
+.asta-settings-theme {
+  @apply grid grid-cols-3 gap-2;
+}
+.asta-settings-theme-option {
+  @apply flex cursor-pointer flex-col items-start gap-2 rounded-[10px] p-2 text-left shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)] transition-shadow duration-300;
+  @apply hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_26%,transparent)] has-[:checked]:!shadow-[inset_0_0_0_2px_var(--brand)] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand/50;
+}
+.asta-settings-swatch {
+  @apply h-10 w-full rounded-lg bg-[#fcfcfb] shadow-[inset_0_0_0_1px_rgb(0_0_0/0.08)];
+}
+.asta-settings-swatch-dark {
+  @apply bg-[#151516];
+}
+.asta-settings-swatch-system {
+  @apply bg-[linear-gradient(135deg,#fcfcfb_50%,#151516_50%)];
+}
+.asta-settings-theme-label {
+  @apply flex w-full items-center justify-between px-0.5 text-[13px] text-ink;
+}
+.asta-settings-theme-radio {
+  @apply h-3.5 w-3.5 rounded-full shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)] transition-[background-color,box-shadow] duration-300;
+  .asta-settings-theme-option:has(:checked) & {
+    @apply bg-brand shadow-[inset_0_0_0_3.5px_var(--brand),inset_0_0_0_6px_white];
+  }
+}
+
+/* ---- Team members (team_members.templ) ----
+ * <div id="team" data-asta-team class="asta-team-members"><header class="asta-team-header">…</header>
+ *   <form class="asta-team-invite" hx-post="/team/invite" hx-target="#team" hx-swap="outerHTML">…</form>
+ *   <h4 class="asta-team-heading">Members</h4><ul><li data-asta-team-row="u1" class="asta-team-member"><div class="asta-team-row">…</div></li></ul></div>
+ * A removed member shows <div data-asta-team-removed class="asta-team-removed"> with <span data-asta-team-countdown class="asta-team-timer" style="animation:asta-blk-count 5s linear forwards">. */
+.asta-team-members {
+  @apply @container w-full text-ink;
+}
+.asta-team-header {
+  @apply flex items-baseline justify-between gap-4;
+}
+.asta-team-title {
+  @apply text-[17px] font-medium tracking-[-0.02em] text-ink;
+}
+.asta-team-count {
+  @apply text-[12.5px] tabular-nums text-mute;
+}
+.asta-team-invite {
+  @apply mt-5 rounded-[12px] bg-paper-2 p-3;
+}
+.asta-team-invite-row {
+  @apply flex flex-col gap-2 sm:flex-row sm:items-start;
+}
+.asta-team-invite-emails {
+  @apply min-w-0 flex-1;
+}
+.asta-team-invite-controls {
+  @apply flex gap-2;
+}
+.asta-team-invite-role {
+  @apply w-[124px] shrink-0;
+}
+.asta-team-hint {
+  @apply mt-2 min-h-4 px-1 text-[12px] text-mute;
+}
+.asta-team-hint-error {
+  @apply text-[#e5484d];
+}
+.asta-team-heading {
+  @apply mb-1 mt-7 px-1 text-[12px] font-medium text-mute;
+}
+.asta-team-member {
+  @apply relative;
+}
+.asta-team-removed {
+  @apply relative flex h-[60px] items-center gap-3 overflow-hidden rounded-[10px] bg-paper-2 px-3 transition-opacity duration-300 animate-[asta-blk-in_.35s_cubic-bezier(.16,1,.3,1)] data-[gone]:opacity-0;
+}
+.asta-team-removed-text {
+  @apply min-w-0 flex-1 truncate text-[13px] text-ink-2;
+  & strong {
+    @apply font-normal text-ink;
+  }
+}
+.asta-team-undo {
+  @apply text-brand hover:text-brand;
+}
+.asta-team-timer {
+  @apply absolute inset-x-0 bottom-0 h-0.5 origin-left bg-brand/40;
+}
+.asta-team-row {
+  @apply flex h-[60px] items-center gap-3 rounded-[10px] px-1 transition-colors duration-200 hover:bg-[color-mix(in_srgb,var(--paper-2)_55%,transparent)] sm:px-3;
+}
+.asta-team-avatar {
+  @apply shrink-0 @max-[400px]:hidden;
+}
+.asta-team-info {
+  @apply min-w-0 flex-1;
+}
+.asta-team-name {
+  @apply flex items-center gap-2 truncate text-[13.5px] text-ink;
+  & > span:first-child {
+    @apply truncate;
+  }
+}
+.asta-team-you {
+  @apply shrink-0 rounded-md bg-paper-2 px-1.5 text-[11px] leading-5 text-mute;
+}
+.asta-team-email {
+  @apply truncate text-[12.5px] text-mute;
+}
+.asta-team-role {
+  @apply w-[112px] shrink-0 @max-[400px]:w-[96px];
+}
+.asta-team-remove {
+  @apply grid h-8 w-8 shrink-0 place-items-center rounded-md text-mute outline-none transition-colors duration-200 hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50 disabled:pointer-events-none disabled:opacity-30;
+  & > svg {
+    @apply h-4 w-4;
+  }
+}
+.asta-team-invitee {
+  @apply flex h-[52px] items-center gap-3 px-1 sm:px-3;
+}
+.asta-team-envelope {
+  @apply grid h-8 w-8 shrink-0 place-items-center rounded-full text-mute shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)] @max-[400px]:hidden;
+  & > svg {
+    @apply h-3.5 w-3.5;
+  }
+}
+.asta-team-invitee-email {
+  @apply truncate text-[13.5px] text-ink;
+}
+.asta-team-invitee-meta {
+  @apply truncate text-[12px] text-mute;
+}

@@ -1,0 +1,702 @@
+/* Core: buttons, fields, dialog, menu, tabs, badges and the other small parts.
+ * Class lists mirror go/ui/<name>.templ. Modifiers come after the base class so they win. */
+
+/* ---- Button (button.templ) ----
+ * <button class="asta-btn asta-btn-accent asta-btn-sm"><span class="asta-btn-label">Save</span></button>
+ * Variants: (solid) accent danger outline soft ghost link. Sizes: xs sm (md) lg. Also asta-btn-icon, asta-btn-pill.
+ * Loading: aria-busy="true" or htmx's .htmx-request shows .asta-btn-spinner over the label. */
+.asta-btn {
+  @apply relative inline-flex shrink-0 select-none items-center [&_svg]:shrink-0 justify-center whitespace-nowrap font-medium tracking-[-0.01em] outline-none;
+  @apply transition-[background-color,color,box-shadow,transform,opacity] duration-200 ease-out active:scale-[0.97];
+  @apply focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 focus-visible:ring-offset-paper;
+  @apply disabled:pointer-events-none disabled:opacity-45 aria-disabled:pointer-events-none aria-disabled:opacity-45 [&.htmx-request]:pointer-events-none;
+  @apply h-10 gap-2 rounded-lg px-4 text-[14px];
+  @apply bg-ink text-paper shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_1px_2px_rgb(0_0_0/0.16),0_6px_14px_-8px_rgb(0_0_0/0.45)] hover:bg-[color-mix(in_srgb,var(--ink)_84%,var(--paper))];
+}
+.asta-btn-accent {
+  @apply bg-brand text-white hover:bg-[color-mix(in_srgb,var(--brand)_88%,black)];
+}
+.asta-btn-danger {
+  @apply bg-[#e5484d] text-white hover:bg-[#d13d42];
+}
+.asta-btn-outline {
+  @apply bg-paper text-ink shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent),0_1px_2px_rgb(0_0_0/0.05)];
+  @apply hover:bg-paper-2 hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_24%,transparent),0_1px_2px_rgb(0_0_0/0.05)];
+}
+.asta-btn-soft {
+  @apply bg-paper-2 text-ink shadow-none hover:bg-[color-mix(in_srgb,var(--ink)_8%,var(--paper-2))];
+}
+.asta-btn-ghost {
+  @apply bg-transparent text-ink-2 shadow-none hover:bg-paper-2 hover:text-ink;
+}
+.asta-btn-link {
+  @apply !h-auto !px-0 bg-transparent text-ink shadow-none hover:bg-transparent bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1px] bg-[position:0_100%] bg-no-repeat;
+  @apply transition-[background-size,color] duration-300 hover:bg-[length:100%_1px] active:scale-100;
+}
+.asta-btn-xs {
+  @apply h-7 gap-1.5 rounded-md px-2.5 text-[12px];
+}
+.asta-btn-sm {
+  @apply h-8 gap-1.5 rounded-md px-3 text-[13px];
+}
+.asta-btn-lg {
+  @apply h-12 gap-2.5 rounded-[9px] px-5 text-[15px];
+}
+.asta-btn-icon {
+  @apply w-10 !px-0;
+  &.asta-btn-xs {
+    @apply w-7;
+  }
+  &.asta-btn-sm {
+    @apply w-8;
+  }
+  &.asta-btn-lg {
+    @apply w-12;
+  }
+}
+.asta-btn-pill {
+  @apply !rounded-full;
+}
+.asta-btn-label {
+  @apply inline-flex items-center gap-[inherit] transition-opacity duration-200 [&>svg]:h-[1.15em] [&>svg]:w-[1.15em];
+  :is(.asta-btn[aria-busy="true"], .asta-btn.htmx-request) > & {
+    @apply opacity-0;
+  }
+}
+.asta-btn-spinner {
+  @apply pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-200 [&>svg]:h-4 [&>svg]:w-4 [&>svg]:animate-spin;
+  :is(.asta-btn[aria-busy="true"], .asta-btn.htmx-request) > & {
+    @apply opacity-100;
+  }
+}
+.asta-btn-kbd {
+  @apply -mr-1.5 ml-1 rounded-md bg-white/15 px-1.5 font-sans text-[0.8em] leading-[1.6] text-current;
+  :is(.asta-btn-outline, .asta-btn-soft, .asta-btn-ghost, .asta-btn-link) & {
+    @apply bg-[color-mix(in_srgb,var(--ink)_7%,transparent)] text-mute;
+  }
+}
+
+/* ---- Input (field.templ) ----
+ * <label class="asta-input"><span class="asta-input-icon"><svg/></span><input class="asta-input-control" name="q"></label>
+ * Sizes: asta-input-sm, asta-input-lg. States: asta-input-error, asta-input-success, or aria-invalid="true" on the
+ * input. A disabled input dims the whole field. */
+.asta-input {
+  @apply relative flex w-full items-center bg-paper text-ink transition-shadow duration-200;
+  @apply h-10 rounded-lg px-3 text-[14px] gap-2.5;
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)] hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_24%,transparent)];
+  @apply focus-within:!shadow-[inset_0_0_0_1px_var(--brand),0_0_0_4px_color-mix(in_srgb,var(--brand)_16%,transparent)];
+  @apply has-[input:disabled]:pointer-events-none has-[input:disabled]:opacity-50;
+}
+.asta-input-sm {
+  @apply h-8 rounded-md px-2.5 text-[13px] gap-2;
+}
+.asta-input-lg {
+  @apply h-12 rounded-[9px] px-4 text-[15px] gap-3;
+}
+.asta-input-error,
+.asta-input:has(> input[aria-invalid="true"]) {
+  @apply shadow-[inset_0_0_0_1px_#e5484d] hover:shadow-[inset_0_0_0_1px_#e5484d] focus-within:!shadow-[inset_0_0_0_1px_#e5484d,0_0_0_4px_rgb(229_72_77/0.16)];
+}
+.asta-input-success {
+  @apply shadow-[inset_0_0_0_1px_#30a46c] hover:shadow-[inset_0_0_0_1px_#30a46c] focus-within:!shadow-[inset_0_0_0_1px_#30a46c,0_0_0_4px_rgb(48_164_108/0.16)];
+}
+.asta-input-control {
+  @apply h-full min-w-0 flex-1 bg-transparent outline-none placeholder:text-mute;
+}
+.asta-input-icon {
+  @apply flex shrink-0 text-mute transition-colors [&_svg]:h-4 [&_svg]:w-4;
+  .asta-input:focus-within > & {
+    @apply text-ink;
+  }
+}
+.asta-input-trailing {
+  @apply flex shrink-0 text-mute [&_svg]:h-4 [&_svg]:w-4;
+}
+/* The error or success icon at the end of the field. */
+.asta-input-status {
+  @apply h-4 w-4 shrink-0 text-[#e5484d];
+  .asta-input-success > & {
+    @apply text-[#30a46c];
+  }
+}
+
+/* ---- Field (field.templ) ----
+ * <div class="asta-field"><div class="asta-field-head"><label class="asta-label" for="email">Email</label></div>
+ *   …control… <p class="asta-hint">We never share it.</p></div>
+ * asta-error replaces the hint (role="alert", optional leading svg). asta-counter sits on the right of the head. */
+.asta-field {
+  @apply flex flex-col gap-1.5;
+}
+.asta-field-head {
+  @apply flex items-baseline justify-between gap-3;
+}
+.asta-label {
+  @apply text-[13px] font-medium tracking-[-0.01em] text-ink;
+}
+.asta-label-required {
+  @apply ml-0.5 text-[#e5484d];
+}
+.asta-counter {
+  @apply text-[12px] tabular-nums text-mute;
+}
+.asta-error {
+  @apply flex items-start gap-1.5 text-[12.5px] leading-snug text-[#e5484d] animate-[asta-field-in_.3s_cubic-bezier(.16,1,.3,1)_both];
+  & > svg {
+    @apply mt-px h-3.5 w-3.5 shrink-0;
+  }
+}
+.asta-hint {
+  @apply text-[12.5px] leading-snug text-mute;
+}
+
+/* ---- Textarea (textarea.templ) ----
+ * <div class="asta-textarea"><textarea class="asta-textarea-control" rows="3"></textarea></div>
+ * asta-textarea-error (or aria-invalid="true"). asta-textarea-auto on the control grows with its content. */
+.asta-textarea {
+  @apply relative w-full rounded-xl bg-paper text-ink transition-shadow duration-200;
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)] hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_24%,transparent)];
+  @apply focus-within:!shadow-[inset_0_0_0_1px_var(--brand),0_0_0_4px_color-mix(in_srgb,var(--brand)_16%,transparent)];
+  @apply has-[textarea:disabled]:opacity-50;
+}
+.asta-textarea-error,
+.asta-textarea:has(> textarea[aria-invalid="true"]) {
+  @apply shadow-[inset_0_0_0_1px_#e5484d] hover:shadow-[inset_0_0_0_1px_#e5484d] focus-within:!shadow-[inset_0_0_0_1px_#e5484d,0_0_0_4px_rgb(229_72_77/0.16)];
+}
+.asta-textarea-control {
+  @apply block w-full resize-none bg-transparent px-3.5 py-3 text-[14px] leading-[1.55] outline-none placeholder:text-mute disabled:cursor-not-allowed;
+}
+.asta-textarea-auto {
+  @apply [field-sizing:content] overflow-y-auto min-h-[calc(3lh+24px)] max-h-[calc(10lh+24px)];
+}
+
+/* ---- Select (select.templ) ----
+ * <div class="asta-select"><select class="asta-select-control">…</select><svg class="asta-select-icon"/></div>
+ * asta-select-sm, asta-select-error (or aria-invalid="true"). An empty-value option shows as a muted placeholder. */
+.asta-select {
+  @apply relative w-full;
+}
+.asta-select-control {
+  @apply w-full cursor-pointer appearance-none truncate bg-paper text-ink outline-none transition-shadow duration-200;
+  @apply disabled:cursor-not-allowed disabled:opacity-45;
+  @apply [&:has(option[value='']:checked)]:text-mute [&_option]:bg-paper [&_option]:text-ink;
+  @apply h-10 rounded-lg pl-3 pr-9 text-[14px];
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)] hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_24%,transparent)];
+  @apply focus:!shadow-[inset_0_0_0_1px_var(--brand),0_0_0_3px_color-mix(in_srgb,var(--brand)_18%,transparent)];
+  .asta-select-sm > & {
+    @apply h-8 rounded-md pl-2.5 pr-8 text-[13px];
+  }
+  .asta-select-error > &,
+  &[aria-invalid="true"] {
+    @apply shadow-[inset_0_0_0_1px_#e5484d] hover:shadow-[inset_0_0_0_1px_#e5484d] focus:!shadow-[inset_0_0_0_1px_#e5484d,0_0_0_3px_rgb(229_72_77/0.16)];
+  }
+}
+.asta-select-icon {
+  @apply pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-mute;
+  .asta-select-sm > & {
+    @apply right-2.5;
+  }
+  .asta-select:has(select:disabled) > & {
+    @apply opacity-45;
+  }
+}
+
+/* ---- Checkbox (checkbox.templ) ----
+ * <label class="asta-checkbox"><span class="asta-checkbox-box"><input type="checkbox" class="asta-checkbox-input">
+ *   <svg class="asta-checkbox-check"/><span class="asta-checkbox-dash"></span></span>
+ *   <span><span class="asta-checkbox-label">Email me</span><span class="asta-checkbox-desc">…</span></span></label>
+ * A bare asta-checkbox-box works without a label. data-indeterminate on the input shows the dash. */
+.asta-checkbox {
+  @apply flex cursor-pointer items-start gap-3;
+  &:has(input:disabled) {
+    @apply cursor-default opacity-60;
+  }
+  & > .asta-checkbox-box {
+    @apply mt-px;
+  }
+}
+.asta-checkbox-box {
+  @apply relative inline-grid h-[18px] w-[18px] shrink-0 place-items-center align-middle;
+}
+.asta-checkbox-input {
+  @apply col-start-1 row-start-1 h-[18px] w-[18px] cursor-pointer appearance-none rounded-[6px] bg-paper outline-none;
+  @apply shadow-[inset_0_0_0_1.5px_color-mix(in_srgb,var(--ink)_22%,transparent)] hover:shadow-[inset_0_0_0_1.5px_color-mix(in_srgb,var(--ink)_40%,transparent)];
+  @apply transition-[background-color,box-shadow,scale] duration-200 ease-[cubic-bezier(.16,1,.3,1)] active:scale-90 motion-reduce:transition-none;
+  @apply checked:bg-brand checked:shadow-[inset_0_1px_0_rgb(255_255_255/0.2),0_1px_2px_rgb(0_0_0/0.2)] checked:hover:shadow-[inset_0_1px_0_rgb(255_255_255/0.2),0_1px_2px_rgb(0_0_0/0.2)];
+  @apply data-[indeterminate]:bg-brand data-[indeterminate]:shadow-[inset_0_1px_0_rgb(255_255_255/0.2),0_1px_2px_rgb(0_0_0/0.2)];
+  @apply focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 focus-visible:ring-offset-paper;
+  @apply disabled:cursor-not-allowed disabled:opacity-45;
+}
+.asta-checkbox-check {
+  @apply pointer-events-none col-start-1 row-start-1 h-3 w-3 scale-50 text-white opacity-0 transition-[opacity,scale] duration-300 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  input:checked ~ & {
+    @apply scale-100 opacity-100;
+  }
+}
+.asta-checkbox-dash {
+  @apply pointer-events-none col-start-1 row-start-1 h-[2.2px] w-2 scale-x-0 rounded-full bg-white transition-[scale] duration-300 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  input[data-indeterminate] ~ & {
+    @apply scale-x-100;
+  }
+  input:checked ~ & {
+    @apply !scale-x-0;
+  }
+}
+.asta-checkbox-label,
+.asta-switch-label {
+  @apply block select-none text-[14px] leading-5 text-ink;
+}
+.asta-checkbox-desc,
+.asta-switch-desc {
+  @apply mt-0.5 block text-[13px] leading-snug text-mute;
+}
+
+/* ---- Radio group (radio.templ) ----
+ * <div role="radiogroup" class="asta-radio-group"><label class="asta-radio"><span class="asta-radio-row">
+ *   <span class="asta-radio-dot"><input type="radio" class="asta-radio-input" name="plan"><span class="asta-radio-mark"></span></span>
+ *   <span class="asta-radio-label">Pro</span><span class="asta-radio-aside">$12</span></span>
+ *   <span class="asta-radio-desc">…</span></label></div>
+ * Cards in 3 columns from sm up; asta-radio-group-cols-1 / -cols-2. asta-radio-group-list for a compact list. */
+.asta-radio-group {
+  @apply grid gap-2.5 sm:grid-cols-3;
+}
+.asta-radio-group-cols-1 {
+  @apply sm:grid-cols-1;
+}
+.asta-radio-group-cols-2 {
+  @apply sm:grid-cols-2;
+}
+.asta-radio {
+  @apply relative flex cursor-pointer text-left transition-[background-color,box-shadow,opacity] duration-300 ease-[cubic-bezier(.16,1,.3,1)];
+  @apply has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand/50 has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-45;
+  @apply flex-col gap-1 rounded-xl bg-paper p-4 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)];
+  @apply hover:bg-paper-2 has-[:checked]:bg-paper has-[:checked]:shadow-[inset_0_0_0_2px_var(--brand),0_0_0_4px_color-mix(in_srgb,var(--brand)_14%,transparent)];
+}
+.asta-radio-group-list {
+  @apply flex flex-col gap-0 rounded-xl bg-paper p-1.5 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)];
+  & > .asta-radio {
+    @apply gap-0.5 rounded-lg bg-transparent px-3 py-2.5 shadow-none hover:bg-paper-2/60 has-[:checked]:bg-paper-2 has-[:checked]:shadow-none;
+  }
+}
+.asta-radio-row {
+  @apply flex w-full items-center gap-3;
+}
+.asta-radio-dot {
+  @apply relative flex h-4 w-4 shrink-0;
+}
+.asta-radio-input {
+  @apply h-4 w-4 cursor-[inherit] appearance-none rounded-full bg-paper outline-none shadow-[inset_0_0_0_1.5px_color-mix(in_srgb,var(--ink)_24%,transparent)] transition-[background-color,box-shadow] duration-300 checked:bg-brand checked:!shadow-none;
+  .asta-radio:hover & {
+    @apply shadow-[inset_0_0_0_1.5px_color-mix(in_srgb,var(--ink)_40%,transparent)];
+  }
+}
+.asta-radio-mark {
+  @apply pointer-events-none absolute inset-0 m-auto h-1.5 w-1.5 scale-0 rounded-full bg-white transition-[scale] duration-300 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  input:checked ~ & {
+    @apply scale-100;
+  }
+}
+.asta-radio-label {
+  @apply min-w-0 flex-1 text-[14px] font-medium tracking-[-0.01em] text-ink;
+}
+.asta-radio-aside {
+  @apply text-[13px] tabular-nums text-ink-2;
+}
+.asta-radio-desc {
+  @apply pl-7 text-[13px] leading-snug text-mute;
+}
+
+/* ---- Switch (switch.templ) ----
+ * <label class="asta-switch"><span><span class="asta-switch-label">Alerts</span><span class="asta-switch-desc">…</span></span>
+ *   <span class="asta-switch-track"><input type="checkbox" role="switch" class="asta-switch-input"><span class="asta-switch-thumb"></span></span></label>
+ * A bare asta-switch-track works without a label. Sizes: asta-switch-sm, asta-switch-lg on the label or the track. */
+.asta-switch {
+  @apply flex cursor-pointer items-center justify-between gap-4;
+  &:has(input:disabled) {
+    @apply cursor-default opacity-60;
+  }
+  & > span:first-child {
+    @apply min-w-0;
+  }
+}
+.asta-switch-track {
+  @apply relative inline-flex h-6 w-10 shrink-0 align-middle;
+}
+.asta-switch-input {
+  @apply absolute inset-0 h-full w-full cursor-pointer appearance-none rounded-full outline-none transition-[background-color,box-shadow] duration-300;
+  @apply bg-[color-mix(in_srgb,var(--ink)_14%,var(--paper))] shadow-[inset_0_1px_2px_rgb(0_0_0/0.08)] checked:bg-brand checked:shadow-[inset_0_1px_2px_rgb(0_0_0/0.15)];
+  @apply focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:cursor-not-allowed disabled:opacity-45;
+}
+.asta-switch-thumb {
+  @apply pointer-events-none absolute left-[2px] top-[2px] block h-5 w-5 origin-left rounded-full bg-white shadow-[0_1px_2px_rgb(0_0_0/0.2),0_2px_6px_-1px_rgb(0_0_0/0.18)];
+  @apply transition-[translate,scale] duration-[450ms] ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  input:checked ~ & {
+    @apply origin-right translate-x-4;
+  }
+  input:active ~ & {
+    @apply scale-x-[1.3];
+  }
+}
+.asta-switch-sm .asta-switch-track,
+.asta-switch-track.asta-switch-sm {
+  @apply h-[18px] w-[30px];
+  & > .asta-switch-thumb {
+    @apply h-[14px] w-[14px];
+  }
+  & > input:checked ~ .asta-switch-thumb {
+    @apply translate-x-[12px];
+  }
+}
+.asta-switch-lg .asta-switch-track,
+.asta-switch-track.asta-switch-lg {
+  @apply h-[30px] w-[52px];
+  & > .asta-switch-thumb {
+    @apply h-[26px] w-[26px];
+  }
+  & > input:checked ~ .asta-switch-thumb {
+    @apply translate-x-[22px];
+  }
+}
+
+/* ---- Slider (slider.templ) ----
+ * <div class="asta-slider"><input type="range" class="asta-slider-input" min="0" max="100" value="40">
+ *   <div class="asta-slider-ticks" aria-hidden="true"><span class="asta-slider-tick" style="left:0%"></span>…</div></div> */
+.asta-slider {
+  @apply relative w-full select-none;
+}
+.asta-slider-input {
+  @apply block h-6 w-full cursor-pointer appearance-none bg-transparent outline-none disabled:cursor-not-allowed disabled:opacity-45;
+  @apply [&::-webkit-slider-runnable-track]:h-1.5 [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-[color-mix(in_srgb,var(--ink)_12%,transparent)];
+  @apply [&::-webkit-slider-thumb]:-mt-[7px] [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white;
+  @apply [&::-webkit-slider-thumb]:shadow-[0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent),0_1px_3px_rgb(0_0_0/0.2),0_4px_10px_-2px_rgb(0_0_0/0.2)];
+  @apply [&::-webkit-slider-thumb]:transition-[scale] [&::-webkit-slider-thumb]:duration-300 [&::-webkit-slider-thumb]:ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:[&::-webkit-slider-thumb]:transition-none;
+  @apply hover:[&::-webkit-slider-thumb]:scale-105 active:[&::-webkit-slider-thumb]:scale-110;
+  @apply focus-visible:[&::-webkit-slider-thumb]:ring-4 focus-visible:[&::-webkit-slider-thumb]:ring-brand/30;
+  @apply [&::-moz-range-track]:h-1.5 [&::-moz-range-track]:rounded-full [&::-moz-range-track]:bg-[color-mix(in_srgb,var(--ink)_12%,transparent)];
+  @apply [&::-moz-range-progress]:h-1.5 [&::-moz-range-progress]:rounded-full [&::-moz-range-progress]:bg-brand;
+  @apply [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-white;
+  @apply [&::-moz-range-thumb]:shadow-[0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent),0_1px_3px_rgb(0_0_0/0.2),0_4px_10px_-2px_rgb(0_0_0/0.2)];
+  @apply [&::-moz-range-thumb]:transition-[scale] [&::-moz-range-thumb]:duration-300 [&::-moz-range-thumb]:ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:[&::-moz-range-thumb]:transition-none;
+  @apply hover:[&::-moz-range-thumb]:scale-105 active:[&::-moz-range-thumb]:scale-110;
+  @apply focus-visible:[&::-moz-range-thumb]:ring-4 focus-visible:[&::-moz-range-thumb]:ring-brand/30;
+}
+.asta-slider-ticks {
+  @apply pointer-events-none relative mx-[10px] h-1;
+}
+.asta-slider-tick {
+  @apply absolute top-0 h-1 w-1 -translate-x-1/2 rounded-full bg-[color-mix(in_srgb,var(--ink)_28%,transparent)];
+}
+
+/* ---- Badge (badge.templ) ----
+ * <span class="asta-badge asta-badge-success"><span class="asta-badge-dot"></span>Live</span>
+ * Variants: (soft) solid outline. Tones: (neutral) accent success warning danger. Size: asta-badge-sm.
+ * asta-badge-dot can hold <span class="asta-badge-ping"></span> for a pulse. asta-badge-remove is the × button.
+ * asta-count is the small red counter (e.g. on a bell). */
+.asta-badge {
+  --kit-badge: var(--ink);
+  --kit-badge-on: var(--paper);
+  @apply inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md font-medium tracking-[-0.005em];
+  @apply h-6 px-2.5 text-[12px];
+  @apply bg-[color-mix(in_srgb,var(--kit-badge)_12%,transparent)] text-[color-mix(in_srgb,var(--kit-badge)_80%,var(--ink))];
+  &:has(> .asta-badge-remove) {
+    @apply pr-1;
+  }
+}
+.asta-badge-accent {
+  --kit-badge: var(--brand);
+  --kit-badge-on: #fff;
+}
+.asta-badge-success {
+  --kit-badge: #30a46c;
+  --kit-badge-on: #fff;
+}
+.asta-badge-warning {
+  --kit-badge: #f5a524;
+  --kit-badge-on: #1a1300;
+}
+.asta-badge-danger {
+  --kit-badge: #e5484d;
+  --kit-badge-on: #fff;
+}
+.asta-badge-solid {
+  @apply bg-[var(--kit-badge)] text-[var(--kit-badge-on)];
+}
+.asta-badge-outline {
+  @apply bg-transparent text-[color-mix(in_srgb,var(--kit-badge)_80%,var(--ink))] shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--kit-badge)_35%,transparent)];
+}
+.asta-badge-sm {
+  @apply h-5 px-2 text-[11px];
+  &:has(> .asta-badge-remove) {
+    @apply pr-0.5;
+  }
+}
+.asta-badge-dot {
+  @apply relative flex h-1.5 w-1.5 shrink-0;
+  &::after {
+    @apply relative h-1.5 w-1.5 rounded-full bg-[var(--kit-badge)] content-[''];
+    .asta-badge-solid > & {
+      @apply bg-current;
+    }
+  }
+}
+.asta-badge-ping {
+  @apply absolute inset-0 animate-[asta-badge-ping_1.6s_cubic-bezier(.16,1,.3,1)_infinite] rounded-full bg-current motion-reduce:hidden;
+}
+.asta-badge-remove {
+  @apply inline-flex h-[18px] w-[18px] items-center justify-center rounded-full opacity-60 outline-none transition-[opacity,background-color] hover:bg-[color-mix(in_srgb,currentColor_15%,transparent)] hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-brand/50;
+  .asta-badge-sm > & {
+    @apply h-4 w-4;
+  }
+  & > svg {
+    @apply h-2.5 w-2.5;
+  }
+}
+.asta-count {
+  @apply inline-flex h-[18px] min-w-[18px] animate-[asta-pop_.4s_cubic-bezier(.16,1,.3,1)] items-center justify-center rounded-[5px] bg-[#e5484d] px-1 text-[10.5px] font-semibold tabular-nums leading-none text-white shadow-[0_0_0_2px_var(--paper)] motion-reduce:animate-none;
+}
+
+/* ---- Dialog (dialog.templ) ----
+ * <button data-asta-open="invite">Invite</button>
+ * <dialog id="invite" class="asta-dialog" aria-labelledby="invite-title">
+ *   <button type="button" class="asta-dialog-close" data-asta-close aria-label="Close"><svg/></button>
+ *   <h2 id="invite-title" class="asta-dialog-title">Invite</h2><p class="asta-dialog-desc">…</p>
+ *   <div class="asta-dialog-body">…<div class="asta-dialog-footer">…buttons…</div></div></dialog>
+ * The open/close motion lives in the runtime part of components.css. data-asta-autoopen opens it on load.
+ * Drawer and command palette are dialogs too, with their own panel classes. */
+.asta-dialog:not(.asta-drawer, .asta-cmd) {
+  @apply m-auto w-[calc(100%-2rem)] max-w-[400px] rounded-2xl bg-paper p-6 text-ink outline-none;
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_8%,transparent),0_24px_60px_-20px_rgb(0_0_0/0.45)];
+}
+.asta-dialog-close {
+  @apply absolute right-3.5 top-3.5 flex h-8 w-8 items-center justify-center rounded-full text-mute outline-none transition-colors hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50;
+  & > svg {
+    @apply h-3.5 w-3.5;
+  }
+}
+.asta-dialog-title {
+  @apply pr-8 text-[18px] font-medium tracking-[-0.02em] text-ink;
+}
+.asta-dialog-desc {
+  @apply mt-1.5 text-[14px] leading-relaxed text-mute;
+}
+.asta-dialog-body {
+  @apply mt-5;
+}
+.asta-dialog-footer {
+  @apply mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end;
+}
+
+/* ---- Menu (menu.templ) ----
+ * <div class="asta-menu" data-asta-menu>
+ *   <button class="asta-btn asta-btn-outline asta-menu-trigger" data-asta-menu-trigger aria-haspopup="menu" aria-expanded="false">
+ *     Actions<svg class="asta-menu-chevron"/></button>
+ *   <div role="menu" hidden tabindex="-1" class="asta-menu-panel">
+ *     <button type="button" role="menuitem" tabindex="-1" class="asta-menu-item"><span class="asta-menu-item-icon"><svg/></span>
+ *       <span class="asta-menu-item-text">Rename</span><kbd class="asta-menu-shortcut">R</kbd></button>
+ *     <div role="separator" class="asta-menu-separator"></div></div></div>
+ * asta.js sets data-open on the root and data-up when it flips above. data-align="end" pins it to the right. */
+.asta-menu {
+  @apply relative inline-flex;
+}
+.asta-menu-trigger {
+  [data-asta-menu][data-open] > & {
+    @apply bg-paper-2;
+  }
+}
+.asta-menu-chevron {
+  @apply -mr-1 h-3.5 w-3.5 text-mute transition-transform duration-300 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  [data-asta-menu][data-open] > * > & {
+    @apply rotate-180;
+  }
+}
+.asta-menu-panel {
+  @apply absolute left-0 top-full z-50 mt-1.5 min-w-[232px] rounded-xl bg-paper p-1.5 text-left outline-none;
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent),0_12px_32px_-12px_rgb(0_0_0/0.28),0_4px_10px_-6px_rgb(0_0_0/0.12)];
+  [data-align="end"] > & {
+    @apply left-auto right-0;
+  }
+}
+.asta-menu-item {
+  @apply flex h-9 w-full cursor-pointer select-none items-center gap-2.5 rounded-[10px] px-2.5 text-left text-[13.5px] outline-none transition-colors duration-150;
+  @apply disabled:cursor-not-allowed disabled:opacity-40 aria-disabled:cursor-not-allowed aria-disabled:opacity-40;
+  @apply text-ink hover:bg-paper-2 focus:bg-paper-2;
+}
+.asta-menu-item-danger {
+  @apply text-[#e5484d] hover:bg-[#e5484d]/10 focus:bg-[#e5484d]/10;
+}
+.asta-menu-item-icon {
+  @apply inline-flex h-4 w-4 shrink-0 text-mute [&_svg]:h-4 [&_svg]:w-4;
+  .asta-menu-item:is(:hover, :focus) > & {
+    @apply text-ink;
+  }
+  .asta-menu-item-danger > & {
+    @apply text-current;
+  }
+}
+.asta-menu-item-text {
+  @apply flex-1 truncate;
+}
+.asta-menu-shortcut {
+  @apply font-sans text-[11.5px] tracking-wide text-mute;
+}
+.asta-menu-label {
+  @apply px-2.5 pb-1 pt-1.5 text-[11px] font-medium uppercase tracking-wider text-mute;
+}
+.asta-menu-separator {
+  @apply mx-1 my-1.5 h-px bg-[color-mix(in_srgb,var(--ink)_8%,transparent)];
+}
+
+/* ---- Tabs (tabs.templ) ----
+ * <div class="asta-tabs" data-asta-tabs><div role="tablist" class="asta-tabs-list">
+ *   <span class="asta-tabs-line" aria-hidden="true"></span><span class="asta-tabs-indicator" data-asta-tab-indicator aria-hidden="true"></span>
+ *   <button role="tab" class="asta-tab" id="t-a" aria-controls="p-a" aria-selected="true">Overview<span class="asta-tab-count">4</span></button>…</div>
+ *   <div role="tabpanel" class="asta-tabs-panel" id="p-a" aria-labelledby="t-a" tabindex="0">…</div></div>
+ * Variants on the root: (underline) asta-tabs-pill, asta-tabs-segmented (+ asta-tabs-full, asta-tabs-sm).
+ * asta-tabs-line is the underline variant's base rule; leave it out for the others. */
+.asta-tabs-list {
+  @apply relative flex gap-5 overflow-x-auto [scrollbar-width:none] sm:gap-6;
+}
+.asta-tabs-line {
+  @apply absolute inset-x-0 bottom-0 h-px bg-[color-mix(in_srgb,var(--ink)_10%,transparent)];
+}
+.asta-tabs-indicator {
+  @apply pointer-events-none absolute left-0 origin-left opacity-0 transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:!transition-none;
+  @apply bottom-0 h-0.5 rounded-full bg-ink;
+}
+.asta-tab {
+  @apply relative z-10 inline-flex shrink-0 items-center whitespace-nowrap font-medium tracking-[-0.01em] text-mute outline-none;
+  @apply transition-colors duration-300 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50 aria-selected:text-ink;
+  @apply disabled:pointer-events-none disabled:opacity-40;
+  @apply h-11 gap-2 rounded-md text-[14px];
+}
+.asta-tab-icon {
+  @apply inline-flex shrink-0 [&_svg]:h-4 [&_svg]:w-4;
+}
+.asta-tab-count {
+  @apply rounded-[5px] bg-[color-mix(in_srgb,var(--ink)_7%,transparent)] px-1.5 text-[11px] leading-[18px] tabular-nums text-mute transition-colors duration-300;
+  .asta-tab[aria-selected="true"] > & {
+    @apply bg-brand text-white;
+  }
+}
+.asta-tabs-panel {
+  @apply rounded-md pt-5 outline-none focus-visible:ring-2 focus-visible:ring-brand/50;
+  @apply transition-[opacity,translate] duration-[450ms] ease-[cubic-bezier(.16,1,.3,1)] starting:translate-y-1.5 starting:opacity-0 motion-reduce:transition-none;
+}
+.asta-tabs-pill {
+  & > .asta-tabs-list {
+    @apply gap-1 rounded-[10px] bg-paper-2 p-1 sm:gap-1;
+  }
+  & .asta-tabs-indicator {
+    @apply top-1 bottom-1 h-auto rounded-[7px] bg-paper shadow-[0_1px_2px_rgb(0_0_0/0.08),inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_8%,transparent)];
+  }
+  & .asta-tab {
+    @apply h-8 gap-2 rounded-[7px] px-3.5 text-[14px];
+  }
+}
+.asta-tabs-segmented {
+  @apply inline-flex flex-col;
+  & > .asta-tabs-list {
+    @apply inline-flex gap-0 overflow-visible rounded-[10px] bg-paper-2 p-1 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_6%,transparent)] sm:gap-0;
+  }
+  & .asta-tabs-indicator {
+    @apply top-1 bottom-1 h-auto rounded-[7px] bg-paper shadow-[0_1px_2px_rgb(0_0_0/0.08),0_3px_10px_-4px_rgb(0_0_0/0.18),inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_8%,transparent)];
+  }
+  & .asta-tab {
+    @apply h-10 justify-center gap-1.5 rounded-[7px] px-4 text-[14px] [&_svg]:h-[1.05em] [&_svg]:w-[1.05em];
+  }
+  &.asta-tabs-sm .asta-tab {
+    @apply h-8 px-3 text-[13px];
+  }
+  &.asta-tabs-full {
+    @apply flex;
+    & > .asta-tabs-list {
+      @apply flex w-full;
+    }
+    & .asta-tab {
+      @apply flex-1;
+    }
+  }
+}
+
+/* ---- Table (table.templ) ----
+ * <div class="asta-table-wrap"><div class="asta-table-scroll"><table class="asta-table">
+ *   <thead><tr><th class="asta-th" scope="col">Name</th><th class="asta-th asta-th-right">Amount</th></tr></thead>
+ *   <tbody><tr class="asta-tr"><td class="asta-td">Astabyte</td><td class="asta-td asta-td-right">$1,200</td></tr></tbody></table></div></div>
+ * Sortable header: <th class="asta-th" aria-sort="ascending"><a class="asta-th-sort" href="?sort=name">Name<svg class="asta-th-sort-icon"/></a></th>.
+ * Selected row: aria-selected="true" (or asta-tr-selected). asta-td-wrap lets a cell wrap. */
+.asta-table-wrap {
+  @apply relative rounded-xl bg-paper after:pointer-events-none after:absolute after:inset-0 after:z-20 after:rounded-xl after:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent)];
+}
+.asta-table-scroll {
+  @apply overflow-auto rounded-xl;
+}
+.asta-table {
+  @apply w-full border-separate border-spacing-0 text-[13.5px];
+}
+.asta-th {
+  @apply sticky top-0 z-10 whitespace-nowrap bg-paper-2 px-4 py-2.5 text-left text-[12px] font-medium text-mute;
+}
+.asta-th-sort {
+  @apply -mx-1.5 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 outline-none transition-colors duration-150 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50;
+  .asta-th:is([aria-sort="ascending"], [aria-sort="descending"]) > & {
+    @apply text-ink;
+  }
+  .asta-th-right > & {
+    @apply flex-row-reverse;
+  }
+}
+.asta-th-sort-icon {
+  @apply h-3 w-3 opacity-0 transition-[transform,opacity] duration-300 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  .asta-th-sort:is(:hover, :focus-visible) > & {
+    @apply opacity-40;
+  }
+  .asta-th:is([aria-sort="ascending"], [aria-sort="descending"]) & {
+    @apply opacity-100;
+  }
+  .asta-th[aria-sort="descending"] & {
+    @apply rotate-180;
+  }
+}
+.asta-tr {
+  @apply [transition:background-color_150ms,opacity_420ms_cubic-bezier(.16,1,.3,1),translate_420ms_cubic-bezier(.16,1,.3,1)] starting:translate-y-1.5 starting:opacity-0 motion-reduce:[transition:background-color_150ms];
+  @apply hover:bg-[color-mix(in_srgb,var(--ink)_3%,transparent)];
+  &:is([aria-selected="true"], .asta-tr-selected) {
+    @apply bg-[color-mix(in_srgb,var(--brand)_7%,transparent)] hover:bg-[color-mix(in_srgb,var(--brand)_7%,transparent)];
+  }
+}
+.asta-td {
+  @apply whitespace-nowrap px-4 py-3 text-left align-middle text-ink-2;
+}
+.asta-td-wrap {
+  @apply whitespace-normal;
+}
+.asta-th-center,
+.asta-td-center {
+  @apply text-center;
+}
+.asta-th-right,
+.asta-td-right {
+  @apply text-right;
+}
+.asta-td-right {
+  @apply tabular-nums;
+}
+.asta-table-empty {
+  @apply px-4 py-14 text-center;
+}
+.asta-table-empty-body {
+  @apply mx-auto flex max-w-[260px] flex-col items-center gap-1.5;
+}
+.asta-table-empty-icon {
+  @apply grid h-10 w-10 place-items-center rounded-[10px] bg-paper-2 text-mute [&_svg]:h-4 [&_svg]:w-4;
+}
+.asta-table-empty-title {
+  @apply mt-1.5 text-[14px] font-medium text-ink;
+}
+.asta-table-empty-text {
+  @apply text-[13px] text-mute;
+}
+
+/* ---- Toast (asta.js) ----
+ * Toasts are built by asta.js: call asta.toast({ title, description, tone: "success" | "error", duration }) or send
+ * an HX-Trigger header {"asta:toast": {...}}. A <template data-asta-toast='[{"title":"Saved"}]'> in the page shows
+ * them on load. Their utility classes come with components.css (it @source's asta.js) and with asta.css. */

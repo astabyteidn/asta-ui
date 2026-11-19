@@ -1,0 +1,861 @@
+/* Forms: combobox, date picker, colour picker, number, OTP, password, tags, range, rating, upload, inline edit,
+ * segmented control, toggle group, copy button. Class lists mirror go/ui/<name>.templ.
+ * asta.js finds these parts by their data-asta-* attributes, so keep those. Runtime classes named in
+ * go/ui/assets/src/forms.css (asta-combo-chip, asta-date-cal, asta-otp-shake, asta-pw-slash…) stay in the markup too. */
+
+/* ---- Combobox (combobox.templ) ----
+ * <div class="asta-combobox" data-asta-combo="single" data-name="framework">
+ *   <div class="asta-combobox-box" data-asta-combo-box><input class="asta-combobox-input" data-asta-combo-input role="combobox" …>
+ *   <button class="asta-combobox-toggle" data-asta-combo-toggle>…</button></div>
+ *   <input type="hidden" name="framework" data-asta-combo-value>
+ *   <ul class="asta-combobox-list" role="listbox" hidden><li class="asta-combobox-option" role="option" data-value data-label>…</li></ul>
+ * </div>
+ * Multiple: data-asta-combo="multiple", chips are .asta-combobox-chip (also .asta-combo-chip), plus a <template data-asta-combo-tpl>. */
+.asta-combobox {
+  @apply relative w-full;
+}
+.asta-combobox-box {
+  @apply flex min-h-10 w-full flex-wrap items-center gap-1 rounded-lg bg-paper py-1 pl-1.5 pr-1 transition-shadow duration-200;
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)] hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_24%,transparent)];
+  @apply focus-within:!shadow-[inset_0_0_0_1px_var(--brand),0_0_0_3px_color-mix(in_srgb,var(--brand)_18%,transparent)];
+  &:has(:disabled) {
+    @apply cursor-not-allowed opacity-45;
+  }
+}
+.asta-combobox-input {
+  @apply h-8 min-w-[6rem] flex-1 bg-transparent px-1.5 text-[14px] text-ink outline-none placeholder:text-mute disabled:cursor-not-allowed;
+}
+.asta-combobox-toggle {
+  @apply ml-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-mute outline-none transition-colors hover:bg-paper-2 hover:text-ink;
+  & > svg {
+    @apply h-4 w-4 transition-transform duration-300 ease-[cubic-bezier(.16,1,.3,1)];
+  }
+  .asta-combobox[data-open] & > svg {
+    @apply rotate-180;
+  }
+}
+.asta-combobox-list {
+  @apply absolute inset-x-0 top-full z-50 mt-1.5 max-h-64 origin-top overflow-y-auto rounded-xl bg-paper p-1 outline-none [scrollbar-width:thin];
+  @apply shadow-[0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent),0_12px_32px_-8px_rgb(0_0_0/0.22),0_4px_8px_-4px_rgb(0_0_0/0.08)];
+}
+.asta-combobox-option {
+  @apply flex cursor-pointer select-none items-center gap-2.5 rounded-md px-2.5 py-2 text-[14px] text-ink-2 transition-colors duration-150;
+  @apply data-[active]:bg-paper-2 data-[active]:text-ink aria-disabled:cursor-not-allowed aria-disabled:opacity-40;
+}
+.asta-combobox-icon {
+  @apply inline-flex shrink-0 [&_svg]:h-4 [&_svg]:w-4;
+}
+.asta-combobox-text {
+  @apply min-w-0 flex-1 truncate;
+}
+.asta-combobox-hint {
+  @apply text-[12px] tabular-nums text-mute;
+}
+.asta-combobox-check {
+  @apply h-4 w-4 shrink-0 scale-75 text-brand opacity-0 transition-[opacity,transform] duration-200 ease-[cubic-bezier(.16,1,.3,1)];
+  [aria-selected="true"] > & {
+    @apply scale-100 opacity-100;
+  }
+}
+.asta-combobox-empty {
+  @apply flex flex-col items-center gap-1 px-2.5 py-6 text-center;
+}
+.asta-combobox-empty-title {
+  @apply text-[13px] text-ink-2;
+}
+.asta-combobox-query {
+  @apply text-[12px] text-mute;
+}
+.asta-combobox-chip {
+  @apply inline-flex h-7 items-center gap-1 rounded-md bg-paper-2 pl-2 pr-0.5 text-[13px] text-ink;
+}
+.asta-combobox-chip-icon {
+  @apply inline-flex shrink-0 [&_svg]:h-3.5 [&_svg]:w-3.5;
+}
+.asta-combobox-remove {
+  @apply flex h-6 w-6 items-center justify-center rounded-[5px] text-mute outline-none transition-colors hover:bg-[color-mix(in_srgb,var(--ink)_8%,transparent)] hover:text-ink;
+  & > svg {
+    @apply h-3 w-3;
+  }
+}
+
+/* ---- Date picker (date_picker.templ) ----
+ * <div class="asta-date-picker" data-asta-date="single" data-placeholder="Pick a date">
+ *   <button class="asta-date-picker-trigger" data-asta-date-trigger aria-haspopup="dialog" aria-expanded="false" aria-controls="d-cal">
+ *     <svg class="asta-date-picker-icon">…</svg><span class="asta-date-picker-text asta-date-picker-placeholder" data-asta-date-text>Pick a date</span></button>
+ *   <input type="hidden" name="day" data-asta-date-value>
+ *   <div id="d-cal" class="asta-date-picker-cal asta-date-cal" role="dialog" hidden data-asta-date-cal></div>
+ * </div>
+ * Range: data-asta-date="range". Small: asta-date-picker-sm on the trigger. asta.js renders the calendar. */
+.asta-date-picker {
+  @apply relative w-full;
+}
+.asta-date-picker-trigger {
+  @apply flex w-full items-center gap-2 bg-paper text-left outline-none transition-shadow duration-200 focus-visible:ring-2 focus-visible:ring-brand/50 disabled:cursor-not-allowed disabled:opacity-45;
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)] hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_24%,transparent)];
+  @apply h-10 rounded-lg px-3 text-[14px];
+  .asta-date-picker[data-open] & {
+    @apply !shadow-[inset_0_0_0_1px_var(--brand),0_0_0_3px_color-mix(in_srgb,var(--brand)_18%,transparent)];
+  }
+}
+.asta-date-picker-sm {
+  @apply h-8 rounded-md px-2.5 text-[13px];
+}
+.asta-date-picker-icon {
+  @apply h-4 w-4 shrink-0 text-mute;
+}
+.asta-date-picker-text {
+  @apply min-w-0 flex-1 truncate tabular-nums text-ink;
+}
+.asta-date-picker-placeholder {
+  @apply text-mute;
+}
+.asta-date-picker-cal {
+  @apply absolute left-0 top-full z-50 mt-2 w-[296px] max-w-[calc(100vw-32px)] origin-top-left rounded-xl bg-paper p-3 outline-none;
+  @apply shadow-[0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent),0_12px_32px_-8px_rgb(0_0_0/0.22),0_4px_8px_-4px_rgb(0_0_0/0.08)];
+}
+
+/* ---- Colour picker (color_picker.templ) ----
+ * <div class="asta-color-picker" data-asta-color data-columns="5">
+ *   <div class="asta-color-picker-swatches" role="radiogroup" style="grid-template-columns:repeat(5,28px);gap:10px">
+ *     <label class="asta-color-picker-swatch"><input type="radio" name="c" value="#2f54eb"><span class="asta-color-picker-ring"></span>
+ *       <span class="asta-color-picker-fill" style="background:#2f54eb"></span></label>…
+ *     <input type="radio" name="c" hidden data-asta-color-custom></div>
+ *   <div class="asta-color-picker-custom"><span class="asta-color-picker-preview" data-asta-color-preview>?</span>
+ *     <div class="asta-color-picker-field"><span class="asta-color-picker-hash">#</span><input class="asta-color-picker-hex" data-asta-color-hex></div>
+ *     <span class="asta-color-picker-hint" data-asta-color-hint></span></div>
+ * </div>
+ * Light swatches: asta-color-picker-fill-light adds an edge. Small: asta-color-picker-sm on each swatch. */
+.asta-color-picker {
+  @apply inline-flex flex-col gap-3;
+}
+.asta-color-picker-swatches {
+  @apply grid w-max;
+}
+.asta-color-picker-swatch {
+  @apply relative h-7 w-7 cursor-pointer rounded-full transition-[scale] duration-200 ease-[cubic-bezier(.16,1,.3,1)] hover:scale-110 active:scale-95 motion-reduce:transition-none;
+  & > input {
+    @apply sr-only;
+  }
+}
+.asta-color-picker-sm {
+  @apply h-[22px] w-[22px];
+}
+.asta-color-picker-ring {
+  @apply pointer-events-none absolute -inset-[4px] scale-75 rounded-full opacity-0 shadow-[0_0_0_1.5px_var(--ink)] transition-[opacity,scale] duration-300 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  input:checked ~ & {
+    @apply scale-100 opacity-100;
+  }
+  input:focus-visible ~ & {
+    @apply scale-100 opacity-100 shadow-[0_0_0_1.5px_var(--brand),0_0_0_4px_color-mix(in_srgb,var(--brand)_22%,transparent)];
+  }
+}
+.asta-color-picker-fill {
+  @apply absolute inset-0 rounded-full;
+}
+.asta-color-picker-fill-light {
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)];
+}
+.asta-color-picker-custom {
+  @apply flex items-center gap-2.5;
+}
+.asta-color-picker-preview {
+  @apply relative grid h-8 w-8 shrink-0 place-items-center rounded-[8px] text-[12px] text-transparent shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_12%,transparent)] transition-[background-color] duration-200 data-[empty]:text-mute;
+}
+.asta-color-picker-field {
+  @apply flex h-8 min-w-0 flex-1 items-center rounded-[8px] bg-paper-2 pl-2.5 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_8%,transparent)] transition-shadow duration-200 focus-within:shadow-[inset_0_0_0_1.5px_var(--brand)];
+}
+.asta-color-picker-hash {
+  @apply text-[13px] text-mute;
+}
+.asta-color-picker-hex {
+  @apply h-full w-full min-w-0 bg-transparent pl-1 pr-2.5 font-mono text-[13px] uppercase tracking-[0.02em] text-ink outline-none placeholder:text-mute;
+}
+.asta-color-picker-hint {
+  @apply w-14 text-[12px] text-mute opacity-0 transition-opacity duration-200 data-[on]:opacity-100;
+}
+
+/* ---- Number input (number_input.templ) ----
+ * <div class="asta-number-input" data-asta-number data-min="1" data-max="20" data-step="1">
+ *   <button class="asta-number-input-step" data-asta-number-step="-1" aria-label="Decrease">…</button>
+ *   <div class="asta-number-input-view" role="spinbutton" tabindex="0" data-asta-number-view aria-valuenow="4">
+ *     <span class="asta-number-input-digits" data-asta-number-digits>…digits…</span><span class="asta-number-input-suffix">seats</span></div>
+ *   <button class="asta-number-input-step" data-asta-number-step="1" aria-label="Increase">…</button>
+ *   <input type="hidden" name="seats" value="4" data-asta-number-input>
+ * </div>
+ * A digit: <span class="asta-number-input-digit" data-asta-digit><span class="asta-number-input-reel" style="transform:translateY(-5em)">
+ * <span>0</span>…<span>9</span></span></span>. Small: asta-number-input-sm on the root. */
+.asta-number-input {
+  @apply inline-flex h-12 items-center gap-1 rounded-[10px] bg-paper px-2 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)];
+}
+.asta-number-input-step {
+  @apply flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-md text-ink-2 outline-none [touch-action:manipulation];
+  @apply transition-[background-color,transform,opacity] duration-150 hover:bg-paper-2 hover:text-ink active:scale-90 disabled:opacity-30 disabled:hover:bg-transparent;
+  & > svg {
+    @apply h-3.5 w-3.5;
+  }
+}
+.asta-number-input-view {
+  @apply flex min-w-[3.5em] items-center justify-center gap-1.5 rounded-lg px-1 text-[20px] font-medium tabular-nums tracking-[-0.02em] text-ink outline-none transition-transform duration-200 focus-visible:ring-2 focus-visible:ring-brand/50;
+  @apply data-[bump=max]:-translate-y-0.5 data-[bump=min]:translate-y-0.5;
+}
+.asta-number-input-digits {
+  @apply inline-flex;
+}
+.asta-number-input-digit {
+  @apply relative inline-block h-[1.25em] w-[0.62em] overflow-hidden;
+}
+.asta-number-input-reel {
+  @apply absolute inset-x-0 top-0 flex flex-col transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  & > span {
+    @apply flex h-[1.25em] items-center justify-center;
+  }
+}
+.asta-number-input-suffix {
+  @apply text-[13px] font-normal text-mute;
+}
+.asta-number-input-sm {
+  @apply h-8 rounded-full px-1;
+  & .asta-number-input-step {
+    @apply h-6 w-6;
+  }
+  & .asta-number-input-view {
+    @apply text-[14px];
+  }
+  & .asta-number-input-suffix {
+    @apply text-[12px];
+  }
+}
+
+/* ---- OTP input (otp_input.templ) ----
+ * <div class="asta-otp-input" data-asta-otp>
+ *   <div class="asta-otp-input-boxes" aria-hidden="true" data-asta-otp-boxes>
+ *     <span class="asta-otp-input-wave" data-asta-otp-wave style="--asta-otp-i:0ms"><span class="asta-otp-input-box" data-asta-otp-box></span></span>…
+ *     <span class="asta-otp-input-sep"></span> (between groups)</div>
+ *   <input class="asta-otp-input-field" name="code" maxlength="6" inputmode="numeric" autocomplete="one-time-code">
+ * </div>
+ * Box states come from data-state: filled, full, active, error. Error shake: asta-otp-shake on the boxes. */
+.asta-otp-input {
+  @apply relative inline-flex;
+  &:has(:disabled) {
+    @apply opacity-45;
+  }
+}
+.asta-otp-input-boxes {
+  @apply flex items-center gap-2;
+}
+.asta-otp-input-wave {
+  @apply block;
+}
+.asta-otp-input-box {
+  @apply grid h-12 w-10 place-items-center rounded-[10px] bg-paper text-[22px] font-medium tabular-nums tracking-[-0.02em] text-ink transition-shadow duration-200 sm:h-14 sm:w-12 sm:text-[24px];
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)];
+  @apply data-[state=filled]:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_26%,transparent)];
+  @apply data-[state=full]:shadow-[inset_0_0_0_1.5px_color-mix(in_srgb,var(--brand)_55%,transparent)];
+  @apply data-[state=active]:shadow-[inset_0_0_0_1.5px_var(--brand),0_0_0_4px_color-mix(in_srgb,var(--brand)_16%,transparent)];
+  @apply data-[state=error]:shadow-[inset_0_0_0_1.5px_var(--ink)];
+}
+.asta-otp-input-sep {
+  @apply mx-0.5 h-[2px] w-2.5 rounded-full bg-[color-mix(in_srgb,var(--ink)_22%,transparent)];
+}
+.asta-otp-input-field {
+  @apply absolute inset-0 h-full w-full cursor-text bg-transparent text-[16px] text-transparent caret-transparent opacity-0 outline-none disabled:cursor-not-allowed;
+}
+
+/* ---- Segmented control (segmented_control.templ) ----
+ * <div class="asta-segmented" role="radiogroup" data-asta-segmented aria-label="View">
+ *   <label class="asta-segmented-item"><input type="radio" name="view" value="list" checked>
+ *     <span class="asta-segmented-pill" data-asta-ind></span><span class="asta-segmented-label">List</span></label>…
+ * </div>
+ * Small: asta-segmented-sm on the root. Full width: asta-segmented-full. */
+.asta-segmented {
+  @apply relative isolate inline-flex rounded-[10px] bg-paper-2 p-1 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_6%,transparent)];
+}
+.asta-segmented-item {
+  @apply relative inline-flex h-10 cursor-pointer select-none items-center justify-center whitespace-nowrap rounded-[7px] px-4 text-[14px] font-medium tracking-[-0.01em] text-mute transition-colors duration-300 hover:text-ink has-[:checked]:text-ink;
+  @apply has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand/50;
+  & > input {
+    @apply sr-only;
+  }
+}
+.asta-segmented-pill {
+  @apply pointer-events-none absolute inset-0 -z-10 rounded-[7px] bg-paper opacity-0;
+  @apply shadow-[0_1px_2px_rgb(0_0_0/0.08),0_3px_10px_-4px_rgb(0_0_0/0.18),inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_8%,transparent)];
+  input:checked ~ & {
+    @apply opacity-100;
+  }
+}
+.asta-segmented-label {
+  @apply relative inline-flex items-center gap-1.5 [&_svg]:h-[1.05em] [&_svg]:w-[1.05em];
+}
+.asta-segmented-sm .asta-segmented-item {
+  @apply h-8 px-3 text-[13px];
+}
+.asta-segmented-full {
+  @apply flex w-full;
+  & .asta-segmented-item {
+    @apply flex-1;
+  }
+}
+
+/* ---- Toggle group (toggle_group.templ) ----
+ * <div class="asta-toggle-group" role="radiogroup" data-asta-toggle="single" aria-label="Align">
+ *   <label class="asta-toggle-group-item"><input type="radio" name="align" value="left" checked aria-label="Left">
+ *     <span class="asta-toggle-group-ind" data-asta-ind></span><span class="asta-toggle-group-icon">svg</span></label>…
+ * </div>
+ * Multiple: data-asta-toggle="multiple", role="group", checkboxes. With text: <span class="asta-toggle-group-label">Bold</span>
+ * and asta-toggle-group-text on the item. Small: asta-toggle-group-sm on the root. Full width: asta-toggle-group-full. */
+.asta-toggle-group {
+  @apply relative isolate inline-flex gap-0.5 rounded-[10px] bg-paper-2 p-1 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_6%,transparent)];
+  &[aria-disabled="true"] {
+    @apply opacity-50;
+  }
+}
+.asta-toggle-group-item {
+  @apply relative inline-flex h-9 w-9 cursor-pointer select-none items-center justify-center gap-1.5 whitespace-nowrap rounded-[7px] text-[13.5px] font-medium tracking-[-0.01em] outline-none;
+  @apply text-mute transition-[color,scale] duration-200 hover:text-ink has-[:checked]:text-ink active:scale-[0.97] motion-reduce:transition-none;
+  @apply has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand/50 has-[:disabled]:pointer-events-none [&_svg]:h-[1.05em] [&_svg]:w-[1.05em];
+  & > input {
+    @apply sr-only;
+  }
+  .asta-toggle-group:not([aria-disabled="true"]) &:has(:disabled) {
+    @apply opacity-40;
+  }
+}
+.asta-toggle-group-text {
+  @apply w-auto px-3.5;
+}
+.asta-toggle-group-ind {
+  @apply pointer-events-none absolute inset-0 -z-10 origin-left rounded-[7px] bg-paper opacity-0;
+  @apply shadow-[0_1px_2px_rgb(0_0_0/0.07),0_3px_10px_-4px_rgb(0_0_0/0.16),inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_8%,transparent)];
+  input:checked ~ & {
+    @apply opacity-100;
+  }
+  [data-asta-toggle="multiple"] & {
+    @apply scale-[.94] transition-[opacity,scale] duration-300 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  }
+  [data-asta-toggle="multiple"] input:checked ~ & {
+    @apply scale-100;
+  }
+}
+.asta-toggle-group-icon {
+  @apply relative flex transition-colors duration-200;
+  input:checked ~ & {
+    @apply text-brand;
+  }
+}
+.asta-toggle-group-label {
+  @apply relative;
+}
+.asta-toggle-group-sm .asta-toggle-group-item {
+  @apply h-8 w-8 text-[13px];
+  &.asta-toggle-group-text {
+    @apply w-auto px-3;
+  }
+}
+.asta-toggle-group-full {
+  @apply flex w-full;
+  & .asta-toggle-group-item {
+    @apply flex-1;
+  }
+}
+
+/* ---- Copy button (copy_button.templ) ----
+ * <button class="asta-copy-button asta-copy-button-text" data-asta-copy="npm i asta-ui" data-timeout="1600" data-state="idle" data-copied="Copied">
+ *   <span class="asta-copy-button-icons" aria-hidden="true"><svg class="asta-copy-button-copy">…</svg>
+ *     <svg class="asta-copy-button-done"><path class="asta-copy-tick" pathLength="1" d="m3.5 8.5 3 3 6-7"/></svg></span>
+ *   <span class="asta-copy-button-labels" aria-hidden="true"><span class="asta-copy-button-idle">Copy</span>
+ *     <span class="asta-copy-button-copied"><span class="asta-copy-button-ok">Copied</span><span class="asta-copy-button-fail">Couldn't copy</span></span></span>
+ *   <span class="asta-sr-only">Copy</span></button>
+ * <span class="asta-sr-only" role="status" aria-live="polite" data-asta-copy-status></span>
+ * Icon only: drop the labels and asta-copy-button-text, add aria-label="Copy". Variants: (ghost) asta-copy-button-outline,
+ * asta-copy-button-soft. Small: asta-copy-button-sm. Copy from an element: data-asta-copy-from="#id". */
+.asta-sr-only {
+  @apply sr-only;
+}
+.asta-copy-button {
+  @apply inline-flex h-9 w-9 shrink-0 select-none items-center justify-center gap-1.5 rounded-lg text-[13px] font-medium outline-none;
+  @apply transition-[color,background-color,box-shadow,transform] duration-200 focus-visible:ring-2 focus-visible:ring-brand/50 active:scale-[.96] disabled:pointer-events-none disabled:opacity-40;
+  @apply text-mute hover:bg-paper-2 hover:text-ink;
+}
+.asta-copy-button-outline {
+  @apply bg-transparent text-ink-2 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)] hover:bg-transparent hover:text-ink hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_26%,transparent)];
+}
+.asta-copy-button-soft {
+  @apply bg-paper-2 text-ink-2 hover:bg-paper-2 hover:text-ink;
+}
+.asta-copy-button-text {
+  @apply w-auto px-3;
+}
+.asta-copy-button-sm {
+  @apply h-7 w-7 text-[12.5px];
+  &.asta-copy-button-text {
+    @apply w-auto px-2.5;
+  }
+}
+.asta-copy-button-icons {
+  @apply relative flex h-4 w-4 items-center justify-center;
+  .asta-copy-button-sm > & {
+    @apply h-3.5 w-3.5;
+  }
+}
+.asta-copy-button-copy,
+.asta-copy-button-done,
+.asta-copy-button-idle,
+.asta-copy-button-copied {
+  @apply transition-[opacity,transform] duration-300 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+}
+.asta-copy-button-copy {
+  @apply absolute inset-0;
+  [data-state="copied"] & {
+    @apply rotate-[-30deg] scale-50 opacity-0;
+  }
+}
+.asta-copy-button-done {
+  @apply absolute inset-0 scale-75 text-brand opacity-0;
+  [data-state="copied"] & {
+    @apply scale-100 opacity-100;
+  }
+}
+.asta-copy-button-labels {
+  @apply relative grid overflow-hidden;
+}
+.asta-copy-button-idle {
+  @apply col-start-1 row-start-1;
+  :is([data-state="copied"], [data-state="failed"]) & {
+    @apply -translate-y-full opacity-0;
+  }
+}
+.asta-copy-button-copied {
+  @apply col-start-1 row-start-1 translate-y-full opacity-0;
+  :is([data-state="copied"], [data-state="failed"]) & {
+    @apply translate-y-0 opacity-100;
+  }
+}
+.asta-copy-button-ok {
+  [data-state="failed"] & {
+    @apply hidden;
+  }
+}
+.asta-copy-button-fail {
+  @apply hidden;
+  [data-state="failed"] & {
+    @apply inline;
+  }
+}
+
+/* ---- Password input (password_input.templ) ----
+ * <div class="asta-password" data-asta-password data-strength="0">
+ *   <label class="asta-password-label" for="pw">Password</label>
+ *   <div class="asta-password-box"><input class="asta-password-input" id="pw" type="password" data-asta-password-input aria-describedby="pw-help">
+ *     <button class="asta-password-toggle" data-asta-password-toggle aria-pressed="false" aria-label="Show password">
+ *       <svg><path d="…eye…"/><circle class="asta-password-pupil" cx="10" cy="10" r="2.2"/><path class="asta-pw-slash" pathLength="1" d="M4 3.5 16 16.5"/></svg></button></div>
+ *   <div id="pw-help" class="asta-password-help">
+ *     <div class="asta-password-meter"><div class="asta-password-bars"><span class="asta-password-bar"><span class="asta-password-seg" data-asta-password-seg></span></span>…</div>
+ *       <span class="asta-password-word" data-asta-password-word></span></div>
+ *     <ul class="asta-password-rules"><li class="asta-password-rule" data-asta-password-rule="[A-Z]"><span class="asta-password-tick"><svg><path class="asta-pw-tick" pathLength="1" d="m3.5 8.5 3 3 6-7"/></svg></span>
+ *       One uppercase letter<span class="asta-sr-only" data-asta-password-said>, not yet</span></li></ul></div>
+ * </div> */
+.asta-password {
+  @apply flex w-full flex-col gap-2;
+}
+.asta-password-label {
+  @apply text-[13px] font-medium text-ink;
+}
+.asta-password-box {
+  @apply flex h-10 items-center gap-2 rounded-lg bg-paper pl-3 pr-1 transition-shadow duration-200;
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)] hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_24%,transparent)];
+  @apply focus-within:!shadow-[inset_0_0_0_1px_var(--brand),0_0_0_4px_color-mix(in_srgb,var(--brand)_16%,transparent)];
+  &:has(input:disabled) {
+    @apply pointer-events-none opacity-50;
+  }
+}
+.asta-password-input {
+  @apply h-full min-w-0 flex-1 bg-transparent text-[14px] tracking-[0.01em] text-ink outline-none placeholder:text-mute;
+}
+.asta-password-toggle {
+  @apply flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-mute outline-none transition-colors duration-200 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50;
+  & > svg {
+    @apply h-[18px] w-[18px];
+  }
+}
+.asta-password-pupil {
+  @apply origin-center scale-[.55] transition-transform duration-300 ease-[cubic-bezier(.16,1,.3,1)] [transform-box:fill-box] motion-reduce:transition-none;
+  [aria-pressed="true"] & {
+    @apply scale-100;
+  }
+}
+.asta-password-help {
+  @apply flex flex-col gap-3 pt-1;
+}
+.asta-password-meter {
+  @apply flex items-center gap-3;
+}
+.asta-password-bars {
+  @apply flex flex-1 gap-1.5;
+}
+.asta-password-bar {
+  @apply relative h-1 flex-1 overflow-hidden rounded-full bg-[color-mix(in_srgb,var(--ink)_10%,transparent)];
+}
+.asta-password-seg {
+  @apply absolute inset-0 origin-left scale-x-0 rounded-full bg-ink transition-[transform,background-color] duration-500 ease-[cubic-bezier(.16,1,.3,1)] data-[on]:scale-x-100 motion-reduce:transition-none;
+  .asta-password[data-strong] & {
+    @apply bg-brand;
+  }
+}
+.asta-password-word {
+  @apply w-12 text-right text-[12px] tabular-nums text-mute transition-colors duration-300;
+  .asta-password[data-strong] & {
+    @apply text-brand;
+  }
+}
+.asta-password-rules {
+  @apply grid gap-1.5 sm:grid-cols-2;
+}
+.asta-password-rule {
+  @apply flex items-center gap-2 text-[12.5px] text-mute transition-colors duration-300 data-[on]:text-ink;
+}
+.asta-password-tick {
+  @apply relative flex h-4 w-4 shrink-0 items-center justify-center rounded-full shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_20%,transparent)] transition-[background-color,box-shadow] duration-300;
+  [data-on] > & {
+    @apply bg-brand text-white shadow-none;
+  }
+  & > svg {
+    @apply h-2.5 w-2.5;
+  }
+}
+
+/* ---- Tag input (tag_input.templ) ----
+ * <div class="asta-tag-input" data-asta-tags data-name="tags" data-max="8" data-placeholder="Add a tag">
+ *   <div class="asta-tag-input-head"><label class="asta-tag-input-label" for="tags">Tags</label><span class="asta-tag-input-count" data-asta-tags-count aria-live="polite">2/8</span></div>
+ *   <div class="asta-tag-input-box" data-asta-tags-box><ul class="asta-tag-input-list" data-asta-tags-list>
+ *     <li class="asta-tag-input-tag" data-asta-tag="go"><span data-asta-tag-text>go</span><button class="asta-tag-input-remove" data-asta-tag-remove aria-label="Remove go">svg</button>
+ *       <input type="hidden" name="tags" value="go"></li></ul>
+ *     <input class="asta-tag-input-field" id="tags" data-asta-tags-input autocomplete="off"></div>
+ *   <p class="asta-tag-input-hint"><kbd>Enter</kbd> or <kbd>,</kbd> to add</p>
+ *   <template data-asta-tags-tpl><li class="asta-tag-input-tag asta-tag-in" data-asta-tag>…same as above…</li></template>
+ * </div> */
+.asta-tag-input {
+  @apply w-full;
+}
+.asta-tag-input-head {
+  @apply mb-2 flex items-baseline justify-between;
+}
+.asta-tag-input-label {
+  @apply text-[13px] font-medium text-ink;
+}
+.asta-tag-input-count {
+  @apply font-mono text-[11px] tabular-nums text-mute transition-colors;
+}
+.asta-tag-input-box {
+  @apply flex min-h-11 w-full cursor-text flex-wrap items-center gap-1.5 rounded-[9px] bg-paper p-1.5 transition-shadow duration-200;
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)];
+  @apply focus-within:shadow-[inset_0_0_0_1px_var(--brand),0_0_0_4px_color-mix(in_srgb,var(--brand)_14%,transparent)];
+}
+.asta-tag-input-list {
+  @apply contents;
+}
+.asta-tag-input-tag {
+  @apply flex h-8 items-center gap-1 rounded-md bg-paper-2 pl-3 pr-1 text-[13px] text-ink transition-colors duration-200 data-[armed]:bg-[#e5484d] data-[armed]:text-white;
+}
+.asta-tag-input-remove {
+  @apply flex h-6 w-6 items-center justify-center rounded-[5px] text-mute outline-none transition-colors hover:bg-[color-mix(in_srgb,var(--ink)_8%,transparent)] hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50;
+  & > svg {
+    @apply h-3 w-3;
+  }
+  [data-armed] > & {
+    @apply text-white hover:bg-white/20;
+  }
+}
+.asta-tag-input-field {
+  @apply h-8 min-w-[4rem] flex-1 bg-transparent px-2 text-[14px] text-ink outline-none placeholder:text-mute disabled:cursor-not-allowed;
+}
+.asta-tag-input-hint {
+  @apply mt-2 text-[12px] text-mute;
+  & kbd {
+    @apply font-sans text-ink-2;
+  }
+}
+
+/* ---- Range slider (range_slider.templ) ----
+ * <div class="asta-range-slider" data-asta-range data-gap="10" data-prefix="$">
+ *   <div class="asta-range-slider-body"><div class="asta-range-slider-track" data-asta-range-track>
+ *     <span class="asta-range-slider-rail"></span>
+ *     <span class="asta-range-slider-fill" data-asta-range-fill style="transform:translateX(20%) scaleX(0.5)"></span>
+ *     <span class="asta-range-slider-at" data-asta-range-at="0" style="transform:translateX(20cqw)"><span class="asta-range-slider-bubble" data-asta-range-bubble>$200</span></span>
+ *     <span class="asta-range-slider-at" data-asta-range-at="1" style="transform:translateX(70cqw)"><span class="asta-range-slider-bubble" data-asta-range-bubble>$700</span></span></div>
+ *   <input class="asta-range-slider-input" type="range" name="min" min="0" max="1000" value="200" data-asta-range-input="0" aria-label="Minimum">
+ *   <input class="asta-range-slider-input" type="range" name="max" min="0" max="1000" value="700" data-asta-range-input="1" aria-label="Maximum"></div>
+ * </div>
+ * The fill and handles are positioned with inline transforms; asta.js keeps them in step while dragging. */
+.asta-range-slider {
+  @apply relative w-full select-none pb-1 pt-9;
+  &:has(input:disabled) {
+    @apply pointer-events-none opacity-50;
+  }
+}
+.asta-range-slider-body {
+  @apply relative h-5;
+}
+.asta-range-slider-track {
+  @apply absolute inset-y-0 left-[10px] right-[10px] flex cursor-pointer items-center [container-type:inline-size] [touch-action:none];
+}
+.asta-range-slider-rail {
+  @apply absolute inset-x-0 h-1 rounded-full bg-[color-mix(in_srgb,var(--ink)_12%,transparent)];
+}
+.asta-range-slider-fill {
+  @apply absolute inset-x-0 h-1 origin-left bg-brand;
+}
+.asta-range-slider-at {
+  @apply pointer-events-none absolute left-0 top-0 h-full w-0;
+}
+.asta-range-slider-bubble {
+  @apply pointer-events-none absolute bottom-full left-0 mb-2.5 -translate-x-1/2 translate-y-1 whitespace-nowrap rounded-[6px] bg-ink px-2 py-1 text-[12px] font-medium tabular-nums leading-none text-paper opacity-0;
+  @apply transition-[opacity,translate] duration-200 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  .asta-range-slider:has([data-asta-range-input="0"]:is(:hover, :active, :focus-visible)) [data-asta-range-at="0"] > &,
+  .asta-range-slider:has([data-asta-range-input="1"]:is(:hover, :active, :focus-visible)) [data-asta-range-at="1"] > & {
+    @apply translate-y-0 opacity-100;
+  }
+}
+.asta-range-slider-input {
+  @apply pointer-events-none absolute inset-0 h-5 w-full appearance-none bg-transparent outline-none disabled:cursor-not-allowed;
+  @apply [&::-webkit-slider-runnable-track]:h-5 [&::-webkit-slider-runnable-track]:bg-transparent;
+  @apply [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:cursor-grab [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-paper;
+  @apply [&::-webkit-slider-thumb]:shadow-[0_0_0_1.5px_var(--brand),0_2px_6px_-1px_rgb(0_0_0/0.18)] [&::-webkit-slider-thumb]:transition-[scale,box-shadow] [&::-webkit-slider-thumb]:duration-200 [&::-webkit-slider-thumb]:ease-[cubic-bezier(.16,1,.3,1)];
+  @apply hover:[&::-webkit-slider-thumb]:scale-105 active:[&::-webkit-slider-thumb]:scale-110 active:[&::-webkit-slider-thumb]:cursor-grabbing;
+  @apply focus-visible:[&::-webkit-slider-thumb]:shadow-[0_0_0_1.5px_var(--brand),0_0_0_5px_color-mix(in_srgb,var(--brand)_22%,transparent)] motion-reduce:[&::-webkit-slider-thumb]:transition-none;
+  @apply [&::-moz-range-track]:bg-transparent [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:cursor-grab [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-paper;
+  @apply [&::-moz-range-thumb]:shadow-[0_0_0_1.5px_var(--brand),0_2px_6px_-1px_rgb(0_0_0/0.18)] [&::-moz-range-thumb]:transition-[scale,box-shadow] [&::-moz-range-thumb]:duration-200;
+  @apply hover:[&::-moz-range-thumb]:scale-105 active:[&::-moz-range-thumb]:scale-110;
+  @apply focus-visible:[&::-moz-range-thumb]:shadow-[0_0_0_1.5px_var(--brand),0_0_0_5px_color-mix(in_srgb,var(--brand)_22%,transparent)];
+}
+/* When both handles sit at the max, the low one goes on top so it can still be dragged back. */
+.asta-range-slider-top {
+  @apply z-10;
+}
+
+/* ---- Rating (rating.templ) ----
+ * <div class="asta-rating" role="radiogroup" aria-label="Rating" data-asta-rating data-value="3" data-clear>
+ *   <input type="radio" name="stars" value="0" aria-label="No rating">
+ *   <span class="asta-rating-star" data-asta-star data-fill="full" style="width:24px;height:24px">
+ *     <span class="asta-rating-pop" data-asta-star-pop><svg class="asta-rating-empty">…</svg><svg class="asta-rating-full">…</svg></span>
+ *     <label class="asta-rating-hit"><input type="radio" name="stars" value="1" aria-label="1 stars"></label></span>…
+ * </div>
+ * Half stars: two labels per star, asta-rating-hit-left (value 0.5) and asta-rating-hit-right. Read only:
+ * <span class="asta-rating asta-rating-static" role="img" aria-label="Rating: 4 out of 5 stars"> with stars and no inputs.
+ * Small: asta-rating-sm on the root and 16px stars. */
+.asta-rating {
+  @apply inline-flex select-none items-center gap-1 rounded-md outline-none [touch-action:manipulation];
+  @apply has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand/50 has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-paper;
+  & input {
+    @apply sr-only;
+  }
+}
+.asta-rating-sm {
+  @apply gap-0.5;
+}
+.asta-rating-static {
+  @apply rounded-none has-[:focus-visible]:ring-0;
+}
+.asta-rating-star {
+  @apply relative block shrink-0;
+}
+.asta-rating-pop {
+  @apply pointer-events-none relative block h-full w-full;
+}
+.asta-rating-empty {
+  @apply absolute inset-0 h-full w-full text-[color-mix(in_srgb,var(--ink)_13%,transparent)];
+}
+.asta-rating-full {
+  @apply absolute inset-0 h-full w-full text-brand opacity-0 transition-opacity duration-200;
+  [data-fill="full"] > .asta-rating-pop > & {
+    @apply opacity-100;
+  }
+  [data-fill="half"] > .asta-rating-pop > & {
+    @apply opacity-100 [clip-path:inset(0_50%_0_0)];
+  }
+  [data-preview] > .asta-rating-pop > & {
+    @apply text-[color-mix(in_srgb,var(--brand)_62%,transparent)];
+  }
+}
+.asta-rating-hit {
+  @apply absolute inset-y-0 right-0 w-full cursor-pointer;
+}
+.asta-rating-hit-left {
+  @apply absolute inset-y-0 left-0 w-1/2 cursor-pointer;
+}
+.asta-rating-hit-right {
+  @apply absolute inset-y-0 right-0 w-1/2 cursor-pointer;
+}
+
+/* ---- File upload (file_upload.templ) ----
+ * <div class="asta-file-upload" data-asta-upload data-accept="image/*,.pdf" data-max-size="5242880" data-max-files="4">
+ *   <label class="asta-file-upload-zone" data-asta-upload-zone><span class="asta-file-upload-icon">svg</span>
+ *     <span class="asta-file-upload-text"><span class="asta-file-upload-title"><span class="asta-file-upload-idle">Drop files here or <span class="asta-file-upload-browse">browse</span></span>
+ *       <span class="asta-file-upload-over">Drop to upload</span></span><span class="asta-file-upload-hint" id="f-hint">PNG, PDF · up to 5 MB</span></span>
+ *     <input type="file" class="asta-sr-only" name="files" multiple data-asta-upload-input></label>
+ *   <p class="asta-file-upload-error" role="alert" hidden data-asta-upload-error>svg<span data-asta-upload-error-text></span></p>
+ *   <ul class="asta-file-upload-list" data-asta-upload-list></ul>
+ *   <template data-asta-upload-tpl><li class="asta-file-upload-row asta-upload-row" data-status="done">
+ *     <span class="asta-file-upload-ext" data-ext></span><div class="asta-file-upload-body"><div class="asta-file-upload-meta">
+ *       <p class="asta-file-upload-name" data-file-name></p><p class="asta-file-upload-size" data-file-meta></p></div>
+ *       <div class="asta-file-upload-progress" role="progressbar"><span class="asta-file-upload-bar" data-file-bar></span></div></div>
+ *     <button class="asta-file-upload-remove" data-asta-upload-remove>svg</button></li></template>
+ * </div> */
+.asta-file-upload {
+  @apply flex w-full flex-col;
+}
+.asta-file-upload-zone {
+  @apply relative flex cursor-pointer select-none flex-col items-center justify-center gap-3 rounded-xl px-6 py-9 text-center outline-none;
+  @apply transition-[transform,box-shadow,background-color] duration-300 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand/50;
+  @apply bg-paper-2 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_8%,transparent)] hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_18%,transparent)];
+  @apply data-[over]:-translate-y-1 data-[over]:bg-[color-mix(in_srgb,var(--brand)_6%,var(--paper))] data-[over]:shadow-[inset_0_0_0_1.5px_var(--brand),0_14px_30px_-14px_color-mix(in_srgb,var(--brand)_55%,transparent)];
+  &:has(input:disabled) {
+    @apply pointer-events-none opacity-45;
+  }
+}
+.asta-file-upload-icon {
+  @apply flex h-11 w-11 items-center justify-center rounded-[10px] bg-paper text-ink-2 shadow-[0_0_0_1px_color-mix(in_srgb,var(--ink)_8%,transparent),0_2px_6px_-2px_rgb(0_0_0/0.12)];
+  @apply transition-[transform,color,box-shadow] duration-300 ease-[cubic-bezier(.16,1,.3,1)];
+  & > svg {
+    @apply h-5 w-5;
+  }
+  .asta-file-upload-zone:hover > & {
+    @apply -translate-y-0.5;
+  }
+  .asta-file-upload-zone[data-over] > & {
+    @apply -translate-y-0.5 scale-105 text-brand;
+  }
+}
+.asta-file-upload-text {
+  @apply block;
+}
+.asta-file-upload-title {
+  @apply block text-[14px] font-medium tracking-[-0.01em] text-ink;
+}
+.asta-file-upload-idle {
+  [data-over] & {
+    @apply hidden;
+  }
+}
+.asta-file-upload-browse {
+  @apply text-brand;
+}
+.asta-file-upload-over {
+  @apply hidden;
+  [data-over] & {
+    @apply inline;
+  }
+}
+.asta-file-upload-hint {
+  @apply mt-1 block text-[12.5px] text-mute;
+}
+.asta-file-upload-error {
+  @apply mt-2 flex items-start gap-1.5 text-[12.5px] leading-snug text-ink;
+  & > svg {
+    @apply mt-px h-3.5 w-3.5 shrink-0;
+  }
+}
+.asta-file-upload-list {
+  @apply mt-3 flex flex-col gap-1.5 empty:hidden;
+}
+.asta-file-upload-row {
+  @apply flex items-center gap-3 rounded-[10px] bg-paper p-2.5 pr-2 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_9%,transparent)];
+}
+.asta-file-upload-ext {
+  @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-paper-2 text-[9.5px] font-semibold tracking-[0.02em] text-ink-2 transition-colors duration-300;
+  [data-status="done"] > & {
+    @apply bg-[color-mix(in_srgb,var(--brand)_10%,transparent)] text-brand;
+  }
+}
+.asta-file-upload-body {
+  @apply min-w-0 flex-1;
+}
+.asta-file-upload-meta {
+  @apply flex items-baseline justify-between gap-3;
+}
+.asta-file-upload-name {
+  @apply truncate text-[13px] font-medium text-ink;
+}
+.asta-file-upload-size {
+  @apply shrink-0 text-[12px] tabular-nums text-mute;
+}
+.asta-file-upload-progress {
+  @apply relative mt-1.5 h-1 overflow-hidden rounded-full bg-[color-mix(in_srgb,var(--ink)_8%,transparent)] transition-opacity duration-500;
+  [data-status="done"] & {
+    @apply opacity-0;
+  }
+}
+.asta-file-upload-bar {
+  @apply absolute inset-0 origin-left rounded-full bg-brand transition-transform duration-300 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  [data-status="error"] & {
+    @apply bg-ink-2;
+  }
+}
+.asta-file-upload-remove {
+  @apply flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-mute outline-none transition-[background-color,color,transform] duration-150 hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50 active:scale-90;
+  & > svg {
+    @apply h-3.5 w-3.5;
+  }
+}
+
+/* ---- Inline edit (inline_edit.templ) ----
+ * <span class="asta-inline-edit" data-asta-inline>
+ *   <button class="asta-inline-edit-view" data-asta-inline-view aria-label="Name: Astabyte. Edit"><span class="asta-inline-edit-text" data-asta-inline-text>Astabyte</span>
+ *     <svg class="asta-inline-edit-pencil">…</svg></button>
+ *   <span class="asta-inline-edit-editor"><span class="asta-inline-edit-sizer" data-asta-inline-sizer aria-hidden="true">Astabyte </span>
+ *     <input class="asta-inline-edit-input" name="name" value="Astabyte" data-asta-inline-input data-saved="Astabyte" hx-post="/rename"></span>
+ *   <svg class="asta-inline-edit-tick hidden" data-asta-inline-tick>…</svg>
+ *   <span class="asta-inline-edit-failed">Couldn't save</span><span class="asta-sr-only" role="status" data-asta-inline-status></span>
+ * </span>
+ * Sizes: asta-inline-edit-sm, (md), asta-inline-edit-lg. An empty value: asta-inline-edit-empty on the view. Keep the
+ * plain "hidden" class on the tick: asta.js toggles it. */
+.asta-inline-edit {
+  @apply relative inline-flex max-w-full items-center gap-1.5 text-[14.5px];
+}
+.asta-inline-edit-sm {
+  @apply text-[13px];
+}
+.asta-inline-edit-lg {
+  @apply text-[20px] font-medium tracking-[-0.02em];
+}
+.asta-inline-edit-view {
+  @apply -mx-2 inline-flex min-w-0 max-w-full items-center gap-2 rounded-[7px] px-2 py-1 text-left text-ink outline-none transition-colors duration-200 hover:bg-paper-2 focus-visible:ring-2 focus-visible:ring-brand/50 disabled:pointer-events-none;
+  .asta-inline-edit[data-editing] > & {
+    @apply hidden;
+  }
+}
+.asta-inline-edit-empty {
+  @apply text-mute;
+}
+.asta-inline-edit-text {
+  @apply truncate;
+}
+.asta-inline-edit-pencil {
+  @apply h-[0.85em] w-[0.85em] shrink-0 -translate-x-0.5 text-mute opacity-0 transition-[opacity,translate] duration-200 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  .asta-inline-edit-view:is(:hover, :focus-visible) > & {
+    @apply translate-x-0 opacity-100;
+  }
+}
+.asta-inline-edit-editor {
+  @apply hidden min-w-[6ch] max-w-full;
+  .asta-inline-edit[data-editing] > & {
+    @apply inline-grid;
+  }
+}
+.asta-inline-edit-sizer {
+  @apply invisible col-start-1 row-start-1 -mx-2 whitespace-pre rounded-[7px] px-2 py-1;
+}
+.asta-inline-edit-input {
+  @apply col-start-1 row-start-1 -mx-2 w-full min-w-0 rounded-[7px] bg-paper px-2 py-1 text-ink outline-none transition-[box-shadow,opacity] duration-200 placeholder:text-mute [&.htmx-request]:opacity-60;
+  @apply shadow-[inset_0_0_0_1.5px_var(--brand),0_0_0_4px_color-mix(in_srgb,var(--brand)_14%,transparent)];
+}
+.asta-inline-edit-tick {
+  @apply h-[0.9em] w-[0.9em] shrink-0 text-brand;
+}
+.asta-inline-edit-failed {
+  @apply hidden shrink-0 text-[12px] text-mute;
+  .asta-inline-edit[data-failed][data-editing] > & {
+    @apply inline;
+  }
+}
