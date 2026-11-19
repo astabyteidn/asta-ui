@@ -2,6 +2,11 @@
 
 Releases are git tags (`vX.Y.Z`); pushing a tag deploys ui.astabyte.com. Merging to `main` does not.
 
+## 0.6.1 — 2026-11-19
+
+- **A shorter, calmer home.** About 6k px instead of 14k. One live stage with a pick list replaces the bento, the kit shows six live demos per layer with the rest as a directory, the motion lab shows six with a Show all button, and a stat row replaces the spec sheet.
+- Trading demos use the ASTA ticker instead of ACME.
+
 ## 0.6.0 — 2026-11-19
 
 - **Editor kit: four new components** for design and file-browser apps.
