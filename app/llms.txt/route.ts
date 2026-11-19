@@ -1,3 +1,4 @@
+import { LOGOS } from "@/components/logos/logos";
 import { BASE_SLUGS } from "@/lib/base-slugs";
 import { uiItems } from "@/lib/ui-catalog";
 import { variantItems } from "@/lib/variant-items";
@@ -27,6 +28,8 @@ Also an npm component library: \`pnpm add asta-ui radix-ui\` then \`import { Dia
 - [Installation](${SITE}/installation): CLI setup per framework, Radix or Base UI, the npm package, registry URLs, manual install and tokens.
 - [AI agents](${SITE}/skill): the agent skill, llms.txt and the shadcn MCP server.
 - [Prompts](${SITE}/prompts): copy-ready prompts to set up the kit or build a trading dashboard, checkout, settings page, landing page or sign-in with it.
+- [Icons](${SITE}/icons): Astabyte Icons, a small hand-drawn set with a hover motion each. Click to copy the SVG.
+- [Logos](${SITE}/logos): ${LOGOS.length} logos of well-known tools, frameworks and brands as 24×24 SVG (Simple Icons data, CC0). Copy as SVG or a React component, mono or brand colour.
 - [Agent skill (SKILL.md)](${SITE}/skill.md): rules and the full catalogue in one file.
 - [Registry index (Radix)](${SITE}/r/registry.json)
 - [Registry index (Base UI)](${SITE}/r/base/registry.json)

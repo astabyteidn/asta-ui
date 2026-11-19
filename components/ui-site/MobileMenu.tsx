@@ -34,10 +34,11 @@ export default function MobileMenu({ studio }: { studio: string }) {
     { href: "/#kit", label: "Kit" },
     { href: "/#components", label: "Motion" },
     { href: "/icons", label: "Icons" },
+    { href: "/logos", label: "Logos" },
   ];
 
   return (
-    <div className="md:hidden">
+    <div className="lg:hidden">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
@@ -48,7 +49,7 @@ export default function MobileMenu({ studio }: { studio: string }) {
         <Icon name={open ? "x" : "menu"} className="h-[18px] w-[18px]" />
       </button>
       <div
-        className="fixed inset-x-0 bottom-0 top-16 z-50 bg-paper px-[var(--gutter)] pb-8 pt-4"
+        className="fixed inset-x-0 bottom-0 top-14 z-50 bg-paper px-[var(--gutter)] pb-8 pt-4"
         style={{
           opacity: open ? 1 : 0,
           transform: open ? "none" : "translateY(-8px)",

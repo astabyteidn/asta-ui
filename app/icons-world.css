@@ -1,0 +1,191 @@
+/* Hover motions for components/icons/icons-world.ts. Reuses the ic-* keyframes in globals.css.
+   Transform and opacity only; the one stroke draw plays once on hover and never loops. */
+@keyframes icw-draw { from { stroke-dashoffset: 1 } to { stroke-dashoffset: 0 } }
+
+/* Commerce */
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="cart-plus"], [data-icon="cart-check"], [data-icon="truck-fast"]) { animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="bag-check"], [data-icon="bag-plus"]) > :nth-child(2) { --d: -1.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="bag-check"], [data-icon="bag-plus"], [data-icon="cart-check"], [data-icon="cart-plus"]) > :last-child { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="cart-plus"] > :last-child, .icon-hover:is(:hover, :focus-visible) [data-icon="cart-check"] > :last-child { animation-delay: .1s; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="store"], [data-icon="warehouse"]) > :nth-child(2) { animation-name: ic-squish; transform-origin: center top; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="basket"] { animation-name: ic-bob; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="gift-card"], [data-icon="ticket"], [data-icon="coupon"]) { animation-name: ic-tilt; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="package-open"] > :is(:nth-child(4), :nth-child(5)) { --d: -2px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="parcel"], [data-icon="shirt"]) { animation-name: ic-squish; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="boxes"] > :nth-child(3) { --d: -2.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="barcode"] > :last-child { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="qr-code"] > * { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="contactless"] > * { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="contactless"] > :nth-child(2) { animation-delay: .08s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="contactless"] > :nth-child(3) { animation-delay: .16s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="card-reader"] > :nth-child(2) { --d: -2px; animation-name: ic-y; }
+
+/* Finance */
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="coins"], [data-icon="coin-stack"]) > :nth-child(1) { --d: -2px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="bank"] > :nth-child(1) { --d: -1.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="banknote"], [data-icon="cash"]) { --d: 2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="piggy-bank"], [data-icon="money-bag"]) { animation-name: ic-wiggle; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="percent"] > :is(:nth-child(2), :nth-child(3)) { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon^="currency-"]) { animation-name: ic-squish; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="invoice"], [data-icon="calculator"]) > :not(:first-child) { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="exchange"] > :is(:nth-child(1), :nth-child(2)) { --d: 2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="exchange"] > :is(:nth-child(3), :nth-child(4)) { --d: -2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="scale"] { --r: 8deg; transform-origin: 50% 20%; animation-name: ic-tilt; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="candlestick"] > :is(:nth-child(2), :nth-child(3)) { animation-name: ic-grow-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="wallet-cards"] > :nth-child(1) { --d: -2px; animation-name: ic-y; }
+
+/* Data and charts */
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="chart-line-down"], [data-icon="chart-step"], [data-icon="presentation"]) path[pathLength] { stroke-dasharray: 1; animation-name: icw-draw; animation-duration: .8s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="chart-area"] > :nth-child(2) { animation-name: ic-grow-y; transform-origin: center bottom; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="chart-scatter"], [data-icon="chart-bubble"]) > :not(:first-child) { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="chart-scatter"], [data-icon="chart-bubble"]) > :nth-child(3) { animation-delay: .06s; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="chart-scatter"], [data-icon="chart-bubble"]) > :nth-child(4) { animation-delay: .12s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="chart-column"] > * { animation-name: ic-grow-y; transform-origin: center bottom; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="chart-column"] > :nth-child(2) { animation-delay: .06s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="chart-column"] > :nth-child(3) { animation-delay: .12s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="chart-bar-h"] > :nth-child(2) { animation-name: ic-grow; transform-origin: left center; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="chart-donut"], [data-icon="chart-radar"]) { animation-name: ic-spin72; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="gauge"] > :nth-child(3) { transform-box: view-box; transform-origin: 12px 13.2px; --r: 50deg; animation-name: ic-tilt; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="spreadsheet"] > :nth-child(2) { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="database-check"] > :last-child { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="server-stack"] > :last-child { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="sigma"] { animation-name: ic-squish; }
+
+/* Development */
+.icon-hover:is(:hover, :focus-visible) [data-icon="git-commit"] > :nth-child(1) { animation-name: ic-press; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="git-merge"], [data-icon="git-fork"], [data-icon="git-pull-request"]) > :nth-child(3) { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="git-compare"] > :is(:nth-child(4)) { --d: 2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="git-compare"] > :is(:nth-child(6)) { --d: -2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="bug"] { animation-name: ic-shake; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="brackets"], [data-icon="braces"], [data-icon="variable"]) > :nth-child(1) { --d: -2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="brackets"], [data-icon="braces"], [data-icon="variable"]) > :nth-child(2) { --d: 2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="variable"] > :nth-child(3) { animation-name: ic-spin90; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="function"] { animation-name: ic-wiggle; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="code-slash"] > :nth-child(1) { --d: -2.5px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="code-slash"] > :nth-child(2) { --d: 2.5px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="prompt"] > :nth-child(1) { --d: 1.5px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="prompt"] > :nth-child(2) { animation-name: ic-cursor; animation-duration: 1s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="api"] > :nth-child(1) { --d: 1.5px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="api"] > :nth-child(2) { --d: -1.5px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="webhook"] > :is(:nth-child(1), :nth-child(2), :nth-child(3)) { animation-name: ic-press; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="cloud-check"] > :nth-child(2) { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="container"] { --d: 2.5px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="bot"] > :is(:nth-child(4)) { animation-name: ic-blink; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="bot"] > :nth-child(3) { --d: -1.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="workflow"] > :nth-child(2) { animation-name: ic-xd; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="binary"] > * { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="binary"] > :nth-child(odd) { animation-delay: .1s; }
+
+/* Time and calendar */
+.icon-hover:is(:hover, :focus-visible) [data-icon="alarm-clock"] { animation-name: ic-shake; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="stopwatch"] > :nth-child(2) { transform-box: view-box; transform-origin: 12px 13.5px; animation-name: ic-spin; animation-duration: 1s; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="calendar-check"], [data-icon="calendar-plus"], [data-icon="calendar-x"], [data-icon="calendar-event"]) > :last-child { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon^="calendar-"]):not([data-icon="calendar-clock"]) > :is(:nth-child(3), :nth-child(4)) { --d: -2px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="calendar-clock"] > :nth-child(3) { --d: -2px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="calendar-clock"] > :nth-child(5) { transform-box: view-box; transform-origin: 17px 17px; animation-name: ic-spin; animation-duration: 1s; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="clock-alert"], [data-icon="clock-check"]) > :nth-child(2) { transform-box: view-box; transform-origin: 12px 12px; animation-name: ic-spin; animation-duration: 1s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="clock-check"] > :nth-child(3) { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="clock-alert"] > :nth-child(3) { animation-name: ic-flash; }
+
+/* Weather and nature */
+.icon-hover:is(:hover, :focus-visible) [data-icon="cloud-sun"] > :nth-child(1) { transform-box: view-box; transform-origin: 8px 8px; animation-name: ic-sun; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="cloud-sun"], [data-icon="cloud-moon"]) > :last-child { --d: 1.5px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="cloud-moon"] > :nth-child(1) { --r: -20deg; animation-name: ic-tilt; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="cloud-rain"], [data-icon="cloud-snow"]) > :nth-child(2) { --d: 2px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="cloud-lightning"] > :nth-child(2) { animation-name: ic-flash; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="cloud-fog"] > :nth-child(2) { --d: 2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="wind"] > * { --d: 2.5px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="wind"] > :nth-child(2) { animation-delay: .06s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="wind"] > :nth-child(3) { animation-delay: .12s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="thermometer"] > :nth-child(2) { animation-name: ic-grow-y; transform-origin: center bottom; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="snowflake"] { animation-name: ic-spin72; animation-duration: .9s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="rainbow"] > * { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="rainbow"] > :nth-child(2) { animation-delay: .06s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="rainbow"] > :nth-child(3) { animation-delay: .12s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="sunrise"] > :is(:nth-child(2), :nth-child(3), :nth-child(4)) { --d: -2px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="sunset"] > :is(:nth-child(2), :nth-child(3), :nth-child(4)) { --d: 2px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="moon-star"] > :nth-child(1) { --r: -20deg; animation-name: ic-tilt; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="moon-star"] > :nth-child(2) { animation-name: ic-spin90; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="tree"], [data-icon="tree-pine"], [data-icon="flower"], [data-icon="cactus"]) { --r: 6deg; transform-origin: 50% 100%; animation-name: ic-tilt; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="sprout"] > :is(:nth-child(2), :nth-child(3)) { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="mountain"] > :nth-child(2) { --d: -1px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="waves"] > :nth-child(odd) { --d: 2.5px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="waves"] > :nth-child(2) { --d: -2.5px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="droplets"] > :nth-child(2) { --d: 2px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="paw"] > :not(:first-child) { animation-name: ic-bob; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="fish"] { animation-name: ic-wiggle; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="planet"] { --r: -15deg; animation-name: ic-tilt; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="tornado"] > * { --d: 2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="tornado"] > :nth-child(even) { --d: -2px; }
+
+/* Travel and places */
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="map-pin-plus"], [data-icon="map-pin-check"], [data-icon="map-pin-area"]) { animation-name: ic-bob; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="route"] > :nth-child(2) { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="signpost"] > :nth-child(2) { --d: 1.5px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="signpost"] > :nth-child(3) { --d: -1.5px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="locate"] > :nth-child(1) { animation-name: ic-press; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="plane"] { --d: -3px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="plane-takeoff"] > :nth-child(2) { animation-name: ic-xy; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="car"], [data-icon="bus"], [data-icon="train"], [data-icon="bike"], [data-icon="ship"], [data-icon="sailboat"]) { --d: 2.5px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="ship"], .icon-hover:is(:hover, :focus-visible) [data-icon="sailboat"] { animation-name: ic-wiggle; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="luggage"] { animation-name: ic-bob; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="passport"], [data-icon="parking"]) { animation-name: ic-tilt; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="fuel"] > :last-child { animation-name: ic-wiggle; transform-origin: left top; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="building"], [data-icon="city"], [data-icon="hotel"]) > :not(:first-child):last-child { animation-name: ic-fade; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="bed"] > :last-child { --d: 1.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="tent"] > :nth-child(3) { animation-name: ic-squish; transform-origin: center bottom; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="door"] > :last-child { --d: -1.5px; animation-name: ic-x; }
+
+/* People and life */
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="frown"], [data-icon="meh"], [data-icon="laugh"]) > :nth-child(2) { animation-name: ic-squish; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="frown"], [data-icon="meh"], [data-icon="laugh"]) > :nth-child(3) { animation-name: ic-blink; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="hand"] { transform-origin: 50% 90%; animation-name: ic-wiggle; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="medal"] { transform-origin: 50% 10%; animation-name: ic-ring; animation-duration: .9s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="crown"] { --d: -2.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="graduation-cap"] > :nth-child(1) { --d: -2.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="cup"], [data-icon="wine"]) { --r: -10deg; transform-origin: 50% 100%; animation-name: ic-tilt; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="utensils"] > :nth-child(3) { --d: 1.5px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="pizza"], [data-icon="cookie"]) { animation-name: ic-wiggle; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="cake"] > :last-child { animation-name: ic-flash; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="dumbbell"] { --d: -2.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="party"] > :not(:first-child) { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="party"] > :nth-child(odd) { animation-delay: .08s; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="balloon"], [data-icon="ghost"]) { animation-name: ic-bob; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="book-open"] { animation-name: ic-squish; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="baby"] > :last-child { animation-name: ic-blink; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="ice-cream"] > :nth-child(2) { --d: -1.5px; animation-name: ic-y; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="fruit"] > :nth-child(2) { --r: 15deg; transform-origin: left bottom; animation-name: ic-tilt; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="podium"] > :nth-child(1) { animation-name: ic-grow-y; transform-origin: center bottom; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="goal"] > :is(:nth-child(3), :nth-child(4)) { --d: -2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="certificate"] > :is(:nth-child(3), :nth-child(4)) { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="glasses"] { --d: -1.5px; animation-name: ic-y; }
+
+/* Health */
+.icon-hover:is(:hover, :focus-visible) [data-icon="heart-pulse"] > :nth-child(1) { animation-name: ic-beat; animation-duration: .9s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="heart-pulse"] path[pathLength] { stroke-dasharray: 1; animation-name: icw-draw; animation-duration: .8s; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="pill"], [data-icon="bandage"]) { animation-name: ic-wiggle; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="stethoscope"] > :nth-child(3) { animation-name: ic-press; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="syringe"] > :nth-child(1) { animation-name: ic-xd; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="first-aid"], [data-icon="hospital"]) > :nth-child(3) { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="dna"] { animation-name: ic-squish; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="flask"] { --r: 10deg; transform-origin: 50% 15%; animation-name: ic-tilt; }
+
+/* Shapes and tools */
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="triangle"], [data-icon="hexagon"], [data-icon="octagon"], [data-icon="diamond"]) { animation-name: ic-spin90; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="gem"] { animation-name: ic-flash; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="infinity"] { animation-name: ic-squish; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="puzzle"] { animation-name: ic-xy; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="shapes"] > * { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="shapes"] > :nth-child(2) { animation-delay: .06s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="shapes"] > :nth-child(3) { animation-delay: .12s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="palette"] > :nth-child(2) { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) :is([data-icon="brush"], [data-icon="pen-nib"], [data-icon="hammer"]) { animation-name: ic-wiggle; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="magic-wand"] > :not(:nth-child(1)):not(:nth-child(2)) { animation-name: ic-pop; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="lightbulb"] > :nth-child(1) { animation-name: ic-flash; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="key-round"] { animation-name: ic-wiggle; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="atom"] { animation-name: ic-spin; animation-duration: 1.2s; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="ruler"] { --d: 2px; animation-name: ic-x; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="dice"] { animation-name: ic-spin90; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="magnet"] { animation-name: ic-shake; }
+.icon-hover:is(:hover, :focus-visible) [data-icon="toolbox"] > :nth-child(2) { --d: -1.5px; animation-name: ic-y; }
+

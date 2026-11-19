@@ -45,7 +45,7 @@ bunx tsc --noEmit && bun run lint && bun run skill && bun run base --check && bu
 **Look.**
 - White ground, black and white, one blue (`brand` #2f54eb). No lime, green, red or gold. Market up = blue, down = neutral.
 - Slight rounding: buttons 6–9px, cards 10–14px. Pills only for switches, avatars and dots.
-- Header is sticky with a soft fade. Docs sidebars stick at `top-16`. The docs shell is centred at 1600px (`.px-shell`).
+- Header is sticky, 56px. Once the page scrolls a solid paper bar fades in (no glass/blur, no gradient tail, no drop shadow, no bottom border). Docs sidebars stick at `top-14`. The docs shell is centred at 1600px (`.px-shell`).
 - Placeholder photos come from Unsplash, self-hosted in `public/lab/`, neutral and unbranded.
 - Never name or show real web3 projects.
 

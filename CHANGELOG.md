@@ -2,6 +2,18 @@
 
 Releases are git tags (`vX.Y.Z`); pushing a tag deploys ui.astabyte.com. Merging to `main` does not.
 
+## 0.5.0 — 2026-11-19
+
+- **35 form variants, 28 → 63.**
+  - **Input (aui-029–034):** floating label, search with recents, prefix and suffix, live validation, title to slug and a rolling amount field.
+  - **Textarea, password and OTP (aui-035–042):** character budget, notes card, product review, code snippet, strength dial, rule tiles, split code and dark verify.
+  - **Select, combobox, tags and dates (aui-043–051):** rich options, inline pill, grouped time zones, multi assign, create on enter, email chips, suggested tags, two-month range and quick presets.
+  - **Checkbox, radio, switch and slider (aui-052–063):** add-on cards, task list, permission tree, plan picker, segmented range, swatches, settings rows, icon thumb, theme, value bubble, stepped and volume.
+- **Icons, 131 → 532** in 22 groups, each with its own hover move. The /icons page has search, size and stroke sliders, category chips and keyboard navigation.
+- **Logos:** a new /logos page with 215 product and tech logos from Simple Icons (CC0). Copy as SVG or JSX, in mono or brand colour.
+- **Header:** 56px, one pill that slides between links and rests on the current section, and tile menus for Components and Motion. Once you scroll it turns solid paper, with no blur, fade tail or border.
+- **Sidebar:** the filter and the Kit / Motion tabs stay pinned while the list scrolls, and focus rings are no longer clipped.
+
 ## 0.4.0 — 2026-11-19
 
 - **20 new variants, 8 → 28.**
