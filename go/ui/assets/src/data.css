@@ -1,0 +1,156 @@
+/* Data components: tree, timeline, kanban, calendar, file card, image compare, carousel, notification center,
+ * comments, motion button. Transform and opacity only, the kit easing, and nothing moves for reduced motion. */
+
+@keyframes asta-tree-in { from { opacity: 0; transform: translateY(-4px) } }
+@keyframes asta-timeline-in { from { opacity: 0; transform: translateY(8px) } }
+@keyframes asta-timeline-line { from { transform: scaleY(0) } }
+@keyframes asta-timeline-ping { 0% { opacity: 0.45; transform: scale(1) } 70%, 100% { opacity: 0; transform: scale(2.6) } }
+@keyframes asta-kanban-count { from { opacity: 0; transform: translateY(4px) } }
+@keyframes asta-kanban-gap { from { opacity: 0 } }
+@keyframes asta-cal-next { from { opacity: 0; transform: translateX(32px) } }
+@keyframes asta-cal-prev { from { opacity: 0; transform: translateX(-32px) } }
+@keyframes asta-cal-up { from { opacity: 0; transform: translateY(6px) } }
+@keyframes asta-file-star { 0% { transform: scale(0.6) } 55% { transform: scale(1.25) } 100% { transform: scale(1) } }
+@keyframes asta-carousel-fill { from { transform: scaleX(0) } to { transform: scaleX(1) } }
+@keyframes asta-nc-ring { 0%, 100% { transform: rotate(0) } 15% { transform: rotate(14deg) } 30% { transform: rotate(-11deg) } 45% { transform: rotate(7deg) } 60% { transform: rotate(-4deg) } 75% { transform: rotate(2deg) } }
+@keyframes asta-nc-count { from { opacity: 0; transform: translateY(70%) } }
+@keyframes asta-nc-in { from { opacity: 0; transform: translateY(6px) } }
+@keyframes asta-comment-in { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
+@keyframes asta-comment-pop { 0% { transform: scale(0.6) } 55% { transform: scale(1.25) } 100% { transform: none } }
+@keyframes asta-comment-roll { from { opacity: 0; transform: translateY(70%) } to { opacity: 1; transform: none } }
+@keyframes asta-mb-beam { to { transform: rotate(1turn) } }
+@keyframes asta-mb-shine { from { transform: translateX(-120%) skewX(-20deg) } to { transform: translateX(340%) skewX(-20deg) } }
+@keyframes asta-mb-shine-2 { from { transform: translateX(-120%) skewX(-20deg) } to { transform: translateX(340%) skewX(-20deg) } }
+@keyframes asta-mb-drain { from { transform: scaleX(1) } to { transform: scaleX(0) } }
+@keyframes asta-mb-pop { 0% { transform: scale(0.4); opacity: 0 } 60% { transform: scale(1.15) } 100% { transform: scale(1); opacity: 1 } }
+
+/* Tree: children of a folder the user just opened fade in, one after another. */
+[data-asta-tree] [role="group"][data-opened] > li {
+  animation: asta-tree-in 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--i, 0) * 24ms);
+}
+
+/* Timeline: hold the reveal until the list is on screen. */
+.asta-timeline[data-inview="false"] .asta-timeline-a { animation-play-state: paused; }
+
+/* Kanban */
+[data-asta-kanban-gap] {
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--brand) 5%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand) 28%, transparent);
+  animation: asta-kanban-gap 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+[data-asta-kanban-count][data-bump] { animation: asta-kanban-count 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* Event calendar: a new month slides in from the side you moved to, the day list rises in. */
+[data-asta-cal-grid][data-dir="next"] { animation: asta-cal-next 0.45s cubic-bezier(0.16, 1, 0.3, 1); }
+[data-asta-cal-grid][data-dir="prev"] { animation: asta-cal-prev 0.45s cubic-bezier(0.16, 1, 0.3, 1); }
+[data-asta-cal-panel]:not([hidden]) { animation: asta-cal-up 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+[data-asta-cal-panel]:not([hidden]) [data-asta-cal-item] {
+  animation: asta-cal-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--i, 0) * 45ms);
+}
+
+/* File card: the star pops when it turns on. */
+[data-asta-file-star][aria-pressed="true"][data-popped] .asta-file-star { animation: asta-file-star 0.42s cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* Image compare: the before window slides with the handle and its picture slides back, so only transforms move. */
+.asta-compare-win { transform: translateX(calc(var(--pos) * 1% - 100%)); }
+.asta-compare-pic { transform: translateX(calc(100% - var(--pos) * 1%)); }
+.asta-compare-track { transform: translateX(calc(var(--pos) * 1%)); }
+.asta-compare-win,
+.asta-compare-pic,
+.asta-compare-track { transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1); }
+[data-asta-compare][data-dragging] :is(.asta-compare-win, .asta-compare-pic, .asta-compare-track) { transition: none; }
+
+/* Carousel: native scroll snap with the scrollbar hidden. The active bar fills over the autoplay time. */
+.asta-carousel-track { scrollbar-width: none; }
+.asta-carousel-track::-webkit-scrollbar { display: none; }
+[data-asta-carousel][data-autoplay] [aria-current] .asta-carousel-fill {
+  animation: asta-carousel-fill var(--asta-autoplay, 5000ms) linear both;
+}
+[data-asta-carousel][data-autoplay]:not([data-playing]) [aria-current] .asta-carousel-fill { animation-play-state: paused; }
+[data-asta-carousel][data-autoplay] .asta-carousel-fill { transform: scaleX(0); }
+
+/* Notification center */
+[data-asta-nc-panel] {
+  opacity: 0;
+  transform: translateY(-4px) scale(0.98);
+  transform-origin: top right;
+  transition:
+    opacity 0.14s ease-in,
+    transform 0.16s ease-in;
+}
+[data-asta-nc][data-align="start"] [data-asta-nc-panel] { transform-origin: top left; }
+[data-asta-nc][data-open] [data-asta-nc-panel] {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.2s ease-out,
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@starting-style {
+  [data-asta-nc][data-open] [data-asta-nc-panel] {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+}
+[data-asta-nc-panel][data-tab="unread"] .asta-nc-thumb { transform: translateX(100%); }
+[data-asta-nc-panel][data-tab="unread"] [data-asta-nc-entry][data-read]:not([data-keep]),
+[data-asta-nc-panel][data-tab="unread"] [data-asta-nc-group]:not(:has([data-asta-nc-entry]:not([data-read]), [data-keep])) { display: none; }
+[data-asta-nc-list][data-fresh] > li { animation: asta-nc-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.asta-nc-ring { animation: asta-nc-ring 0.9s cubic-bezier(0.16, 1, 0.3, 1); }
+[data-asta-nc-count][data-bump] { animation: asta-nc-count 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* Comments */
+.asta-comment-new { animation: asta-comment-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+[data-asta-comment-like][data-popped][aria-pressed="true"] .asta-comment-heart { animation: asta-comment-pop 0.45s cubic-bezier(0.16, 1, 0.3, 1); }
+[data-asta-comment-like][data-popped] [data-asta-comment-likes] { animation: asta-comment-roll 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* Motion button */
+.asta-mb-fill {
+  clip-path: circle(0% at var(--fx, 50%) var(--fy, 50%));
+  transition: clip-path 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-asta-mb="fill"]:hover .asta-mb-fill,
+[data-asta-mb="fill"]:focus-visible .asta-mb-fill { clip-path: circle(150% at var(--fx, 50%) var(--fy, 50%)); }
+.asta-mb-grow {
+  clip-path: inset(0 0 0 calc(100% - 32px) round 7px);
+  transition: clip-path 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-asta-mb="arrow"]:hover .asta-mb-grow,
+[data-asta-mb="arrow"]:focus-visible .asta-mb-grow { clip-path: inset(0 round 7px); }
+.asta-mb-shine { animation: asta-mb-shine 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; }
+[data-asta-mb="shine"][data-shine] .asta-mb-shine { animation-name: asta-mb-shine-2; }
+.asta-mb-beam {
+  background: conic-gradient(from 0deg, transparent 0 32%, var(--brand) 50%, transparent 50% 82%, var(--brand) 100%);
+  animation: asta-mb-beam 3s linear infinite;
+}
+[data-asta-mb="beam"]:hover .asta-mb-beam { animation-duration: 1.2s; }
+[data-asta-mb="beam"][data-offscreen] .asta-mb-beam { animation-play-state: paused; }
+[data-asta-mb] .asta-mb-pop { animation: asta-mb-pop 0.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
+[data-asta-mb="confirm"][data-stage="ask"] .asta-mb-drain { animation: asta-mb-drain var(--asta-timeout, 3000ms) linear both; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-asta-tree] [role="group"][data-opened] > li,
+  .asta-timeline .asta-timeline-a,
+  .asta-timeline .asta-timeline-ping,
+  .asta-kanban *,
+  .asta-cal *,
+  [data-asta-file-star] *,
+  .asta-carousel *,
+  .asta-nc *,
+  .asta-comments,
+  .asta-comments *,
+  .asta-motion,
+  .asta-motion * {
+    animation: none !important;
+    transition-duration: 0s !important;
+  }
+  .asta-compare-win,
+  .asta-compare-pic,
+  .asta-compare-track,
+  [data-asta-nc-panel] { transition: none !important; }
+  [data-asta-carousel][data-autoplay] .asta-carousel-fill { transform: none; }
+}

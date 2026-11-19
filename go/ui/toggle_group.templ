@@ -1,0 +1,110 @@
+package ui
+
+import "slices"
+
+// ToggleOption is one button of a ToggleGroup.
+type ToggleOption struct {
+	Value string
+	Label string
+	Icon  templ.Component
+	// AriaLabel names an icon-only option.
+	AriaLabel string
+	Disabled  bool
+}
+
+// ToggleGroupProps configures ToggleGroup.
+type ToggleGroupProps struct {
+	// Name is the form field. Single mode posts one value, Multiple posts one value per pressed option.
+	Name    string
+	Options []ToggleOption
+	// Multiple lets several options be pressed at once (checkboxes instead of radios).
+	Multiple bool
+	// Value is the pressed option in single mode. Empty means none.
+	Value string
+	// Values are the pressed options in Multiple mode.
+	Values []string
+	// AllowEmpty lets a click on the pressed option clear it, in single mode.
+	AllowEmpty bool
+	// Size: "sm" or "md" (default).
+	Size string
+	// Full stretches the group to its parent's width.
+	Full     bool
+	Disabled bool
+	// Label is the accessible name of the group, e.g. "Text alignment".
+	Label string
+	Class string
+	// Attrs go on the root. With hx-post, add hx-trigger="change" and hx-include="this".
+	Attrs templ.Attributes
+}
+
+const toggleInd = "pointer-events-none absolute inset-0 -z-10 origin-left rounded-[7px] bg-paper opacity-0 peer-checked:opacity-100 " +
+	"shadow-[0_1px_2px_rgb(0_0_0/0.07),0_3px_10px_-4px_rgb(0_0_0/0.16),inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_8%,transparent)]"
+
+func toggleBtn(p ToggleGroupProps, o ToggleOption) string {
+	sm := p.Size == "sm"
+	pad := or(when(sm, "w-8"), "w-9")
+	if o.Label != "" {
+		pad = or(when(sm, "px-3"), "px-3.5")
+	}
+	return cx("group/tg relative inline-flex cursor-pointer select-none items-center justify-center gap-1.5 whitespace-nowrap rounded-[7px] font-medium tracking-[-0.01em] outline-none",
+		"text-mute transition-[color,scale] duration-200 hover:text-ink has-[:checked]:text-ink active:scale-[0.97] motion-reduce:transition-none",
+		"has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand/50 has-[:disabled]:pointer-events-none [&_svg]:h-[1.05em] [&_svg]:w-[1.05em]",
+		or(when(sm, "h-8 text-[13px]"), "h-9 text-[13.5px]"), pad, when(p.Full, "flex-1"), when(o.Disabled && !p.Disabled, "opacity-40"))
+}
+
+func toggleOn(p ToggleGroupProps, v string) bool {
+	if p.Multiple {
+		return slices.Contains(p.Values, v)
+	}
+	return p.Value != "" && p.Value == v
+}
+
+// ToggleGroup is a row of toggle buttons on native radios (single) or checkboxes (Multiple), so it posts with the form.
+// In single mode the background slides over from the last pressed option. In Multiple mode each fills on its own.
+//
+//	@ui.ToggleGroup(ui.ToggleGroupProps{Name: "align", Label: "Text alignment", Value: "left", Options: []ui.ToggleOption{{Value: "left", Label: "Left"}, {Value: "center", Label: "Center"}}})
+templ ToggleGroup(p ToggleGroupProps) {
+	<div
+		role={ or(when(p.Multiple, "group"), "radiogroup") }
+		data-asta-toggle={ or(when(p.Multiple, "multiple"), "single") }
+		if p.AllowEmpty && !p.Multiple {
+			data-allow-empty
+		}
+		if p.Label != "" {
+			aria-label={ p.Label }
+		}
+		aria-disabled?={ p.Disabled }
+		class={ cx("relative isolate inline-flex gap-0.5 rounded-[10px] bg-paper-2 p-1 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_6%,transparent)]",
+			when(p.Full, "flex w-full"), when(p.Disabled, "opacity-50"), p.Class) }
+		{ p.Attrs... }
+	>
+		for _, o := range p.Options {
+			<label class={ toggleBtn(p, o) }>
+				<input
+					type={ or(when(p.Multiple, "checkbox"), "radio") }
+					name={ p.Name }
+					value={ o.Value }
+					checked?={ toggleOn(p, o.Value) }
+					disabled?={ p.Disabled || o.Disabled }
+					if o.AriaLabel != "" {
+						aria-label={ o.AriaLabel }
+					}
+					class="peer sr-only"
+				/>
+				<span
+					aria-hidden="true"
+					data-asta-ind
+					class={ cx(toggleInd, when(p.Multiple, "scale-[.94] transition-[opacity,scale] duration-300 ease-[cubic-bezier(.16,1,.3,1)] peer-checked:scale-100 motion-reduce:transition-none")) }
+				></span>
+				if o.Icon != nil {
+					<span class="relative flex transition-colors duration-200 peer-checked:text-brand" aria-hidden="true">
+						@o.Icon
+					</span>
+				}
+				if o.Label != "" {
+					<span class="relative">{ o.Label }</span>
+				}
+			</label>
+		}
+	</div>
+}

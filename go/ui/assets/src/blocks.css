@@ -1,0 +1,101 @@
+/* Blocks: sign-in, onboarding, pricing, AI chat, checkout, properties and settings panels, team members.
+ * Only what Tailwind classes can't express. Motion is transform and opacity only, with the kit's easing. */
+
+@keyframes asta-blk-shake {
+  0%, 100% { transform: none }
+  20% { transform: translateX(-6px) }
+  40% { transform: translateX(5px) }
+  60% { transform: translateX(-3px) }
+  80% { transform: translateX(2px) }
+}
+@keyframes asta-blk-pop { 0% { opacity: 0; transform: scale(0.6) } 60% { opacity: 1; transform: scale(1.06) } 100% { opacity: 1; transform: none } }
+@keyframes asta-blk-in { from { opacity: 0; transform: translateY(8px) } }
+@keyframes asta-blk-tok { from { opacity: 0 } }
+@keyframes asta-blk-dot { 0%, 80%, 100% { opacity: 0.25; transform: translateY(0) } 40% { opacity: 1; transform: translateY(-2px) } }
+@keyframes asta-blk-roll-up { from { opacity: 0; transform: translateY(70%) } }
+@keyframes asta-blk-roll-down { from { opacity: 0; transform: translateY(-70%) } }
+@keyframes asta-blk-count { from { transform: scaleX(1) } to { transform: scaleX(0) } }
+@keyframes asta-blk-prop-in { from { opacity: 0; transform: translateY(-3px) } }
+
+/* ---------- Pricing: native radios drive the pill and the rolling digits ---------- */
+
+[data-asta-pricing] [data-asta-pricing-pill] {
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-asta-pricing]:has(input[value="yearly"]:checked) [data-asta-pricing-pill] {
+  transform: translateX(100%);
+}
+.asta-pricing-strip {
+  transform: translateY(calc(var(--m) * -1em));
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--dl, 0ms);
+}
+[data-asta-pricing]:has(input[value="yearly"]:checked) .asta-pricing-strip {
+  transform: translateY(calc(var(--y) * -1em));
+}
+/* A blank leading digit takes no room in its period. */
+[data-asta-pricing]:not(:has(input[value="yearly"]:checked)) .asta-pricing-digit[data-mblank],
+[data-asta-pricing]:has(input[value="yearly"]:checked) .asta-pricing-digit[data-yblank] {
+  width: 0;
+}
+[data-asta-pricing] [data-asta-pricing-yearly-note] {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+[data-asta-pricing]:has(input[value="yearly"]:checked) [data-asta-pricing-yearly-note] {
+  opacity: 1;
+}
+[data-asta-pricing]:has(input[value="yearly"]:checked) [data-asta-pricing-for="monthly"],
+[data-asta-pricing]:not(:has(input[value="yearly"]:checked)) [data-asta-pricing-for="yearly"] {
+  display: none;
+}
+
+/* ---------- Properties panel ---------- */
+
+[data-asta-props] details[open] > [data-asta-props-body] {
+  animation: asta-blk-prop-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+[data-asta-props] summary::-webkit-details-marker {
+  display: none;
+}
+
+/* ---------- Settings panel: the save bar slides up while there are changes ---------- */
+
+[data-asta-settings] [data-asta-settings-bar] {
+  opacity: 0;
+  transform: translateY(calc(100% + 16px));
+  pointer-events: none;
+  transition:
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-asta-settings][data-dirty] [data-asta-settings-bar],
+[data-asta-settings][data-saved] [data-asta-settings-bar] {
+  opacity: 1;
+  transform: none;
+}
+[data-asta-settings][data-dirty] [data-asta-settings-bar] > *,
+[data-asta-settings][data-saved] [data-asta-settings-bar] > * {
+  pointer-events: auto;
+}
+[data-asta-settings]:not([data-saved]) [data-asta-settings-saved],
+[data-asta-settings][data-saved] [data-asta-settings-unsaved] {
+  display: none;
+}
+
+/* ---------- AI chat: the empty state hides once there is a message ---------- */
+
+[data-asta-chat]:has([data-asta-chat-list] > li) [data-asta-chat-empty] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-asta-pricing] *,
+  [data-asta-settings] [data-asta-settings-bar],
+  [data-asta-props] details[open] > [data-asta-props-body],
+  [data-asta-chat] *,
+  [data-asta-checkout] *,
+  [data-asta-team] * {
+    transition-duration: 0s !important;
+    animation: none !important;
+  }
+}

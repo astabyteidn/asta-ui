@@ -1,0 +1,167 @@
+package ui
+
+// MenuProps configures Menu. Children are MenuItem, MenuLabel and MenuSeparator.
+type MenuProps struct {
+	// ID names the menu panel. The trigger gets ID + "-trigger". Optional, but it wires aria-controls.
+	ID string
+	// Label is the trigger text.
+	Label string
+	// Icon sits before the label, or alone with IconOnly.
+	Icon templ.Component
+	// IconOnly makes a square trigger. Set AriaLabel too.
+	IconOnly bool
+	// AriaLabel names the trigger when its content is only an icon.
+	AriaLabel string
+	// Variant is the trigger's button variant. Default "outline".
+	Variant string
+	// Size is the trigger's button size. Default "md".
+	Size string
+	// Align: "start" (default) lines the menu up with the trigger's left edge, "end" with its right edge.
+	Align string
+	// NoChevron hides the arrow after the label.
+	NoChevron bool
+	// MenuClass goes on the menu panel, e.g. "min-w-[280px]".
+	MenuClass string
+	// Class goes on the root.
+	Class string
+	// Attrs go on the root.
+	Attrs templ.Attributes
+}
+
+// MenuItemProps configures MenuItem. Children are the label.
+type MenuItemProps struct {
+	// Href renders a link instead of a button.
+	Href string
+	// Icon sits before the label.
+	Icon templ.Component
+	// Shortcut is shown on the right, e.g. "⌘D". Display only.
+	Shortcut string
+	Danger   bool
+	Disabled bool
+	// KeepOpen leaves the menu open after a click.
+	KeepOpen bool
+	Class    string
+	// Attrs go on the item, e.g. hx-post or hx-delete with hx-confirm.
+	Attrs templ.Attributes
+}
+
+const (
+	menuPanel = "absolute left-0 top-full z-50 mt-1.5 min-w-[232px] rounded-xl bg-paper p-1.5 text-left outline-none " +
+		"shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent),0_12px_32px_-12px_rgb(0_0_0/0.28),0_4px_10px_-6px_rgb(0_0_0/0.12)]"
+)
+
+// Menu is an action menu. It drops in from its trigger and flips up when there is no room below.
+// Arrow keys, Home, End, Escape and outside clicks work, also after an htmx swap.
+//
+//	@ui.Menu(ui.MenuProps{ID: "project-menu", Label: "Options", Align: "end"}) {
+//		@ui.MenuItem(ui.MenuItemProps{Shortcut: "⌘D", Attrs: templ.Attributes{"hx-post": "/projects/1/duplicate"}}) { Duplicate }
+//		@ui.MenuSeparator()
+//		@ui.MenuItem(ui.MenuItemProps{Danger: true, Attrs: templ.Attributes{"hx-delete": "/projects/1"}}) { Delete }
+//	}
+templ Menu(p MenuProps) {
+	<div
+		data-asta-menu
+		if p.Align == "end" {
+			data-align="end"
+		}
+		class={ cx("group/menu relative inline-flex", p.Class) }
+		{ p.Attrs... }
+	>
+		<button
+			type="button"
+			data-asta-menu-trigger
+			aria-haspopup="menu"
+			aria-expanded="false"
+			if p.ID != "" {
+				id={ p.ID + "-trigger" }
+				aria-controls={ p.ID }
+			}
+			if p.AriaLabel != "" {
+				aria-label={ p.AriaLabel }
+			}
+			class={ cx(ButtonClass(ButtonProps{Variant: or(p.Variant, "outline"), Size: p.Size, IconOnly: p.IconOnly}), "group-data-[open]/menu:bg-paper-2") }
+		>
+			if p.Icon != nil {
+				<span class={ cx("inline-flex shrink-0 [&_svg]:h-[1.1em] [&_svg]:w-[1.1em]", when(!p.IconOnly, "-ml-0.5")) }>
+					@p.Icon
+				</span>
+			}
+			{ p.Label }
+			if !p.NoChevron && !p.IconOnly {
+				<svg viewBox="0 0 16 16" class="-mr-1 h-3.5 w-3.5 text-mute transition-transform duration-300 ease-[cubic-bezier(.16,1,.3,1)] group-data-[open]/menu:rotate-180 motion-reduce:transition-none" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<path d="m4 6 4 4 4-4"></path>
+				</svg>
+			}
+		</button>
+		<div
+			role="menu"
+			hidden
+			tabindex="-1"
+			if p.ID != "" {
+				id={ p.ID }
+				aria-labelledby={ p.ID + "-trigger" }
+			}
+			class={ cx(menuPanel, when(p.Align == "end", "left-auto right-0"), p.MenuClass) }
+		>
+			{ children... }
+		</div>
+	</div>
+}
+
+func menuItemClass(p MenuItemProps) string {
+	tone := "text-ink hover:bg-paper-2 focus:bg-paper-2"
+	if p.Danger {
+		tone = "text-[#e5484d] hover:bg-[#e5484d]/10 focus:bg-[#e5484d]/10"
+	}
+	return cx("group/item flex h-9 w-full cursor-pointer select-none items-center gap-2.5 rounded-[10px] px-2.5 text-left text-[13.5px] outline-none transition-colors duration-150",
+		"disabled:cursor-not-allowed disabled:opacity-40 aria-disabled:cursor-not-allowed aria-disabled:opacity-40", tone, p.Class)
+}
+
+// MenuItem is one action of a Menu: a button, or a link when Href is set.
+//
+//	@ui.MenuItem(ui.MenuItemProps{Href: "/settings", Icon: gearIcon()}) { Settings }
+templ MenuItem(p MenuItemProps) {
+	if p.Href != "" && !p.Disabled {
+		<a role="menuitem" tabindex="-1" href={ templ.SafeURL(p.Href) } data-keep-open?={ p.KeepOpen } class={ menuItemClass(p) } { p.Attrs... }>
+			@menuItemBody(p) {
+				{ children... }
+			}
+		</a>
+	} else if p.Href != "" {
+		<a role="menuitem" tabindex="-1" aria-disabled="true" class={ menuItemClass(p) } { p.Attrs... }>
+			@menuItemBody(p) {
+				{ children... }
+			}
+		</a>
+	} else {
+		<button type="button" role="menuitem" tabindex="-1" disabled?={ p.Disabled } data-keep-open?={ p.KeepOpen } class={ menuItemClass(p) } { p.Attrs... }>
+			@menuItemBody(p) {
+				{ children... }
+			}
+		</button>
+	}
+}
+
+templ menuItemBody(p MenuItemProps) {
+	if p.Icon != nil {
+		<span class={ cx("inline-flex h-4 w-4 shrink-0 [&_svg]:h-4 [&_svg]:w-4", when(!p.Danger, "text-mute group-hover/item:text-ink group-focus/item:text-ink")) }>
+			@p.Icon
+		</span>
+	}
+	<span class="flex-1 truncate">
+		{ children... }
+	</span>
+	if p.Shortcut != "" {
+		<kbd class="font-sans text-[11.5px] tracking-wide text-mute">{ p.Shortcut }</kbd>
+	}
+}
+
+// MenuLabel is a small heading over a group of items.
+templ MenuLabel(text string) {
+	<div role="presentation" class="px-2.5 pb-1 pt-1.5 text-[11px] font-medium uppercase tracking-wider text-mute">{ text }</div>
+}
+
+// MenuSeparator is a thin line between groups of items.
+templ MenuSeparator() {
+	<div role="separator" class="mx-1 my-1.5 h-px bg-[color-mix(in_srgb,var(--ink)_8%,transparent)]"></div>
+}

@@ -1,0 +1,126 @@
+package ui
+
+import "strconv"
+
+// AnnouncementBarProps configures AnnouncementBar.
+type AnnouncementBarProps struct {
+	// ID names the bar. Optional.
+	ID string
+	// Messages: one stays put, two or more take turns, sliding up.
+	Messages []AnnouncementMessage
+	// Variant: "ink" (default), "brand" or "subtle".
+	Variant string
+	// Interval is how long each message stays, in ms. Default 5000. Hover or focus pauses it.
+	Interval int
+	// NoDismiss hides the close button.
+	NoDismiss bool
+	// StorageKey remembers a dismissal in localStorage under this key, so the bar stays closed on the next visit.
+	StorageKey string
+	// Label is the accessible name of the region. Default "Announcement".
+	Label string
+	// Class is merged onto the root element.
+	Class string
+	// Attrs go on the bar.
+	Attrs templ.Attributes
+	// DismissAttrs go on the close button, e.g. hx-post to remember the dismissal on the server.
+	DismissAttrs templ.Attributes
+}
+
+// AnnouncementMessage is one message of AnnouncementBar.
+type AnnouncementMessage struct {
+	// Text is the message.
+	Text string
+	// Href makes it a link.
+	Href string
+	// LinkLabel is the link text. Default "Learn more" when Href is set.
+	LinkLabel string
+	// Badge is a short tag before the message, e.g. "New".
+	Badge string
+}
+
+type announceTone struct{ bar, badge, link, close string }
+
+var announceTones = map[string]announceTone{
+	"ink":    {"bg-ink text-paper", "bg-brand text-white", "text-paper", "text-paper/60 hover:text-paper hover:bg-paper/10"},
+	"brand":  {"bg-brand text-white", "bg-white/15 text-white", "text-white", "text-white/70 hover:text-white hover:bg-white/10"},
+	"subtle": {"bg-paper-2 text-ink", "bg-[color-mix(in_srgb,var(--brand)_14%,transparent)] text-brand", "text-brand", "text-mute hover:text-ink hover:bg-paper"},
+}
+
+func announceToneOf(v string) announceTone {
+	if t, ok := announceTones[v]; ok {
+		return t
+	}
+	return announceTones["ink"]
+}
+
+// AnnouncementBar is a slim banner for the top of a page: a message, a link and a close button. Several messages
+// take turns, the old one sliding up as the next rises in. Hover or focus pauses it, reduced motion stops the
+// rotation, and closing slides it up and out.
+//
+//	@ui.AnnouncementBar(ui.AnnouncementBarProps{Messages: []ui.AnnouncementMessage{{Badge: "New", Text: "Astabyte UI 0.7 is out.", Href: "/changelog"}}})
+templ AnnouncementBar(p AnnouncementBarProps) {
+	{{ tone := announceToneOf(p.Variant) }}
+	if len(p.Messages) > 0 {
+		<div
+			role="region"
+			aria-label={ or(p.Label, "Announcement") }
+			data-asta-announce
+			if p.ID != "" {
+				id={ p.ID }
+			}
+			if p.Interval > 0 {
+				data-interval={ strconv.Itoa(p.Interval) }
+			}
+			if p.StorageKey != "" {
+				data-storage-key={ p.StorageKey }
+			}
+			class={ cx("relative flex min-h-10 w-full items-center gap-2 px-3 sm:px-4", tone.bar, p.Class) }
+			{ p.Attrs... }
+		>
+			if !p.NoDismiss {
+				<span aria-hidden="true" class="w-7 shrink-0"></span>
+			}
+			if len(p.Messages) == 1 {
+				<div class="min-w-0 flex-1 py-2.5">
+					@announceMessage(p.Messages[0], tone)
+				</div>
+			} else {
+				<div class="relative h-10 min-w-0 flex-1 overflow-hidden" aria-live="off" data-asta-announce-track>
+					for i, m := range p.Messages {
+						<div
+							data-asta-announce-msg
+							if i == 0 {
+								data-state="cur"
+							} else {
+								aria-hidden="true"
+							}
+							class="absolute inset-0 flex items-center justify-center"
+						>
+							@announceMessage(m, tone)
+						</div>
+					}
+				</div>
+			}
+			if !p.NoDismiss {
+				<button type="button" data-asta-announce-close aria-label="Dismiss announcement" class={ cx("grid h-7 w-7 shrink-0 place-items-center rounded-md outline-none transition-[background-color,color,transform] duration-200 active:scale-90 focus-visible:ring-2 focus-visible:ring-brand/60", tone.close) } { p.DismissAttrs... }>
+					@ovIcon("m4.5 4.5 7 7m0-7-7 7", "h-3.5 w-3.5")
+				</button>
+			}
+		</div>
+	}
+}
+
+templ announceMessage(m AnnouncementMessage, tone announceTone) {
+	<p class="flex min-w-0 items-center justify-center gap-2.5 text-[13px] leading-snug">
+		if m.Badge != "" {
+			<span class={ cx("shrink-0 rounded-md px-1.5 py-0.5 text-[11px] font-medium", tone.badge) }>{ m.Badge }</span>
+		}
+		<span class="min-w-0 truncate">{ m.Text }</span>
+		if m.Href != "" {
+			<a href={ templ.SafeURL(m.Href) } class={ cx("group/link inline-flex shrink-0 items-center gap-1 rounded-sm font-medium underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-brand/60", tone.link) }>
+				{ or(m.LinkLabel, "Learn more") }
+				@ovIcon("M3.5 8h9M9 4.5 12.5 8 9 11.5", "h-3.5 w-3.5 transition-transform duration-300 ease-[cubic-bezier(.16,1,.3,1)] group-hover/link:translate-x-0.5")
+			</a>
+		}
+	</p>
+}

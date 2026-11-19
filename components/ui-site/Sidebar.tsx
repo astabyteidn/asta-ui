@@ -9,7 +9,10 @@ export const GUIDES = [
   { href: "/introduction", title: "Introduction" },
   { href: "/installation", title: "Installation" },
   { href: "/skill", title: "AI agents" },
+  { href: "/go", title: "Go + htmx" },
+  { href: "/css", title: "HTML + CSS" },
   { href: "/prompts", title: "Prompts" },
+  { href: "/changelog", title: "Changelog" },
 ];
 /** The latest additions, tagged in the index. */
 export const NEW = new Set(["button", "motion-button", "navbar", "command-palette"]);

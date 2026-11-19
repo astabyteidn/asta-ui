@@ -18,7 +18,7 @@ const ITEMS: Item[] = [
   { key: "logos", label: "Logos", href: "/logos" },
 ];
 
-const GUIDES = ["/introduction", "/installation", "/skill", "/prompts"];
+const GUIDES = ["/introduction", "/installation", "/skill", "/go", "/css", "/prompts", "/changelog"];
 const KIT = new Set(kitItems.map((k) => `/${k.slug}`));
 const LAB = new Set(labBlocks.map((b) => `/${b.slug}`));
 

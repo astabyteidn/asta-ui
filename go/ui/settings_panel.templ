@@ -1,0 +1,157 @@
+package ui
+
+// SettingsPanelProps configures SettingsPanel. Children are SettingsSection blocks holding the controls.
+type SettingsPanelProps struct {
+	// ID goes on the form. Default "settings".
+	ID string
+	// Action is the URL the form posts to.
+	Action string
+	// AutoSave posts on every change (hx-trigger="change") and hides the save bar. Answer with ui.Toast.
+	// Without it a save bar slides up as soon as anything differs from the loaded values, with Reset and Save.
+	AutoSave bool
+	Class    string
+	// Attrs go on the form. The default swap is "none": answer with ui.Toast or 204. Set hx-target and
+	// hx-swap here to re-render the panel instead, e.g. with errors.
+	Attrs templ.Attributes
+}
+
+const (
+	settingsCard = "relative w-full max-w-[520px] overflow-hidden rounded-xl bg-paper text-ink " +
+		"shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent),0_18px_40px_-24px_rgb(0_0_0/0.3)]"
+)
+
+// SettingsPanel is a settings form in a card. With a save bar (the default) the bar slides up once a field
+// differs from what was loaded: Reset puts the loaded values back, Save posts and shows "Saved", then the bar
+// slides away. With AutoSave each change posts on its own.
+//
+//	@ui.SettingsPanel(ui.SettingsPanelProps{Action: "/settings"}) {
+//		@ui.SettingsSection(ui.SettingsSectionProps{Title: "Notifications"}) {
+//			@ui.Switch(ui.SwitchProps{Name: "digest", Label: "Weekly digest", Checked: true})
+//		}
+//	}
+templ SettingsPanel(p SettingsPanelProps) {
+	{{ id := or(p.ID, "settings") }}
+	<form
+		id={ id }
+		data-asta-settings
+		if p.AutoSave {
+			data-autosave
+			hx-trigger="change"
+		} else {
+			hx-indicator="find [data-asta-settings-save]"
+		}
+		action={ templ.SafeURL(p.Action) }
+		method="post"
+		hx-post={ p.Action }
+		hx-swap="none"
+		class={ cx(settingsCard, p.Class) }
+		{ p.Attrs... }
+	>
+		<div class={ cx("max-h-[440px] overflow-y-auto px-5 pt-5 sm:px-6 [&>section+section]:shadow-[inset_0_1px_0_color-mix(in_srgb,var(--ink)_7%,transparent)]", or(when(p.AutoSave, "pb-2"), "pb-24")) }>
+			{ children... }
+		</div>
+		if !p.AutoSave {
+			<div data-asta-settings-bar class="pointer-events-none absolute inset-x-3 bottom-3">
+				<div role="region" aria-label="Unsaved changes" class="flex items-center gap-2 rounded-[10px] bg-ink py-2 pl-4 pr-2 text-paper shadow-[0_12px_30px_-10px_rgb(0_0_0/0.5)]">
+					<span class="flex min-w-0 flex-1 items-center gap-2 text-[13.5px]" aria-live="polite">
+						<span data-asta-settings-saved class="flex items-center gap-2">
+							<svg viewBox="0 0 16 16" class="h-4 w-4 shrink-0 text-[#30a46c]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+								<path d="M3.5 8.5l3 3 6-7"></path>
+							</svg>
+							Saved
+						</span>
+						<span data-asta-settings-unsaved class="flex min-w-0 items-center gap-2">
+							<span class="h-1.5 w-1.5 shrink-0 rounded-full bg-brand"></span>
+							<span class="truncate">Unsaved changes</span>
+						</span>
+					</span>
+					<span data-asta-settings-unsaved class="flex items-center gap-2">
+						@Button(ButtonProps{Type: "reset", Variant: "ghost", Size: "sm", Class: "text-paper/70 hover:bg-paper/10 hover:text-paper", Attrs: templ.Attributes{"tabindex": "-1"}}) {
+							Reset
+						}
+						@Button(ButtonProps{Type: "submit", Variant: "accent", Size: "sm", Attrs: templ.Attributes{"data-asta-settings-save": true, "tabindex": "-1"}}) {
+							Save
+						}
+					</span>
+				</div>
+			</div>
+		}
+	</form>
+}
+
+// SettingsSectionProps configures SettingsSection.
+type SettingsSectionProps struct {
+	Title string
+	// Description is muted text under the title.
+	Description string
+}
+
+// SettingsSection is a titled group of settings. Sections are split by a faint line.
+templ SettingsSection(p SettingsSectionProps) {
+	<section class="py-5 first:pt-0">
+		<h4 class={ cx("text-[12px] font-medium uppercase tracking-[0.06em] text-mute", or(when(p.Description != "", "mb-1"), "mb-3")) }>{ p.Title }</h4>
+		if p.Description != "" {
+			<p class="mb-3 text-[13px] leading-snug text-mute">{ p.Description }</p>
+		}
+		<div class="flex flex-col gap-3 [&>label]:py-1">
+			{ children... }
+		</div>
+	</section>
+}
+
+// SettingsRowProps configures SettingsRow.
+type SettingsRowProps struct {
+	Label string
+	// For is the id of the control, so clicking the label focuses it.
+	For         string
+	Description string
+}
+
+// SettingsRow puts a label on the left and a control on the right, e.g. a Select.
+templ SettingsRow(p SettingsRowProps) {
+	<div class="flex items-center justify-between gap-4">
+		<div class="min-w-0">
+			<label for={ p.For } class="block text-[14px] text-ink">{ p.Label }</label>
+			if p.Description != "" {
+				<p class="mt-0.5 text-[12.5px] leading-snug text-mute">{ p.Description }</p>
+			}
+		</div>
+		<div class="shrink-0">
+			{ children... }
+		</div>
+	</div>
+}
+
+// SettingsThemeProps configures SettingsTheme.
+type SettingsThemeProps struct {
+	// Name is the posted field name. Default "theme".
+	Name string
+	// Value is "light", "dark" or "system".
+	Value string
+	// Label names the group for screen readers. Default "Theme".
+	Label string
+}
+
+type settingsThemeOpt struct{ value, label, swatch string }
+
+var settingsThemes = []settingsThemeOpt{
+	{"light", "Light", "bg-[#fcfcfb]"},
+	{"dark", "Dark", "bg-[#151516]"},
+	{"system", "System", "bg-[linear-gradient(135deg,#fcfcfb_50%,#151516_50%)]"},
+}
+
+// SettingsTheme picks light, dark or system with three swatch cards. They are native radios.
+templ SettingsTheme(p SettingsThemeProps) {
+	<div role="radiogroup" aria-label={ or(p.Label, "Theme") } class="grid grid-cols-3 gap-2">
+		for _, t := range settingsThemes {
+			<label class="group/theme flex cursor-pointer flex-col items-start gap-2 rounded-[10px] p-2 text-left shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)] transition-shadow duration-300 hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_26%,transparent)] has-[:checked]:!shadow-[inset_0_0_0_2px_var(--brand)] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand/50">
+				<input type="radio" name={ or(p.Name, "theme") } value={ t.value } checked?={ t.value == p.Value } class="peer sr-only"/>
+				<span class={ cx("h-10 w-full rounded-lg shadow-[inset_0_0_0_1px_rgb(0_0_0/0.08)]", t.swatch) }></span>
+				<span class="flex w-full items-center justify-between px-0.5 text-[13px] text-ink">
+					{ t.label }
+					<span class="h-3.5 w-3.5 rounded-full shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)] transition-[background-color,box-shadow] duration-300 group-has-[:checked]/theme:bg-brand group-has-[:checked]/theme:shadow-[inset_0_0_0_3.5px_var(--brand),inset_0_0_0_6px_white]"></span>
+				</span>
+			</label>
+		}
+	</div>
+}

@@ -1,0 +1,116 @@
+/* Forms group: keyframes and the few states Tailwind classes can't express. Transform and opacity only,
+ * with the kit's easing. */
+
+@keyframes asta-otp-drop { from { opacity: 0; transform: translateY(-7px) scale(0.9) } }
+@keyframes asta-otp-caret { 0%, 100% { opacity: 1 } 50% { opacity: 0 } }
+@keyframes asta-otp-wave { 0%, 100% { transform: translateY(0) } 35% { transform: translateY(-7px) } }
+@keyframes asta-otp-shake { 0%, 100% { transform: translateX(0) } 20% { transform: translateX(-7px) } 40% { transform: translateX(6px) } 60% { transform: translateX(-4px) } 80% { transform: translateX(2px) } }
+@keyframes asta-tag-in { from { transform: scale(0.6); opacity: 0 } }
+@keyframes asta-tag-shake { 0%, 100% { transform: none } 20% { transform: translateX(-4px) } 40% { transform: translateX(4px) } 60% { transform: translateX(-3px) } 80% { transform: translateX(2px) } }
+@keyframes asta-rating-pop { 0% { transform: scale(1) } 40% { transform: scale(1.3) } 100% { transform: scale(1) } }
+@keyframes asta-combo-in { from { opacity: 0; transform: translateY(-4px) scale(0.97) } }
+@keyframes asta-combo-chip { from { opacity: 0; transform: scale(0.8) } }
+@keyframes asta-dp-in { from { opacity: 0; transform: translateY(-4px) scale(0.97) } }
+@keyframes asta-dp-next { from { opacity: 0; transform: translateX(28px) } }
+@keyframes asta-dp-prev { from { opacity: 0; transform: translateX(-28px) } }
+@keyframes asta-dp-pop { 0% { opacity: 0; transform: scale(0.55) } 60% { opacity: 1; transform: scale(1.06) } 100% { transform: scale(1) } }
+@keyframes asta-upload-row { from { opacity: 0; transform: translateY(8px) } }
+@keyframes asta-upload-msg { from { opacity: 0; transform: translateY(-3px) } }
+@keyframes asta-inline-tick { 0% { opacity: 0; transform: scale(0.6) } 18% { opacity: 1; transform: scale(1) } 80% { opacity: 1; transform: scale(1) } 100% { opacity: 0; transform: scale(1) } }
+
+/* Copy button: the check draws itself in. */
+.asta-copy-tick {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-state="copied"] .asta-copy-tick {
+  stroke-dashoffset: 0;
+  transition-duration: 0.42s;
+  transition-delay: 75ms;
+}
+
+/* Password: the eye's slash draws while the text is hidden, and each rule's tick draws when it passes. */
+.asta-pw-slash {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+[aria-pressed="true"] .asta-pw-slash { stroke-dashoffset: 1; }
+.asta-pw-tick {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+}
+[data-on] .asta-pw-tick { stroke-dashoffset: 0; }
+
+/* OTP */
+.asta-otp-shake { animation: asta-otp-shake 0.42s cubic-bezier(0.16, 1, 0.3, 1) both; }
+[data-asta-otp-boxes][data-wave] [data-asta-otp-wave] { animation: asta-otp-wave 0.55s cubic-bezier(0.16, 1, 0.3, 1) var(--asta-otp-i, 0ms) both; }
+.asta-otp-ch { animation: asta-otp-drop 0.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.asta-otp-caret {
+  display: block;
+  width: 1.5px;
+  height: 1.5rem;
+  border-radius: 9999px;
+  background: var(--ink);
+  animation: asta-otp-caret 1.05s steps(1) infinite;
+}
+
+/* Tags */
+.asta-tag-in { animation: asta-tag-in 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+.asta-tag-shake { animation: asta-tag-shake 0.4s ease; }
+
+/* Rating: filled stars pop one after another. Each star carries its own animation-delay. */
+.asta-rating-pop { animation: asta-rating-pop 0.42s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+/* Combobox */
+[data-asta-combo] > [role="listbox"]:not([hidden]) { animation: asta-combo-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.asta-combo-chip { animation: asta-combo-chip 0.24s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+/* Date picker */
+.asta-date-cal:not([hidden]) { animation: asta-dp-in 0.24s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.asta-dp-next { animation: asta-dp-next 0.34s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.asta-dp-prev { animation: asta-dp-prev 0.34s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.asta-dp-pop { animation: asta-dp-pop 0.36s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+/* Range slider: a click on the track glides, a drag follows the pointer exactly. */
+[data-asta-range][data-glide] [data-asta-range-fill],
+[data-asta-range][data-glide] [data-asta-range-at] {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* File upload */
+.asta-upload-row { animation: asta-upload-row 0.38s cubic-bezier(0.16, 1, 0.3, 1) both; }
+[data-asta-upload-error]:not([hidden]) { animation: asta-upload-msg 0.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+/* Inline edit */
+.asta-inline-tick { display: block; animation: asta-inline-tick 1.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .asta-copy-tick,
+  .asta-pw-slash,
+  .asta-pw-tick,
+  [data-asta-range][data-glide] [data-asta-range-fill],
+  [data-asta-range][data-glide] [data-asta-range-at] {
+    transition: none !important;
+  }
+  .asta-otp-shake,
+  [data-asta-otp-boxes][data-wave] [data-asta-otp-wave],
+  .asta-otp-ch,
+  .asta-otp-caret,
+  .asta-tag-in,
+  .asta-tag-shake,
+  .asta-rating-pop,
+  [data-asta-combo] > [role="listbox"],
+  .asta-combo-chip,
+  .asta-date-cal,
+  .asta-dp-next,
+  .asta-dp-prev,
+  .asta-dp-pop,
+  .asta-upload-row,
+  [data-asta-upload-error] {
+    animation: none !important;
+  }
+  .asta-inline-tick { animation-name: none !important; opacity: 1; }
+}

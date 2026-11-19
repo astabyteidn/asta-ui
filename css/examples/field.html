@@ -1,0 +1,20 @@
+<div style="display:grid;gap:20px;max-width:360px">
+  <div class="asta-field">
+    <div class="asta-field-head">
+      <label class="asta-label" for="ex-email">Email<span class="asta-label-required" aria-hidden="true">*</span></label>
+    </div>
+    <label class="asta-input"><input class="asta-input-control" id="ex-email" name="email" type="email" placeholder="you@astabyte.com" required></label>
+    <p class="asta-hint">We never share it.</p>
+  </div>
+  <div class="asta-field">
+    <div class="asta-field-head">
+      <label class="asta-label" for="ex-handle">Handle</label>
+      <span class="asta-counter">8/20</span>
+    </div>
+    <label class="asta-input">
+      <input class="asta-input-control" id="ex-handle" name="handle" value="astabyte" aria-invalid="true">
+      <svg class="asta-input-status" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.25"/><path d="M8 5v3.5M8 11h.01"/></svg>
+    </label>
+    <p class="asta-error" role="alert"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.25"/><path d="M8 5v3.5M8 11h.01"/></svg>That handle is taken.</p>
+  </div>
+</div>

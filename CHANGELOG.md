@@ -2,6 +2,16 @@
 
 Releases are git tags (`vX.Y.Z`); pushing a tag deploys ui.astabyte.com. Merging to `main` does not.
 
+## 0.8.0 — 2026-11-19
+
+- **Go + htmx.** The whole main kit as [templ](https://templ.guide) components in the Go module `github.com/astabyteidn/asta-ui/go`: forms, overlays, navigation, data views, feedback and blocks, 100+ components in all. CSS, JS and htmx 2 are embedded, so a Go app still ships as one binary. Docs at https://ui.astabyte.com/go.
+  - htmx helpers: `ui.Toast` (with an optional action button), `ui.CloseDialog` and `ui.OpenDialog` go out in `HX-Trigger`; buttons show their spinner during their own request.
+  - Two examples: a team settings app and a gallery of every component with its htmx endpoints.
+  - Asset URLs carry a content hash, so they cache for a year and still update.
+  - Tagged `go/vX.Y.Z` with every release.
+- **HTML + CSS.** The same look without React or Go, for html/template, htmx, Rails, Django or plain HTML ([#14](https://github.com/astabyteidn/asta-ui/issues/14)). The npm package now ships `css/`: `tokens.css` and `components.css` (semantic `.asta-*` classes) for a Tailwind v4 build, plus a prebuilt `asta.css` and `asta.js` to link from https://ui.astabyte.com/cdn/asta.css (temporary) or jsDelivr (pinned). Docs at https://ui.astabyte.com/css.
+- **Changelog page** at https://ui.astabyte.com/changelog, built from this file.
+
 ## 0.7.0 — 2026-11-19
 
 - **Skills that update themselves.** A third agent skill, `astabyte-skills-update`, plus `npx asta-ui skills install | update | status | auto`. Every skill now checks https://ui.astabyte.com/skills.json once a session and rewrites only what changed. `skills auto` adds a Claude Code SessionStart hook that checks once a day.

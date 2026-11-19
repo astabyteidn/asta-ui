@@ -1,0 +1,123 @@
+package ui
+
+import (
+	"math"
+	"strconv"
+)
+
+// NumberInputProps configures NumberInput.
+type NumberInputProps struct {
+	ID string
+	// Name is the form field. The value posts from a hidden input.
+	Name  string
+	Value int
+	// Min defaults to 0.
+	Min int
+	// Max defaults to 999 when left at 0.
+	Max int
+	// Step defaults to 1.
+	Step int
+	// Label is the accessible name, e.g. "Seats".
+	Label string
+	// Suffix is the text after the number, e.g. "seats" or "kg".
+	Suffix string
+	// Size: "sm" or "md" (default).
+	Size  string
+	Class string
+	// Attrs go on the hidden input, which fires "change" on every step: hx-post with hx-trigger="change delay:400ms".
+	Attrs templ.Attributes
+}
+
+func numberMax(p NumberInputProps) int {
+	m := p.Max
+	if m == 0 {
+		m = 999
+	}
+	return max(m, p.Min)
+}
+
+func numberStep(p NumberInputProps) int { return max(1, p.Step) }
+
+func numberValue(p NumberInputProps) int { return min(numberMax(p), max(p.Min, p.Value)) }
+
+func numberDigits(v int) []int {
+	s := strconv.Itoa(int(math.Abs(float64(v))))
+	out := make([]int, len(s))
+	for i, c := range s {
+		out[i] = int(c - '0')
+	}
+	return out
+}
+
+func numberRoll(d int) templ.SafeCSS {
+	return templ.SafeCSS("transform:translateY(" + strconv.FormatFloat(float64(-d)*1.25, 'f', 2, 64) + "em)")
+}
+
+func numberBtn(big bool) string {
+	return cx("flex shrink-0 select-none items-center justify-center rounded-md text-ink-2 outline-none [touch-action:manipulation]",
+		"transition-[background-color,transform,opacity] duration-150 hover:bg-paper-2 hover:text-ink active:scale-90 disabled:opacity-30 disabled:hover:bg-transparent",
+		or(when(big, "h-8 w-8"), "h-6 w-6"))
+}
+
+// NumberInput is a stepper whose digits roll to the new number. Hold − or + and it repeats, faster the longer you hold.
+// Arrow keys step, Page Up/Down step by ten, Home/End jump to min/max, and typing digits enters a value.
+//
+//	@ui.NumberInput(ui.NumberInputProps{Name: "seats", Label: "Seats", Value: 4, Min: 1, Max: 50, Suffix: "seats"})
+templ NumberInput(p NumberInputProps) {
+	{{ v, big := numberValue(p), p.Size != "sm" }}
+	<div
+		data-asta-number
+		data-min={ strconv.Itoa(p.Min) }
+		data-max={ strconv.Itoa(numberMax(p)) }
+		data-step={ strconv.Itoa(numberStep(p)) }
+		class={ cx("inline-flex items-center gap-1 bg-paper shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)]",
+			or(when(big, "h-12 rounded-[10px] px-2"), "h-8 rounded-full px-1"), p.Class) }
+	>
+		<button type="button" tabindex="-1" aria-label="Decrease" data-asta-number-step="-1" disabled?={ v <= p.Min } class={ numberBtn(big) }>
+			<svg viewBox="0 0 16 16" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3.5 8h9"></path></svg>
+		</button>
+		<div
+			role="spinbutton"
+			tabindex="0"
+			if p.ID != "" {
+				id={ p.ID }
+			}
+			if p.Label != "" {
+				aria-label={ p.Label }
+			}
+			aria-valuenow={ strconv.Itoa(v) }
+			aria-valuemin={ strconv.Itoa(p.Min) }
+			aria-valuemax={ strconv.Itoa(numberMax(p)) }
+			data-asta-number-view
+			class={ cx("flex min-w-[3.5em] items-center justify-center gap-1.5 rounded-lg px-1 font-medium tabular-nums tracking-[-0.02em] text-ink outline-none transition-transform duration-200 focus-visible:ring-2 focus-visible:ring-brand/50",
+				"data-[bump=max]:-translate-y-0.5 data-[bump=min]:translate-y-0.5", or(when(big, "text-[20px]"), "text-[14px]")) }
+		>
+			<span class="inline-flex" data-asta-number-digits>
+				if v < 0 {
+					<span>−</span>
+				}
+				for _, d := range numberDigits(v) {
+					@numberDigit(d)
+				}
+			</span>
+			if p.Suffix != "" {
+				<span class={ cx("font-normal text-mute", or(when(big, "text-[13px]"), "text-[12px]")) }>{ p.Suffix }</span>
+			}
+		</div>
+		<button type="button" tabindex="-1" aria-label="Increase" data-asta-number-step="1" disabled?={ v >= numberMax(p) } class={ numberBtn(big) }>
+			<svg viewBox="0 0 16 16" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9"></path></svg>
+		</button>
+		<input type="hidden" name={ p.Name } value={ strconv.Itoa(v) } data-asta-number-input { p.Attrs... }/>
+	</div>
+}
+
+// numberDigit is one digit as a vertical strip of 0–9. forms.js builds the same markup when the number grows.
+templ numberDigit(d int) {
+	<span class="relative inline-block h-[1.25em] w-[0.62em] overflow-hidden" data-asta-digit>
+		<span class="absolute inset-x-0 top-0 flex flex-col transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none" style={ numberRoll(d) }>
+			for i := range 10 {
+				<span class="flex h-[1.25em] items-center justify-center">{ strconv.Itoa(i) }</span>
+			}
+		</span>
+	</span>
+}

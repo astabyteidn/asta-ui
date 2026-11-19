@@ -1,0 +1,14 @@
+<!-- Needs asta.js: data-asta-open opens the dialog, data-asta-close and Escape close it with the exit motion. -->
+<button type="button" class="asta-btn asta-btn-accent" data-asta-open="ex-invite"><span class="asta-btn-label">Invite teammate</span></button>
+<dialog id="ex-invite" class="asta-dialog" aria-labelledby="ex-invite-title" aria-describedby="ex-invite-desc">
+  <button type="button" class="asta-dialog-close" data-asta-close aria-label="Close"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M3 3l8 8M11 3 3 11"/></svg></button>
+  <h2 id="ex-invite-title" class="asta-dialog-title">Invite to Astabyte</h2>
+  <p id="ex-invite-desc" class="asta-dialog-desc">They get an email with a link to join.</p>
+  <form class="asta-dialog-body" hx-post="/invite" hx-target="this" hx-swap="outerHTML">
+    <label class="asta-input"><input class="asta-input-control" name="email" type="email" placeholder="name@astabyte.com"></label>
+    <div class="asta-dialog-footer">
+      <button type="button" class="asta-btn asta-btn-ghost" data-asta-close><span class="asta-btn-label">Cancel</span></button>
+      <button type="submit" class="asta-btn asta-btn-accent"><span class="asta-btn-label">Send invite</span></button>
+    </div>
+  </form>
+</dialog>

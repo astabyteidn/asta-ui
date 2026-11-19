@@ -1,0 +1,22 @@
+<!-- Needs asta.js: right-click, long-press or Shift+F10 opens the menu at the pointer; it also drives keyboard nav, submenus and aria-checked. -->
+<div>
+  <div class="asta-context-menu" style="display:grid;height:160px;max-width:28rem;place-items:center;border-radius:12px;background:var(--paper-2);padding:0 16px;text-align:center;font-size:13px;color:var(--mute)" data-asta-context-menu tabindex="0">Right-click, long-press, or focus and press Shift+F10
+    <div role="menu" popover="manual" tabindex="-1" data-asta-mpanel aria-orientation="vertical" id="ex-ctx-one" class="asta-float asta-dropdown-panel asta-context-menu-panel">
+      <button type="button" role="menuitem" tabindex="-1" class="asta-menu-item"><span class="asta-menu-item-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 5.5h7v7h-7zM3.5 10.5v-7h7"/></svg></span><span class="asta-menu-item-text">Copy</span><kbd class="asta-menu-shortcut">⌘C</kbd></button>
+      <button type="button" role="menuitem" tabindex="-1" class="asta-menu-item"><span class="asta-menu-item-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v8M5 5.5l3-3 3 3M3.5 9v4.5h9V9"/></svg></span><span class="asta-menu-item-text">Share</span><kbd class="asta-menu-shortcut">⌘⇧S</kbd></button>
+      <div class="asta-dropdown-sub" data-asta-menu-sub>
+        <button type="button" role="menuitem" tabindex="-1" aria-haspopup="menu" aria-expanded="false" class="asta-menu-item asta-dropdown-sub-trigger"><span class="asta-menu-item-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2.5h5l3 3v8H4zM9 2.5v3h3"/></svg></span><span class="asta-menu-item-text">Move to</span><svg class="asta-dropdown-sub-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4"/></svg></button>
+        <div role="menu" popover="manual" tabindex="-1" data-asta-mpanel aria-label="Move to" class="asta-float asta-dropdown-panel asta-dropdown-sub-panel">
+          <button type="button" role="menuitem" tabindex="-1" class="asta-menu-item"><span class="asta-menu-item-text">Design</span></button>
+          <button type="button" role="menuitem" tabindex="-1" class="asta-menu-item"><span class="asta-menu-item-text">Engineering</span></button>
+          <button type="button" role="menuitem" tabindex="-1" class="asta-menu-item"><span class="asta-menu-item-text">Archive</span></button>
+        </div>
+      </div>
+      <div role="separator" class="asta-menu-separator"></div>
+      <button type="button" role="menuitemcheckbox" tabindex="-1" aria-checked="true" data-keep-open class="asta-menu-item"><span class="asta-menu-check"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 8.5 2.5 2.5L12 5.5"/></svg></span><span class="asta-menu-item-text">Show grid</span></button>
+      <button type="button" role="menuitemcheckbox" tabindex="-1" aria-checked="false" data-keep-open class="asta-menu-item"><span class="asta-menu-check"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 8.5 2.5 2.5L12 5.5"/></svg></span><span class="asta-menu-item-text">Snap to pixels</span></button>
+      <div role="separator" class="asta-menu-separator"></div>
+      <button type="button" role="menuitem" tabindex="-1" class="asta-menu-item asta-menu-item-danger"><span class="asta-menu-item-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.5 9h6l.5-9"/></svg></span><span class="asta-menu-item-text">Delete</span><kbd class="asta-menu-shortcut">⌫</kbd></button>
+    </div>
+  </div>
+</div>

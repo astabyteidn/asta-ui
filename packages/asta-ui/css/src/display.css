@@ -1,0 +1,681 @@
+/* Display: accordion, alert, avatar, breadcrumb, card, empty state, kbd, pagination, progress, skeleton, spinner,
+ * stat card and tooltip. Class lists mirror go/ui/<name>.templ. Modifiers come after the base class so they win. */
+
+/* ---- Accordion (accordion.templ) ----
+ * <div class="asta-accordion"><details class="asta-accordion-item" name="faq" open>
+ *   <summary class="asta-accordion-trigger">Title<span class="asta-accordion-icon" aria-hidden="true"><span></span><span></span></span></summary>
+ *   <div class="asta-accordion-content">Answer</div></details></div>
+ * Native <details>: no script. Same name on each item = one open at a time. */
+.asta-accordion {
+  @apply flex w-full flex-col gap-1.5;
+}
+.asta-accordion-item {
+  @apply rounded-xl bg-paper-2 transition-[background-color,box-shadow] duration-300;
+  @apply open:bg-paper open:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent),0_8px_24px_-14px_rgb(0_0_0/0.25)];
+  @apply details-content:-translate-y-1 details-content:opacity-0 details-content:[transition:opacity_.45s_cubic-bezier(.16,1,.3,1),translate_.45s_cubic-bezier(.16,1,.3,1),content-visibility_.45s_allow-discrete];
+  @apply open:details-content:translate-y-0 open:details-content:opacity-100 motion-reduce:details-content:transition-none;
+}
+.asta-accordion-trigger {
+  @apply flex w-full cursor-pointer list-none items-center justify-between gap-4 rounded-xl px-4 py-3.5 text-left text-[14.5px] font-medium tracking-[-0.01em] text-ink outline-none focus-visible:ring-2 focus-visible:ring-brand/50 [&::-webkit-details-marker]:hidden;
+}
+.asta-accordion-icon {
+  @apply relative flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-paper text-ink-2 transition-colors duration-300;
+  & > span {
+    @apply absolute h-[1.5px] w-2.5 rounded-full bg-current;
+  }
+  & > span + span {
+    @apply h-2.5 w-[1.5px] transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  }
+  .asta-accordion-trigger:hover & {
+    @apply text-ink;
+  }
+  .asta-accordion-item[open] & {
+    @apply bg-ink text-paper;
+  }
+  .asta-accordion-item[open] & > span + span {
+    @apply rotate-90 scale-y-0;
+  }
+}
+.asta-accordion-content {
+  @apply px-4 pb-4 text-[14px] leading-relaxed text-ink-2;
+}
+
+/* ---- Alert (alert.templ) ----
+ * <div class="asta-alert asta-alert-success" role="status"><span class="asta-alert-icon"><svg…/></span>
+ *   <div class="asta-alert-body"><p class="asta-alert-title">Saved</p><div class="asta-alert-text">…</div></div>
+ *   <label class="asta-alert-dismiss"><input type="checkbox" data-asta-dismiss aria-label="Dismiss"><svg…/></label></div>
+ * Tones: (info) success warning neutral. Ticking the dismiss checkbox hides the alert, no script. */
+.asta-alert {
+  @apply flex items-start gap-3 rounded-xl px-4 py-3.5;
+  @apply animate-[asta-field-in_.36s_cubic-bezier(.16,1,.3,1)_backwards] motion-reduce:animate-none;
+  @apply transition-[opacity,scale,display] transition-discrete duration-200 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  @apply has-[[data-asta-dismiss]:checked]:hidden has-[[data-asta-dismiss]:checked]:scale-[.98] has-[[data-asta-dismiss]:checked]:opacity-0;
+  @apply bg-[color-mix(in_srgb,var(--brand)_7%,var(--paper))];
+}
+.asta-alert-success,
+.asta-alert-neutral {
+  @apply bg-paper-2;
+}
+.asta-alert-warning {
+  @apply bg-paper-2 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_16%,transparent)];
+}
+/* Icons use currentColor: brand for info and success, ink for warning, mute for neutral. */
+.asta-alert-icon {
+  @apply mt-px flex shrink-0 text-brand [&_svg]:h-5 [&_svg]:w-5;
+  .asta-alert-warning > & {
+    @apply text-ink;
+  }
+  .asta-alert-neutral > & {
+    @apply text-mute;
+  }
+}
+.asta-alert-body {
+  @apply min-w-0 flex-1 pt-px;
+}
+.asta-alert-title {
+  @apply text-[13.5px] font-medium tracking-[-0.01em] text-ink;
+}
+.asta-alert-text {
+  @apply text-[13px] leading-relaxed text-ink-2 empty:hidden;
+  .asta-alert-title + & {
+    @apply mt-0.5;
+  }
+}
+.asta-alert-actions {
+  @apply mt-2.5 flex flex-wrap items-center gap-2;
+}
+.asta-alert-dismiss {
+  @apply -mr-1.5 -mt-0.5 flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md text-mute transition-colors hover:bg-[color-mix(in_srgb,var(--ink)_7%,transparent)] hover:text-ink has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand/50;
+  & > input {
+    @apply sr-only;
+  }
+  & > svg {
+    @apply h-3.5 w-3.5;
+  }
+}
+
+/* ---- Avatar (avatar.templ) ----
+ * <span class="asta-avatar asta-avatar-sm" role="img" aria-label="Ada Lovelace (online)">
+ *   <span class="asta-avatar-face asta-avatar-brand">AL<img class="asta-avatar-img" src="…" alt=""></span>
+ *   <span class="asta-avatar-status" data-status="online" aria-hidden="true"></span></span>
+ * Sizes: xs sm (md) lg xl. Shape: asta-avatar-square. Fills on the face: (ink) brand soft tint gray.
+ * Status: online away busy offline. */
+.asta-avatar {
+  @apply relative inline-flex h-10 w-10 shrink-0;
+}
+.asta-avatar-face {
+  @apply relative flex h-full w-full select-none items-center justify-center overflow-hidden rounded-full font-medium tracking-[-0.02em] text-[14px];
+  @apply bg-ink text-paper;
+}
+.asta-avatar-brand {
+  @apply bg-brand text-white;
+}
+.asta-avatar-soft {
+  @apply bg-paper-2 text-ink shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)];
+}
+.asta-avatar-tint {
+  @apply bg-[color-mix(in_srgb,var(--brand)_14%,var(--paper))] text-brand;
+}
+.asta-avatar-gray {
+  @apply bg-[color-mix(in_srgb,var(--ink)_70%,var(--paper))] text-paper;
+}
+.asta-avatar-img {
+  @apply absolute inset-0 h-full w-full object-cover;
+}
+.asta-avatar-status {
+  @apply absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-mute shadow-[0_0_0_2px_var(--paper)];
+  &[data-status="online"] {
+    @apply bg-[#30a46c];
+  }
+  &[data-status="away"] {
+    @apply bg-[#f5a524];
+  }
+  &[data-status="busy"] {
+    @apply bg-[#e5484d];
+  }
+}
+.asta-avatar-xs {
+  @apply h-6 w-6;
+  & > .asta-avatar-face {
+    @apply text-[10px];
+  }
+  & > .asta-avatar-status {
+    @apply h-1.5 w-1.5;
+  }
+}
+.asta-avatar-sm {
+  @apply h-8 w-8;
+  & > .asta-avatar-face {
+    @apply text-[12px];
+  }
+  & > .asta-avatar-status {
+    @apply h-2 w-2;
+  }
+}
+.asta-avatar-lg {
+  @apply h-12 w-12;
+  & > .asta-avatar-face {
+    @apply text-[16px];
+  }
+  & > .asta-avatar-status {
+    @apply h-3 w-3;
+  }
+}
+.asta-avatar-xl {
+  @apply h-16 w-16;
+  & > .asta-avatar-face {
+    @apply text-[20px];
+  }
+  & > .asta-avatar-status {
+    @apply h-3.5 w-3.5;
+  }
+}
+.asta-avatar-square {
+  & > .asta-avatar-face {
+    @apply rounded-[30%];
+  }
+  & > .asta-avatar-status {
+    @apply -bottom-0.5 -right-0.5;
+  }
+}
+
+/* ---- Avatar group (avatar.templ AvatarGroup) ----
+ * <ul class="asta-avatar-group" aria-label="5 people">
+ *   <li class="asta-avatar-group-item" style="--i:0"><span class="asta-avatar-group-face" role="img" aria-label="Ada Lovelace">
+ *     <span class="asta-avatar-face">AL</span><span class="asta-avatar-tip" aria-hidden="true">Ada Lovelace</span></span></li>
+ *   <li class="asta-avatar-group-item" style="--i:4"><span class="asta-avatar-group-face asta-avatar-group-more">+2<span class="asta-avatar-tip">…</span></span></li></ul>
+ * Sizes: sm (md) lg. Hover fans the stack out (--i is the item's index). */
+.asta-avatar-group {
+  @apply flex items-center;
+}
+.asta-avatar-group-item {
+  @apply relative transition-[translate] duration-500 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  @apply hover:z-10 focus-within:z-10 [&:hover>*]:-translate-y-1 [&:focus-within>*]:-translate-y-1;
+  & + & {
+    @apply -ml-2.5;
+  }
+  .asta-avatar-group:is(:hover, :focus-within) > & {
+    @apply translate-x-[calc(var(--i)*5px)];
+  }
+}
+.asta-avatar-group-face {
+  @apply relative block h-9 w-9 rounded-full outline-none shadow-[0_0_0_2px_var(--paper)] focus-visible:shadow-[0_0_0_2px_var(--paper),0_0_0_4px_var(--brand)];
+  @apply transition-[translate] duration-300 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  & > .asta-avatar-face {
+    @apply text-[13px];
+  }
+}
+.asta-avatar-group-more {
+  @apply flex items-center justify-center bg-paper-2 text-[13px] font-medium tabular-nums text-ink-2;
+  &:is(button) {
+    @apply transition-[translate,color] hover:text-ink;
+  }
+}
+.asta-avatar-group-sm {
+  & .asta-avatar-group-face {
+    @apply h-7 w-7 text-[11px];
+  }
+  & .asta-avatar-group-face > .asta-avatar-face {
+    @apply text-[11px];
+  }
+  & .asta-avatar-group-item + .asta-avatar-group-item {
+    @apply -ml-2;
+  }
+}
+.asta-avatar-group-lg {
+  & .asta-avatar-group-face {
+    @apply h-11 w-11 text-[15px];
+  }
+  & .asta-avatar-group-face > .asta-avatar-face {
+    @apply text-[15px];
+  }
+  & .asta-avatar-group-item + .asta-avatar-group-item {
+    @apply -ml-3;
+  }
+}
+.asta-avatar-tip {
+  @apply pointer-events-none absolute bottom-full left-1/2 z-20 mb-2 max-w-[220px] -translate-x-1/2 translate-y-1 truncate whitespace-nowrap rounded-[6px] bg-ink px-2 py-1 text-[12px] font-medium leading-none text-paper opacity-0;
+  @apply transition-[opacity,translate] duration-200 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  .asta-avatar-group-face:is(:hover, :focus-visible) > & {
+    @apply translate-y-0 opacity-100;
+  }
+}
+
+/* ---- Breadcrumb (breadcrumb.templ) ----
+ * <nav class="asta-breadcrumb" aria-label="Breadcrumb"><ol class="asta-breadcrumb-list">
+ *   <li class="asta-breadcrumb-item"><a class="asta-breadcrumb-link" href="/"><span class="asta-breadcrumb-label">Astabyte</span></a><span class="asta-breadcrumb-sep" aria-hidden="true"><svg…/></span></li>
+ *   <li class="asta-breadcrumb-item"><span class="asta-breadcrumb-page" aria-current="page"><span class="asta-breadcrumb-label">Billing</span></span></li></ol></nav>
+ * Folded pages: <div class="asta-breadcrumb-more" data-asta-menu> with a [data-asta-menu-trigger]
+ * .asta-breadcrumb-more-trigger and a <div role="menu" hidden class="asta-breadcrumb-menu"> of .asta-breadcrumb-menu-item. */
+.asta-breadcrumb {
+  @apply relative min-w-0 text-[13.5px];
+}
+.asta-breadcrumb-list {
+  @apply flex min-w-0 items-center gap-1.5;
+}
+.asta-breadcrumb-item {
+  @apply flex min-w-0 shrink-[2] items-center gap-1.5;
+  &:first-child,
+  &:has(> .asta-breadcrumb-more) {
+    @apply shrink-0;
+  }
+  &:last-child {
+    @apply min-w-8 shrink;
+  }
+}
+.asta-breadcrumb-link {
+  @apply flex min-w-0 items-center gap-1.5 rounded-md text-mute outline-none transition-colors hover:text-ink focus-visible:text-ink focus-visible:ring-2 focus-visible:ring-brand/50;
+}
+.asta-breadcrumb-page {
+  @apply flex min-w-0 items-center gap-1.5 font-medium text-ink;
+}
+.asta-breadcrumb-text {
+  @apply flex min-w-0 items-center gap-1.5 text-mute;
+}
+.asta-breadcrumb-icon {
+  @apply flex shrink-0;
+}
+.asta-breadcrumb-label {
+  @apply truncate;
+}
+.asta-breadcrumb-sep {
+  @apply flex shrink-0 text-[color-mix(in_srgb,var(--ink)_28%,transparent)] [&_svg]:h-3.5 [&_svg]:w-3.5;
+}
+.asta-breadcrumb-more {
+  @apply relative flex;
+}
+.asta-breadcrumb-more-trigger {
+  @apply flex h-6 w-7 items-center justify-center rounded-md text-mute outline-none transition-colors hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50 [&_svg]:h-3.5 [&_svg]:w-3.5;
+  .asta-breadcrumb-more[data-open] > & {
+    @apply bg-paper-2 text-ink;
+  }
+}
+.asta-breadcrumb-menu {
+  @apply absolute left-0 top-full z-50 mt-1.5 flex w-max min-w-40 max-w-64 flex-col rounded-[10px] bg-paper p-1 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent),0_14px_32px_-14px_rgb(0_0_0/0.3)];
+}
+.asta-breadcrumb-menu-item {
+  @apply flex w-full min-w-0 items-center gap-2 rounded-md px-2.5 py-1.5 text-left text-[13px] text-ink-2 outline-none transition-colors hover:bg-paper-2 hover:text-ink focus-visible:bg-paper-2 focus-visible:text-ink;
+  & .asta-breadcrumb-icon {
+    @apply text-mute;
+  }
+}
+
+/* ---- Card (card.templ) ----
+ * <div class="asta-card"><div class="asta-card-header"><h3 class="asta-card-title">Plan</h3>
+ *   <p class="asta-card-description">…</p></div>…<div class="asta-card-footer">buttons</div></div> */
+.asta-card {
+  @apply rounded-[12px] bg-paper p-5 text-ink shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent)];
+}
+.asta-card-header {
+  @apply mb-4;
+}
+.asta-card-title {
+  @apply text-[15px] font-medium tracking-[-0.01em] text-ink;
+}
+.asta-card-description {
+  @apply mt-1 text-[13px] leading-relaxed text-mute;
+}
+.asta-card-footer {
+  @apply mt-5 flex flex-wrap items-center justify-end gap-2;
+}
+
+/* ---- Empty state (empty_state.templ) ----
+ * <div class="asta-empty-state" role="status"><div class="asta-empty-state-art" aria-hidden="true">
+ *   <span class="asta-empty-state-blob"></span><svg viewBox="0 0 120 88" …><path d="…"/><path class="asta-empty-state-accent" d="…"/></svg></div>
+ *   <h3 class="asta-empty-state-title">Nothing here yet</h3><p class="asta-empty-state-description">…</p>
+ *   <div class="asta-empty-state-actions">buttons</div></div>
+ * Size: asta-empty-state-sm (use asta-btn-xs buttons in it, asta-btn-sm otherwise). */
+.asta-empty-state {
+  @apply flex flex-col items-center px-6 py-12 text-center motion-reduce:[&_*]:!animate-none;
+}
+.asta-empty-state-art {
+  @apply relative flex h-28 w-40 items-center justify-center;
+  & > svg {
+    @apply relative h-full w-full overflow-visible animate-[asta-scale-in_.8s_cubic-bezier(.16,1,.3,1)_.12s_both];
+    @apply fill-none stroke-[1.5] [stroke-linecap:round] [stroke-linejoin:round];
+  }
+  & path {
+    @apply stroke-[color-mix(in_srgb,var(--ink)_34%,transparent)];
+  }
+  & path.asta-empty-state-accent {
+    @apply stroke-brand;
+  }
+}
+.asta-empty-state-blob {
+  @apply absolute h-[78%] w-[66%] rounded-full bg-paper-2 animate-[asta-scale-in_.8s_cubic-bezier(.16,1,.3,1)_both];
+}
+.asta-empty-state-title {
+  @apply mt-5 text-[17px] font-medium tracking-[-0.02em] text-ink animate-[asta-rise_.6s_cubic-bezier(.16,1,.3,1)_.38s_both];
+}
+.asta-empty-state-description {
+  @apply mt-1.5 max-w-[34ch] text-[13.5px] leading-relaxed text-mute animate-[asta-rise_.6s_cubic-bezier(.16,1,.3,1)_.46s_both];
+}
+.asta-empty-state-actions {
+  @apply mt-6 flex flex-wrap items-center justify-center gap-2 animate-[asta-rise_.6s_cubic-bezier(.16,1,.3,1)_.54s_both];
+}
+.asta-empty-state-sm {
+  @apply px-4 py-8;
+  & .asta-empty-state-art {
+    @apply h-20 w-28;
+  }
+  & .asta-empty-state-title {
+    @apply mt-3 text-[14.5px];
+  }
+  & .asta-empty-state-description {
+    @apply mt-1 text-[12.5px];
+  }
+  & .asta-empty-state-actions {
+    @apply mt-4;
+  }
+}
+
+/* ---- Kbd (kbd.templ) ----
+ * <kbd class="asta-kbd">Esc</kbd>  ·  <span class="asta-kbd-combo" aria-label="⌘ + K"><kbd class="asta-kbd">⌘</kbd><span class="asta-kbd-combo-sep" aria-hidden="true">+</span><kbd class="asta-kbd">K</kbd></span>
+ * Sizes: sm (md) lg. data-pressed shows the key held down. */
+.asta-kbd {
+  @apply inline-flex select-none items-center justify-center bg-paper font-sans font-medium text-ink-2;
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent),inset_0_-2px_0_color-mix(in_srgb,var(--ink)_12%,transparent)];
+  @apply transition-[transform,box-shadow,background-color,color] duration-100 ease-out;
+  @apply data-[pressed]:translate-y-px data-[pressed]:bg-paper-2 data-[pressed]:text-brand data-[pressed]:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--brand)_45%,transparent)];
+  @apply h-7 min-w-7 rounded-[7px] px-1.5 text-[12.5px];
+}
+.asta-kbd-sm {
+  @apply h-5 min-w-5 rounded-[5px] px-1 text-[11px];
+}
+.asta-kbd-lg {
+  @apply h-10 min-w-10 rounded-[10px] px-2.5 text-[15px];
+}
+.asta-kbd-combo {
+  @apply inline-flex items-center gap-1;
+}
+.asta-kbd-combo-sep {
+  @apply text-[12px] text-mute;
+}
+
+/* ---- Pagination (pagination.templ) ----
+ * <nav class="asta-pagination" aria-label="Pagination"><a class="asta-pagination-link" href="?page=4" aria-label="Previous page"><svg…/></a>
+ *   <ul class="asta-pagination-list"><li><a class="asta-pagination-link" href="?page=1">1</a></li><li class="asta-pagination-gap" aria-hidden="true">…</li>
+ *   <li><a class="asta-pagination-link" aria-current="page" href="?page=5">5</a></li></ul>…</nav>
+ * Size: asta-pagination-sm. A disabled step is <span role="link" aria-disabled="true" class="asta-pagination-link">. */
+.asta-pagination {
+  @apply flex items-center gap-1;
+}
+.asta-pagination-list {
+  @apply flex items-center gap-1;
+}
+.asta-pagination-link {
+  @apply relative flex h-9 min-w-9 items-center justify-center rounded-lg px-2 text-[13.5px] tabular-nums outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-brand/50;
+  @apply text-ink-2 hover:bg-paper-2 hover:text-ink [&_svg]:h-4 [&_svg]:w-4;
+  &[aria-current="page"] {
+    @apply bg-[color-mix(in_srgb,var(--brand)_11%,transparent)] font-medium text-brand hover:bg-[color-mix(in_srgb,var(--brand)_11%,transparent)] hover:text-brand;
+  }
+  &[aria-disabled="true"] {
+    @apply opacity-35 hover:bg-transparent hover:text-ink-2;
+  }
+}
+.asta-pagination-gap {
+  @apply flex h-9 min-w-9 items-center justify-center text-mute;
+}
+.asta-pagination-sm {
+  & .asta-pagination-link {
+    @apply h-8 min-w-8 text-[13px];
+  }
+  & .asta-pagination-gap {
+    @apply h-8 min-w-8;
+  }
+}
+
+/* ---- Progress (progress.templ) ----
+ * <div class="asta-progress"><div class="asta-progress-header"><span class="asta-progress-label">Upload</span><span class="asta-progress-value">62%</span></div>
+ *   <div class="asta-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="62">
+ *   <span class="asta-progress-fill" style="transform:translateX(-38%)"></span></div></div>
+ * Indeterminate: aria-busy="true" on the track and no style on the fill. Size: asta-progress-sm. */
+.asta-progress {
+  @apply w-full;
+}
+.asta-progress-header {
+  @apply mb-2 flex items-baseline justify-between gap-4 text-[13px];
+}
+.asta-progress-label {
+  @apply text-ink-2;
+}
+.asta-progress-value {
+  @apply tabular-nums text-mute;
+}
+.asta-progress-track {
+  @apply relative h-1.5 w-full overflow-hidden rounded-full bg-[color-mix(in_srgb,var(--ink)_9%,transparent)];
+  .asta-progress-sm & {
+    @apply h-1;
+  }
+}
+.asta-progress-fill {
+  @apply absolute inset-0 rounded-full bg-brand transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  [aria-busy="true"] > & {
+    @apply right-auto w-[38%] animate-[asta-progress-sweep_1.5s_cubic-bezier(.16,1,.3,1)_infinite] transition-none motion-reduce:w-full motion-reduce:animate-pulse;
+  }
+}
+
+/* ---- Progress ring (progress.templ ProgressRing) ----
+ * <span class="asta-progress-ring" role="progressbar" aria-valuenow="70" style="width:44px;height:44px">
+ *   <svg viewBox="0 0 44 44" width="44" height="44" aria-hidden="true"><circle class="asta-progress-ring-track" cx="22" cy="22" r="20.25" stroke-width="3.5"/>
+ *   <circle class="asta-progress-ring-bar" cx="22" cy="22" r="20.25" stroke-width="3.5" pathLength="100" stroke-dasharray="100 100" stroke-dashoffset="30"/></svg>
+ *   <span class="asta-progress-ring-value">70%</span></span>
+ * Indeterminate: aria-busy="true" and stroke-dashoffset="75". */
+.asta-progress-ring {
+  @apply relative inline-flex h-11 w-11 shrink-0 items-center justify-center;
+  & > svg {
+    @apply absolute inset-0 -rotate-90;
+  }
+  &[aria-busy="true"] > svg {
+    @apply rotate-0 animate-spin motion-reduce:animate-pulse;
+  }
+}
+.asta-progress-ring-track {
+  @apply fill-none stroke-[color-mix(in_srgb,var(--ink)_9%,transparent)];
+}
+.asta-progress-ring-bar {
+  @apply fill-none stroke-brand [stroke-linecap:round];
+}
+.asta-progress-ring-value {
+  @apply relative text-[11px] font-medium tabular-nums text-ink;
+}
+
+/* ---- Skeleton (skeleton.templ) ----
+ * <span class="asta-skeleton" aria-hidden="true" style="width:60%"></span>  ·  asta-skeleton-circle (set width and height) · asta-skeleton-block
+ * <span class="asta-skeleton-text"><span class="asta-skeleton"></span><span class="asta-skeleton"></span></span>  (last line is 62%)
+ * <div class="asta-skeleton-card" role="status" aria-label="Loading">…</div> with .asta-skeleton-row and .asta-skeleton-stack inside. */
+.asta-skeleton {
+  @apply relative block h-3 overflow-hidden rounded-full bg-[color-mix(in_srgb,var(--ink)_7%,transparent)];
+  @apply before:absolute before:inset-0 before:bg-[linear-gradient(100deg,transparent_20%,color-mix(in_srgb,var(--paper)_70%,transparent)_50%,transparent_80%)] before:content-[''];
+  @apply before:animate-[asta-skeleton-shimmer_1.6s_cubic-bezier(.4,0,.2,1)_infinite] motion-reduce:before:hidden;
+}
+.asta-skeleton-circle {
+  @apply aspect-square h-auto shrink-0 self-start rounded-full;
+}
+.asta-skeleton-block {
+  @apply h-auto rounded-[10px];
+}
+.asta-skeleton-text {
+  @apply flex flex-col gap-2;
+  & > .asta-skeleton:last-child {
+    @apply w-[62%];
+  }
+}
+.asta-skeleton-card {
+  @apply flex w-full flex-col gap-4 rounded-xl bg-paper p-3 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent)];
+  & > .asta-skeleton-block:first-child {
+    @apply aspect-[16/9] w-full;
+  }
+  & > .asta-skeleton-text {
+    @apply px-1 pb-1;
+  }
+}
+.asta-skeleton-row {
+  @apply flex items-center gap-3 px-1;
+}
+.asta-skeleton-stack {
+  @apply flex flex-1 flex-col gap-2;
+}
+
+/* ---- Spinner (spinner.templ) ----
+ * <span class="asta-spinner" role="status" aria-label="Loading"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true">…</svg></span>
+ * Variants with empty spans: asta-spinner-dots (3), asta-spinner-bars (4), asta-spinner-orbit (3). Size = font-size, colour = currentColor. */
+.asta-spinner {
+  @apply relative inline-flex h-[1em] w-[1em] shrink-0 items-center justify-center motion-reduce:[&_*]:![animation-duration:2.4s];
+  & > svg {
+    @apply h-full w-full animate-[spin_.8s_linear_infinite];
+  }
+}
+.asta-spinner-dots {
+  @apply justify-between;
+  & > span {
+    @apply h-[26%] w-[26%] rounded-full bg-current animate-[asta-spinner-dot_1.1s_cubic-bezier(.16,1,.3,1)_infinite];
+  }
+  & > span:nth-child(2) {
+    @apply [animation-delay:.16s];
+  }
+  & > span:nth-child(3) {
+    @apply [animation-delay:.32s];
+  }
+}
+.asta-spinner-bars {
+  @apply justify-between;
+  & > span {
+    @apply h-[80%] w-[16%] rounded-full bg-current animate-[asta-spinner-bar_.9s_ease-in-out_infinite];
+  }
+  & > span:nth-child(2) {
+    @apply [animation-delay:.12s];
+  }
+  & > span:nth-child(3) {
+    @apply [animation-delay:.24s];
+  }
+  & > span:nth-child(4) {
+    @apply [animation-delay:.36s];
+  }
+}
+.asta-spinner-orbit {
+  & > span:nth-child(1) {
+    @apply absolute inset-[30%] rounded-full bg-current opacity-25;
+  }
+  & > span:nth-child(2) {
+    @apply absolute inset-0 animate-[spin_1.2s_cubic-bezier(.6,.1,.4,.9)_infinite];
+    @apply before:absolute before:left-1/2 before:top-0 before:h-[24%] before:w-[24%] before:-translate-x-1/2 before:rounded-full before:bg-current before:content-[''];
+  }
+  & > span:nth-child(3) {
+    @apply absolute inset-0 animate-[spin_1.8s_linear_infinite_reverse];
+    @apply before:absolute before:bottom-[6%] before:left-1/2 before:h-[16%] before:w-[16%] before:-translate-x-1/2 before:rounded-full before:bg-current before:opacity-60 before:content-[''];
+  }
+}
+
+/* ---- Stat card (stat_card.templ) ----
+ * <div class="asta-stat-card"><p class="asta-stat-card-label">Revenue</p>
+ *   <div class="asta-stat-card-row"><p class="asta-stat-card-value">$48.2k</p>
+ *   <svg class="asta-stat-card-spark" viewBox="0 0 96 32" width="96" height="32"><g><path d="…area" class="asta-stat-card-area"/><path d="…line" class="asta-stat-card-line"/></g><circle class="asta-stat-card-dot" cx="94" cy="3" r="2.25"/></svg></div>
+ *   <p class="asta-stat-card-delta"><span class="asta-stat-card-change"><svg viewBox="0 0 12 12">…</svg>+12.4%</span><span class="asta-stat-card-note">vs last month</span></p></div>
+ * Trend: (up, brand) asta-stat-card-down (mute, arrow flipped) asta-stat-card-flat (mute, no arrow). */
+.asta-stat-card {
+  @apply flex flex-col gap-3 rounded-xl bg-paper-2 p-5 motion-reduce:[&_*]:!animate-none;
+}
+.asta-stat-card-label {
+  @apply text-[13px] text-mute;
+}
+.asta-stat-card-row {
+  @apply flex items-end justify-between gap-4;
+}
+.asta-stat-card-value {
+  @apply text-[28px] font-medium leading-none tracking-[-0.04em] text-ink tabular-nums;
+}
+.asta-stat-card-spark {
+  @apply shrink-0 overflow-visible text-brand;
+  & > g {
+    @apply animate-[asta-fade_.9s_cubic-bezier(.16,1,.3,1)_both];
+  }
+}
+.asta-stat-card-area {
+  @apply fill-current opacity-10;
+}
+.asta-stat-card-line {
+  @apply fill-none stroke-current stroke-[1.5] [stroke-linecap:round] [stroke-linejoin:round];
+}
+.asta-stat-card-dot {
+  @apply origin-center fill-current animate-[asta-pop_.5s_cubic-bezier(.16,1,.3,1)_.5s_both] [transform-box:fill-box];
+}
+.asta-stat-card-delta {
+  @apply flex items-center gap-1.5 text-[12.5px];
+}
+.asta-stat-card-change {
+  @apply inline-flex items-center gap-0.5 font-medium tabular-nums text-brand;
+  & > svg {
+    @apply h-3 w-3;
+  }
+}
+.asta-stat-card-note {
+  @apply text-mute;
+}
+.asta-stat-card-down,
+.asta-stat-card-flat {
+  & .asta-stat-card-spark,
+  & .asta-stat-card-change {
+    @apply text-mute;
+  }
+}
+.asta-stat-card-down .asta-stat-card-change > svg {
+  @apply rotate-180;
+}
+.asta-stat-card-flat .asta-stat-card-change > svg {
+  @apply hidden;
+}
+
+/* ---- Tooltip (tooltip.templ) ----
+ * <span class="asta-tooltip"><button aria-describedby="tip-copy">Copy</button>
+ *   <span class="asta-tooltip-bubble" id="tip-copy" role="tooltip">Copy link<kbd class="asta-tooltip-kbd">⌘C</kbd><span class="asta-tooltip-arrow" aria-hidden="true"></span></span></span>
+ * Sides: (top) asta-tooltip-bottom, -left, -right. asta-tooltip-instant skips the 400ms hover delay.
+ * Shows on hover and on keyboard focus, CSS only. */
+.asta-tooltip {
+  @apply relative inline-flex;
+}
+.asta-tooltip-bubble {
+  @apply pointer-events-none absolute z-50 flex w-max max-w-[240px] select-none items-center gap-2 rounded-lg bg-ink px-2.5 py-1.5 text-[12px] font-medium leading-snug text-paper;
+  @apply shadow-[0_6px_20px_-6px_rgb(0_0_0/0.35)] scale-95 opacity-0;
+  @apply transition-[opacity,scale,translate] duration-200 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  @apply bottom-full left-1/2 mb-2 origin-bottom -translate-x-1/2 translate-y-1;
+  .asta-tooltip:hover > & {
+    @apply scale-100 opacity-100 delay-400 translate-y-0;
+  }
+  .asta-tooltip-instant:hover > & {
+    @apply delay-0;
+  }
+  .asta-tooltip:has(:focus-visible) > & {
+    @apply scale-100 opacity-100 delay-0 translate-y-0;
+  }
+}
+.asta-tooltip-bottom > .asta-tooltip-bubble {
+  @apply bottom-auto top-full mb-0 mt-2 origin-top -translate-y-1;
+}
+.asta-tooltip-left > .asta-tooltip-bubble {
+  @apply bottom-auto left-auto right-full top-1/2 mb-0 mr-2 origin-right translate-x-1 -translate-y-1/2;
+}
+.asta-tooltip-right > .asta-tooltip-bubble {
+  @apply bottom-auto left-full top-1/2 mb-0 ml-2 origin-left -translate-x-1 -translate-y-1/2;
+}
+.asta-tooltip-bottom:is(:hover, :has(:focus-visible)) > .asta-tooltip-bubble {
+  @apply translate-y-0;
+}
+.asta-tooltip:is(.asta-tooltip-left, .asta-tooltip-right):is(:hover, :has(:focus-visible)) > .asta-tooltip-bubble {
+  @apply translate-x-0 -translate-y-1/2;
+}
+.asta-tooltip-kbd {
+  @apply rounded bg-paper/15 px-1 font-sans text-[11px] text-paper/80;
+}
+.asta-tooltip-arrow {
+  @apply absolute left-1/2 top-full -mt-1 h-2 w-2 -translate-x-1/2 rotate-45 rounded-[1px] bg-ink;
+  .asta-tooltip-bottom & {
+    @apply bottom-full top-auto -mb-1 mt-0;
+  }
+  .asta-tooltip-left & {
+    @apply left-full top-1/2 -ml-1 mt-0 translate-x-0 -translate-y-1/2;
+  }
+  .asta-tooltip-right & {
+    @apply left-auto right-full top-1/2 -mr-1 mt-0 translate-x-0 -translate-y-1/2;
+  }
+}

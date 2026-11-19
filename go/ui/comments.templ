@@ -1,0 +1,219 @@
+package ui
+
+import (
+	"strconv"
+	"strings"
+)
+
+// CommentAuthor is who wrote a comment.
+type CommentAuthor struct {
+	Name string
+	// Src is the avatar image URL. Initials show without it.
+	Src string
+}
+
+// Comment is one comment in a Comments thread.
+type Comment struct {
+	ID     string
+	Author CommentAuthor
+	// Time is already formatted, e.g. "2h" or "Yesterday".
+	Time  string
+	Body  string
+	Likes int
+	Liked bool
+	// Replies are one level deep. Replying to a reply adds to the same list.
+	Replies []Comment
+	// New slides the comment in. Set it on the one your PostURL handler returns.
+	New bool
+}
+
+// CommentsProps configures Comments.
+type CommentsProps struct {
+	// ID is required when a page has more than one thread. Default "comments".
+	ID       string
+	Comments []Comment
+	// User is the person writing. Their avatar sits next to the composer.
+	User CommentAuthor
+	// Title is the heading. Default "Discussion".
+	Title string
+	// PostURL gets an hx-post with body, and parent for replies. Answer with ui.CommentEntry for the new comment
+	// (with New set): it is added to the end of the thread or the replies.
+	PostURL string
+	// LikeURL gets an hx-post with id and liked=true|false on every like. The pill updates at once; answer 204.
+	LikeURL string
+	Class   string
+	Attrs   templ.Attributes
+}
+
+// CommentEntryProps configures CommentEntry.
+type CommentEntryProps struct {
+	Comment Comment
+	// Parent is the ID of the top-level comment this one replies to. Empty for a top-level comment.
+	Parent string
+	// LikeURL is the same as CommentsProps.LikeURL.
+	LikeURL string
+}
+
+func cmtID(p CommentsProps) string { return or(p.ID, "comments") }
+
+func cmtTotal(list []Comment) int {
+	n := 0
+	for _, c := range list {
+		n += 1 + len(c.Replies)
+	}
+	return n
+}
+
+func cmtFirst(name string) string {
+	if f := strings.Fields(name); len(f) > 0 {
+		return f[0]
+	}
+	return name
+}
+
+func cmtLike(p CommentEntryProps) templ.Attributes {
+	a := templ.Attributes{}
+	if p.LikeURL != "" {
+		b := strconv.AppendQuote([]byte(`{"id":`), p.Comment.ID)
+		a["hx-post"] = p.LikeURL
+		a["hx-trigger"] = "asta:like"
+		a["hx-swap"] = "none"
+		a["hx-vals"] = string(append(b, '}'))
+	}
+	return a
+}
+
+func cmtPost(p CommentsProps, target string) templ.Attributes {
+	if p.PostURL == "" {
+		return nil
+	}
+	return templ.Attributes{"hx-post": p.PostURL, "hx-target": target, "hx-swap": "beforeend"}
+}
+
+// Comments is a discussion thread: avatar, name and time on each comment, replies one level deep, a like pill
+// that pops, and a composer that grows with its text. New comments slide in. ⌘/Ctrl + Enter posts and Escape
+// closes a reply box. Posting and liking go to your server with htmx.
+//
+//	@ui.Comments(ui.CommentsProps{Comments: list, User: ui.CommentAuthor{Name: "Sam Lee"},
+//		PostURL: "/posts/1/comments", LikeURL: "/posts/1/likes"})
+templ Comments(p CommentsProps) {
+	{{ id := cmtID(p) }}
+	<section id={ id } data-asta-comments aria-label={ or(p.Title, "Discussion") } class={ cx("asta-comments w-full max-w-[560px]", p.Class) } { p.Attrs... }>
+		<h3 class="mb-5 flex items-baseline gap-2 text-[15px] font-medium tracking-[-0.01em] text-ink">
+			{ or(p.Title, "Discussion") }
+			<span data-asta-comments-total class="text-[12.5px] font-normal tabular-nums text-mute">{ strconv.Itoa(cmtTotal(p.Comments)) }</span>
+		</h3>
+		<div id={ id + "-list" } class="flex flex-col gap-6">
+			for _, c := range p.Comments {
+				@CommentEntry(CommentEntryProps{Comment: c, LikeURL: p.LikeURL})
+			}
+		</div>
+		<div class="mt-8">
+			@cmtComposer(p, "Comment", "Add a comment…", "#"+id+"-list", false)
+		</div>
+		<template data-asta-comments-replybox>
+			<div data-asta-comment-replybox class="asta-comment-new">
+				@cmtComposer(p, "Reply", "Reply…", "previous [data-asta-comment-list]", true)
+			</div>
+		</template>
+	</section>
+}
+
+// CommentEntry is one comment with its replies. Return it from the PostURL handler: for a reply, set Parent.
+templ CommentEntry(p CommentEntryProps) {
+	if p.Parent != "" {
+		@cmtRow(p, p.Parent)
+	} else {
+		<div data-asta-comment-thread={ p.Comment.ID } class={ when(p.Comment.New, "asta-comment-new") }>
+			@cmtRow(p, p.Comment.ID)
+			<div data-asta-comment-replies class={ cx("relative mt-4 flex flex-col gap-4 pl-11", when(len(p.Comment.Replies) == 0, "hidden has-[article,form]:flex")) }>
+				<span aria-hidden="true" class="absolute bottom-1 left-4 top-0 w-px bg-[color-mix(in_srgb,var(--ink)_9%,transparent)]"></span>
+				<div data-asta-comment-list class="flex flex-col gap-4">
+					for _, r := range p.Comment.Replies {
+						@cmtRow(CommentEntryProps{Comment: r, Parent: p.Comment.ID, LikeURL: p.LikeURL}, p.Comment.ID)
+					}
+				</div>
+			</div>
+		</div>
+	}
+}
+
+templ cmtRow(p CommentEntryProps, thread string) {
+	{{ c := p.Comment }}
+	<article data-asta-comment={ c.ID } class={ cx("flex gap-3", when(c.New && p.Parent != "", "asta-comment-new")) }>
+		@Avatar(AvatarProps{Name: c.Author.Name, Src: c.Author.Src, Size: "sm"})
+		<div class="min-w-0 flex-1">
+			<header class="flex items-baseline gap-2">
+				<span class="text-[13.5px] font-medium text-ink">{ c.Author.Name }</span>
+				<span class="text-[12px] text-mute">{ c.Time }</span>
+			</header>
+			<p class="mt-0.5 whitespace-pre-wrap break-words text-[14px] leading-relaxed text-ink-2">{ c.Body }</p>
+			<div class="-ml-2.5 mt-1.5 flex items-center gap-0.5">
+				<button
+					type="button"
+					data-asta-comment-like
+					name="liked"
+					value={ dataBool(c.Liked) }
+					aria-pressed={ dataBool(c.Liked) }
+					aria-label={ "Like, " + strconv.Itoa(c.Likes) }
+					class="group/like inline-flex h-7 items-center gap-1.5 rounded-full px-2.5 text-[12px] tabular-nums text-mute outline-none transition-colors duration-200 hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50 aria-pressed:bg-[color-mix(in_srgb,var(--brand)_10%,transparent)] aria-pressed:text-brand aria-pressed:hover:bg-[color-mix(in_srgb,var(--brand)_14%,transparent)] aria-pressed:hover:text-brand"
+					{ cmtLike(p)... }
+				>
+					<svg viewBox="0 0 16 16" class="asta-comment-heart h-3.5 w-3.5 fill-none group-aria-pressed/like:fill-current" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true">
+						<path d="M8 13.5S2.5 10.3 2.5 6.4A2.9 2.9 0 0 1 8 5a2.9 2.9 0 0 1 5.5 1.4c0 3.9-5.5 7.1-5.5 7.1Z"></path>
+					</svg>
+					<span class="relative inline-flex overflow-hidden">
+						<span data-asta-comment-likes class="block">{ strconv.Itoa(c.Likes) }</span>
+					</span>
+				</button>
+				<button
+					type="button"
+					data-asta-comment-reply={ thread }
+					data-name={ cmtFirst(c.Author.Name) }
+					if c.ID != thread {
+						data-mention={ cmtFirst(c.Author.Name) }
+					}
+					class="inline-flex h-7 items-center rounded-full px-2.5 text-[12px] text-mute outline-none transition-colors hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50"
+				>Reply</button>
+			</div>
+		</div>
+	</article>
+}
+
+templ cmtComposer(p CommentsProps, label, placeholder, target string, reply bool) {
+	<form
+		data-asta-comment-form
+		if reply {
+			data-reply
+		}
+		class="flex gap-3"
+		{ cmtPost(p, target)... }
+	>
+		@Avatar(AvatarProps{Name: p.User.Name, Src: p.User.Src, Size: "sm"})
+		<div class="min-w-0 flex-1 rounded-[10px] bg-paper shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_12%,transparent)] transition-shadow duration-200 focus-within:shadow-[inset_0_0_0_1px_var(--brand),0_0_0_3px_color-mix(in_srgb,var(--brand)_14%,transparent)]">
+			if reply {
+				<input type="hidden" name="parent" value=""/>
+			}
+			<label class="block">
+				<span class="sr-only">{ label }</span>
+				<textarea
+					name="body"
+					rows="1"
+					required
+					placeholder={ placeholder }
+					class="block max-h-40 min-h-[44px] w-full resize-none bg-transparent px-3 pt-2.5 text-[14px] leading-relaxed text-ink outline-none [field-sizing:content] placeholder:text-mute"
+				></textarea>
+			</label>
+			<div class="flex items-center justify-end gap-1.5 px-2 pb-2">
+				if reply {
+					@Button(ButtonProps{Variant: "ghost", Size: "xs", Attrs: templ.Attributes{"data-asta-comment-cancel": true}}) {
+						Cancel
+					}
+				}
+				@Button(ButtonProps{Variant: "accent", Size: "xs", Type: "submit", Disabled: true, Kbd: "⌘↵"}) {
+					{ label }
+				}
+			</div>
+		</div>
+	</form>
+}

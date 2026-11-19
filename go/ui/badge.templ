@@ -1,0 +1,114 @@
+package ui
+
+import "strconv"
+
+// BadgeProps configures Badge. Every field is optional.
+type BadgeProps struct {
+	// Variant: "soft" (default), "solid" or "outline".
+	Variant string
+	// Tone: "neutral" (default), "accent", "success", "warning" or "danger".
+	Tone string
+	// Size: "md" (default) or "sm".
+	Size string
+	// Dot shows a small dot before the label.
+	Dot bool
+	// Pulse makes the dot breathe, for live states such as "Online" or "Deploying".
+	Pulse bool
+	// RemoveAttrs shows a remove button and puts these attributes on it, e.g. hx-delete.
+	RemoveAttrs templ.Attributes
+	// RemoveLabel is the remove button's accessible name. Default "Remove".
+	RemoveLabel string
+	Class       string
+	Attrs       templ.Attributes
+}
+
+// One colour per tone. The variants mix it into fill, text and ring.
+var badgeTone = map[string]string{
+	"neutral": "--kit-badge:var(--ink);--kit-badge-on:var(--paper)",
+	"accent":  "--kit-badge:var(--brand);--kit-badge-on:#fff",
+	"success": "--kit-badge:#30a46c;--kit-badge-on:#fff",
+	"warning": "--kit-badge:#f5a524;--kit-badge-on:#1a1300",
+	"danger":  "--kit-badge:#e5484d;--kit-badge-on:#fff",
+}
+
+var badgeVariant = map[string]string{
+	"solid":   "bg-[var(--kit-badge)] text-[var(--kit-badge-on)]",
+	"soft":    "bg-[color-mix(in_srgb,var(--kit-badge)_12%,transparent)] text-[color-mix(in_srgb,var(--kit-badge)_80%,var(--ink))]",
+	"outline": "text-[color-mix(in_srgb,var(--kit-badge)_80%,var(--ink))] shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--kit-badge)_35%,transparent)]",
+}
+
+var badgeSize = map[string]string{
+	"sm": "h-5 px-2 text-[11px]",
+	"md": "h-6 px-2.5 text-[12px]",
+}
+
+func badgeClass(p BadgeProps) string {
+	pad := ""
+	if p.RemoveAttrs != nil {
+		pad = when(p.Size == "sm", "pr-0.5")
+		if pad == "" {
+			pad = "pr-1"
+		}
+	}
+	return cx("inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md font-medium tracking-[-0.005em]",
+		pick(badgeSize, p.Size, "md"), pad, pick(badgeVariant, p.Variant, "soft"), p.Class)
+}
+
+// Badge is a small label for a status or a tag.
+//
+//	@ui.Badge(ui.BadgeProps{Tone: "success", Pulse: true}) { Online }
+templ Badge(p BadgeProps) {
+	<span class={ badgeClass(p) } style={ templ.SafeCSS(pick(badgeTone, p.Tone, "neutral")) } { p.Attrs... }>
+		if p.Dot || p.Pulse {
+			<span class="relative flex h-1.5 w-1.5 shrink-0">
+				if p.Pulse {
+					<span class="absolute inset-0 animate-[asta-badge-ping_1.6s_cubic-bezier(.16,1,.3,1)_infinite] rounded-full bg-current motion-reduce:hidden"></span>
+				}
+				<span class={ cx("relative h-1.5 w-1.5 rounded-full", or(when(p.Variant == "solid", "bg-current"), "bg-[var(--kit-badge)]")) }></span>
+			</span>
+		}
+		{ children... }
+		if p.RemoveAttrs != nil {
+			<button
+				type="button"
+				aria-label={ or(p.RemoveLabel, "Remove") }
+				class={ cx("inline-flex items-center justify-center rounded-full opacity-60 outline-none transition-[opacity,background-color] hover:bg-[color-mix(in_srgb,currentColor_15%,transparent)] hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-brand/50", or(when(p.Size == "sm", "h-4 w-4"), "h-[18px] w-[18px]")) }
+				{ p.RemoveAttrs... }
+			>
+				<svg viewBox="0 0 12 12" class="h-2.5 w-2.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+					<path d="M3 3l6 6M9 3l-6 6"></path>
+				</svg>
+			</button>
+		}
+	</span>
+}
+
+// CountBadgeProps configures CountBadge.
+type CountBadgeProps struct {
+	Count int
+	// Max caps the number shown, e.g. "99+". Default 99.
+	Max   int
+	Class string
+	Attrs templ.Attributes
+}
+
+func countText(p CountBadgeProps) string {
+	max := p.Max
+	if max <= 0 {
+		max = 99
+	}
+	if p.Count > max {
+		return strconv.Itoa(max) + "+"
+	}
+	return strconv.Itoa(p.Count)
+}
+
+// CountBadge is a red count bubble for icons and tabs. It renders nothing when Count is 0 or less.
+// It pops in when it renders, so an htmx swap with a new count plays it again.
+//
+//	@ui.CountBadge(ui.CountBadgeProps{Count: 3})
+templ CountBadge(p CountBadgeProps) {
+	if p.Count > 0 {
+		<span class={ cx("inline-flex h-[18px] min-w-[18px] animate-[asta-pop_.4s_cubic-bezier(.16,1,.3,1)] items-center justify-center rounded-[5px] bg-[#e5484d] px-1 text-[10.5px] font-semibold tabular-nums leading-none text-white shadow-[0_0_0_2px_var(--paper)] motion-reduce:animate-none", p.Class) } { p.Attrs... }>{ countText(p) }</span>
+	}
+}

@@ -1,0 +1,30 @@
+<!-- Needs asta.js: toggles data-open/aria-expanded, positions the panel, keyboard nav, submenus and aria-checked. -->
+<div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+  <div class="asta-dropdown" data-asta-dropdown>
+    <button type="button" class="asta-btn asta-btn-outline asta-dropdown-trigger" data-asta-dropdown-trigger aria-haspopup="menu" aria-expanded="false" id="ex-dd-one-trigger" aria-controls="ex-dd-one">View<svg class="asta-dropdown-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></button>
+    <div role="menu" popover="manual" tabindex="-1" data-asta-mpanel id="ex-dd-one" aria-labelledby="ex-dd-one-trigger" class="asta-float asta-dropdown-panel">
+      <div role="presentation" class="asta-menu-label">Layout</div>
+      <button type="button" role="menuitemradio" tabindex="-1" aria-checked="true" data-group="layout" data-value="grid" class="asta-menu-item"><span class="asta-menu-radio"><span></span></span><span class="asta-menu-item-text">Grid</span><input type="hidden" name="layout" value="grid"></button>
+      <button type="button" role="menuitemradio" tabindex="-1" aria-checked="false" data-group="layout" data-value="list" class="asta-menu-item"><span class="asta-menu-radio"><span></span></span><span class="asta-menu-item-text">List</span><input type="hidden" name="layout" value="list" disabled></button>
+      <div role="separator" class="asta-menu-separator"></div>
+      <button type="button" role="menuitemcheckbox" tabindex="-1" aria-checked="false" data-keep-open data-value="hidden" class="asta-menu-item"><span class="asta-menu-check"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 8.5 2.5 2.5L12 5.5"/></svg></span><span class="asta-menu-item-text">Show hidden files</span><input type="hidden" name="show" value="hidden" disabled></button>
+      <button type="button" role="menuitemcheckbox" tabindex="-1" aria-checked="true" data-keep-open data-value="sizes" class="asta-menu-item"><span class="asta-menu-check"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 8.5 2.5 2.5L12 5.5"/></svg></span><span class="asta-menu-item-text">Show sizes</span><input type="hidden" name="show" value="sizes"></button>
+      <div role="separator" class="asta-menu-separator"></div>
+      <div class="asta-dropdown-sub" data-asta-menu-sub>
+        <button type="button" role="menuitem" tabindex="-1" aria-haspopup="menu" aria-expanded="false" class="asta-menu-item asta-dropdown-sub-trigger"><span class="asta-menu-item-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13V8M8 13V3M13 13V6"/></svg></span><span class="asta-menu-item-text">Sort by</span><svg class="asta-dropdown-sub-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4"/></svg></button>
+        <div role="menu" popover="manual" tabindex="-1" data-asta-mpanel aria-label="Sort by" class="asta-float asta-dropdown-panel asta-dropdown-sub-panel">
+          <button type="button" role="menuitemradio" tabindex="-1" aria-checked="true" data-group="sort" data-value="name" class="asta-menu-item"><span class="asta-menu-radio"><span></span></span><span class="asta-menu-item-text">Name</span></button>
+          <button type="button" role="menuitemradio" tabindex="-1" aria-checked="false" data-group="sort" data-value="date" class="asta-menu-item"><span class="asta-menu-radio"><span></span></span><span class="asta-menu-item-text">Date</span></button>
+          <button type="button" role="menuitemradio" tabindex="-1" aria-checked="false" data-group="sort" data-value="size" class="asta-menu-item"><span class="asta-menu-radio"><span></span></span><span class="asta-menu-item-text">Size</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="asta-dropdown" data-asta-dropdown data-align="end">
+    <button type="button" class="asta-btn asta-btn-ghost asta-btn-icon asta-dropdown-trigger" data-asta-dropdown-trigger aria-haspopup="menu" aria-expanded="false" id="ex-dd-two-trigger" aria-controls="ex-dd-two" aria-label="Settings"><span class="asta-dropdown-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4"/></svg></span></button>
+    <div role="menu" popover="manual" tabindex="-1" data-asta-mpanel id="ex-dd-two" aria-labelledby="ex-dd-two-trigger" class="asta-float asta-dropdown-panel">
+      <button type="button" role="menuitem" tabindex="-1" class="asta-menu-item"><span class="asta-menu-item-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM3 13.5c.8-2.3 2.7-3.5 5-3.5s4.2 1.2 5 3.5"/></svg></span><span class="asta-menu-item-text">Profile</span></button>
+      <button type="button" role="menuitem" tabindex="-1" class="asta-menu-item asta-menu-item-danger"><span class="asta-menu-item-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2.5H3v11h3M10 5l3 3-3 3M13 8H6"/></svg></span><span class="asta-menu-item-text">Sign out</span></button>
+    </div>
+  </div>
+</div>

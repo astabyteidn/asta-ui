@@ -1,0 +1,375 @@
+package ui
+
+import (
+	"net/url"
+	"regexp"
+	"sort"
+	"strconv"
+	"strings"
+	"time"
+)
+
+// CalendarEvent is one event on an EventCalendar.
+type CalendarEvent struct {
+	ID    string
+	Title string
+	// Date is the day it happens. Only the year, month and day are used.
+	Date time.Time
+	// Time is already formatted, e.g. "09:30" or "All day". Events sort by it.
+	Time string
+	// Accent highlights the event in the brand colour.
+	Accent bool
+	// Note is an optional detail shown in the day list.
+	Note string
+	// Href makes the event a link in the day list.
+	Href string
+}
+
+// EventCalendarProps configures EventCalendar.
+type EventCalendarProps struct {
+	// ID is required. htmx swaps the element with this id when the month changes.
+	ID string
+	// URL is the page the calendar loads from. Months load as URL?month=2026-11&day=2026-11-19.
+	// Read them back with CalendarQuery. Empty means the current page.
+	URL string
+	// Params are kept in every link the calendar builds.
+	Params url.Values
+	// Month is any day in the month to show. Default: the month of Selected.
+	Month time.Time
+	// Selected is the selected day. Default: Today.
+	Selected time.Time
+	// Today overrides today's date, handy for demos and tests. Default time.Now().
+	Today  time.Time
+	Events []CalendarEvent
+	// SundayFirst starts weeks on Sunday. Default Monday.
+	SundayFirst bool
+	// Name adds a hidden input with this name that holds the selected day as 2006-01-02.
+	Name string
+	// NoPushURL keeps the address bar as it is when the month changes.
+	NoPushURL bool
+	// Class goes on the root.
+	Class string
+	// Attrs go on the root. It fires "asta:select" with detail {day: "2006-01-02"} when a day is picked.
+	Attrs templ.Attributes
+}
+
+func calDay(t time.Time) time.Time {
+	return time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, time.UTC)
+}
+
+func calWeekStart(p EventCalendarProps) time.Weekday {
+	if p.SundayFirst {
+		return time.Sunday
+	}
+	return time.Monday
+}
+
+func calKey(t time.Time) string { return t.Format("2006-01-02") }
+
+// MonthGrid returns the 42 days (six weeks) shown for the month that holds month, starting on weekStart.
+// Six weeks always, so the height never jumps between months.
+func MonthGrid(month time.Time, weekStart time.Weekday) []time.Time {
+	first := time.Date(month.Year(), month.Month(), 1, 0, 0, 0, 0, time.UTC)
+	start := first.AddDate(0, 0, -((int(first.Weekday()) - int(weekStart) + 7) % 7))
+	days := make([]time.Time, 42)
+	for i := range days {
+		days[i] = start.AddDate(0, 0, i)
+	}
+	return days
+}
+
+// CalendarQuery reads ?month=2006-01 and ?day=2006-01-02 as EventCalendar writes them.
+// Missing or bad values fall back to today. A month without a day in it selects the 1st.
+func CalendarQuery(q url.Values, today time.Time) (month, day time.Time) {
+	day = calDay(today)
+	if d, err := time.Parse("2006-01-02", q.Get("day")); err == nil {
+		day = d
+	}
+	month = day
+	if m, err := time.Parse("2006-01", q.Get("month")); err == nil {
+		month = m
+		if day.Year() != m.Year() || day.Month() != m.Month() {
+			day = m
+		}
+	}
+	return month, day
+}
+
+func calHref(p EventCalendarProps, month, day string) string {
+	v := url.Values{}
+	for k, vs := range p.Params {
+		v[k] = vs
+	}
+	v.Set("month", month)
+	v.Set("day", day)
+	return p.URL + "?" + v.Encode()
+}
+
+func calHrefFor(p EventCalendarProps, day time.Time) string {
+	return calHref(p, day.Format("2006-01"), calKey(day))
+}
+
+type calView struct {
+	today, sel, month time.Time
+	days              []time.Time
+	byDay             map[string][]CalendarEvent
+}
+
+func calResolve(p EventCalendarProps) calView {
+	v := calView{today: calDay(p.Today)}
+	if p.Today.IsZero() {
+		v.today = calDay(time.Now())
+	}
+	v.sel = v.today
+	if !p.Selected.IsZero() {
+		v.sel = calDay(p.Selected)
+	}
+	m := v.sel
+	if !p.Month.IsZero() {
+		m = calDay(p.Month)
+	}
+	v.month = time.Date(m.Year(), m.Month(), 1, 0, 0, 0, 0, time.UTC)
+	v.days = MonthGrid(v.month, calWeekStart(p))
+	v.byDay = map[string][]CalendarEvent{}
+	for _, e := range p.Events {
+		k := calKey(e.Date)
+		v.byDay[k] = append(v.byDay[k], e)
+	}
+	for _, list := range v.byDay {
+		sort.SliceStable(list, func(i, j int) bool { return calMinutes(list[i].Time) < calMinutes(list[j].Time) })
+	}
+	return v
+}
+
+var calTimeRe = regexp.MustCompile(`(?i)(\d{1,2})(?:[:.](\d{2}))?\s*([ap])?\.?\s*m?\b`)
+
+// calMinutes is minutes after midnight for a sort. "All day" and untimed events give -1 so they come first.
+func calMinutes(s string) int {
+	m := calTimeRe.FindStringSubmatch(s)
+	if m == nil {
+		return -1
+	}
+	h, _ := strconv.Atoi(m[1])
+	h %= 24
+	ap := strings.ToLower(m[3])
+	if ap == "p" && h < 12 {
+		h += 12
+	}
+	if ap == "a" && h == 12 {
+		h = 0
+	}
+	mm, _ := strconv.Atoi(m[2])
+	return h*60 + mm
+}
+
+func (v calView) inMonth(d time.Time) bool {
+	return d.Month() == v.month.Month() && d.Year() == v.month.Year()
+}
+
+// The focusable cell: the selected day if it's in this month, else the 1st.
+func (v calView) tab() string {
+	if v.inMonth(v.sel) {
+		return calKey(v.sel)
+	}
+	return calKey(v.month)
+}
+
+func (v calView) label(d time.Time) string {
+	s := d.Format("Monday, January 2, 2006")
+	if d.Equal(v.today) {
+		s += ", today"
+	}
+	switch n := len(v.byDay[calKey(d)]); n {
+	case 0:
+		return s + ", no events"
+	case 1:
+		return s + ", 1 event"
+	default:
+		return s + ", " + strconv.Itoa(n) + " events"
+	}
+}
+
+func calRows(days []time.Time) [][]time.Time {
+	rows := make([][]time.Time, 0, 6)
+	for i := 0; i+7 <= len(days); i += 7 {
+		rows = append(rows, days[i:i+7])
+	}
+	return rows
+}
+
+func calRoot(p EventCalendarProps) templ.Attributes {
+	a := templ.Attributes{
+		"hx-boost":    "true",
+		"hx-target":   "#" + p.ID,
+		"hx-select":   "#" + p.ID,
+		"hx-swap":     "outerHTML show:none",
+		"hx-push-url": dataBool(!p.NoPushURL),
+	}
+	for k, val := range p.Attrs {
+		a[k] = val
+	}
+	return a
+}
+
+const calNav = "grid h-8 w-8 place-items-center rounded-md text-ink-2 outline-none transition-colors duration-200 hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50"
+
+// EventCalendar is a month calendar with event pills and a list for the selected day, rendered from your Go data.
+// Picking a day in the month is instant. Changing the month loads it from URL with htmx, and the new month slides
+// in from the side you moved to. Arrow keys move by day and week, Home and End jump to the week's ends,
+// Page Up and Page Down change the month, and Enter selects.
+//
+//	month, day := ui.CalendarQuery(r.URL.Query(), time.Now())
+//	@ui.EventCalendar(ui.EventCalendarProps{ID: "cal", URL: "/calendar", Month: month, Selected: day, Events: events})
+templ EventCalendar(p EventCalendarProps) {
+	{{ v := calResolve(p) }}
+	<div
+		id={ p.ID }
+		data-asta-cal
+		data-tpl={ calHref(p, "__M__", "__D__") }
+		data-today={ calKey(v.today) }
+		data-month={ v.month.Format("2006-01") }
+		data-week={ strconv.Itoa(int(calWeekStart(p))) }
+		class={ cx("asta-cal grid w-full gap-6 md:grid-cols-[minmax(0,1fr)_240px]", p.Class) }
+		{ calRoot(p)... }
+	>
+		if p.Name != "" {
+			<input type="hidden" name={ p.Name } value={ calKey(v.sel) } data-asta-cal-value/>
+		}
+		<div class="min-w-0">
+			<header class="mb-4 flex items-center gap-2">
+				<h3 class="mr-auto text-[17px] font-medium tracking-[-0.02em] text-ink" aria-live="polite">{ v.month.Format("January 2006") }</h3>
+				<a href={ templ.SafeURL(calHrefFor(p, v.today)) } data-asta-cal-nav="today" class="inline-flex h-8 items-center rounded-md px-3 text-[13px] text-ink-2 outline-none transition-colors duration-200 hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50">Today</a>
+				<a href={ templ.SafeURL(calHref(p, v.month.AddDate(0, -1, 0).Format("2006-01"), calKey(v.sel))) } data-asta-cal-nav="prev" aria-label="Previous month" class={ calNav }>
+					@calArrow("m10 3.5L5.5 8l4.5 4.5")
+				</a>
+				<a href={ templ.SafeURL(calHref(p, v.month.AddDate(0, 1, 0).Format("2006-01"), calKey(v.sel))) } data-asta-cal-nav="next" aria-label="Next month" class={ calNav }>
+					@calArrow("m6 3.5 4.5 4.5L6 12.5")
+				</a>
+			</header>
+			<div class="-m-1 overflow-hidden p-1">
+				<div role="grid" data-asta-cal-grid aria-label={ v.month.Format("January 2006") }>
+					<div role="row" class="grid grid-cols-7 pb-2">
+						for _, d := range v.days[:7] {
+							<span role="columnheader" class="px-2 text-[11.5px] font-medium text-mute">{ d.Format("Mon") }</span>
+						}
+					</div>
+					for _, week := range calRows(v.days) {
+						<div role="row" class="grid grid-cols-7 gap-1 pb-1">
+							for _, d := range week {
+								@calCell(v, d)
+							}
+						</div>
+					}
+				</div>
+			</div>
+		</div>
+		<aside aria-label="Selected day" class="min-w-0 md:pt-12">
+			for _, d := range v.days {
+				if v.inMonth(d) {
+					@calPanel(v, d)
+				}
+			}
+		</aside>
+	</div>
+}
+
+templ calCell(v calView, d time.Time) {
+	{{ k := calKey(d) }}
+	{{ list := v.byDay[k] }}
+	{{ out := !v.inMonth(d) }}
+	{{ isToday := d.Equal(v.today) }}
+	<button
+		type="button"
+		role="gridcell"
+		data-day={ k }
+		if out {
+			data-out
+		}
+		aria-label={ v.label(d) }
+		aria-selected={ dataBool(d.Equal(v.sel)) }
+		if isToday {
+			aria-current="date"
+		}
+		if k == v.tab() {
+			tabindex="0"
+		} else {
+			tabindex="-1"
+		}
+		class="group relative flex h-[76px] min-w-0 flex-col items-stretch gap-1 rounded-[10px] p-1.5 text-left outline-none transition-colors duration-200 hover:bg-[color-mix(in_srgb,var(--paper-2)_60%,transparent)] focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand/50 aria-selected:!bg-paper-2 sm:h-[88px]"
+	>
+		<span class={ cx("grid h-6 w-6 place-items-center rounded-full text-[12.5px] tabular-nums transition-colors duration-200", or(when(isToday, "bg-brand font-medium text-white"), or(when(out, "text-mute/60"), "text-ink"))) }>
+			{ strconv.Itoa(d.Day()) }
+		</span>
+		<span class="hidden min-w-0 flex-col gap-0.5 sm:flex" aria-hidden="true">
+			for i, ev := range list {
+				if i < 2 {
+					<span class={ cx("truncate rounded-[5px] px-1.5 text-[11px] leading-[18px]", or(when(ev.Accent, "bg-[color-mix(in_srgb,var(--brand)_12%,transparent)] text-brand"), "bg-[color-mix(in_srgb,var(--ink)_6%,transparent)] text-ink-2"), when(out, "opacity-50")) }>{ ev.Title }</span>
+				}
+			}
+			if len(list) > 2 {
+				<span class="px-1.5 text-[11px] leading-4 text-mute">+{ strconv.Itoa(len(list) - 2) } more</span>
+			}
+		</span>
+		if len(list) > 0 {
+			<span class="flex gap-0.5 px-1 sm:hidden" aria-hidden="true">
+				for i, ev := range list {
+					if i < 3 {
+						<span class={ cx("h-1.5 w-1.5 rounded-full", or(when(ev.Accent, "bg-brand"), "bg-mute")) }></span>
+					}
+				}
+			</span>
+		}
+	</button>
+}
+
+templ calPanel(v calView, d time.Time) {
+	{{ list := v.byDay[calKey(d)] }}
+	<div data-asta-cal-panel={ calKey(d) } hidden?={ !d.Equal(v.sel) }>
+		<p class="text-[12px] font-medium text-mute">
+			if d.Equal(v.today) {
+				Today
+			} else {
+				Selected
+			}
+		</p>
+		<h4 class="mt-1 text-[15px] font-medium tracking-[-0.01em] text-ink">{ d.Format("Monday, Jan 2") }</h4>
+		if len(list) > 0 {
+			<ul class="mt-4 flex flex-col gap-1">
+				for i, ev := range list {
+					<li data-asta-cal-item style={ templ.SafeCSS("--i:" + strconv.Itoa(i)) }>
+						if ev.Href != "" {
+							<a href={ templ.SafeURL(ev.Href) } hx-boost="false" class="flex w-full gap-3 rounded-lg px-2 py-2 text-left outline-none transition-colors duration-200 hover:bg-paper-2 focus-visible:ring-2 focus-visible:ring-brand/50">
+								@calItem(ev)
+							</a>
+						} else {
+							<div class="flex w-full gap-3 rounded-lg px-2 py-2 text-left">
+								@calItem(ev)
+							</div>
+						}
+					</li>
+				}
+			</ul>
+		} else {
+			<p class="mt-4 rounded-[10px] bg-paper-2 px-3 py-4 text-[13px] text-mute">Nothing planned.</p>
+		}
+	</div>
+}
+
+templ calItem(ev CalendarEvent) {
+	<span class={ cx("mt-1.5 h-2 w-2 shrink-0 rounded-full", or(when(ev.Accent, "bg-brand"), "bg-[color-mix(in_srgb,var(--ink)_22%,transparent)]")) }></span>
+	<span class="min-w-0">
+		<span class="block truncate text-[13.5px] text-ink">{ ev.Title }</span>
+		<span class="block text-[12px] tabular-nums text-mute">
+			{ or(ev.Time, "All day") }
+			if ev.Note != "" {
+				{ " · " + ev.Note }
+			}
+		</span>
+	</span>
+}
+
+templ calArrow(d string) {
+	<svg viewBox="0 0 16 16" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+		<path d={ d }></path>
+	</svg>
+}

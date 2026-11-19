@@ -4,3 +4,4 @@ node_modules
 .github
 *.md
 tsconfig.tsbuildinfo
+!CHANGELOG.md

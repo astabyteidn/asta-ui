@@ -45,7 +45,7 @@ export default async function Skill() {
         { id: "shadcn-mcp", title: "shadcn MCP" },
         { id: "llms", title: "llms.txt" },
       ]}
-      next={{ href: "/prompts", title: "Prompts" }}
+      next={{ href: "/go", title: "Go + htmx" }}
     >
       <h2 id="skill">Agent skills</h2>
       <p>Three skills. Your agent loads each one only when the task needs it.</p>

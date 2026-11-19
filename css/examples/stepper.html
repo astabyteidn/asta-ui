@@ -1,0 +1,20 @@
+<!-- Needs asta.js: Back/Continue move data-step and set data-state on each step and panel. -->
+<div>
+  <div class="asta-stepper" data-asta-stepper id="ex-step-one" data-step="0" data-count="3" data-first>
+    <ol aria-label="Progress" class="asta-stepper-steps">
+      <li data-asta-step="0" data-state="current" aria-current="step" class="asta-stepper-step"><button type="button" data-asta-step-goto="0" disabled class="asta-stepper-goto"><span class="asta-stepper-mark"><span>1</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3.5 8.5 3 3 6-7" pathLength="1" stroke-dasharray="1"/></svg></span><span class="asta-stepper-text"><span class="asta-stepper-title">Account</span><span class="asta-stepper-desc">Your details</span></span><span class="asta-stepper-sr" data-for="done">, done</span><span class="asta-stepper-sr" data-for="todo">, not started</span></button><span aria-hidden="true" class="asta-stepper-line"><span></span></span></li>
+      <li data-asta-step="1" data-state="todo" class="asta-stepper-step"><button type="button" data-asta-step-goto="1" disabled class="asta-stepper-goto"><span class="asta-stepper-mark"><span>2</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3.5 8.5 3 3 6-7" pathLength="1" stroke-dasharray="1"/></svg></span><span class="asta-stepper-text"><span class="asta-stepper-title">Workspace</span><span class="asta-stepper-desc">Name it</span></span><span class="asta-stepper-sr" data-for="done">, done</span><span class="asta-stepper-sr" data-for="todo">, not started</span></button><span aria-hidden="true" class="asta-stepper-line"><span></span></span></li>
+      <li data-asta-step="2" data-state="todo" class="asta-stepper-step"><button type="button" data-asta-step-goto="2" disabled class="asta-stepper-goto"><span class="asta-stepper-mark"><span>3</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3.5 8.5 3 3 6-7" pathLength="1" stroke-dasharray="1"/></svg></span><span class="asta-stepper-text"><span class="asta-stepper-title">Invite</span><span class="asta-stepper-desc">Bring people</span></span><span class="asta-stepper-sr" data-for="done">, done</span><span class="asta-stepper-sr" data-for="todo">, not started</span></button></li>
+    </ol>
+    <div class="asta-stepper-panels">
+      <div role="region" aria-label="Account" data-asta-step-panel="0"><div style="border-radius:12px;background:var(--paper-2);padding:20px;font-size:14px">Name, email and a password.</div></div>
+      <div role="region" aria-label="Workspace" data-asta-step-panel="1" hidden><div style="border-radius:12px;background:var(--paper-2);padding:20px;font-size:14px">Pick a name your team will see.</div></div>
+      <div role="region" aria-label="Invite" data-asta-step-panel="2" hidden><div style="border-radius:12px;background:var(--paper-2);padding:20px;font-size:14px">Add teammates by email, or skip for now.</div></div>
+      <div role="region" aria-label="Done" data-asta-step-panel="3" hidden><div style="border-radius:12px;background:var(--paper-2);padding:20px;font-size:14px">All set. Your Astabyte workspace is ready.</div></div>
+    </div>
+    <div class="asta-stepper-actions"><div class="asta-stepper-controls">
+      <button type="button" data-asta-step-back class="asta-btn asta-btn-outline asta-stepper-back"><span class="asta-btn-label">Back</span></button>
+      <button type="button" data-asta-step-next class="asta-btn asta-btn-accent"><span class="asta-btn-label"><span class="asta-stepper-next-label">Continue</span><span class="asta-stepper-finish-label">Finish</span></span></button>
+    </div></div>
+  </div>
+</div>

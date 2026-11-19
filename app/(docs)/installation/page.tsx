@@ -400,6 +400,10 @@ export const onCreateWebpackConfig: GatsbyNode["onCreateWebpackConfig"] = ({ act
       ]}
       next={{ href: "/button", title: "Button" }}
     >
+      <p>
+        Not on React? Use the <Link href="/go">Go + htmx</Link> module or the <Link href="/css">HTML + CSS</Link> layer instead.
+      </p>
+
       <h2 id="primitive">Radix or Base UI</h2>
       <p>
         15 components (dialog, select, menu, tooltip, tabs, slider…) come in two builds. Same props, same look, same motion. Only the library
