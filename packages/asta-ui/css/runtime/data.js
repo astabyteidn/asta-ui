@@ -1,4 +1,4 @@
-/* Data components for Astabyte UI for Go. Event delegation on document, so htmx swaps need no re-init.
+/* Data components for Astabyte UI. Event delegation on document, so htmx swaps need no re-init.
  *   DataTable          [data-asta-dt] with [data-asta-dt-all], [data-asta-dt-row], [data-asta-dt-clear]
  *   TreeView           [data-asta-tree] with [role=treeitem] and [data-asta-tree-row]; fires asta:select, asta:expand
  *   Timeline           [data-asta-timeline][data-inview]

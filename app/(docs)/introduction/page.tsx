@@ -10,7 +10,7 @@ export default function Introduction() {
   return (
     <DocPage
       title="Introduction"
-      lead="Components that feel good to use. For React, for Go with htmx, or as plain CSS in any HTML."
+      lead="Components that feel good to use. For React, or as plain CSS in any HTML."
       toc={[
         { id: "tldr", title: "TL;DR" },
         { id: "why", title: "Why we made it" },
@@ -29,8 +29,8 @@ export default function Introduction() {
         </li>
         <li>React 19, Tailwind CSS v4, TypeScript. One file per component.</li>
         <li>
-          Not on React? The main kit also ships as <Link href="/go">templ components for Go + htmx</Link> and as{" "}
-          <Link href="/css">plain CSS classes</Link> for any HTML.
+          Not on React? The main kit also ships as <Link href="/css">plain CSS classes</Link> for any HTML: Go, Django, Rails, Laravel
+          or htmx.
         </li>
         <li>
           Add one with <code>pnpm dlx asta-ui@latest add dialog</code>, or <code>pnpm add asta-ui</code> and import it.
@@ -80,12 +80,8 @@ export default function Introduction() {
       </p>
       <h2 id="stacks">Not on React?</h2>
       <p>
-        <strong>Go + htmx.</strong> Every component of the main kit as templ components, with the CSS, JS and htmx embedded in the module. Your
-        app still ships as one binary. See <Link href="/go">Go + htmx</Link>.
-      </p>
-      <p>
         <strong>HTML + CSS.</strong> The same look as semantic classes like <code>.asta-btn</code>, plus a small script for menus, dialogs and
-        toasts. Works with html/template, Rails, Django or a static page. See <Link href="/css">HTML + CSS</Link>.
+        toasts. Works with Go html/template, Rails, Django, Laravel, htmx or a static page. See <Link href="/css">HTML + CSS</Link>.
       </p>
       <p>The motion lab is React only for now.</p>
       <p>

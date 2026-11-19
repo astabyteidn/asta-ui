@@ -1,10 +1,10 @@
 /* Overlays: drawer, popover, hover card, dropdown and context menus, command palette, navbar, sidebar,
  * workspace switcher, footer, announcement bar, stepper and tool dock.
- * Class lists mirror go/ui/<name>.templ. asta.js drives them through data-* and aria-* attributes, and the
+ * Class lists mirror the React kit. asta.js drives them through data-* and aria-* attributes, and the
  * runtime classes (asta-dialog, asta-drawer, asta-cmd, asta-float, asta-lift, asta-nav-sec) carry the motion,
  * so keep those in the markup. */
 
-/* ---- Drawer (drawer.templ) ----
+/* ---- Drawer ----
  * <dialog id="filters" class="asta-dialog asta-drawer" data-side="right"> <div class="asta-drawer-inner">…</div>
  *   <button class="asta-drawer-close" data-asta-close aria-label="Close">…</button></dialog>
  * Open it with <button data-asta-open="filters">. data-side: right (default) left bottom. */
@@ -62,7 +62,7 @@
   }
 }
 
-/* ---- Popover (popover.templ) ----
+/* ---- Popover ----
  * <button popovertarget="share" aria-haspopup="dialog">Share</button>
  * <div id="share" popover="auto" role="dialog" data-asta-popover data-side="bottom" data-align="center"
  *   class="asta-float asta-popover"><svg class="asta-popover-arrow" data-asta-arrow>…</svg>…</div> */
@@ -80,7 +80,7 @@
   }
 }
 
-/* ---- Hover card (hover_card.templ) ----
+/* ---- Hover card ----
  * <a href="/sam" data-asta-hovercard-for="sam">Sam</a>
  * <div id="sam" popover="manual" role="dialog" aria-modal="false" data-asta-hovercard data-side="bottom"
  *   data-align="center" class="asta-float asta-lift asta-hover-card">…</div> */
@@ -90,7 +90,7 @@
   @apply before:absolute before:inset-x-0 before:h-[var(--asta-gap,10px)] before:content-[''] data-[placed=bottom]:before:bottom-full data-[placed=top]:before:top-full;
 }
 
-/* ---- Top-layer menu panel (dropdown_menu.templ floatPanel) ----
+/* ---- Top-layer menu panel ----
  * Shared by dropdowns, submenus, context menus and the workspace switchers. Items are core's .asta-menu-item.
  * <div role="menu" popover="manual" tabindex="-1" data-asta-mpanel class="asta-float asta-dropdown-panel">…</div> */
 .asta-dropdown-panel {
@@ -98,7 +98,7 @@
   @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent),0_12px_32px_-12px_rgb(0_0_0/0.28),0_4px_10px_-6px_rgb(0_0_0/0.12)];
 }
 
-/* ---- Dropdown menu (dropdown_menu.templ) ----
+/* ---- Dropdown menu ----
  * <div class="asta-dropdown" data-asta-dropdown>
  *   <button class="asta-btn asta-btn-outline asta-dropdown-trigger" data-asta-dropdown-trigger aria-haspopup="menu"
  *     aria-expanded="false" aria-controls="view">View <svg class="asta-dropdown-chevron">…</svg></button>
@@ -172,7 +172,7 @@
     }
   }
 }
-/* ---- Context menu (context_menu.templ) ----
+/* ---- Context menu ----
  * <div class="asta-context-menu" data-asta-context-menu tabindex="0">Right-click here
  *   <div role="menu" popover="manual" tabindex="-1" data-asta-mpanel aria-orientation="vertical"
  *     class="asta-float asta-dropdown-panel asta-context-menu-panel">…</div></div> */
@@ -184,7 +184,7 @@
   @apply [&_[role^=menuitem]]:h-8 [&_[role^=menuitem]]:rounded-lg [&_[role^=menuitem]]:text-[13px];
 }
 
-/* ---- Command palette (command_palette.templ) ----
+/* ---- Command palette ----
  * <dialog id="cmd" class="asta-dialog asta-cmd" data-asta-command data-hotkey="k" aria-label="Command palette">
  *   <div class="asta-cmd-inner"><div class="asta-cmd-search">… <input data-asta-command-input class="asta-cmd-input"></div>
  *   <div class="asta-cmd-scroll" data-asta-command-scroll><div role="listbox" data-asta-command-list>
@@ -266,7 +266,7 @@
   }
 }
 
-/* ---- Navbar (navbar.templ) ----
+/* ---- Navbar ----
  * <header class="asta-navbar" data-asta-navbar><div class="asta-navbar-bar">brand · nav · actions · surface</div>
  *   <div id="nav-sheet" data-asta-nav-sheet hidden class="asta-navbar-sheet">…</div></header>
  * asta.js sets data-open (a mega panel is open), data-scrolled and data-sheet (phone menu) on the header. */
@@ -533,7 +533,7 @@
   @apply mt-4 flex flex-col gap-2 px-1 [&>*]:w-full;
 }
 
-/* ---- Sidebar (sidebar.templ) ----
+/* ---- Sidebar ----
  * <aside class="asta-sidebar" data-asta-sidebar data-auto-rail aria-label="Sidebar">
  *   <nav class="asta-sidebar-nav" data-asta-sidebar-nav>…<button class="asta-sidebar-link" data-asta-sidebar-item="inbox"
  *     aria-current="page"><span class="asta-sidebar-icon">…</span><span class="asta-sidebar-label">Inbox</span>
@@ -703,7 +703,7 @@
   }
 }
 
-/* ---- Workspace switcher (workspace_switcher.templ) ----
+/* ---- Workspace switcher ----
  * <div class="asta-ws" data-asta-dropdown data-asta-ws data-match><button class="asta-ws-trigger"
  *   data-asta-dropdown-trigger aria-haspopup="menu" aria-expanded="false">…</button>
  *   <div role="menu" popover="manual" data-asta-mpanel class="asta-float asta-dropdown-panel asta-ws-panel">
@@ -787,7 +787,7 @@
   @apply mt-1 pt-1;
 }
 
-/* ---- Footer (footer.templ) ----
+/* ---- Footer ----
  * <footer class="asta-footer"><div class="asta-footer-grid"><div class="asta-footer-intro">…newsletter…</div>
  *   <nav class="asta-footer-nav" aria-label="Footer"><div><p class="asta-footer-heading">Product</p><ul class="asta-footer-links">
  *   <li><a class="asta-footer-link" href="/docs">Docs <span aria-hidden="true">↗</span></a></li></ul></div></nav></div>
@@ -891,7 +891,7 @@
   }
 }
 
-/* ---- Announcement bar (announcement_bar.templ) ----
+/* ---- Announcement bar ----
  * <div class="asta-announcement" role="region" aria-label="Announcement" data-asta-announce data-interval="5000">
  *   <span class="asta-announcement-spacer" aria-hidden="true"></span><div class="asta-announcement-track"
  *   data-asta-announce-track><div class="asta-announcement-slide" data-asta-announce-msg data-state="cur">
@@ -959,7 +959,7 @@
   }
 }
 
-/* ---- Stepper (stepper.templ) ----
+/* ---- Stepper ----
  * <div class="asta-stepper" data-asta-stepper data-step="0" data-count="3" data-first>
  *   <ol class="asta-stepper-steps" aria-label="Progress"><li class="asta-stepper-step" data-asta-step="0"
  *     data-state="current" aria-current="step"><button class="asta-stepper-goto" data-asta-step-goto="0" disabled>
@@ -1073,7 +1073,7 @@
   }
 }
 
-/* ---- Tool dock (tool_dock.templ) ----
+/* ---- Tool dock ----
  * <div class="asta-tool-dock" role="toolbar" aria-label="Tools" data-asta-tooldock data-hotkeys>
  *   <span class="asta-tool-dock-pill" data-asta-tooldock-pill aria-hidden="true"></span>
  *   <span class="asta-tool-dock-tool"><button class="asta-tool-dock-btn" data-tool="move" aria-label="Move"

@@ -19,7 +19,7 @@ const STUDIO = "https://astabyte.com";
 export const metadata: Metadata = {
   metadataBase: new URL("https://ui.astabyte.com"),
   title: { default: "Astabyte UI — a motion-first component kit for shadcn", template: "%s — Astabyte UI" },
-  description: "A component kit from atoms to whole sections, plus a motion lab, tuned by hand for pointer, touch and keys. For React, Go + htmx, or plain HTML and CSS.",
+  description: "A component kit from atoms to whole sections, plus a motion lab, tuned by hand for pointer, touch and keys. For React, or as plain HTML and CSS for any stack.",
   openGraph: { type: "website", url: "https://ui.astabyte.com", siteName: "Astabyte UI" },
   twitter: { card: "summary_large_image" },
 };

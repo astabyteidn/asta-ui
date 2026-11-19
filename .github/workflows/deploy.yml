@@ -40,24 +40,11 @@ jobs:
             || { echo "packages/asta-ui/package.json version must match package.json"; exit 1; }
           bun packages/asta-ui/build.ts
           cd packages/asta-ui && npm pack --dry-run
-      # Go + htmx package (go/): generated templ files, asta.css, asta.js and the version must be committed and current.
-      # The CSS-only layer (packages/asta-ui/css) is built from the same runtime, so it is checked here too.
-      - uses: actions/setup-go@v5
-        with:
-          go-version-file: go/go.mod
-          cache-dependency-path: go/go.sum
-      - name: Go package is up to date, vets, tests and builds
-        working-directory: go
+      # HTML + CSS layer (packages/asta-ui/css): generated tokens, components, asta.css and asta.js must be current.
+      - name: CSS layer is up to date
         run: |
-          go run github.com/a-h/templ/cmd/templ@v0.3.1118 generate
-          [ -z "$(git status --porcelain .)" ] || { git status --porcelain .; echo "go/ templ output is stale: run 'templ generate' in go/ and commit"; exit 1; }
-          (cd .. && bun run go --check)
-          (cd .. && bun run css --check)
-          go vet ./...
-          go test ./...
-          CGO_ENABLED=0 go build -o "$RUNNER_TEMP/asta-example" ./examples/app
-          CGO_ENABLED=0 go build -o "$RUNNER_TEMP/asta-gallery" ./examples/gallery
-          node --check ui/assets/asta.js
+          bun run css --check
+          for f in packages/asta-ui/css/runtime/*.js packages/asta-ui/css/asta.js; do node --check "$f"; done
 
   deploy:
     needs: check
@@ -172,12 +159,3 @@ jobs:
           else
             gh release create "$TAG" --title "$TAG" --notes-file notes.md --verify-tag --latest
           fi
-      # The Go module lives in go/, so Go needs a go/vX.Y.Z tag on the same commit to resolve
-      # `go get github.com/astabyteidn/asta-ui/go@vX.Y.Z`.
-      - name: Tag the Go module
-        env:
-          TAG: ${{ github.ref_name }}
-        run: |
-          if git ls-remote --exit-code --tags origin "refs/tags/go/$TAG" > /dev/null; then echo "go/$TAG exists"; exit 0; fi
-          git tag "go/$TAG" "$GITHUB_SHA"
-          git push origin "go/$TAG"

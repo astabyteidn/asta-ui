@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
 import CodeTabs from "@/components/ui-site/CodeTabs";
 import { highlight } from "@/lib/ui-highlight";
+import { VERSION } from "@/lib/version";
 import DocPage from "../DocPage";
 
 export const metadata: Metadata = {
   title: "HTML + CSS",
-  description: "Astabyte UI as plain CSS classes and one small script. For html/template, htmx, Rails, Django or plain HTML. No React, no build.",
+  description: "Astabyte UI as plain CSS classes and one small script. For Go html/template, htmx, Rails, Django, Laravel or plain HTML. No React, no build.",
 };
 
 const REPO = "https://github.com/astabyteidn/asta-ui";
-const CDN = "https://cdn.jsdelivr.net/npm/asta-ui@0.8.0/css";
+const CDN = `https://cdn.jsdelivr.net/npm/asta-ui@${VERSION}/css`;
 
 async function block(name: string, code: string, lang: string) {
   return { name, path: `${name}-${lang}-${code.length}`, code, html: await highlight(code, `x.${lang}`) };
@@ -157,6 +158,46 @@ const TABLE = `<div class="asta-table-wrap">
   </div>
 </div>`;
 
+const HTMX = `<script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.4/dist/htmx.min.js" defer></script>`;
+
+const GO_TPL = `{{range .Members}}
+<tr class="asta-tr">
+  <td class="asta-td">{{.Name}}</td>
+  <td class="asta-td asta-td-right">{{.Role}}</td>
+</tr>
+{{end}}
+
+<label class="asta-input">
+  <input class="asta-input-control" name="email" value="{{.Email}}"
+    {{if .EmailErr}}aria-invalid="true"{{end}}>
+</label>
+{{with .EmailErr}}<p class="asta-error" role="alert">{{.}}</p>{{end}}`;
+
+const DJANGO = `{% for m in members %}
+<tr class="asta-tr">
+  <td class="asta-td">{{ m.name }}</td>
+  <td class="asta-td asta-td-right">{{ m.role }}</td>
+</tr>
+{% endfor %}
+
+<label class="asta-input">
+  <input class="asta-input-control" name="email" value="{{ form.email.value|default:'' }}"
+    {% if form.email.errors %}aria-invalid="true"{% endif %}>
+</label>
+{% for e in form.email.errors %}<p class="asta-error" role="alert">{{ e }}</p>{% endfor %}`;
+
+const ERB = `<% @members.each do |m| %>
+<tr class="asta-tr">
+  <td class="asta-td"><%= m.name %></td>
+  <td class="asta-td asta-td-right"><%= m.role %></td>
+</tr>
+<% end %>
+
+<label class="asta-input">
+  <input class="asta-input-control" name="email" value="<%= @user.email %>"
+    <%= 'aria-invalid="true"' if @user.errors[:email].any? %>>
+</label>`;
+
 const TOAST_JS = `asta.toast({ title: "Saved", tone: "success" })
 asta.toast({ title: "Deleted", action: { label: "Undo", event: "undo" } })
 asta.open("invite")
@@ -204,34 +245,40 @@ export default async function CssPage() {
     block("menu.html", MENU, "html"),
     block("tabs.html", TABS, "html"),
     block("table.html", TABLE, "html"),
+    block("index.html", HTMX, "html"),
+    block("members.html", GO_TPL, "html"),
+    block("members.html", DJANGO, "html"),
+    block("members.html.erb", ERB, "html"),
     block("Console", TOAST_JS, "tsx"),
     block("handlers.go", TOAST_GO, "go"),
     block("page.html", FLASH, "html"),
     block("app.css", THEME, "css"),
     block("index.html", DARK, "html"),
   ]);
-  const [linkTemp, link, npm, tw, twJs, buttons, field, fieldError, controls, dialog, menu, tabs, table, toastJs, toastGo, flash, theme, dark] = files;
+  const [linkTemp, link, npm, tw, twJs, buttons, field, fieldError, controls, dialog, menu, tabs, table, htmx, goTpl, django, erb, toastJs, toastGo, flash, theme, dark] = files;
 
   return (
     <DocPage
       title="HTML + CSS"
-      lead="The kit as plain CSS classes and one small script. No React, no templ, no build step."
+      lead="The kit as plain CSS classes and one small script. For any stack that renders HTML: Go, Django, Rails, Laravel, htmx or a static page. No React, no build step."
       toc={[
         { id: "why", title: "Why" },
         { id: "install", title: "Install" },
         { id: "components", title: "Components" },
+        { id: "server", title: "Server templates" },
+        { id: "htmx", title: "htmx" },
         { id: "toasts", title: "Toasts" },
         { id: "classes", title: "Class names" },
         { id: "theming", title: "Theming" },
         { id: "versions", title: "Versions" },
       ]}
-      next={{ href: "/go", title: "Go + htmx" }}
+      next={{ href: "/prompts", title: "Prompts" }}
     >
       <h2 id="why">Why</h2>
       <p>You render HTML on the server and want the Astabyte look. This is for you.</p>
       <ul>
         <li>Works with Go html/template, htmx, Rails, Django, Laravel or a plain HTML file.</li>
-        <li>Same look as the React kit and the Go package, light and dark.</li>
+        <li>Same look as the React kit, light and dark.</li>
         <li>
           Menus, dialogs, tabs and toasts run on <code>asta.js</code>. It wires itself with event delegation, so markup swapped in by htmx just works.
         </li>
@@ -319,6 +366,35 @@ export default async function CssPage() {
         <CodeTabs files={[table]} />
       </div>
 
+      <h2 id="server">Server templates</h2>
+      <p>
+        There is nothing to install on the server. Loop over your data and print the classes. For an error, set <code>aria-invalid</code> and
+        render an <code>asta-error</code> line. Every component page has the full markup in its &quot;HTML + CSS&quot; step.
+      </p>
+      <div className="my-6">
+        <CodeTabs files={[{ ...goTpl, name: "Go html/template" }, { ...django, name: "Django" }, { ...erb, name: "Rails (ERB)" }]} />
+      </div>
+
+      <h2 id="htmx">htmx</h2>
+      <p>
+        Load htmx next to <code>asta.js</code>. Nothing else to set up: <code>asta.js</code> listens on <code>document</code>, so menus, dialogs and
+        tabs in swapped-in markup work without re-init.
+      </p>
+      <div className="my-6">
+        <CodeTabs files={[htmx]} />
+      </div>
+      <ul>
+        <li>
+          A button with <code>asta-btn-spinner</code> shows it while its request runs (<code>htmx-request</code>).
+        </li>
+        <li>
+          A tab panel gets <code>asta:show</code> the first time it opens, so <code>hx-trigger=&quot;asta:show once&quot;</code> loads it lazily.
+        </li>
+        <li>
+          Send toasts from the server with <code>HX-Trigger</code> (below).
+        </li>
+      </ul>
+
       <h2 id="toasts">Toasts</h2>
       <p>
         <strong>From JavaScript.</strong> <code>asta.js</code> puts one function on <code>window.asta</code>.
@@ -381,7 +457,7 @@ export default async function CssPage() {
 
       <h2 id="versions">Versions</h2>
       <p>
-        Pin the version in the URL, like <code>asta-ui@0.8.0</code>. A bare <code>asta-ui</code> follows the latest release and can change under
+        Pin the version in the URL, like <code>asta-ui@{VERSION}</code>. A bare <code>asta-ui</code> follows the latest release and can change under
         you. The CSS ships with every npm release, next to the React package. See the <a href={`${REPO}/releases`}>releases</a>.
       </p>
     </DocPage>

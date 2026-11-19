@@ -3,9 +3,9 @@
 # Astabyte UI
 
 **Components that feel good to use.**
-For React, for Go + htmx, or as plain CSS in any HTML.
+For React, or as plain CSS in any HTML.
 
-[Website](https://ui.astabyte.com) · [Docs](https://ui.astabyte.com/introduction) · [Go + htmx](https://ui.astabyte.com/go) · [HTML + CSS](https://ui.astabyte.com/css) · [Icons](https://ui.astabyte.com/icons) · [Releases](https://github.com/astabyteidn/asta-ui/releases) · [Changelog](https://ui.astabyte.com/changelog)
+[Website](https://ui.astabyte.com) · [Docs](https://ui.astabyte.com/introduction) · [HTML + CSS](https://ui.astabyte.com/css) · [Icons](https://ui.astabyte.com/icons) · [Releases](https://github.com/astabyteidn/asta-ui/releases) · [Changelog](https://ui.astabyte.com/changelog)
 
 </div>
 
@@ -97,19 +97,9 @@ claude mcp add --transport http astabyte-ui https://ui.astabyte.com/mcp
 
 Also: [llms.txt](https://ui.astabyte.com/llms.txt) · [prompts](https://ui.astabyte.com/prompts) · [skill.md](https://ui.astabyte.com/skill.md)
 
-## Go + htmx
-
-Not on React? The kit also ships as [templ](https://templ.guide) components for Go and htmx. CSS, JS and htmx are embedded, so your app is still one binary.
-
-```sh
-go get github.com/astabyteidn/asta-ui/go@latest
-```
-
-See [go/README.md](go/README.md) and [ui.astabyte.com/go](https://ui.astabyte.com/go).
-
 ## HTML + CSS
 
-No React, no Go? The npm package ships the look as plain CSS: semantic classes like `.asta-btn` and `.asta-input`, plus a small `asta.js` for menus, dialogs and toasts. Works with html/template, htmx, Rails, Django or a static page.
+Not on React? The npm package ships the look as plain CSS: semantic classes like `.asta-btn` and `.asta-input`, plus a small `asta.js` for menus, dialogs and toasts. Works with Go html/template, Django, Rails, Laravel, htmx or a static page.
 
 ```html
 <link rel="stylesheet" href="https://ui.astabyte.com/cdn/asta.css" />
@@ -117,7 +107,7 @@ No React, no Go? The npm package ships the look as plain CSS: semantic classes l
 ```
 
 > **Temporary:** the `ui.astabyte.com/cdn` links may move or go away. For production, pin a version from jsDelivr:
-> `https://cdn.jsdelivr.net/npm/asta-ui@0.8.0/css/asta.css` and `…/css/asta.js`.
+> `https://cdn.jsdelivr.net/npm/asta-ui@0.9.0/css/asta.css` and `…/css/asta.js`.
 
 Have your own Tailwind v4 build? Import `asta-ui/css/tokens.css` and `asta-ui/css/components.css` instead. See [HTML + CSS](https://ui.astabyte.com/css).
 
