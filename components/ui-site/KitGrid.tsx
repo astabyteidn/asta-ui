@@ -38,6 +38,9 @@ export default function KitGrid() {
   const [layer, setLayer] = useState<Layer>("Atoms");
   const items = kitItems.filter((k) => k.layer === layer);
   const wide = layer === "Organisms";
+  // Live demos for the first few, then the rest of the layer as a plain directory: the page stays short.
+  const live = items.slice(0, wide ? 4 : 6);
+  const rest = items.slice(live.length);
 
   return (
     <div className="px-shell">
@@ -62,7 +65,7 @@ export default function KitGrid() {
       </div>
 
       <div key={layer} className={`grid gap-3 sm:grid-cols-2 ${wide ? "" : "xl:grid-cols-3"}`}>
-        {items.map((k, n) => (
+        {live.map((k, n) => (
           <Spot key={k.slug} className="ui-rise flex flex-col" style={{ animationDelay: `${n * 50}ms` }}>
             <div className={`relative m-1.5 mb-0 overflow-hidden rounded-lg bg-paper ${wide ? "aspect-[16/10]" : "aspect-[4/3]"} shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_6%,transparent)]`}>
               <Fit width={wide ? 820 : 680}>
@@ -85,6 +88,25 @@ export default function KitGrid() {
           </Spot>
         ))}
       </div>
+
+      {rest.length > 0 && (
+        <div key={`${layer}-rest`} className="ui-rise mt-3 rounded-xl bg-paper-2 p-5 sm:p-6">
+          <p className="label mb-4 flex justify-between text-mute">
+            Also in {layer.toLowerCase()} <span className="tabular-nums">{rest.length}</span>
+          </p>
+          <ul className="grid gap-x-6 gap-y-0.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {rest.map((k) => (
+              <li key={k.slug}>
+                <Link href={`/${k.slug}`} className="group/dir flex items-baseline gap-3 rounded-[7px] py-1.5 text-[15px] text-ink-2 transition-colors hover:text-ink">
+                  <span className="w-[52px] shrink-0 font-mono text-[11px] tabular-nums text-mute/70 transition-colors group-hover/dir:text-accent">{kitId(k.slug)}</span>
+                  <span className="truncate">{k.title}</span>
+                  <span className="btn-arrow ml-auto opacity-0 transition-opacity group-hover/dir:opacity-100" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

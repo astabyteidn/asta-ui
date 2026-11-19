@@ -6,9 +6,10 @@ import { Live, Spot } from "@/components/ui-site/Live";
 import { KINDS, specimenId, type Kind, type LabMeta } from "@/lib/lab";
 
 /** Filterable catalogue of live components for the UI home. */
-export default function UiGrid({ blocks }: { blocks: LabMeta[] }) {
+export default function UiGrid({ blocks, limit }: { blocks: LabMeta[]; limit?: number }) {
   const [kind, setKind] = useState<Kind | "All">("All");
   const [q, setQ] = useState("");
+  const [all, setAll] = useState(false);
 
   const shown = useMemo(() => {
     const term = q.trim().toLowerCase();
@@ -16,6 +17,10 @@ export default function UiGrid({ blocks }: { blocks: LabMeta[] }) {
       .map((b, i) => ({ b, i }))
       .filter(({ b }) => (kind === "All" || b.kind.includes(kind)) && (!term || `${b.title} ${b.description}`.toLowerCase().includes(term)));
   }, [blocks, kind, q]);
+
+  // Filtering or searching always shows every match; the cap only trims the default view.
+  const capped = !all && limit !== undefined && kind === "All" && !q.trim() && shown.length > limit;
+  const visible = capped ? shown.slice(0, limit) : shown;
 
   const count = (k: Kind | "All") => (k === "All" ? blocks.length : blocks.filter((b) => b.kind.includes(k)).length);
 
@@ -45,7 +50,7 @@ export default function UiGrid({ blocks }: { blocks: LabMeta[] }) {
         />
       </div>
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-        {shown.map(({ b, i }) => (
+        {visible.map(({ b, i }) => (
           <Spot key={b.slug} className="flex flex-col">
             <div className="ui-dark relative m-1.5 mb-0 aspect-[4/3] overflow-hidden rounded-lg bg-paper-2">
               <Live slug={b.slug} />
@@ -67,6 +72,13 @@ export default function UiGrid({ blocks }: { blocks: LabMeta[] }) {
         ))}
         {shown.length === 0 && <p className="py-10 text-mute">Nothing matches that.</p>}
       </div>
+      {capped && (
+        <div className="mt-6 flex justify-center">
+          <button type="button" onClick={() => setAll(true)} className="btn btn-quiet btn-lg">
+            Show all {shown.length} experiments <span className="btn-arrow down" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

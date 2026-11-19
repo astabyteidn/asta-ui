@@ -31,7 +31,7 @@ export default function Demo() {
           </p>
           <pre className="mt-6 overflow-x-auto rounded-[12px] bg-ink p-5 font-mono text-[12.5px] leading-relaxed text-paper/85">
             <code>{`curl https://api.astabyte.com/v1/hooks \\
-  -H "Authorization: Bearer $ACME_TOKEN" \\
+  -H "Authorization: Bearer $ASTABYTE_TOKEN" \\
   -d url=https://example.com/hooks/astabyte \\
   -d events=deploy.succeeded,deploy.failed`}</code>
           </pre>
