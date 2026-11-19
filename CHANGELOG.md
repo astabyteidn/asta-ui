@@ -2,6 +2,12 @@
 
 Releases are git tags (`vX.Y.Z`); pushing a tag deploys ui.astabyte.com. Merging to `main` does not.
 
+## 0.7.0 — 2026-11-19
+
+- **Skills that update themselves.** A third agent skill, `astabyte-skills-update`, plus `npx asta-ui skills install | update | status | auto`. Every skill now checks https://ui.astabyte.com/skills.json once a session and rewrites only what changed. `skills auto` adds a Claude Code SessionStart hook that checks once a day.
+- **Astabyte MCP server** at https://ui.astabyte.com/mcp (Streamable HTTP, no key, read-only): search components, get one with its install command and source, setup steps, the design guide, example requests and the current skills. It runs on the site, so it never goes stale.
+- Skill files are served at `/skills/<name>/<path>`.
+
 ## 0.6.1 — 2026-11-19
 
 - **A shorter, calmer home.** About 6k px instead of 14k. One live stage with a pick list replaces the bento, the kit shows six live demos per layer with the rest as a directory, the motion lab shows six with a Show all button, and a stat row replaces the spec sheet.

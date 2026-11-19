@@ -2,8 +2,10 @@
 // Astabyte UI CLI: a thin layer over the shadcn CLI that knows our registry.
 // No dependencies on purpose, so `npx asta-ui@latest` starts instantly.
 import { spawn } from "node:child_process";
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { createHash } from "node:crypto";
+import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { homedir } from "node:os";
+import { dirname, join, resolve } from "node:path";
 import { createRequire } from "node:module";
 
 const { version } = createRequire(import.meta.url)("../package.json");
@@ -21,10 +23,15 @@ ${bold("Usage")}
   npx asta-ui@latest add <component...> [flags]   add components (e.g. add dialog select)
   npx asta-ui@latest list [search]                 list components and variants
   npx asta-ui@latest prompt <component>            print a prompt for your AI coding agent
+  npx asta-ui@latest skills install [name...]      install the agent skills (~/.claude/skills)
+  npx asta-ui@latest skills update                 update installed agent skills that changed
+  npx asta-ui@latest skills status                 show installed agent skills and if they're current
+  npx asta-ui@latest skills auto [--off]           update the skills at the start of each Claude Code session
 
 ${bold("Flags")}
   --radix | --base   primitive library (default: what init chose, else Radix)
   any other flag is passed to shadcn (e.g. -y, -o, -p src/components)
+  skills: --project (./.claude), --dir <path>, --auto, --quiet, --daily
 
 ${bold("Docs")}  ${SITE}
 `;
@@ -182,6 +189,175 @@ Use it to: [describe where it goes and what it should do]`);
   return 0;
 }
 
+
+/* Agent skills: install and keep them in step with ui.astabyte.com/skills.json. */
+
+const sha = (s) => createHash("sha256").update(s).digest("hex").slice(0, 16);
+const STAMP = join(homedir(), ".cache", "asta-ui", "skills-checked");
+const HOOK_MARK = "asta-ui@latest skills update";
+const skillDirs = () => [
+  ...new Set([join(homedir(), ".claude", "skills"), resolve(".claude", "skills"), join(homedir(), ".agents", "skills"), resolve(".agents", "skills")]),
+];
+const pretty = (p) => p.replace(homedir(), "~");
+
+async function getText(url) {
+  const res = await fetch(url, { signal: AbortSignal.timeout(15000) });
+  if (!res.ok) throw new Error(`${url} returned ${res.status}`);
+  return res.text();
+}
+const manifest = async () => JSON.parse(await getText(`${SITE}/skills.json`));
+
+const readOr = (p) => {
+  try {
+    return readFileSync(p, "utf8");
+  } catch {
+    return null;
+  }
+};
+// Same hash as the site: every file of the skill, in manifest order. A missing file never matches.
+function localHash(dir, skill) {
+  const parts = [];
+  for (const f of skill.files) {
+    const c = readOr(join(dir, skill.name, f.path));
+    if (c === null) return null;
+    parts.push(`${f.path}\n${c}`);
+  }
+  return sha(parts.join("\n\0\n"));
+}
+
+async function writeSkill(dir, skill) {
+  for (const f of skill.files) {
+    const target = join(dir, skill.name, f.path);
+    mkdirSync(dirname(target), { recursive: true });
+    writeFileSync(target, await getText(`${SITE}/skills/${skill.name}/${f.path}`));
+  }
+}
+
+function pick(m, names) {
+  const unknown = names.filter((n) => !m.skills.some((s) => s.name === n));
+  if (unknown.length) throw new Error(`Unknown skill ${unknown.join(", ")}. Available: ${m.skills.map((s) => s.name).join(", ")}`);
+  return names.length ? m.skills.filter((s) => names.includes(s.name)) : m.skills;
+}
+
+function touchStamp() {
+  try {
+    mkdirSync(dirname(STAMP), { recursive: true });
+    writeFileSync(STAMP, new Date().toISOString() + "\n");
+  } catch {}
+}
+
+async function skillsUpdate(names, opts) {
+  if (opts.daily) {
+    try {
+      if (Date.now() - statSync(STAMP).mtimeMs < 24 * 3600 * 1000) return 0;
+    } catch {}
+  }
+  let m;
+  try {
+    m = await manifest();
+  } catch (e) {
+    if (opts.quiet) return 0; // offline: keep the skills we have, say nothing
+    throw e;
+  }
+  const wanted = pick(m, names);
+  let found = 0;
+  const updated = [];
+  for (const dir of skillDirs()) {
+    for (const s of wanted) {
+      if (!existsSync(join(dir, s.name, "SKILL.md"))) continue;
+      found++;
+      if (localHash(dir, s) === s.hash) continue;
+      await writeSkill(dir, s);
+      updated.push(`${s.name} in ${pretty(dir)}`);
+    }
+  }
+  touchStamp();
+  if (updated.length) console.log(`${green("✓")} Updated Astabyte skills to v${m.version}: ${updated.join(", ")}. Re-read any of them you are using.`);
+  else if (!opts.quiet) console.log(found ? `${green("✓")} Astabyte skills are current (v${m.version}).` : `No Astabyte skills installed. Install them with ${blue("npx asta-ui@latest skills install")}`);
+  return 0;
+}
+
+async function skillsInstall(names, opts) {
+  const m = await manifest();
+  const dir = opts.dir ? resolve(opts.dir.replace(/^~(?=$|\/)/, homedir())) : opts.project ? resolve(".claude", "skills") : join(homedir(), ".claude", "skills");
+  for (const s of pick(m, names)) {
+    await writeSkill(dir, s);
+    console.log(`${green("✓")} ${bold(s.name)} → ${pretty(join(dir, s.name))}`);
+  }
+  touchStamp();
+  if (opts.auto) return skillsAuto(opts);
+  console.log(dim(`Keep them current: npx asta-ui@latest skills update  ·  or every session: npx asta-ui@latest skills auto`));
+  return 0;
+}
+
+async function skillsStatus() {
+  const m = await manifest();
+  let any = false;
+  for (const dir of skillDirs()) {
+    for (const s of m.skills) {
+      if (!existsSync(join(dir, s.name, "SKILL.md"))) continue;
+      any = true;
+      const ok = localHash(dir, s) === s.hash;
+      console.log(`${ok ? green("current") : red("outdated")}  ${s.name.padEnd(24)} ${dim(pretty(dir))}`);
+    }
+  }
+  if (!any) console.log(`No Astabyte skills installed. Install them with ${blue("npx asta-ui@latest skills install")}`);
+  const hooked = (readOr(join(homedir(), ".claude", "settings.json")) ?? "").includes(HOOK_MARK) || (readOr(resolve(".claude", "settings.json")) ?? "").includes(HOOK_MARK);
+  console.log(dim(`\nLatest v${m.version} · auto-update ${hooked ? "on" : "off"} · ${SITE}/skills.json`));
+  return 0;
+}
+
+// One SessionStart hook in Claude Code settings. On macOS/Linux a find test skips npx entirely when the last
+// check is under a day old, so most sessions start without touching the network.
+function skillsAuto(opts) {
+  const file = opts.project ? resolve(".claude", "settings.json") : join(homedir(), ".claude", "settings.json");
+  const raw = readOr(file);
+  if (opts.off && (raw === null || !raw.includes(HOOK_MARK))) {
+    console.log(`Auto-update is already off (${pretty(file)})`);
+    return 0;
+  }
+  let cfg = {};
+  if (raw) {
+    try {
+      cfg = JSON.parse(raw);
+    } catch {
+      console.error(red(`${pretty(file)} is not valid JSON; not touching it.`));
+      return 1;
+    }
+  }
+  const starts = (cfg.hooks?.SessionStart ?? []).filter((g) => !JSON.stringify(g).includes(HOOK_MARK));
+  if (!opts.off) {
+    const cmd = `npx -y ${HOOK_MARK} --quiet --daily`;
+    const command = process.platform === "win32" ? cmd : `test -n "$(find "$HOME/.cache/asta-ui/skills-checked" -mmin -1440 2>/dev/null)" || ${cmd}`;
+    starts.push({ hooks: [{ type: "command", command, timeout: 60 }] });
+  }
+  cfg.hooks = { ...(cfg.hooks ?? {}), SessionStart: starts };
+  if (!cfg.hooks.SessionStart.length) delete cfg.hooks.SessionStart;
+  if (!Object.keys(cfg.hooks).length) delete cfg.hooks;
+  mkdirSync(dirname(file), { recursive: true });
+  writeFileSync(file, JSON.stringify(cfg, null, 2) + "\n");
+  console.log(opts.off ? `${green("✓")} Auto-update off (${pretty(file)})` : `${green("✓")} Auto-update on: Claude Code checks the Astabyte skills once a day at session start (${pretty(file)})`);
+  return 0;
+}
+
+function skills(args) {
+  const [sub, ...more] = args;
+  const opts = {};
+  const names = [];
+  for (let i = 0; i < more.length; i++) {
+    const a = more[i];
+    if (a === "--dir") opts.dir = more[++i];
+    else if (a.startsWith("--")) opts[a.slice(2)] = true;
+    else names.push(a);
+  }
+  if (sub === "install" || sub === "add") return skillsInstall(names, opts);
+  if (sub === "update" || sub === "up") return skillsUpdate(names, opts);
+  if (sub === "status" || sub === "ls") return skillsStatus();
+  if (sub === "auto") return skillsAuto(opts);
+  console.error(red("Usage: npx asta-ui@latest skills <install|update|status|auto> [name...] [--project] [--dir <path>] [--auto] [--off]"));
+  return Promise.resolve(1);
+}
+
 const argv = process.argv.slice(2);
 const cmd = argv[0];
 const flags = new Set();
@@ -202,6 +378,7 @@ const main = {
   list: () => list(names[0]),
   ls: () => list(names[0]),
   prompt: () => prompt(names[0], flags),
+  skills: async () => skills(argv.slice(1)),
   "-v": () => (console.log(version), 0),
   "--version": () => (console.log(version), 0),
 }[cmd];

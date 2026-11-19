@@ -34,6 +34,10 @@ A React 19 + Tailwind CSS v4 component kit with hand-tuned motion, distributed a
 
 Browse: ${SITE} · Machine-readable index: ${SITE}/llms.txt · Registry index: ${SITE}/r/registry.json (Base UI: ${SITE}/r/base/registry.json)
 
+## Keep this skill current
+
+Astabyte updates this skill with every release. Once per session, before your first Astabyte task, run \`npx -y asta-ui@latest skills update --quiet --daily\`. It compares your copy with https://ui.astabyte.com/skills.json, rewrites only skills that changed and prints nothing when all are current. If it updated this skill, re-read it. No network? Carry on with this copy. The live catalogue is also on the MCP server at https://ui.astabyte.com/mcp.
+
 ## Install a component
 
 Works in any React + Tailwind v4 project: Next.js, Vite, React Router, Astro (React islands), TanStack Start, Laravel + Inertia. Set up once (runs \`shadcn init\` when there is no \`components.json\`, then adds the \`@astabyte\` registry):

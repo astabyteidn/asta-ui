@@ -18,6 +18,10 @@ TL;DR:
 
 Need a component that already exists (button, dialog, price chart, pricing section)? Install it with the `astabyte-ui` skill or from ui.astabyte.com. This skill is for designing everything around it, or something new.
 
+## Keep this skill current
+
+Astabyte updates this skill with every release. Once per session, before your first Astabyte task, run `npx -y asta-ui@latest skills update --quiet --daily`. It compares your copy with https://ui.astabyte.com/skills.json, rewrites only skills that changed and prints nothing when all are current. If it updated this skill, re-read it. No network? Carry on with this copy. The live catalogue is also on the MCP server at https://ui.astabyte.com/mcp.
+
 ## 1. Pick the surface
 
 | Surface | Use it for | Ground | Accent | Corners |
