@@ -2,6 +2,11 @@
 
 Releases are git tags (`vX.Y.Z`); pushing a tag deploys ui.astabyte.com. Merging to `main` does not.
 
+## 0.5.1 — 2026-11-19
+
+- **Lighter pages.** The Code tab mounts its highlighted source the first time you hover, focus or open it, so pages with many variants carry half the DOM: navbar 19.7k → 9.4k nodes, input 7.3k → 2.8k.
+- **Icons stay on /icons.** The header ships only the core icons, and the full set of 532 with its hover CSS loads on the icons page alone.
+
 ## 0.5.0 — 2026-11-19
 
 - **35 form variants, 28 → 63.**

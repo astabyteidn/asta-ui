@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import "./icons-ui.css";
-import "./icons-world.css";
 import Link from "next/link";
 import Mark from "@/components/site/Mark";
 import PageviewTracker from "@/components/site/PageviewTracker";

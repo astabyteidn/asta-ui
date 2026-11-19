@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import "../icons-ui.css";
+import "../icons-world.css";
 import Icon from "@/components/icons/Icon";
 import { ICONS } from "@/components/icons/icons";
 import { ICON_GROUPS } from "@/components/icons/groups";

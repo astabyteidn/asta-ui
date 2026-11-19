@@ -304,7 +304,18 @@ const Tile = memo(function Tile({ name }: { name: IconName }) {
         className="icon-hover group flex aspect-square w-full flex-col items-center justify-center gap-3 rounded-xl bg-paper-2 text-ink-2 transition-colors duration-200 hover:bg-[color-mix(in_srgb,var(--color-ink)_7%,var(--color-paper))] hover:text-ink focus-visible:outline-2 focus-visible:outline-brand data-[copied]:text-brand"
       >
         <span className="grid h-8 w-8 place-items-center transition-transform duration-300 ease-[cubic-bezier(.16,1,.3,1)] group-active:scale-[.82] group-active:duration-100 motion-reduce:transition-none">
-          <Icon name={name} className="h-[var(--ic-size)] w-[var(--ic-size)] [stroke-width:var(--ic-stroke)]" />
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={1.75}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            data-icon={name}
+            aria-hidden
+            className="h-[var(--ic-size)] w-[var(--ic-size)] shrink-0 [stroke-width:var(--ic-stroke)]"
+            dangerouslySetInnerHTML={{ __html: ICONS[name] }}
+          />
         </span>
         <span className="max-w-full truncate px-2 font-mono text-[11px] text-mute group-data-[copied]:hidden">{name}</span>
         <span className="hidden font-mono text-[11px] text-brand group-data-[copied]:block">Copied</span>

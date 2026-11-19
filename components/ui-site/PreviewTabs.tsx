@@ -4,7 +4,8 @@ import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
 /**
  * Preview / Code switch. Both panels share one stage, so switching never changes the page height: the code panel
- * lies over the stage and scrolls inside it, and the two crossfade while the underline glides.
+ * lies over the stage and scrolls inside it, and the two crossfade while the underline glides. The code panel mounts
+ * on first use, so pages with many variants don't carry every highlighted file in the DOM.
  */
 export default function PreviewTabs({
   id,
@@ -19,7 +20,14 @@ export default function PreviewTabs({
   code: ReactNode;
   tone?: "light" | "dark";
 }) {
-  const [tab, setTab] = useState<"preview" | "code">("preview");
+  const [tab, setTabState] = useState<"preview" | "code">("preview");
+  // Highlighted source is thousands of nodes per block, so the code panel mounts the first time you reach for it
+  // (hover, focus or click) instead of with the page.
+  const [seen, setSeen] = useState(false);
+  const setTab = (t: "preview" | "code") => {
+    if (t === "code") setSeen(true);
+    setTabState(t);
+  };
   const [key, setKey] = useState(0);
   const [out, setOut] = useState(false);
   const tabs = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -53,6 +61,8 @@ export default function PreviewTabs({
             aria-selected={tab === t}
             tabIndex={tab === t ? 0 : -1}
             onClick={() => setTab(t)}
+            onPointerEnter={t === "code" ? () => setSeen(true) : undefined}
+            onFocus={t === "code" ? () => setSeen(true) : undefined}
             onKeyDown={(e) => {
               if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
               e.preventDefault();
@@ -98,7 +108,7 @@ export default function PreviewTabs({
           </div>
         </div>
         <div className="ui-fade-panel absolute inset-0" data-on={tab === "code"} inert={tab !== "code"}>
-          {code}
+          {seen && code}
         </div>
       </div>
     </div>
