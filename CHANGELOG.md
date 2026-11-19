@@ -2,6 +2,14 @@
 
 Releases are git tags (`vX.Y.Z`); pushing a tag deploys ui.astabyte.com. Merging to `main` does not.
 
+## 0.6.0 — 2026-11-19
+
+- **Editor kit: four new components** for design and file-browser apps.
+  - **Tool dock:** the floating tool bar. A highlight slides to the active tool, tooltips show the name and shortcut, and single-key shortcuts work anywhere on the page.
+  - **Properties panel:** an inspector with collapsible sections, number fields you drag to scrub (Shift ×10, Alt ×0.1, ↑ ↓ to step) and a colour field with a swatch and hex input.
+  - **File card:** a thumbnail, kind icon, name and edit time. The preview zooms a little on hover, the star pops, and the same props render a list row.
+  - **Workspace switcher:** the picker at the top of an app sidebar, with an account header, plan tags, a check on the current workspace and full keyboard support.
+
 ## 0.5.1 — 2026-11-19
 
 - **Lighter pages.** The Code tab mounts its highlighted source the first time you hover, focus or open it, so pages with many variants carry half the DOM: navbar 19.7k → 9.4k nodes, input 7.3k → 2.8k.
