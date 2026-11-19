@@ -215,5 +215,25 @@ Standalone takes on a kit component, each with a global id (`aui-001`, `aui-002`
 | `aui-006` | [Textarea · Mentions & commands](https://ui.astabyte.com/textarea#aui-006) | Type @ to mention someone or / for a command. The list opens at the caret and is fully keyboard driven. | — |
 | `aui-007` | [Textarea · Validation](https://ui.astabyte.com/textarea#aui-007) | Checks the text against rules: quiet while typing, shows what's missing on blur with one small shake, ticks rules off live. | — |
 | `aui-008` | [Textarea · AI prompt box](https://ui.astabyte.com/textarea#aui-008) | Model picker, token counter and a Generate button that turns into Stop while a response streams. | Radix + Base UI |
+| `aui-009` | [Navbar · Minimal](https://ui.astabyte.com/navbar#aui-009) | A compact header with an elastic underline that stretches to whatever you point at, and mega menus of tiles. | — |
+| `aui-010` | [Navbar · Glass pill](https://ui.astabyte.com/navbar#aui-010) | A slim glass pill that floats over the page, with a glow and a highlight that follow your pointer. | — |
+| `aui-011` | [Navbar · Wordmark](https://ui.astabyte.com/navbar#aui-011) | A dark header with a centred wordmark whose letters ripple under the pointer, and dark mega menus on the left. | — |
+| `aui-012` | [Navbar · App header](https://ui.astabyte.com/navbar#aui-012) | A compact app header whose search field opens a command palette, plus a workspace switcher, a bell and an avatar menu. | — |
+| `aui-013` | [Navbar · Docs header](https://ui.astabyte.com/navbar#aui-013) | A single-row docs header with mega menus, a search button and a version switch that rolls to the release you pick. | — |
+| `aui-014` | [Navbar · Reading](https://ui.astabyte.com/navbar#aui-014) | A compact reading header that slides away as you scroll and swaps its links for the title and a live percent read. | — |
+| `aui-015` | [Sign-in card · Magic link](https://ui.astabyte.com/sign-in#aui-015) | A passwordless card that sends a sign-in link and shows it landing in a small inbox preview, with a resend timer. | — |
+| `aui-016` | [Sign-in card · Painted split](https://ui.astabyte.com/sign-in#aui-016) | A split card with a painting on one side and a calm serif sign-in form on the other. | — |
+| `aui-017` | [Sign-in card · Social first](https://ui.astabyte.com/sign-in#aui-017) | Provider buttons first, with a highlight that glides between rows, a last used tag and email tucked behind one link. | — |
+| `aui-018` | [Sign-in card · Two-step](https://ui.astabyte.com/sign-in#aui-018) | Email first, then password. The steps slide sideways and the chosen account shows as a chip. | — |
+| `aui-019` | [Sign-in card · Passkey](https://ui.astabyte.com/sign-in#aui-019) | A dark passkey card with a fingerprint that scans while it waits and a password fallback. | — |
+| `aui-020` | [Sign-in card · Sign up](https://ui.astabyte.com/sign-in#aui-020) | A sign-up card with a live initials avatar, a strength meter that fills in steps and a terms check. | — |
+| `aui-021` | [Pricing · Comparison table](https://ui.astabyte.com/pricing#aui-021) | Plan columns and grouped feature rows under a sticky header. A brand lens rests on the recommended plan and glides to the column you point at. | — |
+| `aui-022` | [Pricing · Painted plan](https://ui.astabyte.com/pricing#aui-022) | One plan on a painted card: a serif name beside a slowly settling painting, a monthly and yearly switch and a price that rolls. | — |
+| `aui-023` | [Pricing · Usage calculator](https://ui.astabyte.com/pricing#aui-023) | Drag to set seats or requests. A cost chart lights up to the thumb, the price rolls live and the tier marker glides. | — |
+| `aui-024` | [Pricing · Tier picker](https://ui.astabyte.com/pricing#aui-024) | Tiers as rows in a radio group. A brand ring glides to the choice and the total rolls in a dark dock below. | — |
+| `aui-025` | [Footer · Minimal](https://ui.astabyte.com/footer#aui-025) | One row: brand, links with a gliding brand underline, social icons and copyright. Wraps neatly on small screens. | — |
+| `aui-026` | [Footer · Dark glow](https://ui.astabyte.com/footer#aui-026) | A dark centred footer with a brand glow that follows the cursor, a big tagline and social icons that lift and show their name. | — |
+| `aui-027` | [Footer · Landscape](https://ui.astabyte.com/footer#aui-027) | A light footer with a glow along the top, one call to action, link columns and a painted landscape that rises in along the bottom. | — |
+| `aui-028` | [Footer · Status](https://ui.astabyte.com/footer#aui-028) | A product footer with a live status card, an uptime strip you can hover, link columns, a language picker and back to top. | — |
 
 Install a variant by its slug, e.g. `pnpm dlx asta-ui@latest add textarea-aui-003`.

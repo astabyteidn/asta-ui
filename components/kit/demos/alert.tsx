@@ -26,7 +26,7 @@ export default function AlertDemo() {
           Update it before 1 December to keep your plan running.
         </Alert>
         <Alert tone="success" dismissible>
-          Domain verified. Emails now send from hello@northwind.studio.
+          Domain verified. Emails now send from hello@astabyte.com.
         </Alert>
         <Alert tone="neutral">Read-only access. Ask an admin to make changes.</Alert>
         <button type="button" onClick={() => setKey((k) => k + 1)} className="mt-3 self-center text-[12.5px] text-mute outline-none hover:text-ink focus-visible:text-ink">

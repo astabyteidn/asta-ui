@@ -8,7 +8,7 @@ const KEYFRAMES = `
 @keyframes kit-spin { to { transform: rotate(360deg) } }
 @keyframes kit-dot { 0%, 80%, 100% { transform: scale(.55); opacity: .35 } 40% { transform: scale(1); opacity: 1 } }
 @keyframes kit-bar { 0%, 100% { transform: scaleY(.35) } 50% { transform: scaleY(1) } }
-@keyframes kit-indet { 0% { left: -40%; width: 40% } 60% { width: 55% } 100% { left: 100%; width: 40% } }
+@keyframes kit-indet { 0% { transform: translateX(-100%) scaleX(.8) } 60% { transform: translateX(110%) scaleX(1.2) } 100% { transform: translateX(250%) scaleX(.8) } }
 @media (prefers-reduced-motion: reduce) { .kit-spinner * { animation-duration: 2.4s !important } }
 `;
 
@@ -76,7 +76,7 @@ export function Progress({ value, label, showValue, className }: { value?: numbe
       >
         <style href="asta-spinner-2" precedence="asta">{KEYFRAMES}</style>
         {v === undefined ? (
-          <span className="absolute inset-y-0 rounded-full bg-brand" style={{ animation: "kit-indet 1.3s cubic-bezier(.65,0,.35,1) infinite" }} />
+          <span className="absolute inset-y-0 left-0 w-[40%] rounded-full bg-brand" style={{ animation: "kit-indet 1.3s cubic-bezier(.65,0,.35,1) infinite" }} />
         ) : (
           <span className="absolute inset-y-0 left-0 rounded-full bg-brand transition-[width] duration-700 ease-[cubic-bezier(.16,1,.3,1)]" style={{ width: `${v}%` }} />
         )}

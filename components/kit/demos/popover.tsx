@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Popover } from "@/components/kit/popover";
 
-const LINK = "https://docs.northwind.app/q4-launch-plan";
+const LINK = "https://docs.astabyte.com/q4-launch-plan";
 
 const PEOPLE = [
   { name: "Ana Lindqvist", initials: "AL", role: "Product lead", team: "Launch team", docs: 42, since: "2023" },

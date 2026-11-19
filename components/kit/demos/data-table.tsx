@@ -14,15 +14,15 @@ interface Invoice {
 }
 
 const CLIENTS = [
-  ["Northwind Studio", "billing@northwind.studio"],
-  ["Halcyon Labs", "ap@halcyonlabs.io"],
-  ["Pine & Pixel", "hello@pineandpixel.co"],
-  ["Orbit Freight", "finance@orbitfreight.com"],
-  ["Lumen Health", "accounts@lumen.health"],
-  ["Copperleaf", "pay@copperleaf.dev"],
-  ["Fieldnote", "team@fieldnote.app"],
-  ["Basalt Coffee", "owner@basalt.coffee"],
-  ["Tidewater Co.", "ops@tidewater.co"],
+  ["Design studio", "billing@studio.example.com"],
+  ["Research lab", "ap@lab.example.com"],
+  ["Pixel agency", "hello@agency.example.com"],
+  ["Freight company", "finance@freight.example.com"],
+  ["Health clinic", "accounts@clinic.example.com"],
+  ["Dev shop", "pay@devshop.example.com"],
+  ["Notes app", "team@notes.example.com"],
+  ["Coffee roaster", "owner@coffee.example.com"],
+  ["Logistics co.", "ops@logistics.example.com"],
 ];
 const STATUSES: Status[] = ["Paid", "Paid", "Pending", "Paid", "Overdue", "Pending", "Draft", "Paid"];
 

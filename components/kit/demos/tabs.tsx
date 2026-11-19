@@ -27,9 +27,9 @@ export default function TabsDemo() {
           label="Code"
           defaultValue="npm"
           tabs={[
-            { value: "npm", label: "npm", content: <Code>npm install @acme/ui</Code> },
-            { value: "pnpm", label: "pnpm", content: <Code>pnpm add @acme/ui</Code> },
-            { value: "bun", label: "bun", content: <Code>bun add @acme/ui</Code> },
+            { value: "npm", label: "npm", content: <Code>npm install asta-ui</Code> },
+            { value: "pnpm", label: "pnpm", content: <Code>pnpm add asta-ui</Code> },
+            { value: "bun", label: "bun", content: <Code>bun add asta-ui</Code> },
           ]}
         />
       </div>

@@ -3,7 +3,7 @@
 import { ClipboardButton } from "@/components/kit/copy-button";
 
 const KEY = "nw_live_8f2k4q9xm3t7v1p6";
-const INVITE = "https://app.northwind.studio/join/7f3k-q9xm";
+const INVITE = "https://app.astabyte.com/join/7f3k-q9xm";
 
 export default function CopyButtonDemo() {
   return (

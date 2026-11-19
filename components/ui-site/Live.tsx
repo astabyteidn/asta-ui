@@ -11,38 +11,51 @@ const noop = () => () => {};
 
 /**
  * Mounts a live component while it's near the viewport and unmounts it once it's well out of view, so only the demos
- * you can see are animating. `eager` mounts it as soon as the page hydrates (component pages); `ssr`
- * renders it on the server too, so a stage that sizes to its content has its final height on first paint. Either way the
- * placeholder crossfades into the component (opacity + a 0.98 → 1 settle), so nothing pops or shifts. Items with a Base UI
- * build swap to it when Base UI is the picked primitive (same crossfade, same size).
+ * you can see are animating. It remembers the height it rendered at and keeps that space while unmounted, so scrolling
+ * past a demo never collapses it and the page never jumps. `eager` mounts it as soon as the page hydrates (component
+ * pages); `ssr` renders it on the server too. Either way the placeholder crossfades into the component, and items with
+ * a Base UI build swap to it when Base UI is the picked primitive (same crossfade, same size).
  */
 export function Live({ slug, eager = false, ssr = false }: { slug: string; eager?: boolean; ssr?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
+  const inner = useRef<HTMLDivElement>(null);
   const [near, setNear] = useState(false);
+  const [held, setHeld] = useState<number | null>(null);
   // false on the server and during hydration, true right after: no hydration mismatch, no effect-driven state.
   const hydrated = useSyncExternalStore(noop, () => true, () => false);
   useEffect(() => {
     const el = ref.current;
     if (!el || eager || ssr) return;
-    const io = new IntersectionObserver(([e]) => setNear(e.isIntersecting), { rootMargin: "400px 0px" });
+    const io = new IntersectionObserver(([e]) => setNear(e.isIntersecting), { rootMargin: "900px 0px" });
     io.observe(el);
     return () => io.disconnect();
   }, [eager, ssr]);
   const on = ssr || (eager ? hydrated : near);
+  // Remember the rendered height, so the slot keeps its size after the demo unmounts.
+  useEffect(() => {
+    const el = inner.current;
+    if (!on || !el) return;
+    const ro = new ResizeObserver(() => {
+      const h = el.offsetHeight;
+      if (h > 0) setHeld(h);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [on]);
   const primitive = usePrimitive();
   const base = primitive === "base" ? baseDemos[slug] : undefined;
   const C = base ?? labComponents[slug] ?? kitDemos[slug] ?? variantDemos[slug];
   return (
-    <div ref={ref} className="relative h-full w-full">
+    <div ref={ref} className="relative h-full w-full" style={!on && held ? { minHeight: held } : undefined}>
       {on && C ? (
         <>
-          <div key={base ? "base" : "radix"} className="ui-live-in relative h-full w-full" data-primitive={base ? "base" : undefined}>
+          <div ref={inner} key={base ? "base" : "radix"} className="ui-live-in relative h-full w-full" data-primitive={base ? "base" : undefined}>
             <C />
           </div>
           <div aria-hidden className="ui-live-ph absolute inset-0 bg-ink/[0.03]" />
         </>
       ) : (
-        <div aria-hidden className="absolute inset-0 animate-pulse bg-ink/[0.03]" />
+        <div aria-hidden className="absolute inset-0 bg-ink/[0.025]" />
       )}
     </div>
   );

@@ -20,7 +20,7 @@ export default function AnnouncementBarDemo() {
         <div key={round} className="overflow-hidden rounded-xl bg-paper-2">
           <AnnouncementBar messages={ROTATING} onExited={() => setGone((g) => g + 1)} />
           <div className="flex items-center justify-between px-5 py-4">
-            <span className="text-[14px] font-medium tracking-[-0.01em] text-ink">Northwind</span>
+            <span className="text-[14px] font-medium tracking-[-0.01em] text-ink">Astabyte</span>
             <span className="flex gap-4 text-[12.5px] text-mute">
               <span>Product</span>
               <span>Pricing</span>

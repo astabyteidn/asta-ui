@@ -3,8 +3,8 @@
 import { Carousel } from "@/components/kit/carousel";
 
 const QUOTES = [
-  { text: "We moved our checkout over in a weekend. Conversion went up the first week.", name: "Maya Rahman", role: "Head of Product, Northwind" },
-  { text: "The components feel finished. We stopped arguing about spacing in review.", name: "Tomás Keller", role: "Design Lead, Fieldnote" },
+  { text: "We moved our checkout over in a weekend. Conversion went up the first week.", name: "Maya Rahman", role: "Head of Product, design studio" },
+  { text: "The components feel finished. We stopped arguing about spacing in review.", name: "Tomás Keller", role: "Design Lead, fintech startup" },
   { text: "Keyboard support out of the box saved us a full accessibility sprint.", name: "Ana Lindqvist", role: "Engineer, Parcel & Co" },
 ];
 

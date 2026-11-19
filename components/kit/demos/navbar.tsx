@@ -42,7 +42,7 @@ const NAV: NavItem[] = [
           ],
         },
       ],
-      feature: { title: "Customer stories", description: "How 2,000 teams ship faster with Northwind.", href: "#", cta: "Read stories" },
+      feature: { title: "Customer stories", description: "How 2,000 teams ship faster with Astabyte.", href: "#", cta: "Read stories" },
     },
   },
   {
@@ -66,7 +66,7 @@ const Logo = () => (
       <circle cx="7.5" cy="10" r="5.5" fill="currentColor" />
       <circle cx="12.5" cy="10" r="5.5" fill="var(--color-brand)" fillOpacity="0.85" />
     </svg>
-    Northwind
+    Astabyte
   </>
 );
 

@@ -2,6 +2,18 @@
 
 Releases are git tags (`vX.Y.Z`); pushing a tag deploys ui.astabyte.com. Merging to `main` does not.
 
+## 0.4.0 — 2026-11-19
+
+- **20 new variants, 8 → 28.**
+  - **Navbar (aui-009–014):** compact bars with 14px links and small buttons. Minimal, Wordmark and Docs have mega menus of tiles. Glass pill floats over a painted hero, App header opens a command palette, Reading swaps its links for the title and a live percent read.
+  - **Sign-in (aui-015–020):** magic link, painted split, social first, two-step, passkey and sign up.
+  - **Pricing (aui-021–024):** comparison table, painted plan, usage calculator and tier picker.
+  - **Footer (aui-025–028):** minimal, dark glow, landscape and status.
+  - A few variants use public-domain paintings (Seurat, Monet, Van Gogh, Pissarro) from `public/lab/art/`.
+- **Demos say Astabyte.** Every brand in components and demos is now Astabyte. Other companies are plain descriptions.
+- **Performance standard.** `bun run perf` checks every component for layout animation, leaked timers and listeners, bare `<style>` tags, unpaused loops and file size. It runs in CI. The indeterminate spinner now moves with transform only.
+- **Smoother docs.** Previews keep their height after they unmount, so scrolling never jumps. Preview and Code switch without the two panels overlapping, and the tabs work with arrow keys.
+
 ## 0.3.0 — 2026-11-18
 
 - **Kit, 30 → 68 components.**

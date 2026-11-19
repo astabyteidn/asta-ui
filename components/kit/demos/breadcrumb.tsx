@@ -11,7 +11,7 @@ const Home = (
 const PATH: Crumb[] = [
   { label: "Home", href: "#", icon: Home },
   { label: "Projects", href: "#" },
-  { label: "Northwind", href: "#" },
+  { label: "Astabyte", href: "#" },
   { label: "Brand refresh", href: "#" },
   { label: "Assets", href: "#" },
   { label: "Logo exports", href: "#" },

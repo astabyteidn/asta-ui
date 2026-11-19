@@ -16,15 +16,15 @@ export default function FooterDemo() {
         className="w-full max-w-[880px]"
         brand={
           <>
-            <span className="h-4 w-4 rounded-full bg-brand" /> Northwind
+            <span className="h-4 w-4 rounded-full bg-brand" /> Astabyte
           </>
         }
         tagline="Revenue analytics for teams that ship. One short letter a month."
         columns={COLUMNS}
-        wordmark="Northwind"
+        wordmark="Astabyte"
         legal={
           <>
-            <span>© 2026 Northwind Inc.</span>
+            <span>© 2026 Astabyte</span>
             <span>Privacy · Terms</span>
           </>
         }

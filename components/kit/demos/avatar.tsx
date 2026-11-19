@@ -42,7 +42,7 @@ export default function AvatarDemo() {
           <Avatar name="Lena Ortiz" size="lg" />
           <Avatar name="Kenji Sato" size="lg" />
           <Avatar name="Broken Image" src="/missing.png" size="lg" />
-          <Avatar name="Acme Studio" shape="square" size="lg" />
+          <Avatar name="Astabyte" shape="square" size="lg" />
         </Row>
         <Row label="Status">
           <Avatar name="Sara Bloom" status="online" size="lg" />
