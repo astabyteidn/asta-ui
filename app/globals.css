@@ -653,6 +653,8 @@ svg.ic-copied { animation: ic-pop .5s cubic-bezier(.16,1,.3,1) both; }
 .doc-body > ol { margin-top: 1rem; display: flex; flex-direction: column; gap: 0.6rem; padding-left: 1.4rem; list-style: decimal; font-size: 17px; line-height: 1.7; color: var(--color-ink-2); }
 .doc-body > ol > li::marker { color: var(--color-mute); font-family: var(--font-mono); font-size: 0.85em; }
 /* Blog posts: a touch larger than the guides, in a column about 70 characters wide. */
+.blog-body > h3 { margin-top: 2.25rem; font-size: 1.2rem; font-weight: 500; letter-spacing: -0.02em; line-height: 1.25; scroll-margin-top: 7rem; color: var(--color-ink); }
+.blog-body > .blog-code { margin-top: 1.25rem; }
 .blog-body > p, .blog-body > ul, .blog-body > ol, .blog-body > section > ul { font-size: 18px; }
 .doc-body strong { color: var(--color-ink); font-weight: 500; }
 .doc-body p code, .doc-body li code { background: var(--color-paper-2); padding: 0.1rem 0.35rem; font-family: var(--font-mono); font-size: 0.82em; color: var(--color-ink); word-break: break-word; }
@@ -758,3 +760,8 @@ main :is(h2, h3, section)[id], :is(h2, h3, section)[id] { scroll-margin-top: 5re
 .nav-logo svg { transition: transform .6s var(--ease-expo); }
 .nav-logo:hover svg { transform: rotate(-120deg); }
 @media (prefers-reduced-motion: reduce) { .nav-panel, .nav-panel .nav-tile, .nav-logo svg { transition: none !important; animation: none !important; } }
+
+/* Blog demos: CSS animations stop while the stage is offscreen or the tab is hidden. */
+.blog-stage[data-paused="true"] *,
+.blog-stage[data-paused="true"] *::before,
+.blog-stage[data-paused="true"] *::after { animation-play-state: paused !important; }

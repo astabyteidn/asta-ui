@@ -17,7 +17,11 @@ const nextConfig: NextConfig = {
   },
   // The Go + htmx port was dropped in 0.9.0; its guide now points at the HTML + CSS layer.
   async redirects() {
-    return [{ source: "/go", destination: "/css", permanent: true }];
+    return [
+      { source: "/go", destination: "/css", permanent: true },
+      // Blog posts folded into the techniques series.
+      { source: "/blog/motion-that-feels-good", destination: "/blog/easing", permanent: true },
+    ];
   },
   // Temporary CDN for the HTML + CSS layer (public/cdn, written by `bun run css`). The paths are unversioned, so keep
   // the cache short. No long stale-while-revalidate: Cloudflare kept serving the old file for hours with it (the VPS

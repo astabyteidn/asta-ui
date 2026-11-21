@@ -16,7 +16,7 @@ const noop = () => () => {};
  * pages); `ssr` renders it on the server too. Either way the placeholder crossfades into the component, and items with
  * a Base UI build swap to it when Base UI is the picked primitive (same crossfade, same size).
  */
-export function Live({ slug, eager = false, ssr = false }: { slug: string; eager?: boolean; ssr?: boolean }) {
+function useNearMount(eager: boolean, ssr: boolean) {
   const ref = useRef<HTMLDivElement>(null);
   const inner = useRef<HTMLDivElement>(null);
   const [near, setNear] = useState(false);
@@ -42,6 +42,11 @@ export function Live({ slug, eager = false, ssr = false }: { slug: string; eager
     ro.observe(el);
     return () => ro.disconnect();
   }, [on]);
+  return { ref, inner, on, held };
+}
+
+export function Live({ slug, eager = false, ssr = false }: { slug: string; eager?: boolean; ssr?: boolean }) {
+  const { ref, inner, on, held } = useNearMount(eager, ssr);
   const primitive = usePrimitive();
   const base = primitive === "base" ? baseDemos[slug] : undefined;
   const C = base ?? labComponents[slug] ?? kitDemos[slug] ?? variantDemos[slug];
@@ -51,6 +56,25 @@ export function Live({ slug, eager = false, ssr = false }: { slug: string; eager
         <>
           <div ref={inner} key={base ? "base" : "radix"} className="ui-live-in relative h-full w-full" data-primitive={base ? "base" : undefined}>
             <C />
+          </div>
+          <div aria-hidden className="ui-live-ph absolute inset-0 bg-ink/[0.03]" />
+        </>
+      ) : (
+        <div aria-hidden className="absolute inset-0 bg-ink/[0.025]" />
+      )}
+    </div>
+  );
+}
+
+/** Same near-viewport mounting as `Live`, for any children (the blog demos). */
+export function LiveSlot({ children }: { children: ReactNode }) {
+  const { ref, inner, on, held } = useNearMount(false, false);
+  return (
+    <div ref={ref} className="relative h-full w-full" style={!on && held ? { minHeight: held } : undefined}>
+      {on ? (
+        <>
+          <div ref={inner} className="ui-live-in relative h-full w-full">
+            {children}
           </div>
           <div aria-hidden className="ui-live-ph absolute inset-0 bg-ink/[0.03]" />
         </>
