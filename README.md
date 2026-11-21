@@ -5,6 +5,10 @@
 **Components that feel good to use.**
 For React, or as plain CSS in any HTML.
 
+[![npm version](https://img.shields.io/npm/v/asta-ui?color=2f54eb&label=npm)](https://www.npmjs.com/package/asta-ui)
+[![Downloads a month](https://img.shields.io/npm/dm/asta-ui?color=2f54eb&label=downloads%2Fmonth)](https://www.npmjs.com/package/asta-ui)
+[![License: MIT](https://img.shields.io/badge/license-MIT-2f54eb)](LICENSE)
+
 [Website](https://ui.astabyte.com) · [Docs](https://ui.astabyte.com/introduction) · [HTML + CSS](https://ui.astabyte.com/css) · [Icons](https://ui.astabyte.com/icons) · [Releases](https://github.com/astabyteidn/asta-ui/releases) · [Changelog](https://ui.astabyte.com/changelog)
 
 </div>
