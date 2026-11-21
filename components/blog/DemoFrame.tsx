@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useRef, useState, useSyncExternalStore, type ReactNode, type RefObject } from "react";
 import { LiveSlot } from "@/components/ui-site/Live";
+import { MotionToggle, useMotionPaused } from "@/components/ui-site/MotionPause";
 
 type Ctx = { n: number; paused: boolean; claim: () => void };
 const DemoCtx = createContext<Ctx>({ n: 0, paused: false, claim: () => {} });
@@ -16,7 +17,7 @@ export function useReplay() {
   return n;
 }
 
-/** True while the stage is offscreen or the tab is hidden. JS loops stop on it. CSS animations pause by themselves. */
+/** True while the stage is offscreen, the tab is hidden or motion is paused. JS loops stop on it. CSS animations pause by themselves. */
 export const usePaused = () => useContext(DemoCtx).paused;
 
 const query = "(prefers-reduced-motion: reduce)";
@@ -57,7 +58,8 @@ function useOffscreen(ref: RefObject<HTMLElement | null>) {
  */
 export function DemoStill({ children }: { children: ReactNode }) {
   const stage = useRef<HTMLDivElement>(null);
-  const paused = useOffscreen(stage);
+  const motionPaused = useMotionPaused();
+  const paused = useOffscreen(stage) || motionPaused;
   const [claim] = useState(() => () => {});
   return (
     <div ref={stage} data-paused={paused} className="blog-stage pointer-events-none h-full w-full" inert aria-hidden>
@@ -68,7 +70,8 @@ export function DemoStill({ children }: { children: ReactNode }) {
 
 /**
  * The stage for a blog demo: a header with a title and Replay, the live demo (mounted near the viewport), then the
- * code and a caption. Replay remounts the demo unless it uses `useReplay`. Animations pause offscreen and on a hidden tab.
+ * code and a caption. Replay remounts the demo unless it uses `useReplay`. Animations pause offscreen, on a hidden tab
+ * and when the visitor pauses motion (the header button, shared with every frame on the page).
  */
 export default function DemoFrame({
   title,
@@ -95,7 +98,8 @@ export default function DemoFrame({
   const [n, setN] = useState(0);
   const [out, setOut] = useState(false);
   const [claimed, setClaimed] = useState(false);
-  const paused = useOffscreen(stage);
+  const motionPaused = useMotionPaused();
+  const paused = useOffscreen(stage) || motionPaused;
   const reduce = useReducedMotion();
   const [claim] = useState(() => () => setClaimed(true));
 
@@ -119,8 +123,9 @@ export default function DemoFrame({
         <div className="flex items-center justify-between gap-3 px-3 pt-3">
           <span className="label min-w-0 truncate pl-1 text-mute">{title}</span>
           <div className="flex shrink-0 items-center gap-1">
-            {reduce && <span className="label hidden pr-2 text-mute/80 sm:inline">Reduced motion on</span>}
+            {reduce && <span className="label hidden pr-2 text-mute sm:inline">Reduced motion on</span>}
             {aside}
+            <MotionToggle />
             <button type="button" onClick={replay} className="btn btn-quiet btn-sm btn-icon group" aria-label="Replay" title="Replay">
               <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 transition-transform duration-500 ease-expo group-hover:-rotate-180" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
                 <path d="M13 8a5 5 0 1 1-1.6-3.7" />

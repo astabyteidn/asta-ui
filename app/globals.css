@@ -267,6 +267,7 @@ html.lenis body {
 }
 .ui-marquee-track { animation: ui-marquee 60s linear infinite; }
 .ui-marquee:hover .ui-marquee-track { animation-play-state: paused; }
+html[data-motion="paused"] :is(.marquee-track, .ui-marquee-track) { animation-play-state: paused; }
 
 /* Pointer-following light on cards. */
 .spot::before {
@@ -743,6 +744,34 @@ html:has(.ui-light), html:has(.ui-light) body { background: #fcfcfb; }
 
 /* Anchors land below the sticky header. */
 main :is(h2, h3, section)[id], :is(h2, h3, section)[id] { scroll-margin-top: 5rem; }
+/* Keyboard focus and in-page jumps never land under the sticky header (h-14) either. */
+html { scroll-padding-top: calc(3.5rem + 1rem); }
+
+/* Skip link: first thing Tab reaches, hidden above the header until focused. */
+.ui-skip {
+  position: fixed;
+  top: 0.75rem;
+  left: var(--gutter, 1rem);
+  z-index: 60;
+  transform: translateY(calc(-100% - 1.5rem));
+  transition: transform 0.2s var(--ease-expo);
+}
+.ui-skip:focus-visible { transform: none; }
+
+/* Icon buttons in the site header get a 44px target on touch screens and phone widths (WCAG 2.5.8 / Apple HIG). */
+@media (pointer: coarse), (max-width: 767px) {
+  .ui-header .btn-icon { width: 2.75rem; height: 2.75rem; }
+}
+
+/* Paused motion (components/ui-site/MotionPause.tsx). A frozen demo is a copy of the live one; its animations are
+   re-created by script and paused, so CSS must not start any of its own. */
+.ui-still, .ui-still *, .ui-still *::before, .ui-still *::after { animation: none !important; transition: none !important; }
+/* A demo that mounts while paused renders once with CSS motion skipped to the end, then freezes. */
+[data-instant], [data-instant] *, [data-instant] *::before, [data-instant] *::after {
+  animation-delay: -60s !important;
+  animation-play-state: paused !important;
+  transition: none !important;
+}
 
 /* Highlighted code is large (~800 nodes a block): skip layout/paint until it is on screen, so page swaps stay in one frame. */
 .ui-docs pre, main pre { content-visibility: auto; contain-intrinsic-size: auto 320px; }

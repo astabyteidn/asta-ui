@@ -417,7 +417,7 @@ export function Navbar({ brand, brandHref = "/", items, docs, cta, scrollRoot, c
       <div
         id="kit-nav-sheet"
         hidden={!sheet}
-        className="kit-nav-motion absolute inset-x-0 top-full max-h-[calc(100svh-3.5rem)] overflow-y-auto bg-paper px-3 pb-6 pt-2 @min-[560px]:hidden"
+        className="kit-nav-motion absolute inset-x-0 top-full max-h-[calc(100svh-3.5rem)] overflow-y-auto overscroll-contain bg-paper px-3 pb-6 pt-2 @min-[560px]:hidden"
         style={{ animation: sheet ? "kit-nav-pop .4s cubic-bezier(.16,1,.3,1) both" : undefined }}
       >
         <ul className="flex flex-col">

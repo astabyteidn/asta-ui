@@ -186,7 +186,7 @@ function Panel({
         ))}
       </div>
 
-      <div id={`${tabsId}-panel`} role="tabpanel" aria-labelledby={`${tabsId}-${tab}`} className="mt-2 min-h-0 flex-1 overflow-y-auto pb-2 [scrollbar-width:thin]">
+      <div id={`${tabsId}-panel`} role="tabpanel" aria-labelledby={`${tabsId}-${tab}`} className="mt-2 min-h-0 flex-1 overflow-y-auto overscroll-contain pb-2 [scrollbar-width:thin]">
         {groups.length === 0 ? (
           <div key={tab} className="flex flex-col items-center px-6 py-12 text-center" style={{ animation: `kit-nc-in .4s ${CURVE}` }}>
             <span className="grid h-11 w-11 place-items-center rounded-full bg-paper-2 text-mute">

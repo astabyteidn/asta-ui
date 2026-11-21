@@ -1,18 +1,20 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useMotionPaused } from "./MotionPause";
 
 const GLYPHS = "abcdefghijklmnopqrstuvwxyz";
 
 /**
  * A word you can click to swap, drawn as a selected layer in a design tool: a blue frame with corner
- * handles and a name tag. The letters scramble into the next word. Cycles on its own until clicked.
+ * handles and a name tag. The letters scramble into the next word. Cycles on its own until clicked or motion is paused.
  */
 export default function SwapWord({ words, className = "" }: { words: string[]; className?: string }) {
   const [i, setI] = useState(0);
   const [text, setText] = useState(words[0]);
   const raf = useRef(0);
   const touched = useRef(false);
+  const paused = useMotionPaused();
 
   const go = (next: number) => {
     const to = words[next];
@@ -39,12 +41,13 @@ export default function SwapWord({ words, className = "" }: { words: string[]; c
   };
 
   useEffect(() => {
+    if (paused) return;
     const id = setInterval(() => {
       if (!touched.current && !document.hidden) go((i + 1) % words.length);
     }, 2600);
     return () => clearInterval(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [i]);
+  }, [i, paused]);
   useEffect(() => () => cancelAnimationFrame(raf.current), []);
 
   const handle = "absolute h-[0.11em] w-[0.11em] min-h-[7px] min-w-[7px] border-[1.5px] border-accent bg-paper";
