@@ -77,11 +77,18 @@ Names: kit items by component name (`Dialog`, `Select`, `Toaster` for toast), mo
 
 - **Tokens, never hard-coded colours.** Use `paper` / `paper-2` (surfaces), `ink` / `ink-2` (text), `mute` (secondary text), `brand` (the one highlight colour) and `signal`, as Tailwind classes (`bg-paper`, `text-ink`, `text-mute`, `bg-brand`) or `var(--color-*)`. Canvas code reads them with `getComputedStyle`. Rebrand by remapping the tokens, not by editing components.
 - **One accent.** Keep to dark/light surfaces, greys and the accent. In market UI, up = accent and down = neutral (no green/red unless the user asks).
-- **Motion:** animate `transform` and `opacity` only; ease with `cubic-bezier(.16,1,.3,1)` or springs; interpolate values every frame rather than stepping; loops fade out instead of snapping back; honour `prefers-reduced-motion`.
+- **Motion:** animate `transform` and `opacity` only; ease with `cubic-bezier(.16,1,.3,1)` or springs, exits included (never `ease-in`); interpolate values every frame rather than stepping; loops fade out instead of snapping back; honour `prefers-reduced-motion`.
+- **Motion budget:** a press 100–160ms, tooltips and menus 120–250ms, dialogs and drawers 200–500ms, exits quicker than entrances. Things opened from the keyboard many times a day (command palette) appear at once or fade in 120ms at most. Surfaces enter from scale 0.9 or more with opacity, never `scale(0)`. List transitioned properties, never `transition-all`.
+- **Pause:** anything that moves on its own for more than 5 seconds needs a visible, keyboard-reachable pause (WCAG 2.2.2). Put one switch in a shared place (the page header or the frame around the demos), not one per block.
+- **States:** a component that shows data covers loading, empty, error and long content, plus disabled and success where they can happen. Loading keeps the final layout.
+- **Colour is never the only signal:** up/down, paid/failed and positive/negative also get a sign, an arrow or a word. Text stays at least 4.5:1 on `paper` and `paper-2`; don't fade `text-mute` further on text that matters.
+- **Forms:** the right `type`, `name`, `autocomplete` and `inputmode`; never block paste; a visible label on every field (the placeholder is an example, not the label); errors on blur or submit, not while typing, and a failed submit focuses the first invalid field; 16px field text on phones.
+- **Copy:** buttons are verb + object ("Save changes", not "Submit"); errors say what went wrong and how to fix it; no slop words (seamless, powerful, effortless, unlock, elevate) and no stock names (John Doe, Jane Smith, Acme).
 - **Inputs:** every interactive piece supports pointer, touch and keyboard; keep focus rings (`focus-visible:ring-brand`).
 - Components are client components (`"use client"`, ignored outside Next.js). In Astro, render them as islands with `client:visible`.
 - Keep to one primitive library: install every Astabyte UI component with the same build (`--base` or not).
 - Use fake data and fake brands in demos.
+- **Finish by looking:** render the result at 390px and 1440px, do a keyboard-only pass (Tab, Enter, Esc, arrows), turn on reduced motion, and tell the user what you could not check.
 
 ## Example requests
 

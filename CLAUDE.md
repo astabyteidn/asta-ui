@@ -38,10 +38,10 @@ Touched the HTML + CSS layer? Also `bun run css --check`.
 
 **Motion lab.** Real use cases (trading, payments, ecommerce) that look like finished product UI and fill the card. One focused, looping motion moment per card. Fake data and brands only.
 
-**Motion.** Transform and opacity only. One easing, `cubic-bezier(.16,1,.3,1)`, or springs. Loops fade out instead of snapping. Respect reduced motion. Keyframes go in `<style href="asta-<name>" precedence="asta">` so React hoists them once. A bare `<style>` inside a popup recalculates the whole page on open.
+**Motion.** Transform and opacity only. One easing, `cubic-bezier(.16,1,.3,1)`, or springs, for exits too. Loops fade out instead of snapping. Respect reduced motion. Keyframes go in `<style href="asta-<name>" precedence="asta">` so React hoists them once. A bare `<style>` inside a popup recalculates the whole page on open.
 
 **Performance.** Every component must stay smooth on a mid-range phone. `bun run perf` (`scripts/perf-check.ts`) enforces the static part and runs in CI. Errors fail the build, warnings are for review.
-- Animate `transform` and `opacity` only. `@keyframes` that change width, height, top, left, margin or padding are errors. Layout transitions are warnings; mark a deliberate one (an accordion panel, an auto-grow field) with a `perf-ok` comment.
+- Animate `transform` and `opacity` only. `@keyframes` that change width, height, top, left, margin or padding are errors. Layout transitions are warnings; mark a deliberate one (an accordion panel, an auto-grow field) with a `perf-ok` comment. `transition-all` and `scale(0)` / `scale-0` are errors.
 - Loops (`requestAnimationFrame`, `setInterval`) pause when the element is offscreen (IntersectionObserver) or the tab is hidden, and stop on unmount. Every listener, observer and interval is cleaned up.
 - No layout reads (`getBoundingClientRect`, `offsetWidth`) inside per-frame callbacks. Measure once, or on resize.
 - Keyframes go in `<style href precedence="asta">`, never a bare `<style>`.
@@ -49,8 +49,19 @@ Touched the HTML + CSS layer? Also `bun run css --check`.
 - No new runtime dependencies for a component. Budgets: a component file 28 KB, a demo 14 KB.
 - Pages: previews mount only near the viewport and keep their height when unmounted (`components/ui-site/Live.tsx`), so scrolling never jumps.
 
+**Craft.** The details that make a component feel finished instead of generated. `bun run perf` checks the motion parts.
+- Motion budget: a press 100–160ms, tooltips and menus 120–250ms, dialogs and drawers 200–500ms. Exits are quicker than entrances and never `ease-in`. UI opened from the keyboard many times a day (command palette, shortcuts) appears at once or fades in 120ms at most, with no movement.
+- Surfaces enter from scale 0.9 or more with opacity, never from `scale(0)`. Only real dots and ripples may grow from 0, marked `perf-ok` with the reason. List the properties you transition: `transition-all` fails perf.
+- Anything that moves on its own for more than 5 seconds can be paused (WCAG 2.2.2). On the site that is one shared switch (`components/ui-site/MotionPause.tsx`, in the header, `PreviewTabs` and `DemoFrame`): `Live` and `LiveSlot` freeze their demo into a still. Blocks don't add their own pause button.
+- States: a component that shows data covers loading, empty, error and long content, plus disabled and success where they can happen. Loading keeps the final layout.
+- Colour is never the only signal. Up/down, paid/failed and positive/negative also get a sign, an arrow or a word. Text is at least 4.5:1 on `paper` and `paper-2`. `mute` is tuned to pass, so don't fade text that carries meaning with `text-mute/60`.
+- Forms: the right `type`, `name`, `autocomplete` and `inputmode`. Never block paste. Every field has a visible label (or an `aria-label` on a lone search box), and the placeholder is an example, not the label. Errors show on blur or submit, not while typing, and a failed submit moves focus to the first invalid field. Field text is 16px on phones, so iOS doesn't zoom.
+- Copy: buttons are verb + object ("Save changes", not "Submit"). Errors say what went wrong and how to fix it. No slop words (seamless, powerful, effortless, unlock, elevate) and no stock names (John Doe, Jane Smith, Acme). Brands are Astabyte.
+- Site chrome: a skip link comes first, `scroll-padding-top` clears the sticky header, header icon buttons are 44px on touch screens, and every scrolling dialog, drawer or sheet has `overscroll-behavior: contain`.
+- Finish by rendering it and looking: 390px and 1440px, a keyboard-only pass (Tab, Enter, Esc, arrows), reduced motion on, and motion paused. Say what you didn't check.
+
 **Look.**
-- White ground, black and white, one blue (`brand` #2f54eb). No lime, green, red or gold. Market up = blue, down = neutral.
+- White ground, black and white, one blue (`brand` #2f54eb). No lime, green, red or gold. Market up = blue, down = neutral, always with a sign or arrow too.
 - Slight rounding: buttons 6–9px, cards 10–14px. Pills only for switches, avatars and dots.
 - Header is sticky, 56px. Once the page scrolls a solid paper bar fades in (no glass/blur, no gradient tail, no drop shadow, no bottom border). Docs sidebars stick at `top-14`. The docs shell is centred at 1600px (`.px-shell`).
 - Placeholder photos come from Unsplash, self-hosted in `public/lab/`, neutral and unbranded.
