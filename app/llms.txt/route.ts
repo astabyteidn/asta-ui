@@ -1,5 +1,6 @@
 import { LOGOS } from "@/components/logos/logos";
 import { BASE_SLUGS } from "@/lib/base-slugs";
+import { POSTS } from "@/lib/blog";
 import { uiItems } from "@/lib/ui-catalog";
 import { variantItems } from "@/lib/variant-items";
 import { VERSION } from "@/lib/version";
@@ -31,12 +32,19 @@ Also an npm component library: \`pnpm add asta-ui radix-ui\` then \`import { Dia
 - [Changelog](${SITE}/changelog): every release, newest first.
 - [Prompts](${SITE}/prompts): copy-ready prompts to set up the kit or build a trading dashboard, checkout, settings page, landing page or sign-in with it.
 - [Icons](${SITE}/icons): Astabyte Icons, a small hand-drawn set with a hover motion each. Click to copy the SVG.
+- [Blog](${SITE}/blog): short posts on interface design, motion and UI states.
 - [Logos](${SITE}/logos): ${LOGOS.length} logos of well-known tools, frameworks and brands as 24×24 SVG (Simple Icons data, CC0). Copy as SVG or a React component, mono or brand colour.
 - [Agent skill (SKILL.md)](${SITE}/skill.md): rules and the full catalogue in one file.
 - [MCP server](${SITE}/mcp): Streamable HTTP, no auth, read-only. Tools: search_components, get_component, get_setup, get_design_guide, get_use_cases, get_skills. Claude Code: \`claude mcp add --transport http astabyte-ui ${SITE}/mcp\`.
 - [Skills manifest](${SITE}/skills.json): every agent skill with a content hash; update local copies with \`npx -y asta-ui@latest skills update\`.
 - [Registry index (Radix)](${SITE}/r/registry.json)
 - [Registry index (Base UI)](${SITE}/r/base/registry.json)
+
+## Blog
+
+Practical interface design tips from building the kit and the motion lab.
+
+${POSTS.map((p) => `- [${p.title}](${SITE}/blog/${p.slug}) (${p.date}): ${p.summary}`).join("\n")}
 
 ## Kit
 

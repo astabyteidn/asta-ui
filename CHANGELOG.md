@@ -2,6 +2,11 @@
 
 Releases are git tags (`vX.Y.Z`); pushing a tag deploys ui.astabyte.com. Merging to `main` does not.
 
+## 0.9.2 — 2026-11-21
+
+- **Blog.** Short posts on interface design at https://ui.astabyte.com/blog: touch target sizes, motion timing, hierarchy in dense UI, and empty, loading and error states. Each one has numbers you can copy.
+- **Design by Astabyte** is linked from the header, the phone menu and the footer. It is our browser design editor, where AI agents work on the same canvas as you.
+
 ## 0.9.1 — 2026-11-19
 
 - **Temporary CDN updates faster.** https://ui.astabyte.com/cdn/asta.css and `asta.js` now cache for 10 minutes without a day-long stale window, so a release shows up there within minutes instead of hours. Pinned jsDelivr links are unchanged.

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Icon from "@/components/icons/Icon";
+import { DESIGN_URL } from "@/lib/design";
 
 const EASE = "cubic-bezier(.16,1,.3,1)";
 
@@ -35,6 +36,7 @@ export default function MobileMenu({ studio }: { studio: string }) {
     { href: "/#components", label: "Motion" },
     { href: "/icons", label: "Icons" },
     { href: "/logos", label: "Logos" },
+    { href: "/blog", label: "Blog" },
   ];
 
   return (
@@ -73,9 +75,17 @@ export default function MobileMenu({ studio }: { studio: string }) {
             </Link>
           ))}
           <a
+            href={DESIGN_URL}
+            className="icon-hover flex items-center justify-between py-3.5 text-[24px] font-medium tracking-[-0.02em]"
+            style={{ opacity: open ? 1 : 0, transition: `opacity .4s ${EASE} ${open ? 300 : 0}ms` }}
+          >
+            Design
+            <Icon name="arrow-up-right" className="h-5 w-5 text-mute" />
+          </a>
+          <a
             href={`${studio}/?utm_source=ui`}
             className="icon-hover flex items-center justify-between py-3.5 text-[24px] font-medium tracking-[-0.02em]"
-            style={{ opacity: open ? 1 : 0, transition: `opacity .4s ${EASE} ${open ? 220 : 0}ms` }}
+            style={{ opacity: open ? 1 : 0, transition: `opacity .4s ${EASE} ${open ? 340 : 0}ms` }}
           >
             Studio
             <Icon name="arrow-up-right" className="h-5 w-5 text-mute" />
