@@ -35,7 +35,9 @@ const Arrow = () => (
 
 interface FieldProps {
   label: string;
+  name: string;
   type: string;
+  inputMode?: "email" | "text";
   value: string;
   onChange: (v: string) => void;
   error?: string;
@@ -48,7 +50,7 @@ interface FieldProps {
   end?: ReactNode;
 }
 
-function Field({ label, type, value, onChange, error, shake, autoComplete, placeholder, inputRef, onKeyUp, hint, end }: FieldProps) {
+function Field({ label, name, type, inputMode, value, onChange, error, shake, autoComplete, placeholder, inputRef, onKeyUp, hint, end }: FieldProps) {
   const id = useId();
   const box = useRef<HTMLDivElement>(null);
   const hasError = !!error;
@@ -71,16 +73,20 @@ function Field({ label, type, value, onChange, error, shake, autoComplete, place
         <input
           ref={inputRef}
           id={id}
+          name={name}
           type={type}
+          inputMode={inputMode}
           value={value}
           autoComplete={autoComplete}
+          autoCapitalize="none"
+          spellCheck={false}
           placeholder={placeholder}
           onChange={(e) => onChange(e.target.value)}
           onKeyUp={onKeyUp}
           aria-invalid={hasError || undefined}
           aria-describedby={hasError ? `${id}-err` : undefined}
           className={cx(
-            "h-11 w-full rounded-[9px] bg-paper px-3.5 text-[14.5px] text-ink outline-none transition-shadow duration-200 placeholder:text-mute focus-visible:shadow-[inset_0_0_0_1px_var(--color-brand),0_0_0_4px_color-mix(in_srgb,var(--color-brand)_14%,transparent)]",
+            "h-11 w-full rounded-[9px] bg-paper px-3.5 text-[16px] sm:text-[14.5px] text-ink outline-none transition-shadow duration-200 placeholder:text-mute focus-visible:shadow-[inset_0_0_0_1px_var(--color-brand),0_0_0_4px_color-mix(in_srgb,var(--color-brand)_14%,transparent)]",
             !!end && "pr-11",
             hasError ? "shadow-[inset_0_0_0_1.5px_var(--color-ink)]" : RING,
           )}
@@ -166,7 +172,7 @@ export function StepSignIn({ brand = "Astabyte", title = "Sign in to Astabyte", 
   const next = async (e: FormEvent) => {
     e.preventDefault();
     if (pending) return;
-    const msg = !email.trim() ? "Enter your email." : !validEmail(email) ? "That doesn't look like an email address." : "";
+    const msg = !email.trim() ? "Enter your email." : !validEmail(email) ? "Enter an email like name@company.com." : "";
     if (msg) return fail("email", msg);
     setPending(true);
     try {
@@ -270,7 +276,9 @@ export function StepSignIn({ brand = "Astabyte", title = "Sign in to Astabyte", 
                 <div className="mt-6" style={rise(3)}>
                   <Field
                     label="Work email"
+                    name="email"
                     type="email"
+                    inputMode="email"
                     autoComplete="username"
                     placeholder="you@company.com"
                     value={email}
@@ -331,9 +339,10 @@ export function StepSignIn({ brand = "Astabyte", title = "Sign in to Astabyte", 
                 <div className="mt-4">
                   <Field
                     label="Password"
+                    name="password"
                     type={reveal ? "text" : "password"}
                     autoComplete="current-password"
-                    placeholder="At least 8 characters"
+                    placeholder="At least 8 characters…"
                     value={password}
                     onChange={(v) => {
                       setPassword(v);

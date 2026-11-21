@@ -185,11 +185,12 @@ export function ColorPicker({ value, defaultValue, onValueChange, swatches = DEF
               }}
               spellCheck={false}
               autoComplete="off"
+              autoCapitalize="characters"
               maxLength={7}
               disabled={disabled}
               aria-invalid={invalid || undefined}
               aria-describedby={invalid ? `${uid}-hint` : undefined}
-              className="h-full w-full min-w-0 bg-transparent pl-1 pr-2.5 font-mono text-[13px] uppercase tracking-[0.02em] text-ink outline-none placeholder:text-mute"
+              className="h-full w-full min-w-0 bg-transparent pl-1 pr-2.5 font-mono text-[16px] sm:text-[13px] uppercase tracking-[0.02em] text-ink outline-none placeholder:text-mute"
               placeholder="2F54EB"
             />
           </div>

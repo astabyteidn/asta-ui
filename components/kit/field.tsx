@@ -83,7 +83,7 @@ export function Field({ label, hint, error, required, aside, className, children
 
 /** A plain text input styled to match the kit, with error styling driven by `aria-invalid`. */
 export const fieldInputClass =
-  "h-10 w-full rounded-lg bg-paper px-3 text-[14px] text-ink outline-none placeholder:text-mute " +
+  "h-10 w-full rounded-lg bg-paper px-3 text-[16px] sm:text-[14px] text-ink outline-none placeholder:text-mute " +
   "shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent)] transition-shadow duration-200 " +
   "hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_24%,transparent)] " +
   "focus:shadow-[inset_0_0_0_1px_var(--color-brand),0_0_0_3px_color-mix(in_srgb,var(--color-brand)_18%,transparent)] " +

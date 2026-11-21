@@ -41,7 +41,7 @@ export function TextareaField({ label, hint, maxLength, optional, className, row
           if (!controlled) setInner(e.target.value);
           rest.onChange?.(e);
         }}
-        className="block w-full resize-y rounded-xl bg-paper px-3.5 py-3 text-[14px] leading-[1.55] text-ink outline-none transition-shadow duration-200 placeholder:text-mute shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent)] hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_24%,transparent)] focus:!shadow-[inset_0_0_0_1px_var(--color-brand),0_0_0_4px_color-mix(in_srgb,var(--color-brand)_16%,transparent)] disabled:opacity-50 motion-reduce:transition-none"
+        className="block w-full resize-y rounded-xl bg-paper px-3.5 py-3 text-[16px] sm:text-[14px] leading-[1.55] text-ink outline-none transition-shadow duration-200 placeholder:text-mute shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent)] hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_24%,transparent)] focus:!shadow-[inset_0_0_0_1px_var(--color-brand),0_0_0_4px_color-mix(in_srgb,var(--color-brand)_16%,transparent)] disabled:opacity-50 motion-reduce:transition-none"
       />
       {(hint || maxLength !== undefined) && (
         <div id={`${fid}-meta`} className="flex items-start justify-between gap-3 text-[12.5px]">

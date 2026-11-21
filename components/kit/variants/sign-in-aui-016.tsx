@@ -42,7 +42,9 @@ const Spinner = () => (
 
 interface FieldProps {
   label: string;
+  name: string;
   type: string;
+  inputMode?: "email" | "text";
   value: string;
   onChange: (v: string) => void;
   onBlur: () => void;
@@ -56,7 +58,9 @@ interface FieldProps {
 /** Soft filled field: the label is for screen readers, the placeholder does the talking. */
 function Field({
   label,
+  name,
   type,
+  inputMode,
   value,
   onChange,
   onBlur,
@@ -95,16 +99,20 @@ function Field({
       <div ref={box} className="relative">
         <input
           id={id}
+          name={name}
           type={type}
+          inputMode={inputMode}
           value={value}
           autoComplete={autoComplete}
+          autoCapitalize="none"
+          spellCheck={false}
           placeholder={placeholder}
           onChange={(e) => onChange(e.target.value)}
           onBlur={onBlur}
           aria-invalid={hasError || undefined}
           aria-describedby={hasError ? `${id}-err` : undefined}
           className={cx(
-            "h-11 w-full rounded-[10px] bg-paper-2 px-4 text-[14px] text-ink outline-none transition-[box-shadow,background-color] duration-300 placeholder:text-mute hover:bg-[color-mix(in_srgb,var(--color-ink)_6%,var(--color-paper-2))] focus-visible:bg-paper focus-visible:shadow-[inset_0_0_0_1px_var(--color-brand),0_0_0_4px_color-mix(in_srgb,var(--color-brand)_12%,transparent)]",
+            "h-11 w-full rounded-[10px] bg-paper-2 px-4 text-[16px] sm:text-[14px] text-ink outline-none transition-[box-shadow,background-color] duration-300 placeholder:text-mute hover:bg-[color-mix(in_srgb,var(--color-ink)_6%,var(--color-paper-2))] focus-visible:bg-paper focus-visible:shadow-[inset_0_0_0_1px_var(--color-brand),0_0_0_4px_color-mix(in_srgb,var(--color-brand)_12%,transparent)]",
             !!end && "pr-12",
             hasError && "shadow-[inset_0_0_0_1.5px_var(--color-ink)]",
           )}
@@ -210,19 +218,19 @@ export function SplitSignIn({
     img.style.transform = `scale(1.06) translate(${(-x * 14).toFixed(1)}px, ${(-y * 10).toFixed(1)}px)`;
   };
 
-  const errors = {
-    email: !email.trim()
-      ? "Enter your email."
-      : !validEmail(email)
-        ? "That doesn't look like an email address."
-        : "",
-    password: !password
-      ? "Enter your password."
-      : password.length < 8
-        ? "Use at least 8 characters."
-        : "",
+  const check = {
+    email: (v: string) =>
+      !v.trim() ? "Enter your email." : !validEmail(v) ? "Enter an email like name@company.com." : "",
+    password: (v: string) => (!v ? "Enter your password." : v.length < 8 ? "Use at least 8 characters." : ""),
   };
+  const errors = { email: check.email(email), password: check.password(password) };
   const show = (k: "email" | "password") => (touched[k] ? errors[k] : "");
+  // A fix clears the error while typing; a new one waits for blur or submit.
+  const edit = (k: "email" | "password", v: string) => {
+    if (k === "email") setEmail(v);
+    else setPassword(v);
+    if (touched[k] && !check[k](v)) setTouched((t) => ({ ...t, [k]: false }));
+  };
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
@@ -231,6 +239,8 @@ export function SplitSignIn({
     setFormError("");
     if (errors.email || errors.password) {
       setShake((n) => n + 1);
+      const first = (e.currentTarget as HTMLFormElement).elements.namedItem(errors.email ? "email" : "password");
+      if (first instanceof HTMLElement) first.focus();
       return;
     }
     setState("loading");
@@ -394,11 +404,13 @@ export function SplitSignIn({
               <div className="mt-8 flex flex-col gap-2.5" style={rise(3)}>
                 <Field
                   label="Email"
+                  name="email"
                   type="email"
+                  inputMode="email"
                   autoComplete="email"
-                  placeholder="Enter email"
+                  placeholder="Enter your email…"
                   value={email}
-                  onChange={setEmail}
+                  onChange={(v) => edit("email", v)}
                   onBlur={() =>
                     email && setTouched((t) => ({ ...t, email: true }))
                   }
@@ -407,11 +419,12 @@ export function SplitSignIn({
                 />
                 <Field
                   label="Password"
+                  name="password"
                   type={reveal ? "text" : "password"}
                   autoComplete="current-password"
-                  placeholder="Enter password"
+                  placeholder="Enter your password…"
                   value={password}
-                  onChange={setPassword}
+                  onChange={(v) => edit("password", v)}
                   onBlur={() =>
                     password && setTouched((t) => ({ ...t, password: true }))
                   }

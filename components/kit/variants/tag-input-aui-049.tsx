@@ -37,7 +37,7 @@ export function SuggestTagInput({
   suggestions = SUGGEST,
   max = 6,
   label = "Tags",
-  placeholder = "Add a tag",
+  placeholder = "Add a tag…",
   name,
   className,
 }: SuggestTagInputProps) {
@@ -180,7 +180,7 @@ export function SuggestTagInput({
               } else if (e.key === "Escape") setText("");
             }}
             onBlur={() => text.trim() && add(text)}
-            className="relative h-7 w-full bg-transparent px-1.5 text-[13.5px] text-ink outline-none placeholder:text-mute disabled:cursor-not-allowed"
+            className="relative h-7 w-full bg-transparent px-1.5 text-[16px] sm:text-[13.5px] text-ink outline-none placeholder:text-mute disabled:cursor-not-allowed"
           />
         </span>
       </div>

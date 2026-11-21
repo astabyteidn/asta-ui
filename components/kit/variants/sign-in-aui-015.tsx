@@ -90,7 +90,7 @@ export function MagicLinkSignIn({
   const input = useRef<HTMLInputElement>(null);
   const heading = useRef<HTMLHeadingElement>(null);
 
-  const error = !email.trim() ? "Enter your email." : !validEmail(email) ? "That doesn't look like an email address." : "";
+  const error = !email.trim() ? "Enter your email." : !validEmail(email) ? "Enter an email like name@company.com." : "";
   const shown = (touched && error) || formError;
   const box = useShake<HTMLDivElement>(!!shown, shake);
 
@@ -208,19 +208,25 @@ export function MagicLinkSignIn({
               <input
                 ref={input}
                 id={`${id}-email`}
+                name="email"
                 type="email"
                 autoComplete="email"
+                inputMode="email"
+                autoCapitalize="none"
+                spellCheck={false}
                 placeholder="you@company.com"
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
                   setFormError("");
+                  // A fix clears the error while typing; a new one waits for blur.
+                  if (touched && validEmail(e.target.value)) setTouched(false);
                 }}
                 onBlur={() => email && setTouched(true)}
                 aria-invalid={!!shown || undefined}
                 aria-describedby={shown ? `${id}-err` : `${id}-hint`}
                 className={cx(
-                  "h-11 w-full rounded-[9px] bg-paper pl-9 pr-3 text-[14.5px] text-ink outline-none transition-shadow duration-200 placeholder:text-mute focus-visible:shadow-[inset_0_0_0_1px_var(--color-brand),0_0_0_4px_color-mix(in_srgb,var(--color-brand)_14%,transparent)]",
+                  "h-11 w-full rounded-[9px] bg-paper pl-9 pr-3 text-[16px] sm:text-[14.5px] text-ink outline-none transition-shadow duration-200 placeholder:text-mute focus-visible:shadow-[inset_0_0_0_1px_var(--color-brand),0_0_0_4px_color-mix(in_srgb,var(--color-brand)_14%,transparent)]",
                   shown ? "shadow-[inset_0_0_0_1.5px_var(--color-ink)]" : RING,
                 )}
               />

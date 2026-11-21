@@ -28,14 +28,22 @@ export interface FooterProps {
 export function Newsletter({ onSubscribe }: { onSubscribe?: (email: string) => Promise<void> }) {
   const [email, setEmail] = useState("");
   const [state, setState] = useState<"idle" | "busy" | "done" | "error">("idle");
+  const [msg, setMsg] = useState("");
+  const field = useRef<HTMLInputElement>(null);
   const submit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setState("error");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setMsg(email.trim() ? "Enter an email like name@company.com." : "Enter your email to subscribe.");
+      setState("error");
+      field.current?.focus();
+      return;
+    }
     setState("busy");
     try {
-      await (onSubscribe?.(email) ?? new Promise((r) => setTimeout(r, 900)));
+      await (onSubscribe?.(email.trim()) ?? new Promise((r) => setTimeout(r, 900)));
       setState("done");
     } catch {
+      setMsg("Couldn't subscribe right now. Try again in a moment.");
       setState("error");
     }
   };
@@ -56,8 +64,14 @@ export function Newsletter({ onSubscribe }: { onSubscribe?: (email: string) => P
           Email address
         </label>
         <input
+          ref={field}
           id="kit-footer-email"
+          name="email"
           type="email"
+          autoComplete="email"
+          inputMode="email"
+          autoCapitalize="none"
+          spellCheck={false}
           value={email}
           onChange={(e) => {
             setEmail(e.target.value);
@@ -67,7 +81,7 @@ export function Newsletter({ onSubscribe }: { onSubscribe?: (email: string) => P
           aria-invalid={state === "error" || undefined}
           aria-describedby="kit-footer-msg"
           tabIndex={state === "done" ? -1 : undefined}
-          className="min-w-0 flex-1 bg-transparent text-[14px] text-paper outline-none placeholder:text-paper/40"
+          className="min-w-0 flex-1 bg-transparent text-[16px] sm:text-[14px] text-paper outline-none placeholder:text-paper/40"
         />
         <Button type="submit" variant="accent" size="sm" shape="pill" loading={state === "busy"} className="shadow-none" tabIndex={state === "done" ? -1 : undefined}>
           Subscribe
@@ -89,7 +103,7 @@ export function Newsletter({ onSubscribe }: { onSubscribe?: (email: string) => P
         You&apos;re in. First letter lands next week.
       </p>
       <p id="kit-footer-msg" role="status" className="mt-2 h-4 text-[12px] text-[#ff8a8d]">
-        {state === "error" ? "That doesn't look like an email address." : ""}
+        {state === "error" ? msg : ""}
       </p>
     </div>
   );

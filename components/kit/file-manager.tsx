@@ -184,10 +184,19 @@ export function FileManager({ items: initial, rootLabel = "My files", quota, def
                 <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden>
                   <path d="M7 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm3.6-1.4L14 14" />
                 </svg>
-                <input value={query} onChange={(e) => {
+                <input
+                  type="search"
+                  name="q"
+                  autoComplete="off"
+                  value={query}
+                  onChange={(e) => {
                     setQuery(e.target.value);
                     setSel([]);
-                  }} placeholder="Search all files" aria-label="Search all files" className="h-full min-w-0 flex-1 bg-transparent text-[13px] text-ink outline-none placeholder:text-mute" />
+                  }}
+                  placeholder="Search all files…"
+                  aria-label="Search all files"
+                  className="h-full min-w-0 flex-1 bg-transparent text-[16px] sm:text-[13px] text-ink outline-none placeholder:text-mute [&::-webkit-search-cancel-button]:hidden"
+                />
               </label>
               <SegmentedControl
                 size="sm"

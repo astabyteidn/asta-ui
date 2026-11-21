@@ -70,8 +70,11 @@ export function Checkbox({ checked, defaultChecked = false, onCheckedChange, dis
   if (!label) return <span className={className}>{box}</span>;
 
   return (
-    <div className={cx("flex items-start gap-3", disabled && "opacity-60", className)}>
-      <span className="pt-[1px]">{box}</span>
+    <div className={cx("flex items-start", disabled && "opacity-60", className)}>
+      {/* The box sits in a label too, so the gap to the text is part of one hit target. */}
+      <label htmlFor={cid} className={cx("pr-3 pt-[1px]", !disabled && "cursor-pointer")}>
+        {box}
+      </label>
       <span className="min-w-0">
         <label htmlFor={cid} className={cx("block select-none text-[14px] leading-5 text-ink", !disabled && "cursor-pointer")}>
           {label}

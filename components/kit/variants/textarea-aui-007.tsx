@@ -73,7 +73,7 @@ export function ValidatedTextarea({ label, rules, value: valueProp, defaultValue
             if (value) setTouched(true);
             rest.onBlur?.(e);
           }}
-          className="block w-full resize-none bg-transparent px-3.5 py-3 text-[14px] leading-[1.55] text-ink outline-none placeholder:text-mute"
+          className="block w-full resize-none bg-transparent px-3.5 py-3 text-[16px] sm:text-[14px] leading-[1.55] text-ink outline-none placeholder:text-mute"
         />
       </div>
 

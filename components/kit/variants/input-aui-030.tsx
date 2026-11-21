@@ -69,7 +69,7 @@ const Icon = ({ d, className }: { d: ReactNode; className?: string }) => (
  * and one highlight glides between rows of recent searches and pages.
  */
 export function SearchField({
-  placeholder = "Search Astabyte",
+  placeholder = "Search Astabyte…",
   recent: recentProp = RECENT,
   pages = PAGES,
   onSearch,
@@ -239,8 +239,11 @@ export function SearchField({
         <input
           ref={input}
           type="search"
+          name="q"
+          autoComplete="off"
+          spellCheck={false}
           role="combobox"
-          aria-label={placeholder}
+          aria-label={placeholder.replace(/…$/, "")}
           aria-expanded={show}
           aria-controls={`${id}-list`}
           aria-autocomplete="list"
@@ -254,7 +257,7 @@ export function SearchField({
             setOpen(true);
           }}
           onKeyDown={onKeyDown}
-          className="h-full min-w-0 flex-1 bg-transparent text-[14px] tracking-[-0.01em] outline-none placeholder:text-mute [&::-webkit-search-cancel-button]:hidden"
+          className="h-full min-w-0 flex-1 bg-transparent text-[16px] sm:text-[14px] tracking-[-0.01em] outline-none placeholder:text-mute [&::-webkit-search-cancel-button]:hidden"
         />
         {/* The shortcut chip and the clear button share one slot and swap with a turn. */}
         <span className="relative grid h-6 w-8 shrink-0 place-items-center">

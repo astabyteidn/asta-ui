@@ -249,7 +249,7 @@ export function Combobox(props: ComboboxProps) {
             if (root.current?.contains(e.relatedTarget as Node)) return;
             dismiss();
           }}
-          className="h-8 min-w-[6rem] flex-1 bg-transparent px-1.5 text-[14px] text-ink outline-none placeholder:text-mute disabled:cursor-not-allowed"
+          className="h-8 min-w-[6rem] flex-1 bg-transparent px-1.5 text-[16px] sm:text-[14px] text-ink outline-none placeholder:text-mute disabled:cursor-not-allowed"
         />
         <button
           type="button"

@@ -204,7 +204,7 @@
   }
 }
 .asta-cmd-input {
-  @apply h-12 min-w-0 flex-1 bg-transparent text-[15px] text-ink outline-none placeholder:text-mute;
+  @apply h-12 min-w-0 flex-1 bg-transparent text-[16px] text-ink outline-none placeholder:text-mute sm:text-[15px];
 }
 .asta-cmd-esc {
   @apply rounded-md bg-paper-2 px-1.5 font-sans text-[11px] leading-5 text-mute;
@@ -492,7 +492,7 @@
 /* Phone sheet: <details class="asta-navbar-sec"><summary>Product <svg/></summary><div class="asta-nav-sec
  *   asta-navbar-sec-links"><a class="asta-navbar-sheet-link">…</a></div></details> */
 .asta-navbar-sheet {
-  @apply absolute inset-x-0 top-full max-h-[calc(100svh-3.5rem)] overflow-y-auto bg-paper px-3 pb-6 pt-2 @min-[560px]:hidden;
+  @apply absolute inset-x-0 top-full max-h-[calc(100svh-3.5rem)] overflow-y-auto overscroll-contain bg-paper px-3 pb-6 pt-2 @min-[560px]:hidden;
   & > ul {
     @apply flex flex-col;
   }
@@ -858,7 +858,7 @@
   }
 }
 .asta-newsletter-input {
-  @apply min-w-0 flex-1 bg-transparent text-[14px] text-paper outline-none placeholder:text-paper/40;
+  @apply min-w-0 flex-1 bg-transparent text-[16px] sm:text-[14px] text-paper outline-none placeholder:text-paper/40;
 }
 .asta-newsletter-done {
   @apply pointer-events-none absolute inset-0 flex translate-y-2 items-center gap-2 pl-1 text-[14px] text-paper opacity-0 transition-[opacity,transform] duration-500 ease-[cubic-bezier(.16,1,.3,1)];

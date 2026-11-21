@@ -19,7 +19,7 @@ export function FloatingLabelTextarea({ label, className, rows = 4, id, ...rest 
         rows={rows}
         placeholder=" "
         {...rest}
-        className="peer block w-full resize-none rounded-xl bg-paper px-3.5 pb-3 pt-7 text-[14px] leading-[1.55] text-ink outline-none transition-shadow duration-200 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent)] hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_24%,transparent)] focus:!shadow-[inset_0_0_0_1px_var(--color-brand),0_0_0_4px_color-mix(in_srgb,var(--color-brand)_16%,transparent)] motion-reduce:transition-none"
+        className="peer block w-full resize-none rounded-xl bg-paper px-3.5 pb-3 pt-7 text-[16px] sm:text-[14px] leading-[1.55] text-ink outline-none transition-shadow duration-200 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent)] hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_24%,transparent)] focus:!shadow-[inset_0_0_0_1px_var(--color-brand),0_0_0_4px_color-mix(in_srgb,var(--color-brand)_16%,transparent)] motion-reduce:transition-none"
       />
       <label
         htmlFor={fid}

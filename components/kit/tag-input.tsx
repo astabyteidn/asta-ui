@@ -12,6 +12,8 @@ export interface TagInputProps {
   max?: number;
   placeholder?: string;
   label?: string;
+  /** Form field name. Each tag is sent as its own hidden input with this name. */
+  name?: string;
   className?: string;
 }
 
@@ -19,7 +21,7 @@ export interface TagInputProps {
  * Type and press Enter or comma to add a tag. Backspace on an empty field marks the last tag, a second
  * Backspace removes it. Pasting "a, b, c" adds all three. A duplicate makes the existing tag shake.
  */
-export function TagInput({ value, defaultValue = [], onChange, max = 8, placeholder = "Add a tag", label = "Tags", className }: TagInputProps) {
+export function TagInput({ value, defaultValue = [], onChange, max = 8, placeholder = "Add a tag…", label = "Tags", name, className }: TagInputProps) {
   const [inner, setInner] = useState(defaultValue);
   const tags = value ?? inner;
   const [text, setText] = useState("");
@@ -118,6 +120,8 @@ export function TagInput({ value, defaultValue = [], onChange, max = 8, placehol
         <input
           ref={input}
           id={id}
+          autoComplete="off"
+          enterKeyHint="enter"
           value={text}
           disabled={full && !text}
           placeholder={full ? "Limit reached" : tags.length ? "" : placeholder}
@@ -147,9 +151,10 @@ export function TagInput({ value, defaultValue = [], onChange, max = 8, placehol
             setArmed(false);
             if (text.trim()) add([text]);
           }}
-          className="h-8 min-w-[4rem] flex-1 bg-transparent px-2 text-[14px] text-ink outline-none placeholder:text-mute disabled:cursor-not-allowed"
+          className="h-8 min-w-[4rem] flex-1 bg-transparent px-2 text-[16px] sm:text-[14px] text-ink outline-none placeholder:text-mute disabled:cursor-not-allowed"
         />
       </div>
+      {name && tags.map((t) => <input key={t} type="hidden" name={name} value={t} />)}
       <p className="mt-2 text-[12px] text-mute">
         <kbd className="font-sans text-ink-2">Enter</kbd> or <kbd className="font-sans text-ink-2">,</kbd> to add ·{" "}
         <kbd className="font-sans text-ink-2">⌫</kbd> twice to remove

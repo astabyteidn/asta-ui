@@ -67,6 +67,8 @@ export interface PhoneInputProps {
   onChange?: (value: PhoneValue) => void;
   label?: string;
   hint?: string;
+  /** An error from outside, e.g. on submit. It replaces the hint. Without it, an unfinished number shows an error on blur. */
+  error?: string;
   name?: string;
   disabled?: boolean;
   className?: string;
@@ -77,13 +79,26 @@ export interface PhoneInputProps {
  * Paste a full number with its +code and the country switches to match. A check pops in once the number is
  * complete. The picker filters as you type and works with the arrow keys.
  */
-export function PhoneInput({ countries = PHONE_COUNTRIES, defaultCountry = "US", defaultValue = "", onChange, label = "Phone number", hint, name, disabled, className }: PhoneInputProps) {
+export function PhoneInput({
+  countries = PHONE_COUNTRIES,
+  defaultCountry = "US",
+  defaultValue = "",
+  onChange,
+  label = "Phone number",
+  hint,
+  error,
+  name = "phone",
+  disabled,
+  className,
+}: PhoneInputProps) {
   const id = useId();
   const [country, setCountry] = useState(() => countries.find((c) => c.code === defaultCountry) ?? countries[0]);
   const [digits, setDigits] = useState(() => defaultValue.replace(/\D/g, "").slice(0, slots(country.mask)));
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [hi, setHi] = useState(0);
+  // Set on blur when the number is unfinished, cleared as soon as it is complete (or empty) again.
+  const [short, setShort] = useState(false);
   const input = useRef<HTMLInputElement>(null);
   const search = useRef<HTMLInputElement>(null);
   const wrap = useRef<HTMLDivElement>(null);
@@ -96,7 +111,12 @@ export function PhoneInput({ countries = PHONE_COUNTRIES, defaultCountry = "US",
   const q = query.trim().toLowerCase().replace(/^\+/, "");
   const results = q ? countries.filter((c) => c.name.toLowerCase().includes(q) || c.code.toLowerCase() === q || c.dial.startsWith(q)) : countries;
 
-  const emit = (d: string, c: PhoneCountry) => onChange?.({ e164: d ? `+${c.dial}${d}` : "", country: c, valid: d.length === slots(c.mask) });
+  const emit = (d: string, c: PhoneCountry) => {
+    if (short && (!d || d.length === slots(c.mask))) setShort(false);
+    onChange?.({ e164: d ? `+${c.dial}${d}` : "", country: c, valid: d.length === slots(c.mask) });
+  };
+  const message = error || (short ? `Enter all ${max} digits, like ${country.mask.replace(/#/g, "0")}.` : "");
+  const describedBy = message ? `${id}-err` : hint ? `${id}-hint` : undefined;
 
   // Put the caret back after the same number of digits it followed before formatting.
   useLayoutEffect(() => {
@@ -184,6 +204,7 @@ export function PhoneInput({ countries = PHONE_COUNTRIES, defaultCountry = "US",
       <div
         className={cx(
           "flex h-10 items-center rounded-lg bg-paper shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent)] transition-shadow duration-200",
+          message && "!shadow-[inset_0_0_0_1.5px_var(--color-ink)]",
           "focus-within:shadow-[inset_0_0_0_1px_var(--color-brand),0_0_0_3px_color-mix(in_srgb,var(--color-brand)_18%,transparent)]",
           disabled && "pointer-events-none opacity-50",
         )}
@@ -215,10 +236,12 @@ export function PhoneInput({ countries = PHONE_COUNTRIES, defaultCountry = "US",
           name={name}
           value={shown}
           onChange={onInput}
+          onBlur={() => setShort(digits.length > 0 && !valid)}
           disabled={disabled}
           placeholder={country.mask.replace(/#/g, "0")}
-          aria-describedby={hint ? `${id}-hint` : undefined}
-          className="h-full min-w-0 flex-1 bg-transparent px-3 text-[14px] tabular-nums text-ink outline-none placeholder:text-mute/60"
+          aria-invalid={!!message || undefined}
+          aria-describedby={describedBy}
+          className="h-full min-w-0 flex-1 bg-transparent px-3 text-[16px] sm:text-[14px] tabular-nums text-ink outline-none placeholder:text-mute"
         />
         <span className="flex w-9 shrink-0 justify-center text-brand">
           {valid && (
@@ -232,6 +255,9 @@ export function PhoneInput({ countries = PHONE_COUNTRIES, defaultCountry = "US",
         <div className="asta-phone-a absolute left-0 top-full z-50 mt-1.5 flex w-full max-w-[320px] origin-top-left animate-[asta-phone-in_.18s_cubic-bezier(.16,1,.3,1)_both] flex-col rounded-[11px] bg-paper p-1 shadow-[0_0_0_1px_color-mix(in_srgb,var(--color-ink)_9%,transparent),0_14px_34px_-12px_rgb(0_0_0/0.28)]">
           <input
             ref={search}
+            type="search"
+            autoComplete="off"
+            spellCheck={false}
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
@@ -243,8 +269,8 @@ export function PhoneInput({ countries = PHONE_COUNTRIES, defaultCountry = "US",
             aria-controls={listId}
             aria-activedescendant={results[hi] ? `${id}-opt-${hi}` : undefined}
             aria-label="Search countries"
-            placeholder="Search country or code"
-            className="mb-1 h-9 w-full rounded-[7px] bg-paper-2 px-2.5 text-[13px] text-ink outline-none placeholder:text-mute"
+            placeholder="Search country or code…"
+            className="mb-1 h-9 w-full rounded-[7px] bg-paper-2 px-2.5 text-[16px] sm:text-[13px] text-ink outline-none placeholder:text-mute [&::-webkit-search-cancel-button]:hidden"
           />
           <div id={listId} role="listbox" aria-label="Countries" className="max-h-[220px] overflow-y-auto overscroll-contain">
             {results.length === 0 && <p className="px-2.5 py-3 text-[12.5px] text-mute">No country matches “{query}”</p>}
@@ -272,10 +298,20 @@ export function PhoneInput({ countries = PHONE_COUNTRIES, defaultCountry = "US",
         </div>
       )}
       </div>
-      {hint && (
-        <p id={`${id}-hint`} className="text-[12px] text-mute">
-          {hint}
+      {message ? (
+        <p id={`${id}-err`} role="alert" className="flex items-start gap-1.5 text-[12px] text-ink-2">
+          <svg viewBox="0 0 16 16" className="mt-px h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden>
+            <circle cx="8" cy="8" r="6" />
+            <path d="M8 5v3.5M8 11h0" />
+          </svg>
+          {message}
         </p>
+      ) : (
+        hint && (
+          <p id={`${id}-hint`} className="text-[12px] text-mute">
+            {hint}
+          </p>
+        )
       )}
       {name && <input type="hidden" name={`${name}_e164`} value={digits ? `+${country.dial}${digits}` : ""} />}
 

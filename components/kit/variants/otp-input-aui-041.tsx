@@ -132,6 +132,7 @@ export function SplitOtp({ value, defaultValue = "", onChange, onComplete, error
         <input
           ref={input}
           id={id}
+          name="code"
           aria-label={label}
           value={code}
           inputMode="numeric"
@@ -148,7 +149,7 @@ export function SplitOtp({ value, defaultValue = "", onChange, onComplete, error
           }}
           onBlur={() => setFocused(false)}
           onSelect={toEnd}
-          className="absolute inset-0 h-full w-full cursor-text bg-transparent text-transparent caret-transparent outline-none selection:bg-transparent"
+          className="absolute inset-0 h-full w-full cursor-text bg-transparent text-[16px] text-transparent caret-transparent outline-none selection:bg-transparent"
         />
       </div>
       <div className="mt-4 flex h-7 items-center gap-3 text-[12.5px]" style={rise(1)}>

@@ -40,11 +40,11 @@ export default function ComboboxDemo() {
         </div>
         <div className="flex flex-col gap-1.5">
           <p className="text-[13px] font-medium tracking-[-0.01em] text-ink">Assignee</p>
-          <Combobox label="Assignee" placeholder="Search people" options={assignees} value={owner} onChange={setOwner} emptyText="No one by that name" />
+          <Combobox label="Assignee" placeholder="Search people…" options={assignees} value={owner} onChange={setOwner} emptyText="No one by that name" />
         </div>
         <div className="flex flex-col gap-1.5">
           <p className="text-[13px] font-medium tracking-[-0.01em] text-ink">Labels</p>
-          <Combobox multiple label="Labels" placeholder="Add labels" options={labels} value={tags} onChange={setTags} />
+          <Combobox multiple label="Labels" placeholder="Add labels…" options={labels} value={tags} onChange={setTags} />
         </div>
         <p className="text-center text-[12.5px] text-mute">Type to filter, arrows to move, Enter to pick, ⌫ removes the last label.</p>
       </div>

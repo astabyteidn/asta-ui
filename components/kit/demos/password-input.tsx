@@ -14,7 +14,7 @@ export default function PasswordInputDemo() {
           <p className="text-[15px] font-medium tracking-[-0.01em] text-ink">Choose a new password</p>
           <p className="mt-1 text-[13px] text-mute">You will use it to sign in on every device.</p>
         </div>
-        <PasswordField label="New password" placeholder="Type a password" onChange={(_, s) => setStrong(s.strong)} />
+        <PasswordField label="New password" placeholder="Type a password…" onChange={(_, s) => setStrong(s.strong)} />
         <Button type="submit" disabled={!strong}>
           Update password
         </Button>

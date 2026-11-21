@@ -50,6 +50,8 @@ export default function Demo() {
           <div style={rise(1)}>
             <FloatingInput
               label="Workspace name"
+              name="workspace"
+              autoComplete="organization"
               value={name}
               maxLength={32}
               counter
@@ -64,6 +66,11 @@ export default function Demo() {
             <FloatingInput
               label="Billing email"
               type="email"
+              name="email"
+              autoComplete="email"
+              inputMode="email"
+              autoCapitalize="none"
+              spellCheck={false}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               start={

@@ -10,7 +10,7 @@ export default function TagInputDemo() {
 
   return (
     <div className="relative flex min-h-[420px] w-full flex-col items-center justify-center gap-5 p-6 sm:p-10">
-      <TagInput label="Skills" value={tags} onChange={setTags} max={6} placeholder="Add a skill" className="max-w-md" />
+      <TagInput label="Skills" name="skills" value={tags} onChange={setTags} max={6} placeholder="Add a skill…" className="max-w-md" />
       <div className="flex max-w-md flex-wrap items-center justify-center gap-1.5">
         <span className="text-[12px] text-mute">Try:</span>
         {IDEAS.map((t) => (

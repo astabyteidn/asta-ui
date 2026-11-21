@@ -22,7 +22,7 @@ export default function Demo() {
         <label htmlFor="comment" className="mb-1.5 block text-[13px] font-medium text-ink">
           Comment
         </label>
-        <MentionTextarea id="comment" rows={3} suggestions={{ "@": people, "/": commands }} placeholder="Type @ to mention or / for a command" />
+        <MentionTextarea id="comment" rows={3} suggestions={{ "@": people, "/": commands }} placeholder="Type @ to mention or / for a command…" />
         <p className="mt-1.5 text-[12.5px] text-mute">↑ ↓ to move, Enter or Tab to insert, Esc to close.</p>
       </div>
     </div>

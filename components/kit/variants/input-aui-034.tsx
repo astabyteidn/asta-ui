@@ -236,7 +236,7 @@ export function AmountInput({
             el.setSelectionRange(el.value.length, el.value.length);
           }}
           onBlur={() => setFocused(false)}
-          className="absolute inset-0 h-full w-full cursor-text opacity-0"
+          className="absolute inset-0 h-full w-full cursor-text text-[16px] opacity-0"
         />
       </div>
       <p id={`${id}-note`} aria-live="polite" className="mt-3 text-[12.5px] text-[color-mix(in_srgb,var(--color-paper)_55%,transparent)]" style={{ animation: `aui034-rise .6s ${EASE} .22s both` }}>

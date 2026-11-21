@@ -12,7 +12,7 @@ export default function Demo() {
   return (
     <div className="flex min-h-[420px] w-full items-center justify-center p-6 sm:p-10">
       <div className="w-full max-w-md">
-        <ValidatedTextarea label="Describe the problem" rules={rules} success="Thanks, that's enough for us to look into it." placeholder="Type a little, then click outside the field" />
+        <ValidatedTextarea label="Describe the problem" rules={rules} success="Thanks, that's enough for us to look into it." placeholder="Type a little, then click outside the field…" />
       </div>
     </div>
   );

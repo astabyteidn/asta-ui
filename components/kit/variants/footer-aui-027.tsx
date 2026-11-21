@@ -208,10 +208,11 @@ export function CtaFooter({
             <div className="relative mt-3">
               <select
                 id={langId}
+                name="language"
                 defaultValue={languages[0]?.value}
                 onChange={(e) => onLanguageChange?.(e.target.value)}
                 className={cx(
-                  "h-9 w-full cursor-pointer appearance-none rounded-[8px] bg-paper-2 pl-3 pr-8 text-[13px] text-ink transition-shadow duration-300 hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent)]",
+                  "h-9 w-full cursor-pointer appearance-none rounded-[8px] bg-paper-2 pl-3 pr-8 text-[16px] sm:text-[13px] text-ink transition-shadow duration-300 hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent)]",
                   ring,
                 )}
               >

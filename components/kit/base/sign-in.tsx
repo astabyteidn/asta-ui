@@ -38,12 +38,14 @@ interface FieldProps {
   error?: string;
   /** Bumped on every failed submit so the field shakes again. */
   shake: number;
+  name: string;
   autoComplete: string;
+  inputMode?: "email" | "text";
   placeholder?: string;
   end?: ReactNode;
 }
 
-function Field({ label, type, value, onChange, onBlur, error, shake, autoComplete, placeholder, end }: FieldProps) {
+function Field({ label, type, value, onChange, onBlur, error, shake, name, autoComplete, inputMode, placeholder, end }: FieldProps) {
   const id = useId();
   const box = useRef<HTMLDivElement>(null);
   const hasError = !!error;
@@ -63,16 +65,20 @@ function Field({ label, type, value, onChange, onBlur, error, shake, autoComplet
       <div ref={box} className="relative">
         <input
           id={id}
+          name={name}
           type={type}
           value={value}
           autoComplete={autoComplete}
+          inputMode={inputMode}
+          autoCapitalize="none"
+          spellCheck={false}
           placeholder={placeholder}
           onChange={(e) => onChange(e.target.value)}
           onBlur={onBlur}
           aria-invalid={!!error || undefined}
           aria-describedby={error ? `${id}-err` : undefined}
           className={cx(
-            "h-10 w-full rounded-lg bg-paper px-3 text-[14px] text-ink outline-none transition-shadow duration-200 placeholder:text-mute",
+            "h-10 w-full rounded-lg bg-paper px-3 text-[16px] sm:text-[14px] text-ink outline-none transition-shadow duration-200 placeholder:text-mute",
             !!end && "pr-11",
             error
               ? "shadow-[inset_0_0_0_1px_#e5484d] focus-visible:ring-2 focus-visible:ring-[#e5484d]/30"
@@ -116,18 +122,28 @@ export function SignInCard({ title = "Welcome back", subtitle = "Sign in to cont
   const [formError, setFormError] = useState("");
   const [shake, setShake] = useState(0);
 
-  const errors = {
-    email: !email.trim() ? "Enter your email." : !validEmail(email) ? "That doesn't look like an email address." : "",
-    password: !password ? "Enter your password." : password.length < 8 ? "Use at least 8 characters." : "",
+  const check = {
+    email: (v: string) => (!v.trim() ? "Enter your email." : !validEmail(v) ? "Enter an email like name@company.com." : ""),
+    password: (v: string) => (!v ? "Enter your password." : v.length < 8 ? "Use at least 8 characters." : ""),
   };
+  const errors = { email: check.email(email), password: check.password(password) };
   const show = (k: "email" | "password") => (touched[k] ? errors[k] : "");
+  // Errors show on blur or submit. A value that becomes valid while typing clears its error and stays quiet
+  // until the next blur, so a new error never pops up mid-word.
+  const edit = (k: "email" | "password", v: string) => {
+    if (k === "email") setEmail(v);
+    else setPassword(v);
+    if (touched[k] && !check[k](v)) setTouched((t) => ({ ...t, [k]: false }));
+  };
 
-  const submit = async (e: FormEvent) => {
+  const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setTouched({ email: true, password: true });
     setFormError("");
     if (errors.email || errors.password) {
       setShake((n) => n + 1);
+      const first = e.currentTarget.elements.namedItem(errors.email ? "email" : "password");
+      if (first instanceof HTMLInputElement) first.focus();
       return;
     }
     setState("loading");
@@ -188,22 +204,25 @@ export function SignInCard({ title = "Welcome back", subtitle = "Sign in to cont
           <div className="flex flex-col gap-3">
             <Field
               label="Email"
+              name="email"
               type="email"
               autoComplete="email"
+              inputMode="email"
               placeholder="you@company.com"
               value={email}
-              onChange={setEmail}
+              onChange={(v) => edit("email", v)}
               onBlur={() => email && setTouched((t) => ({ ...t, email: true }))}
               error={show("email")}
               shake={shake}
             />
             <Field
               label="Password"
+              name="password"
               type={reveal ? "text" : "password"}
               autoComplete="current-password"
-              placeholder="At least 8 characters"
+              placeholder="At least 8 characters…"
               value={password}
-              onChange={setPassword}
+              onChange={(v) => edit("password", v)}
               onBlur={() => password && setTouched((t) => ({ ...t, password: true }))}
               error={show("password")}
               shake={shake}
@@ -227,7 +246,7 @@ export function SignInCard({ title = "Welcome back", subtitle = "Sign in to cont
 
           <div className="mt-3 flex items-center justify-between text-[13px]">
             <label className="flex cursor-pointer items-center gap-2 text-ink-2">
-              <input type="checkbox" defaultChecked className="h-3.5 w-3.5 accent-[var(--color-brand)]" />
+              <input type="checkbox" name="remember" defaultChecked className="h-3.5 w-3.5 accent-[var(--color-brand)]" />
               Remember me
             </label>
             <a href="#" onClick={(e) => e.preventDefault()} className="text-brand outline-none hover:underline focus-visible:underline">

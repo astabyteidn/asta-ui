@@ -190,6 +190,8 @@ export function DataTable<T>({
               </svg>
               <input
                 type="search"
+                name="q"
+                autoComplete="off"
                 value={query}
                 onChange={(e) => {
                   setQuery(e.target.value);
@@ -197,7 +199,7 @@ export function DataTable<T>({
                 }}
                 placeholder={searchPlaceholder}
                 aria-label={searchPlaceholder.replace(/…$/, "")}
-                className="h-full min-w-0 flex-1 bg-transparent text-[13.5px] text-ink outline-none placeholder:text-mute [&::-webkit-search-cancel-button]:hidden"
+                className="h-full min-w-0 flex-1 bg-transparent text-[16px] sm:text-[13.5px] text-ink outline-none placeholder:text-mute [&::-webkit-search-cancel-button]:hidden"
               />
             </label>
           )}

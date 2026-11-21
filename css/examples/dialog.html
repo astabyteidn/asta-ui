@@ -5,7 +5,7 @@
   <h2 id="ex-invite-title" class="asta-dialog-title">Invite to Astabyte</h2>
   <p id="ex-invite-desc" class="asta-dialog-desc">They get an email with a link to join.</p>
   <form class="asta-dialog-body" hx-post="/invite" hx-target="this" hx-swap="outerHTML">
-    <label class="asta-input"><input class="asta-input-control" name="email" type="email" placeholder="name@astabyte.com"></label>
+    <label class="asta-input"><input class="asta-input-control" name="email" type="email" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" placeholder="name@astabyte.com"></label>
     <div class="asta-dialog-footer">
       <button type="button" class="asta-btn asta-btn-ghost" data-asta-close><span class="asta-btn-label">Cancel</span></button>
       <button type="submit" class="asta-btn asta-btn-accent"><span class="asta-btn-label">Send invite</span></button>

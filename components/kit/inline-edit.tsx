@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 
 const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(" ");
 
@@ -27,7 +27,7 @@ export interface InlineEditProps {
 
 const KEYFRAMES = `@keyframes asta-inline-edit-tick { 0% { opacity: 0; transform: scale(.6) } 18% { opacity: 1; transform: scale(1) } 80% { opacity: 1; transform: scale(1) } 100% { opacity: 0; transform: scale(1) } }`;
 
-const TEXT = { sm: "text-[13px]", md: "text-[14.5px]", lg: "text-[20px] font-medium tracking-[-0.02em]" };
+const TEXT = { sm: "text-[16px] sm:text-[13px]", md: "text-[16px] sm:text-[14.5px]", lg: "text-[20px] font-medium tracking-[-0.02em]" };
 
 /**
  * Text that turns into a field when you click it or press Enter. Enter saves, Esc puts the old text back,
@@ -41,6 +41,7 @@ export function InlineEdit({ value, defaultValue = "", onSave, onCancel, placeho
   const [saving, setSaving] = useState(false);
   const [failed, setFailed] = useState(false);
   const [saved, setSaved] = useState(0);
+  const failId = useId();
 
   const input = useRef<HTMLInputElement>(null);
   const display = useRef<HTMLButtonElement>(null);
@@ -156,6 +157,8 @@ export function InlineEdit({ value, defaultValue = "", onSave, onCancel, placeho
             onBlur={() => (saveOnBlur ? void save(false) : cancel(false))}
             aria-label={label}
             aria-invalid={failed || undefined}
+            aria-describedby={failed ? failId : undefined}
+            autoComplete="off"
             aria-busy={saving || undefined}
             readOnly={saving}
             maxLength={maxLength}
@@ -214,7 +217,11 @@ export function InlineEdit({ value, defaultValue = "", onSave, onCancel, placeho
       <span role="status" className="sr-only">
         {saved > 0 ? "Saved" : failed ? "Couldn't save. Try again or press Escape." : ""}
       </span>
-      {failed && editing && <span className="shrink-0 text-[12px] text-mute">Couldn&apos;t save</span>}
+      {failed && editing && (
+        <span id={failId} className="shrink-0 text-[12px] text-mute">
+          Couldn&apos;t save. Press Enter to retry.
+        </span>
+      )}
     </span>
   );
 }

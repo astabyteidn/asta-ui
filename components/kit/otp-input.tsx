@@ -54,7 +54,7 @@ export function OtpInput({
   autoFocus,
   groupSize,
   label = "One-time code",
-  name,
+  name = "code",
   className,
 }: OtpInputProps) {
   const id = useId();
@@ -165,7 +165,7 @@ export function OtpInput({
         inputMode={digitsOnly ? "numeric" : "text"}
         pattern={digitsOnly ? "[0-9]*" : undefined}
         autoComplete="one-time-code"
-        autoCapitalize={digitsOnly ? undefined : "characters"}
+        autoCapitalize={digitsOnly ? "none" : "characters"}
         spellCheck={false}
         aria-label={label}
         aria-invalid={error || undefined}

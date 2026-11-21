@@ -241,6 +241,7 @@ export function VerifyOtp({
           <input
             ref={input}
             id={id}
+            name="code"
             aria-label={`${length}-digit verification code`}
             value={code}
             inputMode="numeric"
@@ -260,7 +261,7 @@ export function VerifyOtp({
             }}
             onBlur={() => setFocused(false)}
             onSelect={toEnd}
-            className="absolute inset-0 h-full w-full cursor-text bg-transparent text-transparent caret-transparent outline-none selection:bg-transparent disabled:cursor-default"
+            className="absolute inset-0 h-full w-full cursor-text bg-transparent text-[16px] text-transparent caret-transparent outline-none selection:bg-transparent disabled:cursor-default"
           />
         </div>
 

@@ -78,7 +78,7 @@ export function BudgetTextarea({
         <div
           ref={mirror}
           aria-hidden
-          className="pointer-events-none absolute inset-0 overflow-hidden whitespace-pre-wrap break-words px-4 pb-2 pt-3.5 text-[14.5px] leading-[1.6] text-transparent"
+          className="pointer-events-none absolute inset-0 overflow-hidden whitespace-pre-wrap break-words px-4 pb-2 pt-3.5 text-[16px] sm:text-[14.5px] leading-[1.6] text-transparent"
         >
           {head}
           <mark className="rounded-[3px] bg-[color-mix(in_srgb,var(--color-brand)_16%,transparent)] text-transparent shadow-[0_1.5px_0_var(--color-brand)]">{tail}</mark>
@@ -97,7 +97,7 @@ export function BudgetTextarea({
             if (value === undefined) setInner(e.target.value);
             onChange?.(e.target.value);
           }}
-          className="relative block w-full resize-none bg-transparent px-4 pb-2 pt-3.5 text-[14.5px] leading-[1.6] text-ink outline-none placeholder:text-mute"
+          className="relative block w-full resize-none bg-transparent px-4 pb-2 pt-3.5 text-[16px] sm:text-[14.5px] leading-[1.6] text-ink outline-none placeholder:text-mute"
         />
         </div>
         <div className="pointer-events-none flex items-center justify-end gap-2.5 px-3 pb-2.5">

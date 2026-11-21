@@ -225,10 +225,11 @@ export default function CardCheckout() {
 
       <input
         ref={input}
+        name="cardNumber"
         inputMode="numeric"
-        autoComplete="off"
+        autoComplete="cc-number"
         aria-label="Card number"
-        className="sr-only"
+        className="sr-only text-[16px]"
         value={num}
         onFocus={() => {
           setUser(true);

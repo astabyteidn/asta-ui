@@ -242,9 +242,11 @@ export default function ChatThread() {
               takeOver();
               setDraft(e.target.value);
             }}
-            placeholder="Message"
+            name="message"
+            autoComplete="off"
+            placeholder="Message…"
             aria-label="Message"
-            className={`h-9 min-w-0 flex-1 rounded-[9px] bg-paper px-3 text-[13px] text-ink outline-none placeholder:text-mute focus-visible:ring-2 focus-visible:ring-brand/50 ${RING}`}
+            className={`h-9 min-w-0 flex-1 rounded-[9px] bg-paper px-3 text-[16px] sm:text-[13px] text-ink outline-none placeholder:text-mute focus-visible:ring-2 focus-visible:ring-brand/50 ${RING}`}
           />
           <button
             type="submit"

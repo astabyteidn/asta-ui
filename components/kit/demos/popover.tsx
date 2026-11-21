@@ -27,7 +27,7 @@ function CopyField() {
 
   return (
     <div className="flex h-9 items-center gap-1 rounded-lg bg-paper-2 pl-3 pr-1">
-      <input readOnly value={LINK} aria-label="Share link" onFocus={(e) => e.currentTarget.select()} className="h-full min-w-0 flex-1 truncate bg-transparent text-[12.5px] text-ink-2 outline-none" />
+      <input readOnly value={LINK} aria-label="Share link" onFocus={(e) => e.currentTarget.select()} className="h-full min-w-0 flex-1 truncate bg-transparent text-[16px] sm:text-[12.5px] text-ink-2 outline-none" />
       <button
         type="button"
         data-autofocus

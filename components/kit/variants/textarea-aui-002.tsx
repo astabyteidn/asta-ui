@@ -43,7 +43,7 @@ export function AutoGrowTextarea({ minRows = 2, maxRows = 8, className, ...rest 
     return () => ro.disconnect();
   }, [value, minRows, maxRows]);
 
-  const text = "block w-full px-3.5 py-3 text-[14px] leading-[1.55] whitespace-pre-wrap break-words";
+  const text = "block w-full px-3.5 py-3 text-[16px] sm:text-[14px] leading-[1.55] whitespace-pre-wrap break-words";
 
   return (
     <div className={cx("relative w-full", className)}>
