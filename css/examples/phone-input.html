@@ -1,0 +1,9 @@
+<!-- asta.js formats the number with the selected country's data-mask, fills phone_e164 and sets data-valid when it is complete. -->
+<form style="display:grid;gap:12px;max-width:340px" onsubmit="return false">
+<div class="asta-phone" data-asta-phone>
+<label class="asta-label" for="ex-phone">Phone number</label>
+<div class="asta-phone-control"><select class="asta-phone-country" aria-label="Country"><option value="+1" data-mask="(###) ###-####">US +1</option><option value="+44" data-mask="#### ######">GB +44</option><option value="+62" data-mask="###-####-####" selected>ID +62</option><option value="+65" data-mask="#### ####">SG +65</option><option value="+49" data-mask="#### #######">DE +49</option><option value="+81" data-mask="##-####-####">JP +81</option></select><input id="ex-phone" class="asta-phone-input" type="tel" inputmode="tel" autocomplete="tel-national" name="phone" placeholder="812-3456-7890"><span class="asta-phone-check" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 8.5 2.5 2.5L12 5.5"/></svg></span></div>
+<input type="hidden" name="phone_e164">
+</div>
+<button type="submit" class="asta-btn asta-btn-accent" style="width:100%"><span class="asta-btn-label">Send code</span></button>
+</form>

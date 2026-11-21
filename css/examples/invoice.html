@@ -1,0 +1,17 @@
+<!-- Static. Swap the status class (asta-invoice-status-paid, -overdue, -draft) from your server after payment. -->
+<article class="asta-invoice" aria-label="Invoice INV-2026-0142" style="max-width:760px">
+<header class="asta-invoice-head"><p style="font-size:17px;font-weight:600;letter-spacing:-0.03em">Astabyte</p><div><h2 class="asta-invoice-title">Invoice <span class="asta-invoice-status">Due</span></h2><p class="asta-invoice-number">INV-2026-0142</p></div></header>
+<div class="asta-invoice-parties">
+<div><p class="asta-invoice-label">Billed to</p><b>Juniper Goods Co.</b>88 Harbor Street, Singapore<br>ap@junipergoods.example</div>
+<div><p class="asta-invoice-label">From</p><b>Astabyte Studio</b>Jl. Senopati 18, Jakarta<br>billing@astabyte.com</div>
+<div><p class="asta-invoice-label">Issued</p><b style="margin-top:4px">Nov 1, 2026</b><p class="asta-invoice-label" style="margin-top:8px">Due</p><b style="margin-top:4px">Nov 15, 2026</b></div>
+</div>
+<table class="asta-invoice-items"><thead><tr><th>Item</th><th class="asta-invoice-num">Qty</th><th class="asta-invoice-num">Price</th><th>Amount</th></tr></thead><tbody>
+<tr><td>Product design sprint<small>Two weeks, Oct 6 – Oct 17</small></td><td class="asta-invoice-num">1</td><td class="asta-invoice-num">$6,400.00</td><td>$6,400.00</td></tr>
+<tr><td>Design system setup<small>Tokens, components, docs</small></td><td class="asta-invoice-num">1</td><td class="asta-invoice-num">$3,200.00</td><td>$3,200.00</td></tr>
+<tr><td>Frontend build<small>Hours</small></td><td class="asta-invoice-num">36</td><td class="asta-invoice-num">$95.00</td><td>$3,420.00</td></tr>
+<tr><td>Hosting and monitoring<small>November</small></td><td class="asta-invoice-num">1</td><td class="asta-invoice-num">$180.00</td><td>$180.00</td></tr>
+</tbody></table>
+<dl class="asta-invoice-totals"><dt>Subtotal</dt><dd>$13,200.00</dd><dt>Discount</dt><dd>−$500.00</dd><dt>Tax (11%)</dt><dd>$1,397.00</dd><dt class="asta-invoice-total">Total</dt><dd>$14,097.00</dd><dt>Amount due</dt><dd>$14,097.00</dd></dl>
+<footer class="asta-invoice-foot"><p>Thanks for working with us. Bank transfer details are on page two of the PDF.</p><div style="display:flex;gap:8px"><button type="button" class="asta-btn asta-btn-outline asta-btn-sm"><span class="asta-btn-label">Download PDF</span></button><button type="button" class="asta-btn asta-btn-accent asta-btn-sm" hx-post="/invoices/0142/pay"><span class="asta-btn-label">Pay $14,097.00</span></button></div></footer>
+</article>

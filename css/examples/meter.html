@@ -1,0 +1,19 @@
+<!-- Static: set --value (0 to 1) on each fill, and --start for the parts of a split bar. Add data-warn near the limit. -->
+<div style="display:grid;gap:24px;max-width:420px">
+<div class="asta-meter" role="meter" aria-label="Storage" aria-valuenow="74" aria-valuemin="0" aria-valuemax="100">
+<div class="asta-meter-head"><span class="asta-meter-label">Storage</span><a class="asta-meter-action" href="#">Upgrade</a></div>
+<div class="asta-meter-track"><span class="asta-meter-fill" style="--value:.42"></span><span class="asta-meter-fill asta-meter-fill-2" style="--start:.42;--value:.2"></span><span class="asta-meter-fill asta-meter-fill-3" style="--start:.62;--value:.12"></span></div>
+<div class="asta-meter-foot"><span><b>74 GB</b> of 100 GB</span><span>74% used</span></div>
+<div class="asta-meter-legend"><span><span class="asta-meter-legend-dot"></span>Media 42 GB</span><span><span class="asta-meter-legend-dot" style="background:var(--ink)"></span>Docs 20 GB</span><span><span class="asta-meter-legend-dot" style="background:color-mix(in srgb,var(--brand) 40%,var(--paper))"></span>Backups 12 GB</span></div>
+</div>
+<div class="asta-meter" role="meter" aria-label="API requests" aria-valuenow="9420" aria-valuemin="0" aria-valuemax="10000" data-warn>
+<div class="asta-meter-head"><span class="asta-meter-label">API requests</span></div>
+<div class="asta-meter-track"><span class="asta-meter-fill" style="--value:.942"></span></div>
+<div class="asta-meter-foot"><span><b>9,420</b> of 10,000</span><span>Almost at your limit</span></div>
+</div>
+<div class="asta-meter asta-meter-sm" role="meter" aria-label="Seats" aria-valuenow="8" aria-valuemin="0" aria-valuemax="10">
+<div class="asta-meter-head"><span class="asta-meter-label">Seats</span></div>
+<div class="asta-meter-track"><span class="asta-meter-fill" style="--value:.8"></span></div>
+<div class="asta-meter-foot"><span><b>8</b> of 10</span><span>80% used</span></div>
+</div>
+</div>

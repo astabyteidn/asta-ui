@@ -57,6 +57,10 @@ export const labBlocks: LabMeta[] = [
   { slug: "booking-slots", title: "Booking slots", kind: ["Inputs", "Actions"], input: ["pointer", "touch", "keys"], description: "Pick a day and its times stagger in. Pick a time and Confirm slides up, then turns into a check and a Booked summary." },
   { slug: "notification-stack", title: "Notification stack", kind: ["Feedback", "Surfaces"], input: ["pointer", "touch", "keys"], description: "Notifications land on top of a soft stack and the unread badge pops. Hover to fan them out. Swipe or tap X to dismiss and the rest settle up." },
   { slug: "token-swap", title: "Token swap", kind: ["Inputs", "Actions", "Feedback"], input: ["pointer", "touch", "keys"], description: "Type an amount and the quote rolls. Flip and the rows trade places. Swap goes from Confirming to a check, and the rate refreshes on a ring." },
+  { slug: "watchlist", title: "Watchlist", kind: ["Feedback", "Surfaces"], input: ["pointer", "touch", "keys"], description: "Top movers re-rank live. A tick flashes the price and the row glides to its new place. Hover to pause." },
+  { slug: "split-bill", title: "Split bill", kind: ["Feedback", "Surfaces"], input: ["pointer", "touch", "keys"], description: "Friends join the bill and everyone's share rolls down. Requests go out and each one ticks over to Paid." },
+  { slug: "flash-sale", title: "Flash sale", kind: ["Feedback", "Surfaces"], input: ["pointer", "touch", "keys"], description: "Stock drains, the claimed count rolls and the clock ticks until it sells out and turns into a waitlist." },
+  { slug: "price-alert", title: "Price alert", kind: ["Feedback"], input: ["pointer", "touch", "keys"], description: "The price walks up to your alert line and crosses it. The alert drops in and the bell rings." },
 ];
 
 /** Apply CMS overrides (title, description, notes, order). Blocks without an entry keep code order after those with one. */

@@ -1,0 +1,369 @@
+"use client";
+
+import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
+import { Avatar } from "@/components/kit/avatar";
+import { Button } from "@/components/kit/button";
+
+const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(" ");
+const EASE = "cubic-bezier(.16,1,.3,1)";
+
+const KEYFRAMES = `@keyframes asta-inbox-in { from { opacity: 0; transform: translateY(6px) } }
+@keyframes asta-inbox-bar { from { opacity: 0; transform: translateY(100%) } }
+@keyframes asta-inbox-star { 0% { transform: scale(1) } 40% { transform: scale(1.35) rotate(-12deg) } 100% { transform: scale(1) } }
+@media (prefers-reduced-motion: reduce) { .asta-inbox-a { animation: none !important; transition: none !important } }`;
+
+export interface InboxMessage {
+  id: string;
+  from: string;
+  email: string;
+  subject: string;
+  /** The first line, shown in the list. */
+  preview: string;
+  /** Paragraphs of the message. */
+  body: string[];
+  /** Already formatted, e.g. "9:41" or "Mon". */
+  time: string;
+  unread?: boolean;
+  starred?: boolean;
+  /** A short tag, e.g. "Billing". */
+  label?: string;
+}
+
+export interface InboxProps {
+  messages: InboxMessage[];
+  /** Called after a message is archived and the undo window has passed. */
+  onArchive?: (id: string) => void;
+  onReply?: (id: string, text: string) => void;
+  /** Height of the whole view in px. */
+  height?: number;
+  className?: string;
+}
+
+type Filter = "all" | "unread" | "starred";
+
+const Icon = ({ d, className = "h-4 w-4", fill }: { d: string; className?: string; fill?: boolean }) => (
+  <svg viewBox="0 0 16 16" className={className} fill={fill ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d={d} />
+  </svg>
+);
+const STAR = "m8 2.2 1.75 3.55 3.9.57-2.82 2.75.67 3.9L8 11.12l-3.5 1.85.67-3.9L2.35 6.32l3.9-.57z";
+const ARCHIVE = "M2.5 3.5h11v3h-11zM3.5 6.5v6h9v-6M6.5 9h3";
+const MAIL = "M2.5 4h11v8h-11zM2.5 4.5 8 9l5.5-4.5";
+
+/**
+ * A mail view: a list on the left, the open message on the right. Star a message, mark it unread, or archive it
+ * and the rest glide up while an Undo bar waits a few seconds. With focus in the inbox, j and k (or the arrows)
+ * walk the list, e archives, s stars and u marks unread. In a narrow container the list slides over to the
+ * message and Back slides it home.
+ */
+export function Inbox({ messages, onArchive, onReply, height = 560, className }: InboxProps) {
+  const [list, setList] = useState(messages);
+  const [sel, setSel] = useState<string | null>(messages[0]?.id ?? null);
+  const [view, setView] = useState<"list" | "message">("list");
+  const [filter, setFilter] = useState<Filter>("all");
+  const [query, setQuery] = useState("");
+  const [undo, setUndo] = useState<{ msg: InboxMessage; index: number } | null>(null);
+  const [reply, setReply] = useState("");
+  const [sent, setSent] = useState<string | null>(null);
+  const rows = useRef(new Map<string, HTMLLIElement>());
+  const btns = useRef(new Map<string, HTMLButtonElement>());
+  const flip = useRef<Map<string, number> | null>(null);
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  const q = query.trim().toLowerCase();
+  const shown = list.filter(
+    (m) => (filter === "all" || (filter === "unread" ? m.unread : m.starred)) && (!q || `${m.from} ${m.subject} ${m.preview}`.toLowerCase().includes(q)),
+  );
+  const open = list.find((m) => m.id === sel) ?? null;
+  const unread = list.filter((m) => m.unread).length;
+
+  useEffect(() => () => clearTimeout(timer.current), []);
+
+  // Rows glide from where they were drawn to where they are now.
+  useLayoutEffect(() => {
+    const m = flip.current;
+    if (!m) return;
+    flip.current = null;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    rows.current.forEach((el, id) => {
+      const old = m.get(id);
+      if (old === undefined) return el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 260, easing: EASE });
+      const d = old - el.getBoundingClientRect().top;
+      if (Math.abs(d) > 0.5) el.animate([{ transform: `translateY(${d}px)` }, { transform: "none" }], { duration: 360, easing: EASE });
+    });
+  }, [list]);
+  const snapshot = () => {
+    const m = new Map<string, number>();
+    rows.current.forEach((el, id) => m.set(id, el.getBoundingClientRect().top));
+    flip.current = m;
+  };
+
+  const patch = (id: string, p: Partial<InboxMessage>) => setList((l) => l.map((m) => (m.id === id ? { ...m, ...p } : m)));
+  const select = (id: string, focus = false) => {
+    setSel(id);
+    setView("message");
+    setSent(null);
+    setReply("");
+    patch(id, { unread: false });
+    if (focus) btns.current.get(id)?.focus();
+  };
+
+  const archive = (id: string) => {
+    const index = list.findIndex((m) => m.id === id);
+    if (index < 0) return;
+    // A pending archive is final once another one starts.
+    if (undo) onArchive?.(undo.msg.id);
+    clearTimeout(timer.current);
+    snapshot();
+    const next = shown[shown.findIndex((m) => m.id === id) + 1] ?? shown[shown.findIndex((m) => m.id === id) - 1];
+    setList((l) => l.filter((m) => m.id !== id));
+    setUndo({ msg: list[index], index });
+    if (sel === id) {
+      setSel(next?.id ?? null);
+      if (!next) setView("list");
+    }
+    timer.current = setTimeout(() => {
+      onArchive?.(id);
+      setUndo(null);
+    }, 5000);
+  };
+  const restore = () => {
+    if (!undo) return;
+    clearTimeout(timer.current);
+    snapshot();
+    setList((l) => {
+      const n = l.slice();
+      n.splice(Math.min(undo.index, n.length), 0, undo.msg);
+      return n;
+    });
+    setSel(undo.msg.id);
+    setUndo(null);
+  };
+
+  const onKey = (e: KeyboardEvent) => {
+    const t = e.target as HTMLElement;
+    if (t.closest("input, textarea") || e.metaKey || e.ctrlKey || e.altKey) return;
+    const i = shown.findIndex((m) => m.id === sel);
+    const go = (j: number) => {
+      const m = shown[Math.max(0, Math.min(shown.length - 1, j))];
+      if (!m) return;
+      e.preventDefault();
+      setSel(m.id);
+      patch(m.id, { unread: false });
+      btns.current.get(m.id)?.focus();
+    };
+    if (e.key === "j" || e.key === "ArrowDown") go(i + 1);
+    else if (e.key === "k" || e.key === "ArrowUp") go(i - 1);
+    else if (open && e.key === "e") archive(open.id);
+    else if (open && e.key === "s") patch(open.id, { starred: !open.starred });
+    else if (open && e.key === "u") patch(open.id, { unread: !open.unread });
+  };
+
+  const ghost = "flex h-8 w-8 items-center justify-center rounded-md text-mute outline-none transition-colors hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50";
+
+  return (
+    <div
+      data-view={view}
+      onKeyDown={onKey}
+      style={{ height }}
+      className={cx(
+        "group/inbox @container relative w-full overflow-hidden rounded-[14px] bg-paper text-ink shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_10%,transparent)]",
+        className,
+      )}
+    >
+      <style href="asta-inbox" precedence="asta">{KEYFRAMES}</style>
+      <div className="flex h-full @min-[640px]:grid @min-[640px]:grid-cols-[minmax(260px,340px)_1fr]">
+        {/* List */}
+        <section
+          aria-label="Messages"
+          className={cx(
+            "asta-inbox-a absolute inset-0 flex flex-col bg-paper transition-transform duration-500 @min-[640px]:static",
+            "@min-[640px]:shadow-[1px_0_0_color-mix(in_srgb,var(--color-ink)_8%,transparent)]",
+            "group-data-[view=message]/inbox:-translate-x-[30%] @min-[640px]:group-data-[view=message]/inbox:translate-x-0",
+          )}
+          style={{ transitionTimingFunction: EASE }}
+        >
+          <div className="flex flex-col gap-2.5 p-3 pb-2">
+            <div className="flex items-center justify-between px-1">
+              <h2 className="text-[15px] font-medium tracking-[-0.01em]">Inbox</h2>
+              <span className="text-[12px] tabular-nums text-mute">{unread} unread</span>
+            </div>
+            <label className="flex h-9 items-center gap-2 rounded-lg bg-paper-2 px-2.5 text-mute focus-within:shadow-[inset_0_0_0_1px_var(--color-brand)]">
+              <Icon d="M7 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm3.6-1.4L14 14" className="h-3.5 w-3.5 shrink-0" />
+              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search mail" aria-label="Search mail" className="h-full min-w-0 flex-1 bg-transparent text-[13px] text-ink outline-none placeholder:text-mute" />
+            </label>
+            <div role="radiogroup" aria-label="Show" className="flex gap-1">
+              {(["all", "unread", "starred"] as const).map((f) => (
+                <button
+                  key={f}
+                  type="button"
+                  role="radio"
+                  aria-checked={filter === f}
+                  onClick={() => setFilter(f)}
+                  className={cx(
+                    "h-7 rounded-md px-2.5 text-[12px] font-medium capitalize outline-none transition-colors focus-visible:ring-2 focus-visible:ring-brand/50",
+                    filter === f ? "bg-ink text-paper" : "text-mute hover:bg-paper-2 hover:text-ink",
+                  )}
+                >
+                  {f}
+                </button>
+              ))}
+            </div>
+          </div>
+          <ul className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-2 pb-14">
+            {shown.length === 0 && <li className="px-3 py-10 text-center text-[13px] text-mute">{q ? `Nothing matches “${query}”` : filter === "all" ? "Inbox zero. Nice." : `No ${filter} messages`}</li>}
+            {shown.map((m) => {
+              const active = m.id === sel;
+              return (
+                <li
+                  key={m.id}
+                  ref={(el) => {
+                    if (el) rows.current.set(m.id, el);
+                    else rows.current.delete(m.id);
+                  }}
+                  className="group/row relative"
+                >
+                  <button
+                    ref={(el) => {
+                      if (el) btns.current.set(m.id, el);
+                      else btns.current.delete(m.id);
+                    }}
+                    type="button"
+                    aria-current={active || undefined}
+                    onClick={() => select(m.id)}
+                    className={cx(
+                      "flex w-full gap-3 rounded-[10px] px-2.5 py-2.5 pr-9 text-left outline-none transition-colors focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand/50",
+                      active ? "bg-paper-2" : "hover:bg-paper-2/60",
+                    )}
+                  >
+                    <span className="relative">
+                      <Avatar name={m.from} size="sm" />
+                      {m.unread && <span className="absolute -left-1 top-0 h-2 w-2 rounded-full bg-brand ring-2 ring-paper" aria-label="Unread" />}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="flex items-baseline justify-between gap-2">
+                        <span className={cx("truncate text-[13px]", m.unread ? "font-semibold" : "font-medium text-ink-2")}>{m.from}</span>
+                        <span className="shrink-0 text-[11px] tabular-nums text-mute">{m.time}</span>
+                      </span>
+                      <span className={cx("block truncate text-[12.5px]", m.unread ? "text-ink" : "text-ink-2")}>{m.subject}</span>
+                      <span className="block truncate text-[12px] text-mute">{m.preview}</span>
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    aria-label={m.starred ? `Unstar ${m.subject}` : `Star ${m.subject}`}
+                    aria-pressed={!!m.starred}
+                    onClick={() => patch(m.id, { starred: !m.starred })}
+                    className={cx(
+                      "absolute bottom-2 right-1.5 flex h-7 w-7 items-center justify-center rounded-md outline-none transition-[opacity,color] focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-brand/50",
+                      m.starred ? "text-brand" : "text-mute opacity-0 hover:text-ink group-hover/row:opacity-100 max-[640px]:opacity-100",
+                    )}
+                  >
+                    <span key={String(!!m.starred)} className={cx("flex", m.starred && "asta-inbox-a animate-[asta-inbox-star_.4s_cubic-bezier(.16,1,.3,1)]")}>
+                      <Icon d={STAR} className="h-3.5 w-3.5" fill={m.starred} />
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+          {undo && (
+            <div role="status" className="asta-inbox-a absolute inset-x-3 bottom-3 flex animate-[asta-inbox-bar_.4s_cubic-bezier(.16,1,.3,1)_both] items-center justify-between gap-3 rounded-[10px] bg-ink px-3.5 py-2.5 text-[12.5px] text-paper shadow-[0_12px_28px_-12px_rgb(0_0_0/0.5)]">
+              <span className="truncate">Archived “{undo.msg.subject}”</span>
+              <button type="button" onClick={restore} className="shrink-0 rounded px-1 font-medium text-paper underline-offset-2 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-paper/60">
+                Undo
+              </button>
+            </div>
+          )}
+        </section>
+
+        {/* Reading pane */}
+        <section
+          aria-label="Message"
+          className={cx(
+            "asta-inbox-a absolute inset-0 flex min-w-0 flex-col bg-paper transition-transform duration-500 @min-[640px]:static",
+            "translate-x-full group-data-[view=message]/inbox:translate-x-0 @min-[640px]:translate-x-0",
+          )}
+          style={{ transitionTimingFunction: EASE }}
+        >
+          {open ? (
+            <div key={open.id} className="asta-inbox-a flex min-h-0 flex-1 animate-[asta-inbox-in_.35s_cubic-bezier(.16,1,.3,1)_both] flex-col">
+              <div className="flex items-center gap-1 px-3 py-2.5">
+                <button type="button" onClick={() => setView("list")} aria-label="Back to inbox" className={cx(ghost, "@min-[640px]:hidden")}>
+                  <Icon d="M10 3.5 5.5 8l4.5 4.5" />
+                </button>
+                <div className="ml-auto flex items-center gap-0.5">
+                  <button type="button" onClick={() => archive(open.id)} aria-label="Archive (e)" title="Archive · e" className={ghost}>
+                    <Icon d={ARCHIVE} />
+                  </button>
+                  <button type="button" onClick={() => patch(open.id, { unread: !open.unread })} aria-label={open.unread ? "Mark as read (u)" : "Mark as unread (u)"} title="Mark unread · u" className={ghost}>
+                    <Icon d={MAIL} />
+                  </button>
+                  <button type="button" onClick={() => patch(open.id, { starred: !open.starred })} aria-label={open.starred ? "Unstar (s)" : "Star (s)"} aria-pressed={!!open.starred} title="Star · s" className={cx(ghost, open.starred && "text-brand hover:text-brand")}>
+                    <Icon d={STAR} fill={open.starred} />
+                  </button>
+                </div>
+              </div>
+              <div className="min-h-0 flex-1 overflow-y-auto px-5 pb-5 @min-[640px]:px-7">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h3 className="text-[18px] font-medium leading-snug tracking-[-0.02em]">{open.subject}</h3>
+                  {open.label && <span className="rounded-md bg-paper-2 px-1.5 py-0.5 text-[11px] text-mute">{open.label}</span>}
+                </div>
+                <div className="mt-4 flex items-center gap-3">
+                  <Avatar name={open.from} size="md" />
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-[13.5px] font-medium">{open.from}</p>
+                    <p className="truncate text-[12px] text-mute">{open.email}</p>
+                  </div>
+                  <span className="shrink-0 text-[12px] text-mute">{open.time}</span>
+                </div>
+                <div className="mt-5 flex max-w-[60ch] flex-col gap-3 text-[13.5px] leading-relaxed text-ink-2">
+                  {open.body.map((p, i) => (
+                    <p key={i}>{p}</p>
+                  ))}
+                </div>
+              </div>
+              <form
+                className="m-3 mt-0 flex flex-col gap-2 rounded-xl bg-paper-2 p-2.5"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (!reply.trim()) return;
+                  onReply?.(open.id, reply.trim());
+                  setSent(open.from);
+                  setReply("");
+                }}
+              >
+                <textarea
+                  value={reply}
+                  onChange={(e) => setReply(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) e.currentTarget.form?.requestSubmit();
+                  }}
+                  rows={2}
+                  placeholder={`Reply to ${open.from.split(" ")[0]}…`}
+                  aria-label="Reply"
+                  className="w-full resize-none bg-transparent px-1.5 text-[13px] leading-relaxed text-ink outline-none placeholder:text-mute"
+                />
+                <div className="flex items-center justify-between gap-2">
+                  <span className="truncate px-1.5 text-[11.5px] text-mute" aria-live="polite">
+                    {sent ? `Reply sent to ${sent}` : "⌘ Enter to send"}
+                  </span>
+                  <Button type="submit" size="xs" variant="accent" disabled={!reply.trim()}>
+                    Send
+                  </Button>
+                </div>
+              </form>
+            </div>
+          ) : (
+            <div className="flex flex-1 flex-col items-center justify-center gap-1 p-6 text-center">
+              <p className="text-[14px] font-medium">No message open</p>
+              <p className="text-[12.5px] text-mute">Pick one from the list.</p>
+            </div>
+          )}
+        </section>
+      </div>
+    </div>
+  );
+}
+
+export default Inbox;

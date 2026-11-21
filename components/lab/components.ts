@@ -41,4 +41,8 @@ export const labComponents: Record<string, ComponentType> = {
   "booking-slots": load(() => import("./blocks/BookingSlots")),
   "notification-stack": load(() => import("./blocks/NotificationStack")),
   "token-swap": load(() => import("./blocks/TokenSwap")),
+  "watchlist": load(() => import("./blocks/Watchlist")),
+  "split-bill": load(() => import("./blocks/SplitBill")),
+  "flash-sale": load(() => import("./blocks/FlashSale")),
+  "price-alert": load(() => import("./blocks/PriceAlert")),
 };

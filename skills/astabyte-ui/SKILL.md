@@ -7,8 +7,8 @@ description: Build React UI with Astabyte UI (ui.astabyte.com), a motion-first s
 
 A React 19 + Tailwind CSS v4 component kit with hand-tuned motion, distributed as a [shadcn](https://ui.shadcn.com) registry. Components are copied into the project as source by default; the same components are also an npm library (`asta-ui`) for projects that would rather import than own them. Interactive components (dialog, dropdown menu, select, tooltip, tabs, accordion, checkbox, switch, slider, radio group, segmented control, avatar, command palette) come in two builds with the same props, look and motion: on Radix (`radix-ui`) or on Base UI (`@base-ui/react`). The headless library handles behaviour (focus trap, keyboard, ARIA); Astabyte adds the styling and motion. Use the build that matches the project: if it already depends on `@base-ui/react` (or `components.json` has a `base-*` style, or the `@astabyte` registry points at `/r/base/`), use Base UI; if it has `radix-ui` or `@radix-ui/*`, use Radix. Don't mix the two in one project.
 
-- **Kit** (72): everyday building blocks by atomic layer (Atoms, Molecules, Organisms).
-- **Motion lab** (34): focused motion components for real products: trading, payments, ecommerce, plus interaction pieces.
+- **Kit** (84): everyday building blocks by atomic layer (Atoms, Molecules, Organisms).
+- **Motion lab** (38): focused motion components for real products: trading, payments, ecommerce, plus interaction pieces.
 
 Browse: https://ui.astabyte.com · Machine-readable index: https://ui.astabyte.com/llms.txt · Registry index: https://ui.astabyte.com/r/registry.json (Base UI: https://ui.astabyte.com/r/base/registry.json)
 
@@ -121,6 +121,8 @@ Typical things users ask for, and the components that cover them (more at https:
 | [Color picker](https://ui.astabyte.com/color-picker) `color-picker` | Atoms | A calm grid of swatches with a ring that scales in on the one you pick. Type any hex in the field for a custom colour. | — |
 | [Avatar group](https://ui.astabyte.com/avatar-group) `avatar-group` | Atoms | Overlapping avatars that spread a little on hover. The one you point at lifts and shows a name. The rest fold into +N. | Radix + Base UI |
 | [Inline edit](https://ui.astabyte.com/inline-edit) `inline-edit` | Atoms | Text that turns into a field when you click it. Enter saves, Esc puts the old text back, and a small tick fades in once it's saved. | — |
+| [Countdown](https://ui.astabyte.com/countdown) `countdown` | Atoms | Time left until a sale ends or a code can be sent again. Each digit rolls down as it changes. Use boxed tiles or an inline clock. It pauses while offscreen. | — |
+| [Meter](https://ui.astabyte.com/meter) `meter` | Atoms | How much of a limit is used: storage, seats, API calls. Split it into parts with a legend. The bar sweeps in and glides when values change. Near the limit it turns ink and says so. | — |
 | [Radio group](https://ui.astabyte.com/radio-group) `radio-group` | Molecules | Choose one: option cards with a ring that glides to the selection, or a compact list. | Radix + Base UI |
 | [Segmented control](https://ui.astabyte.com/segmented-control) `segmented-control` | Molecules | A pill that slides between options and squashes a little on the way. | Radix + Base UI |
 | [Tabs](https://ui.astabyte.com/tabs) `tabs` | Molecules | Underline tabs with an indicator that stretches between them and content that cross-fades. | Radix + Base UI |
@@ -152,6 +154,10 @@ Typical things users ask for, and the components that cover them (more at https:
 | [Tool dock](https://ui.astabyte.com/tool-dock) `tool-dock` | Molecules | The floating tool bar of a design editor. A highlight slides to the active tool, tooltips show the name and shortcut, and single-key shortcuts work from anywhere on the page. | — |
 | [Image compare](https://ui.astabyte.com/image-compare) `image-compare` | Molecules | A before and after slider. Drag anywhere or use the arrows. The before layer sits in a window that slides one way while the picture slides back. | — |
 | [Announcement bar](https://ui.astabyte.com/announcement-bar) `announcement-bar` | Molecules | A slim banner for the top of a page with a message and a link. Several messages take turns sliding up, hovering pauses them, and closing slides the bar away. | — |
+| [Menubar](https://ui.astabyte.com/menubar) `menubar` | Molecules | The File, Edit, View row of a desktop-style app. Once a menu is open, pointing at the next one switches at once. Arrow keys walk the bar, and items take shortcuts, checks and radio dots. | — |
+| [Phone input](https://ui.astabyte.com/phone-input) `phone-input` | Molecules | A phone field with a country picker. The number formats as you type and the caret stays put. Paste a number with its +code and the country follows. A check pops in once it's complete. | — |
+| [Sortable list](https://ui.astabyte.com/sortable-list) `sortable-list` | Molecules | Put a list in order. Drag a row by its handle and the others slide aside to make room. From the keyboard, Space picks a row up and the arrows move it. Every move is announced. | — |
+| [Cookie consent](https://ui.astabyte.com/cookie-consent) `cookie-consent` | Molecules | A cookie banner that asks once. It slides up with Accept, Reject and Customize. Customize slides over to a switch per category, and the choice can be saved for next time. | Radix + Base UI |
 | [Navbar](https://ui.astabyte.com/navbar) `navbar` | Organisms | A site header with a mega menu: the panel morphs between sections, tiles dim their neighbours, and it folds on mobile. | Radix + Base UI |
 | [Sign-in card](https://ui.astabyte.com/sign-in) `sign-in` | Organisms | Email and password with social buttons, inline validation and a submit that shows progress then success. | Radix + Base UI |
 | [Properties panel](https://ui.astabyte.com/properties-panel) `properties-panel` | Organisms | The inspector of a design editor: collapsible sections, compact number fields you drag to scrub (Shift ×10, Alt ×0.1), and a colour field with a swatch and a hex input. | — |
@@ -169,6 +175,12 @@ Typical things users ask for, and the components that cover them (more at https:
 | [Checkout](https://ui.astabyte.com/checkout) `checkout` | Organisms | Contact, shipping and payment on one page. Card fields format as you type. Change a quantity or shipping speed and the totals roll. Pay shows a pending state, then a receipt. | Radix + Base UI |
 | [Team members](https://ui.astabyte.com/team-members) `team-members` | Organisms | A team list with a role picker per person. Paste several emails to invite them at once. Remove someone and an Undo row gives you a few seconds to change your mind. | Radix + Base UI |
 | [Notification center](https://ui.astabyte.com/notification-center) `notification-center` | Organisms | A bell with an unread count that opens a panel grouped by day. Switch between All and Unread and mark one or all as read. The bell rings when something new arrives. | Radix + Base UI |
+| [Chart card](https://ui.astabyte.com/chart-card) `chart-card` | Organisms | Area, line and bar charts drawn from data with plain SVG and CSS. Lines sweep in and bars glide to new values. Point, drag or use the arrow keys for a crosshair and a tooltip. | — |
+| [Invoice](https://ui.astabyte.com/invoice) `invoice` | Organisms | An invoice with line items, tax and a total. Pay shows a pending state, then the status turns to Paid and a check draws itself in. Line items stack on narrow screens. | Radix + Base UI |
+| [Inbox](https://ui.astabyte.com/inbox) `inbox` | Organisms | A mail view with a list and a reading pane. Star a message, archive it with an undo, and walk the list with j and k. On a phone the list slides over to the message and back. | Radix + Base UI |
+| [File manager](https://ui.astabyte.com/file-manager) `file-manager` | Organisms | Browse folders in a tree and files in a grid or a list. Breadcrumbs follow you down, search filters as you type, and a storage meter sits in the sidebar. | Radix + Base UI |
+| [Billing](https://ui.astabyte.com/billing) `billing` | Organisms | A billing page with the current plan, usage, the card on file and past invoices. Pick another plan and the price difference rolls in before you confirm. | Radix + Base UI |
+| [Testimonials](https://ui.astabyte.com/testimonials) `testimonials` | Organisms | Customer quotes for a marketing page. Two rows drift past in opposite directions and pause on hover. Or lay them out as a grid, which is also what reduced motion gets. | Radix + Base UI |
 
 ## Catalogue: motion lab
 
@@ -208,6 +220,10 @@ Typical things users ask for, and the components that cover them (more at https:
 | [Booking slots](https://ui.astabyte.com/booking-slots) `booking-slots` | Inputs | Pick a day and its times stagger in. Pick a time and Confirm slides up, then turns into a check and a Booked summary. | — |
 | [Notification stack](https://ui.astabyte.com/notification-stack) `notification-stack` | Feedback | Notifications land on top of a soft stack and the unread badge pops. Hover to fan them out. Swipe or tap X to dismiss and the rest settle up. | — |
 | [Token swap](https://ui.astabyte.com/token-swap) `token-swap` | Inputs | Type an amount and the quote rolls. Flip and the rows trade places. Swap goes from Confirming to a check, and the rate refreshes on a ring. | — |
+| [Watchlist](https://ui.astabyte.com/watchlist) `watchlist` | Feedback | Top movers re-rank live. A tick flashes the price and the row glides to its new place. Hover to pause. | — |
+| [Split bill](https://ui.astabyte.com/split-bill) `split-bill` | Feedback | Friends join the bill and everyone's share rolls down. Requests go out and each one ticks over to Paid. | — |
+| [Flash sale](https://ui.astabyte.com/flash-sale) `flash-sale` | Feedback | Stock drains, the claimed count rolls and the clock ticks until it sells out and turns into a waitlist. | — |
+| [Price alert](https://ui.astabyte.com/price-alert) `price-alert` | Feedback | The price walks up to your alert line and crosses it. The alert drops in and the bell rings. | — |
 
 ## Catalogue: variants
 

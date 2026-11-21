@@ -228,6 +228,7 @@ const GROUPS: [string, string][] = [
   ["Overlays and navigation", "asta-drawer, asta-popover, asta-hover-card, asta-context-menu, asta-dropdown, asta-cmd, asta-navbar, asta-sidebar, asta-ws, asta-footer, asta-announcement, asta-stepper, asta-tool-dock"],
   ["Data", "asta-motion-button, asta-timeline-root, asta-carousel-root, asta-tree-view, asta-file-card, asta-file-row, asta-image-compare, asta-data-table, asta-kanban-root, asta-comments-root, asta-event-calendar, asta-notification-center"],
   ["Blocks", "asta-ai-chat, asta-sign-in, asta-onboarding, asta-plans, asta-checkout-form, asta-properties, asta-settings-panel, asta-team-members"],
+  ["Modules", "asta-countdown, asta-meter, asta-menubar, asta-phone, asta-sortable, asta-consent, asta-chart-card, asta-invoice, asta-inbox, asta-files, asta-billing, asta-testimonials"],
 ];
 
 export default async function CssPage() {

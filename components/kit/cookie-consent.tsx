@@ -1,0 +1,207 @@
+"use client";
+
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
+import { Button } from "@/components/kit/button";
+import { Switch } from "@/components/kit/switch";
+
+const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(" ");
+
+const KEYFRAMES = `@keyframes asta-consent-in { from { opacity: 0; transform: translateY(18px) scale(.98) } }
+@keyframes asta-consent-out { to { opacity: 0; transform: translateY(18px) scale(.98) } }
+@keyframes asta-consent-view { from { opacity: 0; transform: translateX(var(--asta-consent-dx, 12px)) } }
+@media (prefers-reduced-motion: reduce) { .asta-consent, .asta-consent-view { animation-duration: 1ms !important } }`;
+
+export interface ConsentCategory {
+  id: string;
+  label: string;
+  description: string;
+  /** Always on and can't be switched off, e.g. cookies the site needs to work. */
+  required?: boolean;
+  /** Starting value in the preferences view. */
+  defaultOn?: boolean;
+}
+
+export type Consent = Record<string, boolean>;
+
+export const DEFAULT_CONSENT_CATEGORIES: ConsentCategory[] = [
+  { id: "necessary", label: "Strictly necessary", description: "Sign-in, security and your cart. The site can't work without these.", required: true },
+  { id: "preferences", label: "Preferences", description: "Remember your language, region and display settings.", defaultOn: true },
+  { id: "analytics", label: "Analytics", description: "Count visits and see which pages help, with no personal profile." },
+  { id: "marketing", label: "Marketing", description: "Measure campaigns and show more relevant ads elsewhere." },
+];
+
+export interface CookieConsentProps {
+  categories?: ConsentCategory[];
+  title?: string;
+  message?: ReactNode;
+  /** Link to the cookie policy. */
+  policyHref?: string;
+  /** Saves the choice in localStorage under this key, and stays hidden once a choice is saved. */
+  storageKey?: string;
+  onConsent?: (consent: Consent) => void;
+  /** Where it sits. Default bottom-left. */
+  position?: "bottom-left" | "bottom-right" | "bottom";
+  /** Position inside the nearest positioned parent instead of the viewport (previews, docs). */
+  contained?: boolean;
+  /** Controlled visibility. Leave it out and the banner manages itself. */
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  className?: string;
+}
+
+const POS = { "bottom-left": "left-4 bottom-4", "bottom-right": "right-4 bottom-4", bottom: "inset-x-4 bottom-4 mx-auto" };
+
+/**
+ * A cookie banner that asks once. It slides up from the bottom with Accept all, Reject all and Customize.
+ * Customize slides over to a switch per category, with the required ones locked on. Any choice slides it away
+ * and hands you the result, and `storageKey` remembers it.
+ */
+export function CookieConsent({
+  categories = DEFAULT_CONSENT_CATEGORIES,
+  title = "We use cookies",
+  message = "Some keep the site working. Others help us understand what's useful. You choose which.",
+  policyHref,
+  storageKey,
+  onConsent,
+  position = "bottom-left",
+  contained,
+  open,
+  onOpenChange,
+  className,
+}: CookieConsentProps) {
+  const id = useId();
+  const [self, setSelf] = useState(false);
+  const [leaving, setLeaving] = useState(false);
+  const [view, setView] = useState<"summary" | "custom">("summary");
+  const [prefs, setPrefs] = useState<Consent>(() => Object.fromEntries(categories.map((c) => [c.id, !!(c.required || c.defaultOn)])));
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const shown = (open ?? self) || leaving;
+
+  // Decide on mount: hidden if a choice is already stored.
+  useEffect(() => {
+    if (open !== undefined) return;
+    let stored: string | null = null;
+    try {
+      stored = storageKey ? localStorage.getItem(storageKey) : null;
+    } catch {}
+    const t = setTimeout(() => setSelf(!stored), 400);
+    return () => clearTimeout(t);
+  }, [storageKey, open]);
+
+  useEffect(() => () => clearTimeout(timer.current), []);
+
+  // Reopening starts on the summary again.
+  useEffect(() => {
+    if (open) {
+      const t = setTimeout(() => setView("summary"), 0);
+      return () => clearTimeout(t);
+    }
+  }, [open]);
+
+  const decide = (consent: Consent) => {
+    try {
+      if (storageKey) localStorage.setItem(storageKey, JSON.stringify({ consent, at: new Date().toISOString() }));
+    } catch {}
+    onConsent?.(consent);
+    setLeaving(true);
+    timer.current = setTimeout(() => {
+      setLeaving(false);
+      setSelf(false);
+      setView("summary");
+    }, 280);
+    onOpenChange?.(false);
+  };
+  const all = (on: boolean) => Object.fromEntries(categories.map((c) => [c.id, c.required ? true : on]));
+
+  if (!shown) return null;
+
+  return (
+    <section
+      role="dialog"
+      aria-modal="false"
+      aria-labelledby={`${id}-t`}
+      aria-describedby={`${id}-d`}
+      className={cx(
+        "asta-consent z-50 w-[calc(100%-2rem)] max-w-[400px] rounded-[14px] bg-paper p-5 text-ink",
+        "shadow-[0_0_0_1px_color-mix(in_srgb,var(--color-ink)_9%,transparent),0_24px_48px_-20px_rgb(0_0_0/0.35),0_2px_8px_-2px_rgb(0_0_0/0.08)]",
+        contained ? "absolute" : "fixed",
+        POS[position],
+        leaving ? "pointer-events-none animate-[asta-consent-out_.28s_cubic-bezier(.16,1,.3,1)_both]" : "animate-[asta-consent-in_.5s_cubic-bezier(.16,1,.3,1)_both]",
+        className,
+      )}
+    >
+      <style href="asta-cookie-consent" precedence="asta">{KEYFRAMES}</style>
+      {view === "summary" ? (
+        <div key="summary" className="asta-consent-view animate-[asta-consent-view_.35s_cubic-bezier(.16,1,.3,1)_both] [--asta-consent-dx:-12px]">
+          <h2 id={`${id}-t`} className="text-[15px] font-medium tracking-[-0.01em]">
+            {title}
+          </h2>
+          <p id={`${id}-d`} className="mt-1.5 text-[13px] leading-relaxed text-mute">
+            {message}{" "}
+            {policyHref && (
+              <a href={policyHref} className="text-ink underline decoration-[color-mix(in_srgb,var(--color-ink)_30%,transparent)] underline-offset-2 hover:decoration-current">
+                Cookie policy
+              </a>
+            )}
+          </p>
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <Button size="sm" onClick={() => decide(all(true))}>
+              Accept all
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => decide(all(false))}>
+              Reject all
+            </Button>
+            <Button size="sm" variant="ghost" className="ml-auto" onClick={() => setView("custom")}>
+              Customize
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div key="custom" className="asta-consent-view animate-[asta-consent-view_.35s_cubic-bezier(.16,1,.3,1)_both]">
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setView("summary")}
+              aria-label="Back"
+              className="-ml-1.5 flex h-7 w-7 items-center justify-center rounded-md text-mute outline-none transition-colors hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50"
+            >
+              <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M10 3.5 5.5 8l4.5 4.5" />
+              </svg>
+            </button>
+            <h2 id={`${id}-t`} className="text-[15px] font-medium tracking-[-0.01em]">
+              Cookie preferences
+            </h2>
+          </div>
+          <p id={`${id}-d`} className="sr-only">
+            Choose which kinds of cookies to allow.
+          </p>
+          <ul className="mt-3 flex flex-col gap-1">
+            {categories.map((c) => (
+              <li key={c.id} className="flex items-start gap-4 rounded-[10px] bg-paper-2 px-3.5 py-3">
+                <div className="min-w-0 flex-1">
+                  <p className="flex items-center gap-2 text-[13px] font-medium">
+                    {c.label}
+                    {c.required && <span className="rounded-[4px] bg-paper px-1.5 text-[10.5px] font-normal leading-[18px] text-mute">Always on</span>}
+                  </p>
+                  <p className="mt-0.5 text-[12px] leading-snug text-mute">{c.description}</p>
+                </div>
+                <Switch size="sm" checked={prefs[c.id]} disabled={c.required} onCheckedChange={(v) => setPrefs((p) => ({ ...p, [c.id]: v }))} aria-label={c.label} />
+              </li>
+            ))}
+          </ul>
+          <div className="mt-4 flex items-center justify-end gap-2">
+            <Button size="sm" variant="outline" onClick={() => decide(all(false))}>
+              Reject all
+            </Button>
+            <Button size="sm" onClick={() => decide(prefs)}>
+              Save choices
+            </Button>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
+export default CookieConsent;
