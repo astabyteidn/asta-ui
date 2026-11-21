@@ -6,15 +6,15 @@ import { Inbox, type InboxMessage } from "@/components/kit/base/inbox";
 const MESSAGES: InboxMessage[] = [
   {
     id: "m1",
-    from: "Maya Lindqvist",
-    email: "maya@junipergoods.example",
+    from: "Ingrid Solberg",
+    email: "ingrid@junipergoods.example",
     subject: "Homepage review notes",
     preview: "Loved the new hero. Two small things on mobile before we ship…",
     body: [
       "Hi team,",
       "Loved the new hero. Two small things on mobile before we ship: the price row wraps under 360px, and the sticky cart button covers the last FAQ item.",
       "Otherwise this is ready. Can we aim for Thursday?",
-      "Maya",
+      "Ingrid",
     ],
     time: "9:41",
     unread: true,
@@ -33,8 +33,8 @@ const MESSAGES: InboxMessage[] = [
   },
   {
     id: "m3",
-    from: "Theo Marchetti",
-    email: "theo@astabyte.com",
+    from: "Kwame Asante",
+    email: "kwame@astabyte.com",
     subject: "Re: chart colours",
     preview: "Agreed, down stays neutral. I pushed the change to the branch.",
     body: ["Agreed, down stays neutral and up stays blue. I pushed the change to the branch.", "Let me know if the dashed last-period line reads well enough on the projector."],
@@ -43,8 +43,8 @@ const MESSAGES: InboxMessage[] = [
   },
   {
     id: "m4",
-    from: "Priya Raman",
-    email: "priya@northpeak.example",
+    from: "Yuki Tanabe",
+    email: "yuki@northpeak.example",
     subject: "Kickoff next week?",
     preview: "We signed off the budget. Does Tuesday 10:00 your time work…",
     body: ["We signed off the budget this morning.", "Does Tuesday 10:00 your time work for a kickoff? I'll bring our product lead and the two engineers who'll pair with you."],
@@ -54,8 +54,8 @@ const MESSAGES: InboxMessage[] = [
   },
   {
     id: "m5",
-    from: "Jonas Weber",
-    email: "jonas@astabyte.com",
+    from: "Tomasz Wrona",
+    email: "tomasz@astabyte.com",
     subject: "Deploy is green",
     preview: "Version 0.9.1 is live. Healthz 200 on both replicas.",
     body: ["Version 0.9.1 is live. Healthz 200 on both replicas, and the CDN copy picked up the new build within a minute."],
@@ -63,8 +63,8 @@ const MESSAGES: InboxMessage[] = [
   },
   {
     id: "m6",
-    from: "Lena Okafor",
-    email: "lena@fieldnotes.example",
+    from: "Zainab Okoro",
+    email: "zainab@fieldnotes.example",
     subject: "Your talk slides",
     preview: "Thanks again for speaking. Could you send the deck so we can…",
     body: ["Thanks again for speaking on Thursday. Could you send the deck so we can share it with attendees?", "No rush, end of next week is fine."],

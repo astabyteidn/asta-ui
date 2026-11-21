@@ -5101,7 +5101,7 @@ details[open] > .asta-nav-sec { animation: asta-nav-rise 0.3s cubic-bezier(0.16,
 /* ---- Inbox ----
  * <div class="asta-inbox" data-asta-inbox data-view="list"><section class="asta-inbox-list"><input class="asta-inbox-search" …>
  *   <ul><li><button class="asta-inbox-row" data-unread aria-current="true"><span class="asta-avatar asta-avatar-sm">…</span>
- *   <span class="asta-inbox-row-text"><span class="asta-inbox-row-from">Maya <time>9:41</time></span><span class="asta-inbox-row-subject">…</span><span class="asta-inbox-row-preview">…</span></span></button></li>…</ul></section>
+ *   <span class="asta-inbox-row-text"><span class="asta-inbox-row-from">Ingrid <time>9:41</time></span><span class="asta-inbox-row-subject">…</span><span class="asta-inbox-row-preview">…</span></span></button></li>…</ul></section>
  *   <section class="asta-inbox-pane" id="inbox-pane">…asta-inbox-subject, asta-inbox-meta, asta-inbox-body, asta-inbox-reply…</section></div>
  * Load the message with htmx (hx-get, hx-target="#inbox-pane"). asta.js moves aria-current, clears data-unread, and on narrow
  * containers flips data-view to "message"; [data-asta-inbox-back] goes back. */

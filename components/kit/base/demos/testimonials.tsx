@@ -6,14 +6,14 @@ import { SegmentedControl } from "@/components/kit/base/segmented-control";
 import { Testimonials, type Testimonial } from "@/components/kit/base/testimonials";
 
 const ITEMS: Testimonial[] = [
-  { quote: "They shipped our checkout redesign in three weeks and conversion went up the first Monday.", name: "Maya Lindqvist", title: "Head of Product, Juniper Goods", rating: 5 },
-  { quote: "The design system they set up is the first one our engineers actually use.", name: "Theo Marchetti", title: "CTO, Fieldnote", rating: 5 },
-  { quote: "Clear weekly demos, no surprises on the invoice. That is rarer than it should be.", name: "Priya Raman", title: "Founder, Northpeak", rating: 5 },
-  { quote: "Our dashboard finally loads before the coffee does.", name: "Jonas Weber", title: "Engineering lead, Tidewater", rating: 4 },
-  { quote: "Every animation has a reason. Our support tickets about 'where did it go' dropped to zero.", name: "Lena Okafor", title: "Design director, Oakline", rating: 5 },
-  { quote: "They pushed back on two of our ideas and were right both times.", name: "Samir Haddad", title: "COO, Brightmill", rating: 5 },
-  { quote: "Handover docs were so good we onboarded a new hire from them alone.", name: "Hana Sato", title: "Product manager, Lumen Labs", rating: 5 },
-  { quote: "Fast, calm and very detailed. We'd hire them again tomorrow.", name: "Diego Alvarez", title: "CEO, Coastline Travel", rating: 5 },
+  { quote: "They shipped our checkout redesign in three weeks and conversion went up the first Monday.", name: "Ingrid Solberg", title: "Head of Product, Juniper Goods", rating: 5 },
+  { quote: "The design system they set up is the first one our engineers actually use.", name: "Kwame Asante", title: "CTO, Fieldnote", rating: 5 },
+  { quote: "Clear weekly demos, no surprises on the invoice. That is rarer than it should be.", name: "Yuki Tanabe", title: "Founder, Northpeak", rating: 5 },
+  { quote: "Our dashboard finally loads before the coffee does.", name: "Tomasz Wrona", title: "Engineering lead, Tidewater", rating: 4 },
+  { quote: "Every animation has a reason. Our support tickets about 'where did it go' dropped to zero.", name: "Zainab Okoro", title: "Design director, Oakline", rating: 5 },
+  { quote: "They pushed back on two of our ideas and were right both times.", name: "Arjun Mehta", title: "COO, Brightmill", rating: 5 },
+  { quote: "Handover docs were so good we onboarded a new hire from them alone.", name: "Elif Kaya", title: "Product manager, Lumen Labs", rating: 5 },
+  { quote: "Fast, calm and very detailed. We'd hire them again tomorrow.", name: "Mateo Ferraz", title: "CEO, Coastline Travel", rating: 5 },
 ];
 
 export default function TestimonialsDemo() {

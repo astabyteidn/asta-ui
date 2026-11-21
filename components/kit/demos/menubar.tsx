@@ -5,7 +5,7 @@ import { Menubar, type MenubarMenu } from "@/components/kit/menubar";
 
 export default function MenubarDemo() {
   const [last, setLast] = useState("Nothing yet");
-  const [ruler, setRuler] = useState(true);
+  const [ruler, setRuler] = useState(false);
   const [wrap, setWrap] = useState(false);
   const [zoom, setZoom] = useState("100%");
   const [saved, setSaved] = useState(true);
@@ -71,9 +71,22 @@ export default function MenubarDemo() {
         </div>
         <div className="mx-2 mb-2 rounded-[9px] bg-paper-2 px-5 py-6 sm:px-8">
           {ruler && (
-            <div aria-hidden className="mb-4 flex justify-between font-mono text-[10px] text-mute">
-              {[0, 1, 2, 3, 4, 5, 6].map((n) => (
-                <span key={n}>{n}</span>
+            // A page ruler: a major tick per unit with its number, eight minor ticks between.
+            <div
+              aria-hidden
+              className="relative -mx-1 mb-4 h-4"
+              style={{
+                backgroundImage:
+                  "linear-gradient(to right, color-mix(in srgb, var(--color-ink) 35%, transparent) 1px, transparent 1px), linear-gradient(to right, color-mix(in srgb, var(--color-ink) 18%, transparent) 1px, transparent 1px), linear-gradient(color-mix(in srgb, var(--color-ink) 18%, transparent), color-mix(in srgb, var(--color-ink) 18%, transparent))",
+                backgroundSize: "calc(100% / 6) 10px, calc(100% / 48) 4px, 100% 1px",
+                backgroundPosition: "left bottom, left bottom, left bottom",
+                backgroundRepeat: "repeat-x, repeat-x, no-repeat",
+              }}
+            >
+              {[0, 1, 2, 3, 4, 5].map((n) => (
+                <span key={n} className="absolute top-0 pl-1 font-mono text-[9.5px] leading-none text-mute" style={{ left: `${(n / 6) * 100}%` }}>
+                  {n}
+                </span>
               ))}
             </div>
           )}

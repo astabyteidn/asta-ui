@@ -45,7 +45,7 @@ export default function CountdownDemo() {
         </div>
 
         <div className="flex flex-col items-center gap-2 text-center">
-          <p className="text-[13px] text-mute">We sent a code to ana@astabyte.com</p>
+          <p className="text-[13px] text-mute">We sent a code to amara@astabyte.com</p>
           {canResend ? (
             <Button size="sm" variant="outline" onClick={resend}>
               Resend code

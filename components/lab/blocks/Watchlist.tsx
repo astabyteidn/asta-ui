@@ -16,6 +16,7 @@ const START: Row[] = [
 ].map((r, i) => ({ ...r, hist: Array.from({ length: 18 }, (_, k) => r.open + (r.price - r.open) * (k / 17) + Math.sin(k * 1.3 + i) * r.open * 0.004) }));
 
 const pct = (r: Row) => ((r.price - r.open) / r.open) * 100;
+const ranks = (rs: Row[]) => new Map([...rs].sort((a, b) => pct(b) - pct(a)).map((r, i) => [r.sym, i]));
 const money = (n: number) => n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 // A fixed script of moves so the demo reshuffles in an interesting order, then loops.
@@ -45,6 +46,9 @@ export default function Watchlist() {
   const [visible, setVisible] = useState(true);
   const root = useRef<HTMLDivElement>(null);
   const step = useRef(0);
+  const live = useRef(START);
+  // Which way each row last moved: rows climbing pass over rows falling, so their text never overlaps.
+  const [lift, setLift] = useState<Record<string, number>>({});
   const paused = hover || !visible;
 
   // Rest while off screen or in a hidden tab.
@@ -72,13 +76,16 @@ export default function Watchlist() {
     const tick = () => {
       if (!alive) return;
       const [sym, m] = MOVES[step.current++ % MOVES.length];
-      setRows((rs) =>
-        rs.map((r) => {
-          if (r.sym !== sym) return r;
-          const price = Math.round(r.price * (1 + m) * 100) / 100;
-          return { ...r, price, hist: [...r.hist.slice(1), price] };
-        }),
-      );
+      const before = ranks(live.current);
+      const next = live.current.map((r) => {
+        if (r.sym !== sym) return r;
+        const price = Math.round(r.price * (1 + m) * 100) / 100;
+        return { ...r, price, hist: [...r.hist.slice(1), price] };
+      });
+      const after = ranks(next);
+      live.current = next;
+      setRows(next);
+      setLift(Object.fromEntries(next.map((r) => [r.sym, Math.sign(before.get(r.sym)! - after.get(r.sym)!)])));
       setFlash((f) => ({ sym, up: m > 0, n: (f?.n ?? 0) + 1 }));
       t = setTimeout(tick, 1500);
     };
@@ -89,9 +96,8 @@ export default function Watchlist() {
     };
   }, [paused]);
 
-  const ranked = [...rows].sort((a, b) => pct(b) - pct(a));
-  const rank = new Map(ranked.map((r, i) => [r.sym, i]));
-  const best = ranked[0];
+  const rank = ranks(rows);
+  const best = rows.find((r) => rank.get(r.sym) === 0)!;
 
   return (
     <div
@@ -143,8 +149,8 @@ export default function Watchlist() {
             return (
               <li
                 key={r.sym}
-                className="lab-wl-row absolute inset-x-0 top-0 flex h-[clamp(34px,13cqh,48px)] items-center gap-3 px-1"
-                style={{ transform: `translateY(${i * 100}%)`, transition: `transform .7s ${EASE}`, zIndex: hot ? 2 : 1 }}
+                className="lab-wl-row absolute inset-x-0 top-0 flex h-[clamp(34px,13cqh,48px)] items-center gap-3 bg-paper px-1"
+                style={{ transform: `translateY(${i * 100}%)`, transition: `transform .7s ${EASE}`, zIndex: 2 + (lift[r.sym] ?? 0) }}
               >
                 <span className="w-4 shrink-0 text-right font-mono text-[10.5px] tabular-nums text-mute">{i + 1}</span>
                 <span className="min-w-0 flex-1 leading-tight">

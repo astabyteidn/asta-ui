@@ -9,9 +9,9 @@ const DIGITS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 const TOTAL = 186.4;
 const PEOPLE = [
   { name: "You", tone: "bg-ink text-paper" },
-  { name: "Maya L.", tone: "bg-brand text-paper" },
-  { name: "Theo M.", tone: "bg-paper-2 text-ink" },
-  { name: "Priya R.", tone: "bg-[color-mix(in_srgb,var(--color-brand)_16%,var(--color-paper))] text-brand" },
+  { name: "Ingrid S.", tone: "bg-brand text-paper" },
+  { name: "Kwame A.", tone: "bg-paper-2 text-ink" },
+  { name: "Yuki T.", tone: "bg-[color-mix(in_srgb,var(--color-brand)_16%,var(--color-paper))] text-brand" },
 ];
 // Phases: 1–4 people at the table, 5 requests sent, 6–8 friends pay one by one.
 const LAST = 8;
