@@ -57,14 +57,14 @@ export default function CommandMenu() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="icon-hover btn btn-quiet btn-sm hidden w-44 !justify-start text-mute md:inline-flex xl:w-56"
+        className="icon-hover btn btn-quiet btn-sm hidden w-44 !justify-start text-mute md:inline-flex lg:hidden xl:inline-flex xl:w-56"
         aria-label="Search components"
       >
         <Icon name="search" className="h-3.5 w-3.5" />
         <span className="font-normal text-mute">Search<span className="hidden xl:inline"> components</span></span>
         <span className="kbd ml-auto">⌘K</span>
       </button>
-      <button type="button" onClick={() => setOpen(true)} className="icon-hover btn btn-ghost btn-sm btn-icon md:hidden" aria-label="Search components">
+      <button type="button" onClick={() => setOpen(true)} className="icon-hover btn btn-ghost btn-sm btn-icon md:hidden lg:inline-flex xl:hidden" aria-label="Search components">
         <Icon name="search" className="h-4 w-4" />
       </button>
       <CommandPalette

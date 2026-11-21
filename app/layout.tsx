@@ -8,6 +8,7 @@ import CommandMenu from "@/components/ui-site/CommandMenu";
 import GitHubStars from "@/components/ui-site/GitHubStars";
 import MobileMenu from "@/components/ui-site/MobileMenu";
 import SiteNav from "@/components/ui-site/SiteNav";
+import { DESIGN_URL } from "@/lib/design";
 import { PRIMITIVE_SCRIPT } from "@/lib/primitive";
 import { VERSION } from "@/lib/version";
 
@@ -70,11 +71,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </a>
           </div>
         </div>
-        <div className="label mt-14 flex justify-between text-mute">
+        <div className="label mt-14 flex flex-wrap justify-between gap-x-6 gap-y-3 text-mute">
           <span>© {new Date().getFullYear()} Astabyte Labs · v{VERSION}</span>
-          <a href={STUDIO} className="transition-colors hover:text-ink">
-            astabyte.com
-          </a>
+          <span className="flex gap-4 sm:gap-6">
+            <Link href="/blog" className="transition-colors hover:text-paper">
+              Blog
+            </Link>
+            <a href={DESIGN_URL} className="transition-colors hover:text-paper">
+              Design ↗
+            </a>
+            <a href={STUDIO} className="transition-colors hover:text-paper">
+              astabyte.com
+            </a>
+          </span>
         </div>
       </footer>
     </div>

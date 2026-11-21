@@ -6,9 +6,10 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 import { kitItems, LAYERS } from "@/lib/kit";
 import { KINDS, labBlocks } from "@/lib/lab";
 import { variants } from "@/lib/variants";
+import { DESIGN_URL } from "@/lib/design";
 
 type Menu = "components" | "motion";
-type Item = { key: string; label: string; href: string; menu?: Menu };
+type Item = { key: string; label: string; href: string; menu?: Menu; external?: boolean };
 
 const ITEMS: Item[] = [
   { key: "docs", label: "Docs", href: "/introduction" },
@@ -16,6 +17,8 @@ const ITEMS: Item[] = [
   { key: "motion", label: "Motion", href: "/#components", menu: "motion" },
   { key: "icons", label: "Icons", href: "/icons" },
   { key: "logos", label: "Logos", href: "/logos" },
+  { key: "blog", label: "Blog", href: "/blog" },
+  { key: "design", label: "Design", href: DESIGN_URL, external: true },
 ];
 
 const GUIDES = ["/introduction", "/installation", "/skill", "/css", "/prompts", "/changelog"];
@@ -28,6 +31,7 @@ function activeKey(path: string) {
   if (LAB.has(path)) return "motion";
   if (path.startsWith("/icons")) return "icons";
   if (path.startsWith("/logos")) return "logos";
+  if (path.startsWith("/blog")) return "blog";
   return null;
 }
 
@@ -194,6 +198,13 @@ export default function SiteNav() {
                 <path d="m3 4.5 3 3 3-3" />
               </svg>
             </button>
+          ) : it.external ? (
+            <a key={it.key} ref={(el) => void (links.current[it.key] = el)} href={it.href} className={cls} onPointerEnter={enter} onFocus={() => place(it.key)}>
+              {it.label}
+              <span aria-hidden className="text-[12px] text-mute">
+                ↗
+              </span>
+            </a>
           ) : (
             <Link key={it.key} ref={(el) => void (links.current[it.key] = el)} href={it.href} className={cls} aria-current={on ? "page" : undefined} onPointerEnter={enter} onFocus={() => place(it.key)}>
               {it.label}
