@@ -73,7 +73,7 @@ export default function MorseTap() {
         }}
         onKeyUp={(e) => e.key === " " && release()}
         onContextMenu={(e) => e.preventDefault()}
-        className={`relative grid h-20 w-20 select-none place-items-center border transition-all duration-100 [touch-action:none] ${down ? "scale-95 border-signal bg-signal text-paper" : "border-line bg-paper-2 text-ink"}`}
+        className={`relative grid h-20 w-20 select-none place-items-center border transition-[scale,background-color,border-color,color] duration-100 [touch-action:none] ${down ? "scale-95 border-signal bg-signal text-paper" : "border-line bg-paper-2 text-ink"}`}
       >
         <span className="font-mono text-[11px] uppercase tracking-[0.08em]">Tap</span>
       </button>

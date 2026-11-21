@@ -70,7 +70,7 @@ export function Tooltip({ content, side = "top", delay = 500, shortcut, children
               "z-50 flex w-max max-w-[240px] select-none items-center gap-2 rounded-lg bg-ink px-2.5 py-1.5 text-[12px] font-medium leading-snug text-paper",
               "shadow-[0_6px_20px_-6px_rgb(0_0_0/0.35)] origin-[var(--radix-tooltip-content-transform-origin)]",
               "data-[side=top]:[--kit-tip-from:translateY(4px)] data-[side=bottom]:[--kit-tip-from:translateY(-4px)] data-[side=left]:[--kit-tip-from:translateX(4px)] data-[side=right]:[--kit-tip-from:translateX(-4px)]",
-              "animate-[kit-tip-in_.2s_cubic-bezier(.16,1,.3,1)_both] data-[state=closed]:animate-[kit-tip-out_.1s_ease-in_both] motion-reduce:!animate-none",
+              "animate-[kit-tip-in_.2s_cubic-bezier(.16,1,.3,1)_both] data-[state=closed]:animate-[kit-tip-out_.1s_cubic-bezier(.16,1,.3,1)_both] motion-reduce:!animate-none",
               className,
             )}
           >

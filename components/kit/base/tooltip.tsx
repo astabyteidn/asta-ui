@@ -71,7 +71,7 @@ export function Tooltip({ content, side = "top", delay = 500, shortcut, children
                 "flex w-max max-w-[240px] select-none items-center gap-2 rounded-lg bg-ink px-2.5 py-1.5 text-[12px] font-medium leading-snug text-paper",
                 "shadow-[0_6px_20px_-6px_rgb(0_0_0/0.35)] origin-[var(--transform-origin)]",
                 // Enter: rise from the trigger side with the studio ease. Exit: a quicker fade.
-                "transition-[opacity,transform] duration-200 ease-[cubic-bezier(.16,1,.3,1)] data-[ending-style]:duration-100 data-[ending-style]:ease-in",
+                "transition-[opacity,transform] duration-200 ease-[cubic-bezier(.16,1,.3,1)] data-[ending-style]:duration-100 data-[ending-style]:ease-[cubic-bezier(.16,1,.3,1)]",
                 "data-[starting-style]:opacity-0 data-[ending-style]:opacity-0 data-[ending-style]:scale-[.97]",
                 "data-[side=top]:data-[starting-style]:[transform:translateY(4px)_scale(.95)] data-[side=bottom]:data-[starting-style]:[transform:translateY(-4px)_scale(.95)]",
                 "data-[side=left]:data-[starting-style]:[transform:translateX(4px)_scale(.95)] data-[side=right]:data-[starting-style]:[transform:translateX(-4px)_scale(.95)]",

@@ -239,7 +239,7 @@ export function Popover({ trigger, children, open, defaultOpen = false, onOpenCh
             className={cx(
               "fixed left-0 top-0 z-50 w-max max-w-[calc(100vw-16px)] rounded-xl bg-paper p-3 text-ink outline-none",
               "shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_10%,transparent),0_14px_36px_-14px_rgb(0_0_0/0.3),0_4px_10px_-6px_rgb(0_0_0/0.12)]",
-              "animate-[asta-popover-in_.24s_cubic-bezier(.16,1,.3,1)_both] data-[state=closed]:animate-[asta-popover-out_.12s_ease-in_both]",
+              "animate-[asta-popover-in_.24s_cubic-bezier(.16,1,.3,1)_both] data-[state=closed]:animate-[asta-popover-out_.12s_cubic-bezier(.16,1,.3,1)_both]",
               "motion-reduce:![animation-duration:1ms]",
               className,
             )}

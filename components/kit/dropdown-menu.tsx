@@ -67,7 +67,7 @@ export function DropdownMenu({ children, groups, align = "start", variant = "out
             "z-50 min-w-[232px] rounded-xl bg-paper p-1.5 outline-none",
             "shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_10%,transparent),0_12px_32px_-12px_rgb(0_0_0/0.28),0_4px_10px_-6px_rgb(0_0_0/0.12)]",
             "origin-[var(--radix-dropdown-menu-content-transform-origin)]",
-            "data-[state=open]:animate-[kit-menu-in_.2s_cubic-bezier(.16,1,.3,1)_both] data-[state=closed]:animate-[kit-menu-out_.12s_ease-in_both] motion-reduce:!animate-none",
+            "data-[state=open]:animate-[kit-menu-in_.2s_cubic-bezier(.16,1,.3,1)_both] data-[state=closed]:animate-[kit-menu-out_.12s_cubic-bezier(.16,1,.3,1)_both] motion-reduce:!animate-none",
           )}
         >
           <style href="asta-dropdown-menu" precedence="asta">{KEYFRAMES}</style>

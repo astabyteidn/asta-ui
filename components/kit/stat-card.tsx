@@ -6,7 +6,7 @@ const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).jo
 
 const KEYFRAMES = `@keyframes asta-stat-draw { from { stroke-dashoffset: 1 } }
 @keyframes asta-stat-fade { from { opacity: 0 } }
-@keyframes asta-stat-dot { from { opacity: 0; transform: scale(0) } }
+@keyframes asta-stat-dot { from { opacity: 0; transform: scale(0) } } /* perf-ok: 4px end-of-line dot, not a surface */
 .asta-stat[data-inview="false"] .asta-stat-a { animation-play-state: paused }
 @media (prefers-reduced-motion: reduce) { .asta-stat .asta-stat-a { animation: none !important } }`;
 

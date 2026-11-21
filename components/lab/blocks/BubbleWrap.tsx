@@ -37,7 +37,7 @@ export default function BubbleWrap() {
           <span
             key={i}
             data-bubble={i}
-            className={`h-8 w-8 rounded-full transition-all duration-200 ease-[cubic-bezier(.5,1.8,.4,.8)] sm:h-9 sm:w-9 ${
+            className={`h-8 w-8 rounded-full transition-[scale,background-color,border-color,box-shadow] duration-200 ease-[cubic-bezier(.5,1.8,.4,.8)] sm:h-9 sm:w-9 ${
               p ? "scale-[.82] border border-dashed border-line bg-transparent" : "cursor-pointer bg-paper-2 shadow-[inset_-3px_-4px_8px_rgba(0,0,0,.45),inset_3px_3px_6px_rgba(233,233,228,.12)] hover:scale-105"
             }`}
           />

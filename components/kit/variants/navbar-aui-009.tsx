@@ -57,7 +57,7 @@ const CSS = `
 .aui-009-in { animation: aui-009-rise .55s ${EASE} both; animation-delay: calc(var(--i, 0) * 50ms); }
 .aui-009-vp { transform-origin: top center; }
 .aui-009-vp[data-state=open] { animation: aui-009-vp-in .26s ${EASE}; }
-.aui-009-vp[data-state=closed] { animation: aui-009-vp-out .16s ease-in forwards; }
+.aui-009-vp[data-state=closed] { animation: aui-009-vp-out .16s cubic-bezier(.16,1,.3,1) forwards; }
 .aui-009-c[data-motion=from-start] { animation: aui-009-from-l .3s ${EASE}; }
 .aui-009-c[data-motion=from-end] { animation: aui-009-from-r .3s ${EASE}; }
 .aui-009-c[data-motion=to-start] { animation: aui-009-to-l .3s ${EASE} forwards; }

@@ -153,7 +153,7 @@ export function ThemeSwitch({ theme, defaultTheme = "light", onThemeChange, pers
             key={i}
             aria-hidden
             className="absolute h-[3px] w-[3px] rounded-full bg-paper transition-[transform,opacity] duration-500"
-            style={{ left: x, top: y, opacity: dark ? 0.9 : 0, transform: dark ? "scale(1)" : "scale(0)", transitionDelay: dark ? `${200 + d}ms` : "0ms", transitionTimingFunction: SPRING }}
+            style={{ left: x, top: y, opacity: dark ? 0.9 : 0, transform: dark ? "scale(1)" : "scale(0)" /* perf-ok: 3px star dots */, transitionDelay: dark ? `${200 + d}ms` : "0ms", transitionTimingFunction: SPRING }}
           />
         ))}
         <span

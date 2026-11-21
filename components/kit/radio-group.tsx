@@ -118,7 +118,7 @@ export function Dot({ on }: { on: boolean }) {
       <span
         className={cx(
           "h-1.5 w-1.5 rounded-full bg-white transition-transform duration-300 ease-[cubic-bezier(.34,1.8,.64,1)] motion-reduce:transition-none",
-          on ? "scale-100" : "scale-0",
+          on ? "scale-100" : "scale-0", // perf-ok: 6px radio dot, not a surface
         )}
       />
     </span>

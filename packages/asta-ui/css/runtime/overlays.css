@@ -16,8 +16,8 @@
   opacity: 0;
   transform: translate(var(--asta-nx, 0px), var(--asta-ny, -4px)) scale(0.96);
   transition:
-    opacity 0.14s ease-in,
-    transform 0.16s ease-in,
+    opacity 0.14s ease-out,
+    transform 0.16s cubic-bezier(0.16, 1, 0.3, 1),
     overlay 0.16s allow-discrete,
     display 0.16s allow-discrete;
 }
@@ -52,7 +52,7 @@
 .asta-dialog.asta-drawer {
   transform: translateX(calc(100% + 16px));
   transition:
-    transform 0.3s cubic-bezier(0.7, 0, 0.84, 0),
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
     overlay 0.32s allow-discrete,
     display 0.32s allow-discrete;
 }
@@ -75,11 +75,24 @@
 }
 :root:has(dialog.asta-drawer[open]) { overflow: hidden; }
 
-/* Command palette drops in from above. */
-.asta-dialog.asta-cmd { transform: translateY(-8px) scale(0.97); }
-.asta-dialog.asta-cmd[open]:not([data-closing]) { transform: none; }
+/* Command palette: opened from the keyboard many times a day, so it only fades, in 120ms. No movement. */
+.asta-dialog.asta-cmd,
+.asta-dialog.asta-cmd[open]:not([data-closing]) {
+  transform: none;
+  transition:
+    opacity 0.12s ease-out,
+    overlay 0.12s allow-discrete,
+    display 0.12s allow-discrete;
+}
+.asta-dialog.asta-cmd::backdrop,
+.asta-dialog.asta-cmd[open]:not([data-closing])::backdrop {
+  transition:
+    opacity 0.12s ease-out,
+    overlay 0.12s allow-discrete,
+    display 0.12s allow-discrete;
+}
 @starting-style {
-  .asta-dialog.asta-cmd[open] { transform: translateY(-8px) scale(0.97); }
+  .asta-dialog.asta-cmd[open] { transform: none; }
 }
 
 /* Navbar: the background scales between panel sizes, new content slides in from the side you moved toward. */
@@ -96,10 +109,10 @@ details[open] > .asta-nav-sec { animation: asta-nav-rise 0.3s cubic-bezier(0.16,
 [data-asta-announce-msg][data-state="cur"],
 [data-asta-announce-msg][data-state="in"] { opacity: 1; pointer-events: auto; }
 [data-asta-announce-msg][data-state="in"] { animation: asta-announce-in 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-[data-asta-announce-msg][data-state="out"] { animation: asta-announce-out 0.4s cubic-bezier(0.7, 0, 0.84, 0); }
+[data-asta-announce-msg][data-state="out"] { animation: asta-announce-out 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 [data-asta-announce][data-state="closed"] {
   pointer-events: none;
-  animation: asta-announce-close 0.36s cubic-bezier(0.7, 0, 0.84, 0) forwards;
+  animation: asta-announce-close 0.36s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Stepper: the next panel comes from the side you're heading. */

@@ -80,7 +80,7 @@ const CSS = `
 .aui-013-down { animation: aui-013-down .5s ${EASE} both; }
 .aui-013-vp { transform-origin: top center; }
 .aui-013-vp[data-state=open] { animation: aui-013-vp-in .26s ${EASE}; }
-.aui-013-vp[data-state=closed] { animation: aui-013-vp-out .16s ease-in forwards; }
+.aui-013-vp[data-state=closed] { animation: aui-013-vp-out .16s cubic-bezier(.16,1,.3,1) forwards; }
 .aui-013-c[data-motion=from-start] { animation: aui-013-from-l .3s ${EASE}; }
 .aui-013-c[data-motion=from-end] { animation: aui-013-from-r .3s ${EASE}; }
 .aui-013-c[data-motion=to-start] { animation: aui-013-to-l .3s ${EASE} forwards; }

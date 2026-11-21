@@ -10,7 +10,7 @@ const CSS = `
 @keyframes aui047-pop { from { opacity: 0; transform: translateY(var(--aui047-y, -6px)) scale(.97) } }
 @keyframes aui047-row { from { opacity: 0; transform: translateY(5px) } }
 @keyframes aui047-chip { 0% { opacity: 0; transform: scale(.6) } 60% { opacity: 1; transform: scale(1.06) } 100% { transform: none } }
-@keyframes aui047-drop { 0% { transform: scale(0) } 60% { transform: scale(1.5) } 100% { transform: none } }
+@keyframes aui047-drop { 0% { transform: scale(0) } 60% { transform: scale(1.5) } 100% { transform: none } } /* perf-ok: 8px colour dot drops in, not a surface */
 @keyframes aui047-ripple { from { opacity: .5; transform: scale(1) } to { opacity: 0; transform: scale(3.2) } }
 @media (prefers-reduced-motion: reduce) { .aui047 *, .aui047 { animation: none !important; transition: none !important } }
 `;
@@ -243,7 +243,7 @@ export function CreatableCombobox({ options = LABELS, value, defaultValue = ["bu
             setOpen(false);
             setQ("");
           }}
-          className="h-7 min-w-[7rem] flex-1 bg-transparent px-1.5 text-[13.5px] text-ink outline-none placeholder:text-mute disabled:cursor-not-allowed"
+          className="h-7 min-w-[7rem] flex-1 bg-transparent px-1.5 text-[16px] sm:text-[13.5px] text-ink outline-none placeholder:text-mute disabled:cursor-not-allowed"
         />
       </div>
       {name && ids.map((id) => <input key={id} type="hidden" name={name} value={byId.get(id)?.name ?? id} />)}
