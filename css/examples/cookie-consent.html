@@ -1,0 +1,17 @@
+<!-- asta.js remembers the choice in localStorage under the data-asta-consent key and fires "asta:consent". Clear it to see the banner again. -->
+<div style="position:relative;min-height:340px;border-radius:12px;background:var(--paper-2);overflow:hidden">
+<div class="asta-consent asta-consent-contained" data-asta-consent="asta-example-consent" data-view="summary" role="dialog" aria-label="Cookie settings">
+<div class="asta-consent-summary">
+<p class="asta-consent-title">We use a few cookies</p>
+<p class="asta-consent-text">Necessary ones keep astabyte.com working. With your OK we also measure visits and remember your settings. <a href="#">Cookie policy</a></p>
+<div class="asta-consent-actions"><button type="button" class="asta-btn asta-btn-ghost asta-btn-sm" data-asta-consent-customize><span class="asta-btn-label">Customize</span></button><button type="button" class="asta-btn asta-btn-outline asta-btn-sm" data-asta-consent-reject><span class="asta-btn-label">Reject</span></button><button type="button" class="asta-btn asta-btn-accent asta-btn-sm" data-asta-consent-accept><span class="asta-btn-label">Accept all</span></button></div>
+</div>
+<form class="asta-consent-custom">
+<p class="asta-consent-title">Cookie settings</p>
+<div class="asta-consent-row"><span class="asta-consent-row-text">Necessary<span>Sign-in and security. Always on.</span></span><label class="asta-switch asta-switch-sm"><span class="asta-switch-track"><input type="checkbox" role="switch" class="asta-switch-input" name="necessary" aria-label="Necessary" checked disabled><span class="asta-switch-thumb" aria-hidden="true"></span></span></label></div>
+<div class="asta-consent-row"><span class="asta-consent-row-text">Analytics<span>Anonymous visit counts.</span></span><label class="asta-switch asta-switch-sm"><span class="asta-switch-track"><input type="checkbox" role="switch" class="asta-switch-input" name="analytics" aria-label="Analytics"><span class="asta-switch-thumb" aria-hidden="true"></span></span></label></div>
+<div class="asta-consent-row"><span class="asta-consent-row-text">Preferences<span>Theme and language.</span></span><label class="asta-switch asta-switch-sm"><span class="asta-switch-track"><input type="checkbox" role="switch" class="asta-switch-input" name="preferences" aria-label="Preferences" checked><span class="asta-switch-thumb" aria-hidden="true"></span></span></label></div>
+<div class="asta-consent-actions"><button type="button" class="asta-btn asta-btn-ghost asta-btn-sm" data-asta-consent-back><span class="asta-btn-label">Back</span></button><button type="button" class="asta-btn asta-btn-accent asta-btn-sm" data-asta-consent-save><span class="asta-btn-label">Save choices</span></button></div>
+</form>
+</div>
+</div>

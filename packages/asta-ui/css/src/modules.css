@@ -1,0 +1,615 @@
+/* Modules: countdown, meter, menubar, phone input, sortable list, cookie consent, chart card, invoice, inbox,
+ * file manager, billing and testimonials. Class lists mirror the React kit. Embedded controls use the core classes
+ * (asta-btn, asta-avatar, asta-dropdown, asta-tree-view, asta-breadcrumb, asta-file-card, asta-switch). The runtime
+ * CSS and asta.js key on the data-asta-* attributes, so keep them in the markup. Modifiers come after the base class. */
+
+/* ---- Countdown ----
+ * <div class="asta-countdown" role="timer" data-asta-countdown="2026-12-01T00:00:00Z" aria-label="Time left">
+ *   <span class="asta-countdown-unit"><span class="asta-countdown-value" data-unit="d">03</span><span class="asta-countdown-label">Days</span></span>
+ *   <span class="asta-countdown-sep" aria-hidden="true">:</span> … </div>
+ * asta.js ticks it every second (paused off screen) and sets data-done at zero. Variant asta-countdown-inline; sizes -sm, -lg. */
+.asta-countdown {
+  @apply inline-flex items-start gap-2 text-ink;
+}
+.asta-countdown-unit {
+  @apply flex flex-col items-center gap-1.5;
+}
+.asta-countdown-value {
+  @apply min-w-[2.1em] rounded-lg bg-paper-2 px-2 py-1.5 text-center text-[26px] font-medium leading-none tracking-[-0.03em] tabular-nums;
+}
+.asta-countdown-label {
+  @apply font-mono text-[10px] uppercase tracking-wider text-mute;
+}
+.asta-countdown-sep {
+  @apply pt-1.5 text-[22px] leading-none text-mute;
+}
+.asta-countdown-sm .asta-countdown-value {
+  @apply text-[16px];
+}
+.asta-countdown-lg .asta-countdown-value {
+  @apply text-[40px];
+}
+.asta-countdown-inline {
+  @apply items-baseline gap-0;
+  & .asta-countdown-unit {
+    @apply flex-row items-baseline gap-0.5;
+  }
+  & .asta-countdown-value {
+    @apply min-w-0 bg-transparent p-0 text-[18px];
+  }
+  & .asta-countdown-label {
+    @apply font-sans text-[12px] normal-case tracking-normal;
+  }
+  & .asta-countdown-sep {
+    @apply px-1 pt-0 text-[16px];
+  }
+}
+.asta-countdown[data-done] .asta-countdown-value {
+  @apply text-mute;
+}
+
+/* ---- Meter ----
+ * <div class="asta-meter" role="meter" aria-valuenow="62" aria-valuemax="100" aria-label="Storage">
+ *   <div class="asta-meter-head"><span class="asta-meter-label">Storage</span><a class="asta-meter-action">Upgrade</a></div>
+ *   <div class="asta-meter-track"><span class="asta-meter-fill" style="--value:.62"></span></div>
+ *   <div class="asta-meter-foot"><span><b>62 GB</b> of 100 GB</span><span>62% used</span></div></div>
+ * Parts of the bar: <span class="asta-meter-fill asta-meter-fill-2" style="--start:.4;--value:.15">. Add data-warn near the limit. */
+.asta-meter {
+  @apply flex w-full flex-col gap-2 text-ink;
+}
+.asta-meter-head {
+  @apply flex items-baseline justify-between gap-3;
+}
+.asta-meter-label {
+  @apply text-[13.5px] font-medium;
+}
+.asta-meter-action {
+  @apply text-[12.5px] font-medium text-brand hover:underline;
+}
+.asta-meter-track {
+  @apply relative h-2 overflow-hidden rounded-full bg-[color-mix(in_srgb,var(--ink)_7%,transparent)];
+}
+.asta-meter-sm .asta-meter-track {
+  @apply h-1.5;
+}
+.asta-meter-fill {
+  @apply absolute inset-0 origin-left bg-brand transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  transform: translateX(calc(var(--start, 0) * 100%)) scaleX(var(--value, 0));
+}
+.asta-meter-fill-2 {
+  @apply bg-ink;
+}
+.asta-meter-fill-3 {
+  @apply bg-[color-mix(in_srgb,var(--brand)_40%,var(--paper))];
+}
+.asta-meter-fill-4 {
+  @apply bg-[color-mix(in_srgb,var(--ink)_30%,var(--paper))];
+}
+.asta-meter[data-warn] .asta-meter-fill {
+  @apply bg-ink;
+}
+.asta-meter-foot {
+  @apply flex items-baseline justify-between gap-3 text-[12.5px] text-mute;
+  & b {
+    @apply font-medium text-ink;
+  }
+}
+.asta-meter-legend {
+  @apply flex flex-wrap gap-x-4 gap-y-1 text-[12px] text-mute;
+}
+.asta-meter-legend-dot {
+  @apply mr-1.5 inline-block h-2 w-2 rounded-full bg-brand align-middle;
+}
+
+/* ---- Menubar ----
+ * <div role="menubar" class="asta-menubar" aria-label="App">
+ *   <div class="asta-dropdown" data-asta-dropdown><button class="asta-menubar-trigger" data-asta-dropdown-trigger aria-haspopup="menu" aria-expanded="false">File</button>
+ *   <div role="menu" popover="manual" data-asta-mpanel class="asta-float asta-dropdown-panel">…asta-menu-item…</div></div> … </div>
+ * Each menu is an asta-dropdown, so asta.js handles opening, keyboard nav and aria-checked. */
+.asta-menubar {
+  @apply inline-flex items-center gap-0.5 rounded-[10px] bg-paper p-1 text-ink;
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent)];
+}
+.asta-menubar-trigger {
+  @apply inline-flex h-7 cursor-pointer items-center rounded-md px-2.5 text-[13px] font-medium text-ink-2 outline-none transition-colors duration-150;
+  @apply hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50 aria-expanded:bg-paper-2 aria-expanded:text-ink;
+}
+
+/* ---- Phone input ----
+ * <div class="asta-phone" data-asta-phone><label class="asta-label" for="ph">Phone</label>
+ *   <div class="asta-phone-control"><select class="asta-phone-country" aria-label="Country"><option value="+1" data-mask="(###) ###-####">US +1</option>…</select>
+ *   <input id="ph" class="asta-phone-input" type="tel" inputmode="tel" autocomplete="tel-national" name="phone"><span class="asta-phone-check" aria-hidden="true">…</span></div>
+ *   <input type="hidden" name="phone_e164"></div>
+ * asta.js formats digits with the selected mask, fills phone_e164 and sets data-valid when the number is complete. */
+.asta-phone {
+  @apply flex w-full flex-col gap-1.5;
+}
+.asta-phone-control {
+  @apply flex h-10 items-center rounded-[9px] bg-paper text-ink transition-shadow duration-150;
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)] focus-within:shadow-[inset_0_0_0_1.5px_var(--brand),0_0_0_3px_color-mix(in_srgb,var(--brand)_18%,transparent)];
+}
+.asta-phone-country {
+  @apply h-full cursor-pointer appearance-none rounded-l-[9px] bg-transparent bg-[length:10px] bg-[right_8px_center] bg-no-repeat pl-3 pr-6 text-[13.5px] font-medium outline-none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+}
+.asta-phone-input {
+  @apply h-full min-w-0 flex-1 bg-transparent px-3 text-[14px] tabular-nums outline-none placeholder:text-mute;
+}
+.asta-phone-check {
+  @apply mr-3 grid h-5 w-5 shrink-0 scale-50 place-items-center rounded-full bg-brand text-paper opacity-0 transition-[transform,opacity] duration-300 ease-[cubic-bezier(.16,1,.3,1)];
+  & svg {
+    @apply h-3 w-3;
+  }
+  .asta-phone[data-valid] & {
+    @apply scale-100 opacity-100;
+  }
+}
+
+/* ---- Sortable list ----
+ * <ol class="asta-sortable" data-asta-sortable aria-label="Priorities">
+ *   <li class="asta-sortable-item" data-id="a"><button type="button" class="asta-sortable-handle" aria-label="Reorder Checkout redesign">⋮⋮</button>
+ *   <span class="asta-sortable-text">Checkout redesign</span><input type="hidden" name="order[]" value="a"></li> … </ol>
+ * asta.js: drag the handle, or focus it and press Space, the arrows, then Space again (Esc cancels). Fires "asta:reorder". */
+.asta-sortable {
+  @apply flex w-full flex-col gap-1.5;
+}
+.asta-sortable-item {
+  @apply relative flex items-center gap-3 rounded-[10px] bg-paper px-2.5 py-2.5 text-[13.5px] text-ink transition-[transform,box-shadow] duration-200 ease-[cubic-bezier(.16,1,.3,1)];
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent)];
+  &[data-dragging] {
+    @apply z-10 scale-[1.02] shadow-[inset_0_0_0_1.5px_var(--brand),0_14px_30px_-14px_rgb(0_0_0/0.35)];
+  }
+}
+.asta-sortable-handle {
+  @apply grid h-7 w-6 shrink-0 cursor-grab touch-none place-items-center rounded-md text-mute outline-none hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50 active:cursor-grabbing;
+}
+.asta-sortable-text {
+  @apply min-w-0 flex-1 truncate font-medium;
+}
+.asta-sortable-meta {
+  @apply shrink-0 text-[12px] text-mute;
+}
+
+/* ---- Cookie consent ----
+ * <div class="asta-consent" data-asta-consent="consent" role="dialog" aria-label="Cookies">
+ *   <div class="asta-consent-summary"><p class="asta-consent-title">…</p><p class="asta-consent-text">…</p>
+ *   <div class="asta-consent-actions"><button data-asta-consent-customize>Customize</button><button data-asta-consent-reject>Reject</button><button data-asta-consent-accept>Accept all</button></div></div>
+ *   <form class="asta-consent-custom">…asta-consent-row with asta-switch…<button data-asta-consent-save>Save</button></form></div>
+ * asta.js stores the choice in localStorage under the data-asta-consent key, hides the banner and fires "asta:consent".
+ * Add asta-consent-contained to place it inside a positioned parent instead of the viewport. */
+.asta-consent {
+  @apply fixed inset-x-4 bottom-4 z-50 w-auto max-w-[420px] rounded-[14px] bg-paper p-5 text-ink sm:left-auto;
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent),0_24px_60px_-24px_rgb(0_0_0/0.4)];
+  @apply transition-[opacity,transform] duration-300 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  &[data-state="closed"] {
+    @apply pointer-events-none translate-y-3 opacity-0;
+  }
+}
+.asta-consent-contained {
+  @apply absolute inset-x-3 bottom-3;
+}
+.asta-consent-title {
+  @apply text-[14.5px] font-medium tracking-[-0.01em];
+}
+.asta-consent-text {
+  @apply mt-1.5 text-[13px] leading-relaxed text-ink-2;
+  & a {
+    @apply text-ink underline underline-offset-2;
+  }
+}
+.asta-consent-actions {
+  @apply mt-4 flex flex-wrap gap-2 [&>*:last-child]:ml-auto;
+}
+.asta-consent-custom {
+  @apply hidden flex-col gap-1;
+  .asta-consent[data-view="custom"] & {
+    @apply flex;
+  }
+}
+.asta-consent[data-view="custom"] .asta-consent-summary {
+  @apply hidden;
+}
+.asta-consent-row {
+  @apply flex items-start justify-between gap-4 rounded-lg px-1 py-2.5;
+}
+.asta-consent-row-text {
+  @apply min-w-0 text-[13px];
+  & span {
+    @apply block text-[12px] text-mute;
+  }
+}
+
+/* ---- Chart card ----
+ * <div class="asta-chart-card"><div class="asta-chart-card-head"><div><p class="asta-chart-card-title">Revenue</p>
+ *   <p class="asta-chart-card-value">$48,250 <span class="asta-chart-card-delta">▲ 12.4%</span></p></div>…actions…</div>
+ *   <div class="asta-chart" style="--h:200px"><svg class="asta-chart-svg" viewBox="0 0 600 200" preserveAspectRatio="none">
+ *   <path class="asta-chart-area" d="…"/><path class="asta-chart-line" d="…"/></svg></div>
+ *   <div class="asta-chart-axis"><span>Mon</span>…</div></div>
+ * Draw the paths on the server. Bars: <div class="asta-chart-bars"><span class="asta-chart-bar" style="--v:.7"></span>…</div>. */
+.asta-chart-card {
+  @apply flex w-full flex-col gap-4 rounded-[14px] bg-paper p-5 text-ink;
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent)];
+}
+.asta-chart-card-head {
+  @apply flex flex-wrap items-start justify-between gap-3;
+}
+.asta-chart-card-title {
+  @apply text-[13px] text-ink-2;
+}
+.asta-chart-card-value {
+  @apply mt-1 flex items-baseline gap-2 text-[26px] font-medium leading-none tracking-[-0.035em] tabular-nums;
+}
+.asta-chart-card-delta {
+  @apply text-[12.5px] font-medium tracking-normal text-brand;
+  &[data-down] {
+    @apply text-mute;
+  }
+}
+.asta-chart {
+  @apply relative w-full;
+  height: var(--h, 200px);
+  background-image: repeating-linear-gradient(to bottom, color-mix(in srgb, var(--ink) 6%, transparent) 0 1px, transparent 1px 25%);
+}
+.asta-chart-svg {
+  @apply absolute inset-0 h-full w-full overflow-visible;
+}
+.asta-chart-line {
+  @apply fill-none stroke-brand [stroke-linecap:round] [stroke-linejoin:round] [stroke-width:2] [vector-effect:non-scaling-stroke];
+}
+.asta-chart-line-muted {
+  @apply stroke-mute [stroke-dasharray:4_4];
+}
+.asta-chart-area {
+  @apply fill-[color-mix(in_srgb,var(--brand)_12%,transparent)] stroke-none;
+}
+.asta-chart-bars {
+  @apply absolute inset-0 flex items-end justify-around gap-[3%] px-[2%];
+}
+.asta-chart-bar {
+  @apply relative h-full max-w-[28px] flex-1 overflow-hidden rounded-t-[5px];
+  &::after {
+    @apply absolute inset-0 origin-bottom rounded-t-[5px] bg-[color-mix(in_srgb,var(--brand)_45%,var(--paper))] content-[''] transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)];
+    transform: scaleY(var(--v, 0));
+  }
+  &[aria-current]::after {
+    @apply bg-brand;
+  }
+}
+.asta-chart-axis {
+  @apply flex justify-between text-[11px] text-mute;
+}
+
+/* ---- Invoice ----
+ * <article class="asta-invoice" aria-label="Invoice INV-0142"><header class="asta-invoice-head">…brand…
+ *   <div><h2 class="asta-invoice-title">Invoice <span class="asta-invoice-status">Due</span></h2><p class="asta-invoice-number">INV-0142</p></div></header>
+ *   <div class="asta-invoice-parties">…<p class="asta-invoice-label">Billed to</p>…</div>
+ *   <table class="asta-invoice-items">…</table><dl class="asta-invoice-totals">…</dl><footer class="asta-invoice-foot">…</footer></article>
+ * Status variants: asta-invoice-status-paid, -overdue, -draft. Narrow containers fold quantity and price away. */
+.asta-invoice {
+  @apply @container flex w-full flex-col gap-7 rounded-[14px] bg-paper p-5 text-ink @min-[560px]:p-8;
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent),0_18px_44px_-28px_rgb(0_0_0/0.3)];
+}
+.asta-invoice-head {
+  @apply flex flex-wrap items-start justify-between gap-4;
+  & > :last-child {
+    @apply text-right;
+  }
+}
+.asta-invoice-title {
+  @apply flex items-center justify-end gap-2 text-[20px] font-medium tracking-[-0.03em];
+}
+.asta-invoice-status {
+  @apply inline-flex h-6 items-center gap-1 rounded-md bg-paper-2 px-2 text-[11.5px] font-medium tracking-normal;
+}
+.asta-invoice-status-paid {
+  @apply bg-[color-mix(in_srgb,var(--brand)_12%,transparent)] text-brand;
+}
+.asta-invoice-status-overdue {
+  @apply bg-ink text-paper;
+}
+.asta-invoice-status-draft {
+  @apply bg-transparent text-mute shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_16%,transparent)];
+}
+.asta-invoice-number {
+  @apply mt-1.5 font-mono text-[12px] text-mute;
+}
+.asta-invoice-parties {
+  @apply grid gap-5 text-[13px] text-mute @min-[560px]:grid-cols-[1fr_1fr_auto] @min-[560px]:gap-8;
+  & b {
+    @apply mt-1.5 block font-medium text-ink;
+  }
+}
+.asta-invoice-label {
+  @apply font-mono text-[10.5px] uppercase tracking-wider text-mute;
+}
+.asta-invoice-items {
+  @apply w-full border-separate border-spacing-0 text-[13.5px];
+  & th {
+    @apply px-3 pb-2 text-right font-mono text-[10.5px] font-normal uppercase tracking-wider text-mute first:pl-1 first:text-left;
+  }
+  & td {
+    @apply px-3 py-2.5 text-right tabular-nums text-ink-2 first:rounded-l-lg first:text-left first:text-ink last:rounded-r-lg last:font-medium last:text-ink;
+  }
+  & tbody tr:nth-child(odd) td {
+    @apply bg-paper-2;
+  }
+  & td small {
+    @apply block text-[12px] text-mute;
+  }
+  & .asta-invoice-num {
+    @apply hidden @min-[560px]:table-cell;
+  }
+}
+.asta-invoice-totals {
+  @apply ml-auto grid w-full max-w-[300px] grid-cols-[1fr_auto] gap-x-4 gap-y-1.5 text-[13px];
+  & dt {
+    @apply text-mute;
+  }
+  & dd {
+    @apply text-right tabular-nums;
+  }
+}
+.asta-invoice-total {
+  @apply pt-1.5 font-medium text-ink;
+  & + dd {
+    @apply pt-1.5 text-[22px] font-medium tracking-[-0.03em];
+  }
+}
+.asta-invoice-foot {
+  @apply flex flex-col gap-4 text-[12.5px] leading-relaxed text-mute @min-[560px]:flex-row @min-[560px]:items-end @min-[560px]:justify-between;
+  & > p {
+    @apply max-w-[360px];
+  }
+}
+
+/* ---- Inbox ----
+ * <div class="asta-inbox" data-asta-inbox data-view="list"><section class="asta-inbox-list"><input class="asta-inbox-search" …>
+ *   <ul><li><button class="asta-inbox-row" data-unread aria-current="true"><span class="asta-avatar asta-avatar-sm">…</span>
+ *   <span class="asta-inbox-row-text"><span class="asta-inbox-row-from">Maya <time>9:41</time></span><span class="asta-inbox-row-subject">…</span><span class="asta-inbox-row-preview">…</span></span></button></li>…</ul></section>
+ *   <section class="asta-inbox-pane" id="inbox-pane">…asta-inbox-subject, asta-inbox-meta, asta-inbox-body, asta-inbox-reply…</section></div>
+ * Load the message with htmx (hx-get, hx-target="#inbox-pane"). asta.js moves aria-current, clears data-unread, and on narrow
+ * containers flips data-view to "message"; [data-asta-inbox-back] goes back. */
+.asta-inbox {
+  @apply @container relative w-full overflow-hidden rounded-[14px] bg-paper text-ink;
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent)];
+  height: var(--h, 560px);
+}
+.asta-inbox-inner {
+  @apply grid h-full @min-[640px]:grid-cols-[minmax(260px,340px)_1fr];
+}
+.asta-inbox-list {
+  @apply flex min-h-0 flex-col gap-2 p-3 @min-[640px]:shadow-[1px_0_0_color-mix(in_srgb,var(--ink)_8%,transparent)];
+  .asta-inbox[data-view="message"] & {
+    @apply @max-[639px]:hidden;
+  }
+  & ul {
+    @apply -mx-1 min-h-0 flex-1 overflow-y-auto overscroll-contain;
+  }
+}
+.asta-inbox-search {
+  @apply h-9 w-full rounded-lg bg-paper-2 px-3 text-[13px] text-ink outline-none placeholder:text-mute focus:shadow-[inset_0_0_0_1px_var(--brand)];
+}
+.asta-inbox-row {
+  @apply relative flex w-full cursor-pointer gap-3 rounded-[10px] px-2.5 py-2.5 text-left outline-none transition-colors hover:bg-paper-2/60 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand/50;
+  @apply aria-[current=true]:bg-paper-2;
+  &[data-unread]::before {
+    @apply absolute left-1 top-3 h-2 w-2 rounded-full bg-brand content-[''];
+  }
+}
+.asta-inbox-row-text {
+  @apply min-w-0 flex-1 text-[12.5px];
+  & > span:not(.asta-inbox-row-from) {
+    @apply block truncate;
+  }
+}
+.asta-inbox-row-from {
+  @apply flex justify-between gap-2 text-[13px] font-medium text-ink-2;
+  & time {
+    @apply shrink-0 text-[11px] font-normal tabular-nums text-mute;
+  }
+  .asta-inbox-row[data-unread] & {
+    @apply font-semibold text-ink;
+  }
+}
+.asta-inbox-row-subject {
+  @apply text-ink-2;
+}
+.asta-inbox-row-preview {
+  @apply text-[12px] text-mute;
+}
+.asta-inbox-pane {
+  @apply flex min-h-0 min-w-0 flex-col overflow-y-auto px-5 py-4 @min-[640px]:px-7;
+  .asta-inbox[data-view="list"] & {
+    @apply @max-[639px]:hidden;
+  }
+}
+.asta-inbox-back {
+  @apply mb-2 inline-flex h-8 items-center gap-1 self-start rounded-md px-2 text-[13px] text-mute hover:bg-paper-2 hover:text-ink @min-[640px]:hidden;
+}
+.asta-inbox-subject {
+  @apply text-[18px] font-medium leading-snug tracking-[-0.02em];
+}
+.asta-inbox-meta {
+  @apply mt-4 flex items-center gap-3 text-[12px] text-mute;
+  & b {
+    @apply block text-[13.5px] font-medium text-ink;
+  }
+}
+.asta-inbox-body {
+  @apply mt-5 flex max-w-[60ch] flex-col gap-3 text-[13.5px] leading-relaxed text-ink-2;
+}
+.asta-inbox-reply {
+  @apply mt-auto flex flex-col gap-2 rounded-xl bg-paper-2 p-2.5 pt-3;
+  & textarea {
+    @apply w-full resize-none bg-transparent px-1.5 text-[13px] leading-relaxed text-ink outline-none placeholder:text-mute;
+  }
+  & > div {
+    @apply flex items-center justify-between gap-2 px-1.5 text-[11.5px] text-mute;
+  }
+}
+
+/* ---- File manager ----
+ * <div class="asta-files"><aside class="asta-files-side">…asta-tree-view…<div class="asta-files-storage">…asta-meter…</div></aside>
+ *   <section class="asta-files-main"><div class="asta-files-toolbar">…asta-breadcrumb… <input class="asta-files-search"> …asta-segmented…</div>
+ *   <ul class="asta-files-grid"><li>…asta-file-card…</li></ul></section></div>
+ * Use asta-files-list instead of asta-files-grid for rows (asta-file-row). Under 640px of container width the sidebar folds away. */
+.asta-files {
+  @apply @container w-full overflow-hidden rounded-[14px] bg-paper text-ink;
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent)];
+}
+.asta-files-inner {
+  @apply grid min-h-[480px] @min-[640px]:grid-cols-[220px_1fr];
+}
+.asta-files-side {
+  @apply hidden flex-col gap-4 bg-paper-2/60 p-3 @min-[640px]:flex;
+}
+.asta-files-storage {
+  @apply mt-auto rounded-[10px] bg-paper p-3 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_8%,transparent)];
+}
+.asta-files-main {
+  @apply flex min-w-0 flex-col gap-3 p-3 @min-[640px]:p-4;
+}
+.asta-files-toolbar {
+  @apply flex flex-wrap items-center gap-2;
+  & > :first-child {
+    @apply min-w-0 flex-[1_1_100%] @min-[520px]:flex-1;
+  }
+}
+.asta-files-search {
+  @apply h-8 min-w-0 flex-1 rounded-lg bg-paper-2 px-3 text-[13px] text-ink outline-none placeholder:text-mute focus:shadow-[inset_0_0_0_1px_var(--brand)];
+}
+.asta-files-grid {
+  @apply grid grid-cols-2 gap-3 @min-[520px]:grid-cols-3 @min-[860px]:grid-cols-4;
+}
+.asta-files-list {
+  @apply flex flex-col gap-0.5;
+}
+.asta-files-bar {
+  @apply flex items-center gap-2 rounded-[10px] bg-ink py-1.5 pl-3.5 pr-1.5 text-[12.5px] text-paper shadow-[0_12px_28px_-12px_rgb(0_0_0/0.5)];
+  & > :first-child {
+    @apply mr-auto truncate tabular-nums;
+  }
+}
+
+/* ---- Billing ----
+ * <div class="asta-billing"><section class="asta-billing-group"><div><h3 class="asta-billing-title">Plan</h3><p class="asta-billing-hint">…</p></div>
+ *   <div class="asta-billing-plans"><label class="asta-billing-plan"><input type="radio" name="plan" value="team" checked>
+ *   <span class="asta-billing-plan-name">Team <span class="asta-billing-plan-current">Current</span></span><span class="asta-billing-plan-price">$48<small>/mo</small></span>…</label>…</div></section>
+ *   <section class="asta-billing-group">…asta-billing-row / asta-billing-invoices…</section></div>
+ * Plan cards are real radios: post the form, or hx-post on change for a proration preview. */
+.asta-billing {
+  @apply @container flex w-full flex-col text-ink;
+}
+.asta-billing-group {
+  @apply grid gap-3 py-6 first:pt-0 @min-[720px]:grid-cols-[220px_1fr] @min-[720px]:gap-10;
+}
+.asta-billing-title {
+  @apply text-[14px] font-medium tracking-[-0.01em];
+}
+.asta-billing-hint {
+  @apply mt-1 text-[12.5px] leading-relaxed text-mute;
+}
+.asta-billing-plans {
+  @apply grid gap-2 @min-[560px]:grid-cols-3;
+}
+.asta-billing-plan {
+  @apply relative flex cursor-pointer flex-col gap-1 rounded-[12px] bg-paper-2 p-4 transition-[box-shadow,background-color] duration-200;
+  @apply hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_18%,transparent)];
+  @apply has-checked:bg-paper has-checked:shadow-[inset_0_0_0_2px_var(--brand)] has-focus-visible:ring-2 has-focus-visible:ring-brand/50;
+  & input {
+    @apply sr-only;
+  }
+  & ul {
+    @apply mt-2 flex flex-col gap-1 text-[12px] text-ink-2;
+  }
+  & li::before {
+    @apply mr-1.5 text-brand content-['✓'];
+  }
+}
+.asta-billing-plan-name {
+  @apply flex items-center justify-between gap-2 text-[13.5px] font-medium;
+}
+.asta-billing-plan-current {
+  @apply rounded-md bg-ink px-1.5 py-0.5 text-[10.5px] font-medium text-paper;
+}
+.asta-billing-plan-price {
+  @apply text-[22px] font-medium tracking-[-0.03em] tabular-nums;
+  & small {
+    @apply text-[12.5px] font-normal tracking-normal text-mute;
+  }
+}
+.asta-billing-usage {
+  @apply grid gap-3 @min-[560px]:grid-cols-2;
+  & > * {
+    @apply rounded-[12px] bg-paper-2 p-4;
+  }
+}
+.asta-billing-row {
+  @apply flex items-center gap-3 rounded-[10px] bg-paper-2 px-4 py-3 text-[12px] text-mute;
+  & b {
+    @apply block text-[13.5px] font-medium text-ink;
+  }
+  & > :nth-child(2) {
+    @apply min-w-0 flex-1;
+  }
+}
+.asta-billing-invoices {
+  @apply flex flex-col gap-1;
+  & li {
+    @apply flex items-center gap-3 rounded-[10px] px-4 py-2.5 text-[13px] odd:bg-paper-2;
+  }
+  & li > :first-child {
+    @apply w-[92px] shrink-0 tabular-nums text-ink-2;
+  }
+  & code {
+    @apply hidden min-w-0 flex-1 truncate font-mono text-[12px] text-mute @min-[480px]:block;
+  }
+  & b {
+    @apply ml-auto font-medium tabular-nums @min-[480px]:ml-0;
+  }
+}
+
+/* ---- Testimonials ----
+ * <section class="asta-testimonials" aria-label="What customers say"><div class="asta-testimonials-row"><ul class="asta-testimonials-track" style="--speed:60s">
+ *   <li><figure class="asta-testimonial"><blockquote>…</blockquote><figcaption>…asta-avatar… <span><b>Name</b>Role</span></figcaption></figure></li>…
+ *   (the same items again with aria-hidden="true")</ul></div>…a second row with asta-testimonials-track-reverse…</section>
+ * Pure CSS: rows pause on hover and focus, and anyone who prefers reduced motion gets a wrapped, still grid.
+ * asta-testimonials-grid shows the cards as a grid from the start (one copy, no rows). */
+.asta-testimonials {
+  @apply @container flex w-full flex-col gap-3;
+}
+.asta-testimonials-row {
+  @apply overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)];
+}
+.asta-testimonials-track {
+  @apply flex w-max;
+  animation: asta-tm-left var(--speed, 60s) linear infinite;
+  .asta-testimonials-row:hover &,
+  .asta-testimonials-row:focus-within & {
+    animation-play-state: paused;
+  }
+  & > li {
+    @apply w-[300px] shrink-0 pr-3 sm:w-[340px];
+  }
+}
+.asta-testimonials-track-reverse {
+  animation-name: asta-tm-right;
+}
+.asta-testimonial {
+  @apply flex h-full flex-col justify-between gap-5 rounded-[12px] bg-paper-2 p-5 text-ink;
+  & blockquote {
+    @apply text-[14px] leading-relaxed;
+  }
+  & figcaption {
+    @apply flex items-center gap-3 text-[12px] text-mute;
+  }
+  & figcaption b {
+    @apply block text-[13px] font-medium text-ink;
+  }
+}
+.asta-testimonial-stars {
+  @apply mb-3 flex gap-0.5 text-[13px] leading-none tracking-[2px] text-brand;
+}
+.asta-testimonials-grid {
+  @apply grid gap-3 @min-[560px]:grid-cols-2 @min-[860px]:grid-cols-3;
+}

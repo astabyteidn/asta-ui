@@ -1,0 +1,18 @@
+<!-- Load each message with htmx into the pane. asta.js moves aria-current, clears data-unread and slides to the message on narrow containers. -->
+<div class="asta-inbox" data-asta-inbox data-view="list" style="--h:520px;max-width:900px">
+<div class="asta-inbox-inner">
+<section class="asta-inbox-list" aria-label="Messages"><input class="asta-inbox-search" type="search" placeholder="Search mail" aria-label="Search mail"><ul>
+<li><button type="button" class="asta-inbox-row" data-unread aria-current="true"><span class="asta-avatar asta-avatar-sm" role="img" aria-label="Maya Lindqvist"><span class="asta-avatar-face asta-avatar-brand">ML</span></span><span class="asta-inbox-row-text"><span class="asta-inbox-row-from">Maya Lindqvist<time>9:41</time></span><span class="asta-inbox-row-subject">Homepage review notes</span><span class="asta-inbox-row-preview">Loved the new hero. Two small things on mobile…</span></span></button></li>
+<li><button type="button" class="asta-inbox-row" data-unread><span class="asta-avatar asta-avatar-sm" role="img" aria-label="Astabyte Billing"><span class="asta-avatar-face asta-avatar-soft">AB</span></span><span class="asta-inbox-row-text"><span class="asta-inbox-row-from">Astabyte Billing<time>8:12</time></span><span class="asta-inbox-row-subject">Invoice INV-2026-0142 is due Nov 15</span><span class="asta-inbox-row-preview">Your invoice is ready. Pay online in a minute…</span></span></button></li>
+<li><button type="button" class="asta-inbox-row"><span class="asta-avatar asta-avatar-sm" role="img" aria-label="Theo Marchetti"><span class="asta-avatar-face">TM</span></span><span class="asta-inbox-row-text"><span class="asta-inbox-row-from">Theo Marchetti<time>Yesterday</time></span><span class="asta-inbox-row-subject">Re: chart colours</span><span class="asta-inbox-row-preview">Agreed, down stays neutral. I pushed the change.</span></span></button></li>
+<li><button type="button" class="asta-inbox-row" data-unread><span class="asta-avatar asta-avatar-sm" role="img" aria-label="Priya Raman"><span class="asta-avatar-face asta-avatar-tint">PR</span></span><span class="asta-inbox-row-text"><span class="asta-inbox-row-from">Priya Raman<time>Mon</time></span><span class="asta-inbox-row-subject">Kickoff next week?</span><span class="asta-inbox-row-preview">We signed off the budget. Does Tuesday work…</span></span></button></li>
+</ul></section>
+<section class="asta-inbox-pane" id="ex-inbox-pane" aria-label="Message">
+<button type="button" class="asta-inbox-back" data-asta-inbox-back>← Inbox</button>
+<h3 class="asta-inbox-subject">Homepage review notes</h3>
+<div class="asta-inbox-meta"><span class="asta-avatar" role="img" aria-label="Maya Lindqvist"><span class="asta-avatar-face asta-avatar-brand">ML</span></span><span><b>Maya Lindqvist</b>maya@junipergoods.example · 9:41</span></div>
+<div class="asta-inbox-body"><p>Hi team,</p><p>Loved the new hero. Two small things on mobile before we ship: the price row wraps under 360px, and the sticky cart button covers the last FAQ item.</p><p>Otherwise this is ready. Can we aim for Thursday?</p><p>Maya</p></div>
+<form class="asta-inbox-reply" hx-post="/inbox/reply"><textarea rows="2" placeholder="Reply to Maya…" aria-label="Reply"></textarea><div><span>⌘ Enter to send</span><button type="submit" class="asta-btn asta-btn-accent asta-btn-sm"><span class="asta-btn-label">Send</span></button></div></form>
+</section>
+</div>
+</div>
