@@ -439,7 +439,7 @@
   else boot();
   document.addEventListener("htmx:afterSettle", (e) => scan(e.detail?.elt?.parentElement || document));
 
-  window.asta = { toast, open: (id) => open(byId(id)), close: (id) => close(byId(id)), version: "0.9.3" };
+  window.asta = { toast, open: (id) => open(byId(id)), close: (id) => close(byId(id)), version: "0.9.4" };
 })();
 
 /* ---- runtime/blocks.js ---- */
