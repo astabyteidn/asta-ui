@@ -8,9 +8,9 @@ export type InputState = "default" | "error" | "success";
 export type InputSize = "sm" | "md" | "lg";
 
 const SIZE: Record<InputSize, string> = {
-  sm: "h-8 rounded-md px-2.5 text-[13px] gap-2",
-  md: "h-10 rounded-lg px-3 text-[14px] gap-2.5",
-  lg: "h-12 rounded-[9px] px-4 text-[15px] gap-3",
+  sm: "h-8 rounded-md px-2.5 text-[16px] sm:text-[13px] gap-2",
+  md: "h-10 rounded-lg px-3 text-[16px] sm:text-[14px] gap-2.5",
+  lg: "h-12 rounded-[9px] px-4 text-[16px] sm:text-[15px] gap-3",
 };
 
 const RING: Record<InputState, string> = {
@@ -85,7 +85,7 @@ export function Input({ size = "md", state = "default", iconLeft, iconRight, cle
           if (!controlled) setInner(e.target.value);
           rest.onChange?.(e);
         }}
-        className={cx("h-full min-w-0 flex-1 bg-transparent outline-none placeholder:text-mute", inputClassName)}
+        className={cx("h-full min-w-0 flex-1 bg-transparent outline-none placeholder:text-mute [&::-webkit-search-cancel-button]:hidden", inputClassName)}
       />
       {clearable && (
         <button
@@ -114,6 +114,10 @@ export function PasswordInput(props: Omit<InputProps, "type" | "iconRight">) {
   const [show, setShow] = useState(false);
   return (
     <Input
+      name="password"
+      autoComplete="current-password"
+      autoCapitalize="none"
+      spellCheck={false}
       {...props}
       type={show ? "text" : "password"}
       inputClassName={cx(!show && "tracking-[0.12em]", props.inputClassName)}
@@ -127,7 +131,7 @@ export function PasswordInput(props: Omit<InputProps, "type" | "iconRight">) {
         >
           <svg viewBox="0 0 16 16" className="!h-4 !w-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8Z" />
-            <circle cx="8" cy="8" r="2" className={cx("origin-center transition-transform duration-300", show ? "scale-100" : "scale-0")} />
+            <circle cx="8" cy="8" r="2" className={cx("origin-center transition-transform duration-300", show ? "scale-100" : "scale-0" /* perf-ok: eye pupil */)} />
             <path d="M2.5 13.5l11-11" pathLength={1} strokeDasharray="1" className="transition-[stroke-dashoffset] duration-300 ease-[cubic-bezier(.16,1,.3,1)]" style={{ strokeDashoffset: show ? 1 : 0 }} />
           </svg>
         </button>

@@ -55,9 +55,9 @@ export default function KitGrid() {
               onClick={() => setLayer(l)}
               className={`flex h-9 shrink-0 items-center gap-2 rounded-[7px] px-4 text-[15px] font-medium transition-colors duration-300 ${layer === l ? "bg-ink text-paper" : "text-mute hover:text-ink"}`}
             >
-              <span className={`font-mono text-[11.5px] ${layer === l ? "text-paper/55" : "text-mute/60"}`}>0{i + 1}</span>
+              <span className={`font-mono text-[11.5px] ${layer === l ? "text-paper/55" : "text-mute"}`}>0{i + 1}</span>
               {l}
-              <span className={`font-mono text-[11.5px] tabular-nums ${layer === l ? "text-paper/55" : "text-mute/60"}`}>{kitItems.filter((k) => k.layer === l).length}</span>
+              <span className={`font-mono text-[11.5px] tabular-nums ${layer === l ? "text-paper/55" : "text-mute"}`}>{kitItems.filter((k) => k.layer === l).length}</span>
             </button>
           ))}
         </div>
@@ -98,7 +98,7 @@ export default function KitGrid() {
             {rest.map((k) => (
               <li key={k.slug}>
                 <Link href={`/${k.slug}`} className="group/dir flex items-baseline gap-3 rounded-[7px] py-1.5 text-[15px] text-ink-2 transition-colors hover:text-ink">
-                  <span className="w-[52px] shrink-0 font-mono text-[11px] tabular-nums text-mute/70 transition-colors group-hover/dir:text-accent">{kitId(k.slug)}</span>
+                  <span className="w-[52px] shrink-0 font-mono text-[11px] tabular-nums text-mute transition-colors group-hover/dir:text-accent">{kitId(k.slug)}</span>
                   <span className="truncate">{k.title}</span>
                   <span className="btn-arrow ml-auto opacity-0 transition-opacity group-hover/dir:opacity-100" />
                 </Link>

@@ -122,7 +122,7 @@ export function CommandPalette({ open, onOpenChange, commands, groups, placehold
       className={cx(
         pos,
         "inset-0 z-50 bg-[color-mix(in_srgb,var(--color-ink)_24%,transparent)] will-change-[opacity]",
-        "transition-opacity duration-200 data-[starting-style]:opacity-0 data-[ending-style]:opacity-0 data-[ending-style]:duration-150 motion-reduce:!transition-none",
+        "transition-opacity duration-[120ms] ease-out data-[starting-style]:opacity-0 data-[ending-style]:opacity-0 data-[ending-style]:duration-100 motion-reduce:!transition-none",
         contained && "rounded-[inherit]",
       )}
     />
@@ -138,10 +138,11 @@ export function CommandPalette({ open, onOpenChange, commands, groups, placehold
       finalFocus={() => (back.current?.isConnected ? back.current : true)}
       className={cx(
         pos,
-        "left-1/2 top-[10%] z-50 flex will-change-[transform,opacity] max-h-[min(440px,calc(100%-2rem))] w-[calc(100%-1.5rem)] max-w-[560px] -translate-x-1/2 flex-col overflow-hidden rounded-xl bg-paper outline-none",
+        "left-1/2 top-[10%] z-50 flex will-change-[opacity] max-h-[min(440px,calc(100%-2rem))] w-[calc(100%-1.5rem)] max-w-[560px] -translate-x-1/2 flex-col overflow-hidden rounded-xl bg-paper outline-none",
         "shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_12%,transparent),0_24px_60px_-20px_rgb(0_0_0/0.4)]",
-        "transition-[opacity,transform] duration-[350ms] ease-[cubic-bezier(.16,1,.3,1)] data-[starting-style]:opacity-0 data-[starting-style]:[transform:translateY(-8px)_scale(.97)]",
-        "data-[ending-style]:opacity-0 data-[ending-style]:[transform:translateY(-4px)_scale(.98)] data-[ending-style]:duration-150 data-[ending-style]:ease-in motion-reduce:!transition-none",
+        // Opened from the keyboard many times a day, so it appears at once: a 120ms fade, no movement.
+        "transition-opacity duration-[120ms] ease-out data-[starting-style]:opacity-0",
+        "data-[ending-style]:opacity-0 data-[ending-style]:duration-100 motion-reduce:!transition-none",
         className,
       )}
       onKeyDown={(e) => {
@@ -169,12 +170,17 @@ export function CommandPalette({ open, onOpenChange, commands, groups, placehold
             setAt(0);
           }}
           placeholder={placeholder}
+          aria-label="Search commands"
+          name="q"
+          autoComplete="off"
+          spellCheck={false}
+          enterKeyHint="go"
           role="combobox"
           aria-expanded="true"
           aria-controls={listId}
           aria-activedescendant={flat[active] ? `${listId}-${flat[active].c.id}` : undefined}
           aria-autocomplete="list"
-          className="h-12 min-w-0 flex-1 bg-transparent text-[15px] text-ink outline-none placeholder:text-mute"
+          className="h-12 min-w-0 flex-1 bg-transparent text-[16px] text-ink outline-none placeholder:text-mute sm:text-[15px]"
         />
         <kbd className="rounded-md bg-paper-2 px-1.5 font-sans text-[11px] leading-5 text-mute">Esc</kbd>
       </div>

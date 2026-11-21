@@ -63,6 +63,7 @@ export function PromptBox({ models, defaultModel, placeholder = "Ask anything…
       <style href="asta-base-textarea-aui-008" precedence="asta">{KEYFRAMES}</style>
       <textarea
         ref={area}
+        name="prompt"
         rows={2}
         value={text}
         onChange={(e) => setText(e.target.value)}
@@ -75,7 +76,7 @@ export function PromptBox({ models, defaultModel, placeholder = "Ask anything…
         placeholder={placeholder}
         aria-label="Prompt"
         readOnly={busy}
-        className={cx("block w-full resize-none bg-transparent px-1 text-[15px] leading-[1.5] text-ink outline-none placeholder:text-mute transition-opacity duration-300", busy && "opacity-60")}
+        className={cx("block w-full resize-none bg-transparent px-1 text-[16px] sm:text-[15px] leading-[1.5] text-ink outline-none placeholder:text-mute transition-opacity duration-300", busy && "opacity-60")}
       />
       <div className="mt-2 flex items-center justify-between gap-2">
         <Menu.Root modal={false}>
@@ -91,7 +92,7 @@ export function PromptBox({ models, defaultModel, placeholder = "Ask anything…
           </Menu.Trigger>
           <Menu.Portal>
             <Menu.Positioner side="top" align="start" sideOffset={8} className="z-50 outline-none">
-            <Menu.Popup className="min-w-[220px] will-change-[transform,opacity] origin-[var(--transform-origin)] rounded-xl bg-paper p-1 text-ink outline-none shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_10%,transparent),0_16px_40px_-16px_rgb(0_0_0/0.3)] transition-[opacity,transform] duration-[220ms] ease-[cubic-bezier(.16,1,.3,1)] data-[starting-style]:opacity-0 data-[starting-style]:[transform:translateY(4px)_scale(.97)] data-[ending-style]:opacity-0 data-[ending-style]:scale-[.98] data-[ending-style]:duration-[120ms] data-[ending-style]:ease-in motion-reduce:!transition-none">
+            <Menu.Popup className="min-w-[220px] will-change-[transform,opacity] origin-[var(--transform-origin)] rounded-xl bg-paper p-1 text-ink outline-none shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_10%,transparent),0_16px_40px_-16px_rgb(0_0_0/0.3)] transition-[opacity,transform] duration-[220ms] ease-[cubic-bezier(.16,1,.3,1)] data-[starting-style]:opacity-0 data-[starting-style]:[transform:translateY(4px)_scale(.97)] data-[ending-style]:opacity-0 data-[ending-style]:scale-[.98] data-[ending-style]:duration-[120ms] data-[ending-style]:ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:!transition-none">
               <Menu.RadioGroup value={model} onValueChange={(v) => setModel(String(v))}>
                 {models.map((m) => (
                   <Menu.RadioItem

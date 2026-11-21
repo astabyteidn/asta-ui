@@ -136,14 +136,18 @@ export function PasskeySignIn({
     e.preventDefault();
     if (waiting) return;
     const next = {
-      email: !email.trim() ? "Enter your email." : !validEmail(email) ? "That doesn't look like an email address." : "",
+      email: !email.trim() ? "Enter your email." : !validEmail(email) ? "Enter an email like name@company.com." : "",
       password: !password ? "Enter your password." : password.length < 8 ? "Use at least 8 characters." : "",
       form: "",
     };
     setErrors(next);
     if (next.email) shakeEl(emailBox.current);
     if (next.password) shakeEl(passBox.current);
-    if (next.email || next.password) return;
+    if (next.email || next.password) {
+      const first = (e.currentTarget as HTMLFormElement).elements.namedItem(next.email ? "email" : "password");
+      if (first instanceof HTMLElement) first.focus();
+      return;
+    }
     setWaiting(true);
     try {
       await (onPassword ? onPassword({ email: email.trim(), password }) : wait(1200));
@@ -165,7 +169,7 @@ export function PasskeySignIn({
 
   const inputCls = (err: string) =>
     cx(
-      "h-11 w-full rounded-[9px] bg-paper/[0.06] px-3.5 text-[14.5px] text-paper outline-none transition-shadow duration-200 placeholder:text-paper/35 focus-visible:shadow-[inset_0_0_0_1px_var(--color-brand),0_0_0_4px_color-mix(in_srgb,var(--color-brand)_25%,transparent)]",
+      "h-11 w-full rounded-[9px] bg-paper/[0.06] px-3.5 text-[16px] sm:text-[14.5px] text-paper outline-none transition-shadow duration-200 placeholder:text-paper/35 focus-visible:shadow-[inset_0_0_0_1px_var(--color-brand),0_0_0_4px_color-mix(in_srgb,var(--color-brand)_25%,transparent)]",
       err ? "shadow-[inset_0_0_0_1.5px_var(--color-paper)]" : RING,
     );
   const errLine = (key: string, msg: string) =>
@@ -321,11 +325,18 @@ export function PasskeySignIn({
               <input
                 ref={emailInput}
                 id={`${id}-email`}
+                name="email"
                 type="email"
                 autoComplete="username"
+                inputMode="email"
+                autoCapitalize="none"
+                spellCheck={false}
                 placeholder="you@company.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (errors.email) setErrors((x) => ({ ...x, email: "" }));
+                }}
                 aria-invalid={!!errors.email || undefined}
                 aria-describedby={errors.email ? `${id}-email-err` : undefined}
                 className={inputCls(errors.email)}
@@ -341,11 +352,15 @@ export function PasskeySignIn({
             <div ref={passBox} className="mt-1.5">
               <input
                 id={`${id}-pass`}
+                name="password"
                 type="password"
                 autoComplete="current-password"
-                placeholder="At least 8 characters"
+                placeholder="At least 8 characters…"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (errors.password || errors.form) setErrors((x) => ({ ...x, password: "", form: "" }));
+                }}
                 aria-invalid={!!(errors.password || errors.form) || undefined}
                 aria-describedby={errors.password || errors.form ? `${id}-pass-err` : undefined}
                 className={inputCls(errors.password || errors.form)}

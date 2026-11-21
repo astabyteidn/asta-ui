@@ -57,7 +57,11 @@ const ErrorText = ({ id, children }: { id: string; children: ReactNode }) => (
 
 interface FieldProps {
   label: string;
+  name: string;
   type: string;
+  inputMode?: "email" | "text";
+  /** Off for names, so autocorrect doesn't fight them. */
+  plain?: boolean;
   value: string;
   onChange: (v: string) => void;
   onBlur: () => void;
@@ -71,7 +75,7 @@ interface FieldProps {
   children?: ReactNode;
 }
 
-function Field({ label, type, value, onChange, onBlur, error, shake, autoComplete, placeholder, describedBy, start, end, children }: FieldProps) {
+function Field({ label, name, type, inputMode, plain, value, onChange, onBlur, error, shake, autoComplete, placeholder, describedBy, start, end, children }: FieldProps) {
   const id = useId();
   const box = useShake(!!error, shake);
   const described = [error ? `${id}-err` : "", describedBy ?? ""].filter(Boolean).join(" ") || undefined;
@@ -84,16 +88,20 @@ function Field({ label, type, value, onChange, onBlur, error, shake, autoComplet
         {start && <div className="pointer-events-none absolute inset-y-0 left-1.5 flex items-center">{start}</div>}
         <input
           id={id}
+          name={name}
           type={type}
+          inputMode={inputMode}
           value={value}
           autoComplete={autoComplete}
+          autoCapitalize={plain ? undefined : "none"}
+          spellCheck={false}
           placeholder={placeholder}
           onChange={(e) => onChange(e.target.value)}
           onBlur={onBlur}
           aria-invalid={!!error || undefined}
           aria-describedby={described}
           className={cx(
-            "h-11 w-full rounded-[9px] bg-paper px-3.5 text-[14.5px] text-ink outline-none transition-shadow duration-200 placeholder:text-mute focus-visible:shadow-[inset_0_0_0_1px_var(--color-brand),0_0_0_4px_color-mix(in_srgb,var(--color-brand)_14%,transparent)]",
+            "h-11 w-full rounded-[9px] bg-paper px-3.5 text-[16px] sm:text-[14.5px] text-ink outline-none transition-shadow duration-200 placeholder:text-mute focus-visible:shadow-[inset_0_0_0_1px_var(--color-brand),0_0_0_4px_color-mix(in_srgb,var(--color-brand)_14%,transparent)]",
             !!start && "pl-11",
             !!end && "pr-11",
             error ? "shadow-[inset_0_0_0_1.5px_var(--color-ink)]" : RING,
@@ -192,12 +200,20 @@ export function SignUpCard({
 
   const errors = {
     name: !name.trim() ? "Enter your name." : "",
-    email: !email.trim() ? "Enter your email." : !validEmail(email) ? "That doesn't look like an email address." : "",
-    password: !password ? "Choose a password." : score < minStrength || !passed[0] ? "Make it a little stronger." : "",
+    email: !email.trim() ? "Enter your email." : !validEmail(email) ? "Enter an email like name@company.com." : "",
+    password: !password
+      ? "Choose a password."
+      : !passed[0]
+        ? "Use at least 8 characters."
+        : score < minStrength
+          ? "Add a number, a symbol or mixed case."
+          : "",
     terms: terms ? "" : "Accept the terms to continue.",
   };
   type Key = keyof typeof errors;
   const show = (k: Key) => (touched[k] ? errors[k] : "");
+  // A fix clears the error while typing; a new one waits for blur or submit.
+  const untouchIf = (k: Key, fixed: boolean) => touched[k] && fixed && setTouched((t) => ({ ...t, [k]: false }));
   const termsBox = useShake(!!show("terms"), shake);
 
   const submit = async (e: FormEvent) => {
@@ -207,6 +223,9 @@ export function SignUpCard({
     setFormError("");
     if (errors.name || errors.email || errors.password || errors.terms) {
       setShake((n) => n + 1);
+      const key = (["name", "email", "password", "terms"] as const).find((k) => errors[k]);
+      const first = key && (e.currentTarget as HTMLFormElement).elements.namedItem(key);
+      if (first instanceof HTMLElement) first.focus();
       return;
     }
     setState("loading");
@@ -269,11 +288,16 @@ export function SignUpCard({
             <div style={rise(2)}>
               <Field
                 label="Full name"
+                name="name"
                 type="text"
+                plain
                 autoComplete="name"
                 placeholder="Maya Lindqvist"
                 value={name}
-                onChange={setName}
+                onChange={(v) => {
+                  setName(v);
+                  untouchIf("name", !!v.trim());
+                }}
                 onBlur={() => name && setTouched((t) => ({ ...t, name: true }))}
                 error={show("name")}
                 shake={shake}
@@ -283,11 +307,16 @@ export function SignUpCard({
             <div style={rise(3)}>
               <Field
                 label="Work email"
+                name="email"
                 type="email"
+                inputMode="email"
                 autoComplete="email"
                 placeholder="you@company.com"
                 value={email}
-                onChange={setEmail}
+                onChange={(v) => {
+                  setEmail(v);
+                  untouchIf("email", validEmail(v));
+                }}
                 onBlur={() => email && setTouched((t) => ({ ...t, email: true }))}
                 error={show("email")}
                 shake={shake}
@@ -296,11 +325,16 @@ export function SignUpCard({
             <div style={rise(4)}>
               <Field
                 label="Password"
+                name="password"
                 type={reveal ? "text" : "password"}
                 autoComplete="new-password"
-                placeholder="Make it hard to guess"
+                placeholder="Make it hard to guess…"
                 value={password}
-                onChange={setPassword}
+                onChange={(v) => {
+                  setPassword(v);
+                  const ok = RULES.map((r) => r.test(v));
+                  untouchIf("password", ok[0] && ok.filter(Boolean).length >= minStrength);
+                }}
                 onBlur={() => password && setTouched((t) => ({ ...t, password: true }))}
                 error={show("password")}
                 shake={shake}
@@ -375,8 +409,12 @@ export function SignUpCard({
               <span className="relative mt-px flex h-[18px] w-[18px] shrink-0">
                 <input
                   type="checkbox"
+                  name="terms"
                   checked={terms}
-                  onChange={(e) => setTerms(e.target.checked)}
+                  onChange={(e) => {
+                    setTerms(e.target.checked);
+                    untouchIf("terms", e.target.checked);
+                  }}
                   aria-invalid={!!show("terms") || undefined}
                   aria-describedby={show("terms") ? `${id}-terms-err` : undefined}
                   className={cx(

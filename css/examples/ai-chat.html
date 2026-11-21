@@ -14,7 +14,7 @@
 </template>
 <form action="/chat" method="post" hx-post="/chat" hx-target="#chat-list" hx-swap="beforeend" hx-indicator="find [data-asta-chat-send]" data-asta-chat-form class="asta-ai-chat-form">
 <div class="asta-ai-chat-composer"><label for="chat-input" class="asta-sr-only">Message</label>
-<textarea id="chat-input" name="prompt" rows="1" placeholder="Ask anything" data-asta-chat-input class="asta-ai-chat-input"></textarea>
+<textarea id="chat-input" name="prompt" rows="1" enterkeyhint="send" placeholder="Ask anything…" data-asta-chat-input class="asta-ai-chat-input"></textarea>
 <button type="submit" aria-label="Send" data-asta-chat-send class="asta-ai-chat-send"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg><span aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-opacity="0.25" stroke-width="2"/><path d="M14 8a6 6 0 0 0-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></button></div>
 <p class="asta-ai-chat-note">Replies can be wrong. Check anything important.</p>
 </form></div>

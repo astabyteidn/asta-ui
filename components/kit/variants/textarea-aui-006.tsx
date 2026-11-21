@@ -30,7 +30,7 @@ function findQuery(value: string, caret: number, triggers: string[]): Query | nu
   return { trigger: m[2], start: caret - m[3].length - 1, text: m[3].toLowerCase() };
 }
 
-const BOX = "px-3.5 py-3 text-[14px] leading-[1.55] whitespace-pre-wrap break-words";
+const BOX = "px-3.5 py-3 text-[16px] sm:text-[14px] leading-[1.55] whitespace-pre-wrap break-words";
 
 /**
  * aui-006 · Type @ to mention someone or / for a command. The list opens at the caret, filters as you type and is

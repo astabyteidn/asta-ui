@@ -15,7 +15,14 @@ const SIZE: Record<AvatarSize, { box: string; text: string; dot: string }> = {
   lg: { box: "h-12 w-12", text: "text-[16px]", dot: "h-3 w-3" },
   xl: { box: "h-16 w-16", text: "text-[20px]", dot: "h-3.5 w-3.5" },
 };
-const STATUS: Record<AvatarStatus, string> = { online: "#30a46c", away: "#f5a524", busy: "#e5484d", offline: "var(--color-mute)" };
+// Each status has its own shape too, so it reads without the colour: online solid, away a crescent, busy a bar, offline a ring.
+const PAPER = "var(--color-paper)";
+const STATUS: Record<AvatarStatus, string> = {
+  online: "#30a46c",
+  away: `radial-gradient(closest-side at 30% 30%, ${PAPER} 92%, #f5a524 100%)`,
+  busy: `linear-gradient(${PAPER}, ${PAPER}) center / 60% 20% no-repeat, #e5484d`,
+  offline: `radial-gradient(closest-side, ${PAPER} 48%, var(--color-mute) 56%)`,
+};
 
 // Fallback fills: the name picks one, so the same person always gets the same colour.
 const FILLS = [

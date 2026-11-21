@@ -116,7 +116,7 @@ export function CommandPalette({ open, onOpenChange, commands, groups, placehold
       className={cx(
         pos,
         "inset-0 z-50 bg-[color-mix(in_srgb,var(--color-ink)_24%,transparent)] will-change-[opacity]",
-        "data-[state=open]:animate-[kit-cmd-fade_.2s_ease_both] data-[state=closed]:animate-[kit-cmd-fade-out_.15s_ease_both] motion-reduce:!animate-none",
+        "data-[state=open]:animate-[kit-cmd-fade_.12s_ease-out_both] data-[state=closed]:animate-[kit-cmd-fade-out_.1s_ease-out_both] motion-reduce:!animate-none",
         contained && "rounded-[inherit]",
       )}
     />
@@ -138,9 +138,10 @@ export function CommandPalette({ open, onOpenChange, commands, groups, placehold
       }}
       className={cx(
         pos,
-        "left-1/2 top-[10%] z-50 flex will-change-[transform,opacity] max-h-[min(440px,calc(100%-2rem))] w-[calc(100%-1.5rem)] max-w-[560px] -translate-x-1/2 flex-col overflow-hidden rounded-xl bg-paper outline-none",
+        "left-1/2 top-[10%] z-50 flex will-change-[opacity] max-h-[min(440px,calc(100%-2rem))] w-[calc(100%-1.5rem)] max-w-[560px] -translate-x-1/2 flex-col overflow-hidden rounded-xl bg-paper outline-none",
         "shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_12%,transparent),0_24px_60px_-20px_rgb(0_0_0/0.4)]",
-        "data-[state=open]:animate-[kit-cmd-in_.35s_cubic-bezier(.16,1,.3,1)_both] data-[state=closed]:animate-[kit-cmd-out_.15s_ease-in_both] motion-reduce:!animate-none",
+        // Opened from the keyboard many times a day, so it appears at once: a 120ms fade, no movement.
+        "data-[state=open]:animate-[kit-cmd-fade_.12s_ease-out_both] data-[state=closed]:animate-[kit-cmd-fade-out_.1s_ease-out_both] motion-reduce:!animate-none",
         className,
       )}
       onKeyDown={(e) => {
@@ -158,8 +159,6 @@ export function CommandPalette({ open, onOpenChange, commands, groups, placehold
       <style href="asta-command-palette" precedence="asta">{`
           @keyframes kit-cmd-fade { from { opacity: 0 } }
           @keyframes kit-cmd-fade-out { to { opacity: 0 } }
-          @keyframes kit-cmd-in { from { opacity: 0; transform: translateY(-8px) scale(.97) } }
-          @keyframes kit-cmd-out { to { opacity: 0; transform: translateY(-4px) scale(.98) } }
         `}</style>
       <div className="flex items-center gap-2.5 px-4 shadow-[inset_0_-1px_0_color-mix(in_srgb,var(--color-ink)_8%,transparent)]">
         <svg viewBox="0 0 16 16" className="h-4 w-4 shrink-0 text-mute" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
@@ -174,12 +173,17 @@ export function CommandPalette({ open, onOpenChange, commands, groups, placehold
             setAt(0);
           }}
           placeholder={placeholder}
+          aria-label="Search commands"
+          name="q"
+          autoComplete="off"
+          spellCheck={false}
+          enterKeyHint="go"
           role="combobox"
           aria-expanded="true"
           aria-controls={listId}
           aria-activedescendant={flat[active] ? `${listId}-${flat[active].c.id}` : undefined}
           aria-autocomplete="list"
-          className="h-12 min-w-0 flex-1 bg-transparent text-[15px] text-ink outline-none placeholder:text-mute"
+          className="h-12 min-w-0 flex-1 bg-transparent text-[16px] text-ink outline-none placeholder:text-mute sm:text-[15px]"
         />
         <kbd className="rounded-md bg-paper-2 px-1.5 font-sans text-[11px] leading-5 text-mute">Esc</kbd>
       </div>

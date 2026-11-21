@@ -1,6 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { MotionToggle } from "./MotionPause";
 
 /**
  * Preview / Code switch. Both panels share one stage, so switching never changes the page height: the code panel
@@ -90,7 +91,8 @@ export default function PreviewTabs({
           <div className="flex items-center justify-between px-3 pt-3">
             <span className="label pl-1 tabular-nums text-mute">{id}</span>
             <div className="flex items-center gap-1">
-              <span className="label hidden pr-2 text-mute/70 sm:inline">{hint}</span>
+              <span className="label hidden pr-2 text-mute sm:inline">{hint}</span>
+              <MotionToggle />
               <button type="button" onClick={replay} className="btn btn-quiet btn-sm btn-icon group" aria-label="Replay" title="Replay">
                 <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 transition-transform duration-500 ease-expo group-hover:-rotate-180" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
                   <path d="M13 8a5 5 0 1 1-1.6-3.7" />

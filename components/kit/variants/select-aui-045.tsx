@@ -150,7 +150,7 @@ function DayDot({ day }: { day: boolean }) {
 }
 
 /** aui-045 · Grouped: search across groups with sticky headers, live local times and a day or night dot per row. */
-export function GroupedSelect({ groups = ZONES, value, defaultValue, onChange, label = "Time zone", searchPlaceholder = "Search city or country", name, disabled, className }: GroupedSelectProps) {
+export function GroupedSelect({ groups = ZONES, value, defaultValue, onChange, label = "Time zone", searchPlaceholder = "Search city or country…", name, disabled, className }: GroupedSelectProps) {
   const all = useMemo(() => groups.flatMap((g) => g.options), [groups]);
   const [inner, setInner] = useState(defaultValue ?? all[0]?.value);
   const current = value ?? inner;
@@ -298,13 +298,15 @@ export function GroupedSelect({ groups = ZONES, value, defaultValue, onChange, l
               }}
               onBlur={(e) => !root.current?.contains(e.relatedTarget as Node) && setOpen(false)}
               placeholder={searchPlaceholder}
+              autoComplete="off"
+              spellCheck={false}
               role="combobox"
               aria-expanded
               aria-autocomplete="list"
               aria-controls={`${uid}-list`}
               aria-activedescendant={flat[active] ? `${uid}-o-${active}` : undefined}
               aria-label={`Search ${label.toLowerCase()}`}
-              className="h-10 min-w-0 flex-1 bg-transparent text-[13.5px] text-ink outline-none placeholder:text-mute"
+              className="h-10 min-w-0 flex-1 bg-transparent text-[16px] sm:text-[13.5px] text-ink outline-none placeholder:text-mute"
             />
             <kbd className="rounded-[5px] bg-paper-2 px-1.5 py-0.5 font-mono text-[10px] text-mute">esc</kbd>
           </div>

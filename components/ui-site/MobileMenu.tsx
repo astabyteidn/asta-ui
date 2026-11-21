@@ -51,7 +51,7 @@ export default function MobileMenu({ studio }: { studio: string }) {
         <Icon name={open ? "x" : "menu"} className="h-[18px] w-[18px]" />
       </button>
       <div
-        className="fixed inset-x-0 bottom-0 top-14 z-50 bg-paper px-[var(--gutter)] pb-8 pt-4"
+        className="fixed inset-x-0 bottom-0 top-14 z-50 overflow-y-auto overscroll-contain bg-paper px-[var(--gutter)] pb-8 pt-4"
         style={{
           opacity: open ? 1 : 0,
           transform: open ? "none" : "translateY(-8px)",

@@ -81,7 +81,7 @@ export function AiChat({
   suggestions = [],
   title = "Assistant",
   greeting = "How can I help?",
-  placeholder = "Ask anything",
+  placeholder = "Ask anything…",
   className,
 }: AiChatProps) {
   const [messages, setMessages] = useState(defaultMessages);
@@ -355,7 +355,9 @@ export function AiChat({
           <textarea
             ref={area}
             id={inputId}
+            name="prompt"
             rows={1}
+            enterKeyHint="send"
             value={text}
             placeholder={placeholder}
             onChange={(e) => setText(e.target.value)}
@@ -368,7 +370,7 @@ export function AiChat({
                 stop();
               }
             }}
-            className="block max-h-36 min-h-[36px] flex-1 resize-none bg-transparent py-2 text-[14px] leading-relaxed text-ink outline-none [field-sizing:content] placeholder:text-mute"
+            className="block max-h-36 min-h-[36px] flex-1 resize-none bg-transparent py-2 text-[16px] sm:text-[14px] leading-relaxed text-ink outline-none [field-sizing:content] placeholder:text-mute"
           />
           {streaming ? (
             <button

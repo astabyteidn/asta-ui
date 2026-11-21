@@ -120,6 +120,7 @@ export function PasswordField({
         )}
       >
         <input
+          name="password"
           {...rest}
           id={inputId}
           type={shown ? "text" : "password"}
@@ -133,7 +134,7 @@ export function PasswordField({
             if (value === undefined) setInner(v);
             onChange?.(v, passwordStrength(v, rules));
           }}
-          className="h-full min-w-0 flex-1 bg-transparent text-[14px] tracking-[0.01em] text-ink outline-none placeholder:text-mute"
+          className="h-full min-w-0 flex-1 bg-transparent text-[16px] sm:text-[14px] tracking-[0.01em] text-ink outline-none placeholder:text-mute"
         />
         <button
           type="button"

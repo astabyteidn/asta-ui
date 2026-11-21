@@ -129,11 +129,11 @@
   @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)] focus-within:shadow-[inset_0_0_0_1.5px_var(--brand),0_0_0_3px_color-mix(in_srgb,var(--brand)_18%,transparent)];
 }
 .asta-phone-country {
-  @apply h-full cursor-pointer appearance-none rounded-l-[9px] bg-transparent bg-[length:10px] bg-[right_8px_center] bg-no-repeat pl-3 pr-6 text-[13.5px] font-medium outline-none;
+  @apply h-full cursor-pointer appearance-none rounded-l-[9px] bg-transparent bg-[length:10px] bg-[right_8px_center] bg-no-repeat pl-3 pr-6 text-[16px] sm:text-[13.5px] font-medium outline-none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
 }
 .asta-phone-input {
-  @apply h-full min-w-0 flex-1 bg-transparent px-3 text-[14px] tabular-nums outline-none placeholder:text-mute;
+  @apply h-full min-w-0 flex-1 bg-transparent px-3 text-[16px] sm:text-[14px] tabular-nums outline-none placeholder:text-mute;
 }
 .asta-phone-check {
   @apply mr-3 grid h-5 w-5 shrink-0 scale-50 place-items-center rounded-full bg-brand text-paper opacity-0 transition-[transform,opacity] duration-300 ease-[cubic-bezier(.16,1,.3,1)];
@@ -221,10 +221,11 @@
 
 /* ---- Chart card ----
  * <div class="asta-chart-card"><div class="asta-chart-card-head"><div><p class="asta-chart-card-title">Revenue</p>
- *   <p class="asta-chart-card-value">$48,250 <span class="asta-chart-card-delta">▲ 12.4%</span></p></div>…actions…</div>
+ *   <p class="asta-chart-card-value">$48,250 <span class="asta-chart-card-delta"><span aria-hidden="true">▲</span><span class="asta-sr-only">Up</span> 12.4%</span></p></div>…actions…</div>
  *   <div class="asta-chart" style="--h:200px"><svg class="asta-chart-svg" viewBox="0 0 600 200" preserveAspectRatio="none">
  *   <path class="asta-chart-area" d="…"/><path class="asta-chart-line" d="…"/></svg></div>
  *   <div class="asta-chart-axis"><span>Mon</span>…</div></div>
+ * Down: data-down on the delta, ▼ and "Down". The arrow carries the direction, so it never rests on colour alone.
  * Draw the paths on the server. Bars: <div class="asta-chart-bars"><span class="asta-chart-bar" style="--v:.7"></span>…</div>. */
 .asta-chart-card {
   @apply flex w-full flex-col gap-4 rounded-[14px] bg-paper p-5 text-ink;
@@ -387,7 +388,7 @@
   }
 }
 .asta-inbox-search {
-  @apply h-9 w-full rounded-lg bg-paper-2 px-3 text-[13px] text-ink outline-none placeholder:text-mute focus:shadow-[inset_0_0_0_1px_var(--brand)];
+  @apply h-9 w-full rounded-lg bg-paper-2 px-3 text-[16px] sm:text-[13px] text-ink outline-none placeholder:text-mute focus:shadow-[inset_0_0_0_1px_var(--brand)] [&::-webkit-search-cancel-button]:hidden;
 }
 .asta-inbox-row {
   @apply relative flex w-full cursor-pointer gap-3 rounded-[10px] px-2.5 py-2.5 text-left outline-none transition-colors hover:bg-paper-2/60 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand/50;
@@ -441,7 +442,7 @@
 .asta-inbox-reply {
   @apply mt-auto flex flex-col gap-2 rounded-xl bg-paper-2 p-2.5 pt-3;
   & textarea {
-    @apply w-full resize-none bg-transparent px-1.5 text-[13px] leading-relaxed text-ink outline-none placeholder:text-mute;
+    @apply w-full resize-none bg-transparent px-1.5 text-[16px] sm:text-[13px] leading-relaxed text-ink outline-none placeholder:text-mute;
   }
   & > div {
     @apply flex items-center justify-between gap-2 px-1.5 text-[11.5px] text-mute;
@@ -476,7 +477,7 @@
   }
 }
 .asta-files-search {
-  @apply h-8 min-w-0 flex-1 rounded-lg bg-paper-2 px-3 text-[13px] text-ink outline-none placeholder:text-mute focus:shadow-[inset_0_0_0_1px_var(--brand)];
+  @apply h-8 min-w-0 flex-1 rounded-lg bg-paper-2 px-3 text-[16px] sm:text-[13px] text-ink outline-none placeholder:text-mute focus:shadow-[inset_0_0_0_1px_var(--brand)] [&::-webkit-search-cancel-button]:hidden;
 }
 .asta-files-grid {
   @apply grid grid-cols-2 gap-3 @min-[520px]:grid-cols-3 @min-[860px]:grid-cols-4;

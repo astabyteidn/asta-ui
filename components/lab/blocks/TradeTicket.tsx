@@ -190,16 +190,18 @@ export default function TradeTicket() {
           className="relative mt-2 flex h-12 items-center justify-center overflow-hidden rounded-[10px] text-[15px] font-medium text-paper outline-none transition-[background-color,transform,opacity] duration-300 active:scale-[0.98] disabled:opacity-40 focus-visible:ring-2 focus-visible:ring-signal/60"
           style={{ background: color }}
         >
-          <span className={`absolute flex items-center gap-2 transition-[transform,opacity] duration-500 ease-[cubic-bezier(.16,1,.3,1)] ${phase === "idle" ? "translate-y-0 opacity-100" : "-translate-y-4 opacity-0"}`}>
+          {/* Only the layer on show is read out, and the spinner has words for screen readers. */}
+          <span aria-hidden={phase !== "idle"} className={`absolute flex items-center gap-2 transition-[transform,opacity] duration-500 ease-[cubic-bezier(.16,1,.3,1)] ${phase === "idle" ? "translate-y-0 opacity-100" : "-translate-y-4 opacity-0"}`}>
             <span className="capitalize">{side}</span> ASTA
           </span>
-          <span className={`absolute transition-[transform,opacity] duration-500 ease-[cubic-bezier(.16,1,.3,1)] ${phase === "sending" ? "scale-100 opacity-100" : "scale-50 opacity-0"}`}>
+          <span aria-hidden={phase !== "sending"} className={`absolute transition-[transform,opacity] duration-500 ease-[cubic-bezier(.16,1,.3,1)] ${phase === "sending" ? "scale-100 opacity-100" : "scale-50 opacity-0"}`}>
             <svg viewBox="0 0 16 16" className="h-5 w-5 animate-spin" fill="none" aria-hidden>
               <circle cx="8" cy="8" r="6" stroke="currentColor" strokeOpacity=".3" strokeWidth="2" />
               <path d="M14 8a6 6 0 0 0-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
             </svg>
+            <span className="sr-only">Placing order</span>
           </span>
-          <span className={`absolute flex items-center gap-2 transition-[transform,opacity] duration-500 ease-[cubic-bezier(.16,1,.3,1)] ${phase === "done" ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}>
+          <span aria-hidden={phase !== "done"} className={`absolute flex items-center gap-2 transition-[transform,opacity] duration-500 ease-[cubic-bezier(.16,1,.3,1)] ${phase === "done" ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}>
             <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
               <path d="M3.5 8.5l3 3 6-7" />
             </svg>

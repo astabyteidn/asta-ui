@@ -330,7 +330,7 @@ export function SnippetTextarea({
         <pre
           ref={shade}
           aria-hidden
-          className="pointer-events-none absolute inset-0 m-0 overflow-visible whitespace-pre pl-[52px] pr-4 font-mono text-[12.5px] text-paper/75 will-change-transform"
+          className="pointer-events-none absolute inset-0 m-0 overflow-visible whitespace-pre pl-[52px] pr-4 font-mono text-[16px] sm:text-[12.5px] text-paper/75 will-change-transform"
           style={{ lineHeight: `${LH}px`, paddingTop: PAD, paddingBottom: PAD, tabSize }}
         >
           {tokens(code, lang?.id ?? "").map((tk, i) => (tk.k ? <span key={i} className={TONE[tk.k]}>{tk.t}</span> : tk.t))}
@@ -355,7 +355,7 @@ export function SnippetTextarea({
           onSelect={track}
           onFocus={track}
           onScroll={() => paint(pos.line)}
-          className="absolute inset-0 h-full w-full resize-none overflow-auto whitespace-pre bg-transparent pl-[52px] pr-4 font-mono text-[12.5px] text-transparent caret-paper outline-none selection:bg-brand/40 selection:text-transparent"
+          className="absolute inset-0 h-full w-full resize-none overflow-auto whitespace-pre bg-transparent pl-[52px] pr-4 font-mono text-[16px] sm:text-[12.5px] text-transparent caret-paper outline-none selection:bg-brand/40 selection:text-transparent"
           style={{ lineHeight: `${LH}px`, paddingTop: PAD, paddingBottom: PAD, tabSize }}
         />
       </div>

@@ -72,6 +72,7 @@ function Composer({
         <textarea
           ref={area}
           id={id}
+          name="body"
           rows={1}
           value={text}
           autoFocus={autoFocus}
@@ -87,7 +88,7 @@ function Composer({
               onCancel();
             }
           }}
-          className="block max-h-40 min-h-[44px] w-full resize-none bg-transparent px-3 pt-2.5 text-[14px] leading-relaxed text-ink outline-none [field-sizing:content] placeholder:text-mute"
+          className="block max-h-40 min-h-[44px] w-full resize-none bg-transparent px-3 pt-2.5 text-[16px] sm:text-[14px] leading-relaxed text-ink outline-none [field-sizing:content] placeholder:text-mute"
         />
         <div className="flex items-center justify-end gap-1.5 px-2 pb-2">
           {onCancel && (

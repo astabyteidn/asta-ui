@@ -81,7 +81,7 @@ export function FloatingInput({
               if (!controlled) setInner(e.target.value);
               rest.onChange?.(e);
             }}
-            className="peer h-full w-full bg-transparent pt-1.5 text-[15px] tracking-[-0.01em] text-ink outline-none placeholder:text-transparent focus:placeholder:text-mute"
+            className="peer h-full w-full bg-transparent pt-1.5 text-[16px] sm:text-[15px] tracking-[-0.01em] text-ink outline-none placeholder:text-transparent focus:placeholder:text-mute"
           />
           {/* Resting inside the field, floated into the border once focused or filled. The lower half of its
               background is paper, so it cuts a notch in the hairline. */}

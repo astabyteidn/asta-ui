@@ -63,7 +63,7 @@ const CSS = `
 .aui-011-sheet { animation: aui-011-drop .4s ${EASE} both; }
 .aui-011-vp { transform-origin: top center; }
 .aui-011-vp[data-state=open] { animation: aui-011-vp-in .26s ${EASE}; }
-.aui-011-vp[data-state=closed] { animation: aui-011-vp-out .16s ease-in forwards; }
+.aui-011-vp[data-state=closed] { animation: aui-011-vp-out .16s cubic-bezier(.16,1,.3,1) forwards; }
 .aui-011-c[data-motion=from-start] { animation: aui-011-from-l .3s ${EASE}; }
 .aui-011-c[data-motion=from-end] { animation: aui-011-from-r .3s ${EASE}; }
 .aui-011-c[data-motion=to-start] { animation: aui-011-to-l .3s ${EASE} forwards; }

@@ -4,22 +4,34 @@ import { useState } from "react";
 import { Button } from "@/components/kit/button";
 import { Field, fieldInputClass } from "@/components/kit/field";
 
+type Errors = { email?: string; username?: string };
+
+const check = {
+  email: (v: string) => (!v.trim() ? "Enter your email." : !/^\S+@\S+\.\S+$/.test(v.trim()) ? "Enter an email like name@company.com." : undefined),
+  username: (v: string) => (v.length < 3 ? "Use at least 3 characters, like ada-lovelace." : undefined),
+};
+
 export default function FieldDemo() {
   const [email, setEmail] = useState("");
-  const [handle, setHandle] = useState("");
-  const [errors, setErrors] = useState<{ email?: string; handle?: string }>({});
+  const [username, setUsername] = useState("");
+  const [errors, setErrors] = useState<Errors>({});
   const [done, setDone] = useState(false);
 
-  const validate = () => ({
-    email: !email ? "Enter your email." : !/^\S+@\S+\.\S+$/.test(email) ? "That doesn't look like an email address." : undefined,
-    handle: handle.length < 3 ? "Use at least 3 characters." : undefined,
-  });
+  // Errors show on blur or submit. Typing only clears them, once the value is fixed.
+  const blur = (k: keyof Errors, v: string) => v && setErrors((x) => ({ ...x, [k]: check[k](v) }));
+  const edit = (k: keyof Errors, v: string) => {
+    setDone(false);
+    if (errors[k] && !check[k](v)) setErrors((x) => ({ ...x, [k]: undefined }));
+  };
 
-  const submit = (e: React.FormEvent) => {
+  const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const next = validate();
+    const next = { email: check.email(email), username: check.username(username) };
     setErrors(next);
-    setDone(!next.email && !next.handle);
+    setDone(!next.email && !next.username);
+    // Send focus to the first field that needs fixing.
+    const first = next.email ? "email" : next.username ? "username" : null;
+    if (first) (e.currentTarget.elements.namedItem(first) as HTMLInputElement | null)?.focus();
   };
 
   return (
@@ -27,25 +39,42 @@ export default function FieldDemo() {
       <form onSubmit={submit} noValidate className="flex w-full max-w-sm flex-col gap-5">
         <Field label="Email" required hint="We'll send a sign-in link here." error={errors.email}>
           <input
+            name="email"
             type="email"
+            autoComplete="email"
+            inputMode="email"
+            autoCapitalize="none"
+            spellCheck={false}
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            onBlur={() => email && setErrors((x) => ({ ...x, email: validate().email }))}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              edit("email", e.target.value);
+            }}
+            onBlur={() => blur("email", email)}
             placeholder="you@company.com"
             className={fieldInputClass}
           />
         </Field>
-        <Field label="Username" aside={`${handle.length}/20`} hint="Letters, numbers and dashes." error={errors.handle}>
+        <Field label="Username" aside={`${username.length}/20`} hint="Letters, numbers and dashes." error={errors.username}>
           <input
-            value={handle}
+            name="username"
+            autoComplete="username"
+            autoCapitalize="none"
+            spellCheck={false}
+            value={username}
             maxLength={20}
-            onChange={(e) => setHandle(e.target.value.replace(/[^a-z0-9-]/gi, "").toLowerCase())}
+            onChange={(e) => {
+              const v = e.target.value.replace(/[^a-z0-9-]/gi, "").toLowerCase();
+              setUsername(v);
+              edit("username", v);
+            }}
+            onBlur={() => blur("username", username)}
             placeholder="ada-lovelace"
             className={fieldInputClass}
           />
         </Field>
         <Field label="Company" aside="Optional">
-          <input placeholder="Astabyte" className={fieldInputClass} />
+          <input name="company" autoComplete="organization" placeholder="Astabyte" className={fieldInputClass} />
         </Field>
         <Button type="submit" variant={done ? "outline" : "solid"} className="mt-1 w-full">
           {done ? "✓ Looks good" : "Create account"}

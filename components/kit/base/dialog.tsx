@@ -64,8 +64,8 @@ export function Dialog({ open, onOpenChange, title, description, children, foote
   useLayoutEffect(() => {
     const p = panel.current;
     if (open || !p || still()) return;
-    backdrop.current?.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260, easing: "ease-in", fill: "forwards" });
-    p.animate([{ transform: "none", opacity: 1 }, { transform: fromTrigger(), opacity: 0 }], { duration: 320, easing: "cubic-bezier(.7,0,.84,0)", fill: "forwards" });
+    backdrop.current?.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, easing: "ease-out", fill: "forwards" });
+    p.animate([{ transform: "none", opacity: 1 }, { transform: fromTrigger(), opacity: 0 }], { duration: 280, easing: EASE, fill: "forwards" });
   }, [open, fromTrigger]);
 
   return (
@@ -87,7 +87,7 @@ export function Dialog({ open, onOpenChange, title, description, children, foote
                 return back && back.isConnected ? back : true;
               }}
               className={cx(
-                "relative w-full max-w-[400px] rounded-2xl bg-paper p-6 outline-none",
+                "relative max-h-full w-full max-w-[400px] overflow-y-auto overscroll-contain rounded-2xl bg-paper p-6 outline-none",
                 "shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_8%,transparent),0_24px_60px_-20px_rgb(0_0_0/0.45)]",
                 className,
               )}

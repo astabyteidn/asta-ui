@@ -12,6 +12,8 @@ export interface NumberInputProps {
   max?: number;
   step?: number;
   label?: string;
+  /** Submits the value with a form through a hidden input. */
+  name?: string;
   /** Text after the number, e.g. "seats" or "kg". */
   suffix?: ReactNode;
   size?: "sm" | "md";
@@ -40,7 +42,7 @@ function Digit({ d }: { d: number }) {
  * A stepper. Hold − or + and it repeats, faster the longer you hold. Arrow keys step, Page Up/Down step by
  * ten, Home/End jump to min/max, and typing digits enters a value.
  */
-export function NumberInput({ value, defaultValue = 0, onChange, min = 0, max = 999, step = 1, label, suffix, size = "md", className }: NumberInputProps) {
+export function NumberInput({ value, defaultValue = 0, onChange, min = 0, max = 999, step = 1, label, name, suffix, size = "md", className }: NumberInputProps) {
   const [inner, setInner] = useState(defaultValue);
   const current = value ?? inner;
   const latest = useRef(current);
@@ -168,6 +170,7 @@ export function NumberInput({ value, defaultValue = 0, onChange, min = 0, max = 
         {suffix && <span className={cx("font-normal text-mute", big ? "text-[13px]" : "text-[12px]")}>{suffix}</span>}
       </div>
       {btn(1)}
+      {name && <input type="hidden" name={name} value={current} />}
     </div>
   );
 }

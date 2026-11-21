@@ -98,7 +98,7 @@ export function MarkdownTextarea({ tools = TOOLS.map((t) => t.id), className, ro
           if (!controlled) setInner(e.target.value);
           rest.onChange?.(e);
         }}
-        className="block w-full resize-y bg-transparent px-3.5 py-3 font-mono text-[13px] leading-[1.6] text-ink outline-none placeholder:font-sans placeholder:text-mute"
+        className="block w-full resize-y bg-transparent px-3.5 py-3 font-mono text-[16px] sm:text-[13px] leading-[1.6] text-ink outline-none placeholder:font-sans placeholder:text-mute"
       />
       <div className="flex items-center justify-between px-3.5 pb-2.5 text-[11.5px] text-mute">
         <span>Markdown supported</span>

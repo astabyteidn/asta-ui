@@ -37,7 +37,7 @@ export default function UiGrid({ blocks, limit }: { blocks: LabMeta[]; limit?: n
               className={`flex h-8 shrink-0 items-center gap-2 rounded-[7px] px-3.5 text-[14px] font-medium transition-colors duration-300 ${kind === k ? "bg-ink text-paper" : "text-mute hover:text-ink"}`}
             >
               {k}
-              <span className={`font-mono text-[11.5px] tabular-nums ${kind === k ? "text-paper/60" : "text-mute/60"}`}>{count(k)}</span>
+              <span className={`font-mono text-[11.5px] tabular-nums ${kind === k ? "text-paper/60" : "text-mute"}`}>{count(k)}</span>
             </button>
           ))}
         </div>

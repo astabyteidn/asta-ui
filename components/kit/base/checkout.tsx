@@ -108,20 +108,31 @@ function check(f: Field, d: CheckoutDetails): string | null {
     case "email":
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? null : "Enter an email like you@example.com.";
     case "cardNumber":
-      return (isAmex(v) ? v.length === 15 : v.length >= 13 && v.length <= 19) ? null : "Check the card number.";
+      return (isAmex(v) ? v.length === 15 : v.length >= 13 && v.length <= 19)
+        ? null
+        : isAmex(v)
+          ? "Enter all 15 digits on the front of the card."
+          : "Enter the full card number from the front of the card.";
     case "cardExpiry": {
       const [m, y] = v.split("/").map(Number);
-      if (!/^\d{2}\/\d{2}$/.test(v) || !m || m > 12) return "Use MM / YY.";
+      if (!/^\d{2}\/\d{2}$/.test(v) || !m || m > 12) return "Enter the expiry as MM / YY, like 08 / 29.";
       const now = new Date();
       const end = new Date(2000 + y, m, 1);
-      return end > now ? null : "This card has expired.";
+      return end > now ? null : "This card has expired. Use one with a later date.";
     }
     case "cardCvc":
-      return v.length >= 3 ? null : "3 or 4 digits, on the back.";
+      return v.length >= 3 ? null : "Enter the 3 or 4 digits on the back of the card.";
     default:
-      return v ? null : "Required.";
+      return v ? null : (REQUIRED[f] ?? "Fill in this field.");
   }
 }
+
+const REQUIRED: Partial<Record<Field, string>> = {
+  name: "Enter your full name.",
+  address: "Enter your street address.",
+  city: "Enter your city.",
+  postal: "Enter your postal code.",
+};
 
 /* ---------- rolling money ---------- */
 
@@ -297,7 +308,13 @@ export function Checkout({
   const shown = (f: Field) => (touched[f] ? errors[f] : null);
   const locked = state !== "idle";
 
-  const set = (f: keyof CheckoutDetails, v: string) => setD((p) => ({ ...p, [f]: v }));
+  // Errors show on blur or Pay. Typing never adds one: a field that becomes valid clears its error and stays
+  // quiet until the next blur.
+  const set = (f: keyof CheckoutDetails, v: string) => {
+    setD((p) => ({ ...p, [f]: v }));
+    const k = f as Field;
+    if (ORDER.includes(k) && touched[k] && !check(k, { ...d, [f]: v })) setTouched((t) => ({ ...t, [k]: false }));
+  };
   const blur = (f: Field) => setTouched((t) => ({ ...t, [f]: true }));
 
   // Formatted fields keep the caret after the same number of digits.
@@ -324,13 +341,13 @@ export function Checkout({
   const applyPromo = () => {
     const code = promoText.trim().toUpperCase();
     const hit = Object.entries(promoCodes).find(([k]) => k.toUpperCase() === code);
-    if (!code) return;
+    if (!code) return setPromoMsg("Enter a promo code first.");
     if (hit) {
       setPromo({ code: hit[0].toUpperCase(), off: hit[1] });
       setPromoMsg(`${hit[0].toUpperCase()} applied.`);
       setPromoText("");
       setPromoOpen(false);
-    } else setPromoMsg("That code isn't valid.");
+    } else setPromoMsg("That code isn't valid. Check the spelling and try again.");
   };
 
   const pay = async () => {
@@ -356,6 +373,7 @@ export function Checkout({
   const input = (f: Field, extra: Partial<ComponentProps<typeof Input>> = {}) => (
     <Input
       id={id(f)}
+      name={f}
       value={f === "cardNumber" ? fmtCard(d[f]) : f === "cardExpiry" ? fmtExpiry(digits(d[f])) : d[f]}
       onChange={(e) => set(f, e.target.value)}
       onBlur={() => blur(f)}
@@ -401,7 +419,7 @@ export function Checkout({
           >
             <Section n={1} title="Contact">
               <Labeled id={id("email")} label="Email" error={shown("email")}>
-                {input("email", { type: "email", autoComplete: "email", placeholder: "you@example.com" })}
+                {input("email", { type: "email", autoComplete: "email", inputMode: "email", autoCapitalize: "none", spellCheck: false, placeholder: "you@example.com" })}
               </Labeled>
             </Section>
 
@@ -410,19 +428,19 @@ export function Checkout({
                 {input("name", { autoComplete: "name" })}
               </Labeled>
               <Labeled id={id("address")} label="Address" error={shown("address")}>
-                {input("address", { autoComplete: "street-address" })}
+                {input("address", { autoComplete: "address-line1" })}
               </Labeled>
               <div className="grid grid-cols-2 gap-3">
                 <Labeled id={id("city")} label="City" error={shown("city")}>
                   {input("city", { autoComplete: "address-level2" })}
                 </Labeled>
                 <Labeled id={id("postal")} label="Postal code" error={shown("postal")}>
-                  {input("postal", { autoComplete: "postal-code", inputMode: "numeric" })}
+                  {input("postal", { autoComplete: "postal-code", autoCapitalize: "characters" })}
                 </Labeled>
               </div>
               <div>
                 <p className="mb-1.5 text-[12.5px] text-ink-2">Country</p>
-                <Select label="Country" options={countries} value={d.country} onChange={(v) => set("country", v)} disabled={locked} />
+                <Select label="Country" name="country" options={countries} value={d.country} onChange={(v) => set("country", v)} disabled={locked} />
               </div>
               <div role="radiogroup" aria-label="Shipping speed" className="mt-1 grid gap-2 sm:grid-cols-2">
                 {shippingOptions.map((s) => {
@@ -529,8 +547,13 @@ export function Checkout({
             <div className="flex gap-2" style={{ animation: `kit-co-up .3s ${CURVE}` }}>
               <Input
                 size="sm"
+                name="promo"
                 aria-label="Promo code"
-                placeholder="Promo code"
+                aria-describedby={promoMsg ? `${uid}-promo-msg` : undefined}
+                placeholder="Enter code…"
+                autoComplete="off"
+                autoCapitalize="characters"
+                spellCheck={false}
                 value={promoText}
                 autoFocus
                 disabled={locked}
@@ -545,7 +568,7 @@ export function Checkout({
                   } else if (e.key === "Escape") setPromoOpen(false);
                 }}
               />
-              <Button size="sm" variant="outline" onClick={applyPromo} disabled={locked || !promoText.trim()}>
+              <Button size="sm" variant="outline" onClick={applyPromo} disabled={locked}>
                 Apply
               </Button>
             </div>
@@ -559,7 +582,7 @@ export function Checkout({
               Add a promo code
             </button>
           )}
-          <p className="mt-1.5 min-h-4 text-[12px] text-mute" aria-live="polite">
+          <p id={`${uid}-promo-msg`} className="mt-1.5 min-h-4 text-[12px] text-mute" aria-live="polite">
             {promoMsg}
           </p>
         </div>

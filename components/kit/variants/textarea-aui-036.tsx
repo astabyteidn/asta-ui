@@ -180,7 +180,7 @@ export function NotesTextarea({
             }
           }}
           spellCheck
-          className="block w-full resize-none bg-transparent pb-2 pl-[52px] pr-5 text-[14.5px] text-ink outline-none placeholder:text-mute"
+          className="block w-full resize-none bg-transparent pb-2 pl-[52px] pr-5 text-[16px] sm:text-[14.5px] text-ink outline-none placeholder:text-mute"
           style={{
             lineHeight: `${LINE}px`,
             paddingTop: 2,

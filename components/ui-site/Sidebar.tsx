@@ -164,7 +164,7 @@ function Index({ items, onNavigate }: { items: UiItem[]; onNavigate?: () => void
             className={`relative flex h-8 items-center justify-center gap-1.5 text-[14px] font-medium capitalize transition-colors duration-300 ${section === sct ? "text-ink" : "text-mute hover:text-ink"}`}
           >
             {sct}
-            <span className="font-mono text-[11.5px] tabular-nums text-mute/70">{count(sct)}</span>
+            <span className="font-mono text-[11.5px] tabular-nums text-mute">{count(sct)}</span>
           </button>
         ))}
       </div>
@@ -224,7 +224,7 @@ function Index({ items, onNavigate }: { items: UiItem[]; onNavigate?: () => void
                             <span className="truncate">{it.title}</span>
                             {it.isNew && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" title="New" />}
                             {it.id && (
-                              <span className={`ml-auto font-mono text-[11px] tabular-nums transition-opacity duration-200 ${on ? "text-accent opacity-100" : "text-mute/60 opacity-0 group-hover/i:opacity-100"}`}>
+                              <span className={`ml-auto font-mono text-[11px] tabular-nums transition-opacity duration-200 ${on ? "text-accent opacity-100" : "text-mute opacity-0 group-hover/i:opacity-100"}`}>
                                 {it.id}
                               </span>
                             )}

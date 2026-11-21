@@ -104,7 +104,7 @@ export function SocialSignIn({
   const box = useRef<HTMLDivElement>(null);
   const opener = useRef<HTMLButtonElement>(null);
 
-  const error = !email.trim() ? "Enter your email." : !validEmail(email) ? "That doesn't look like an email address." : "";
+  const error = !email.trim() ? "Enter your email." : !validEmail(email) ? "Enter an email like name@company.com." : "";
   const shown = (touched && error) || formError;
   const hasError = !!shown;
   const count = providers.length;
@@ -314,13 +314,19 @@ export function SocialSignIn({
                 <input
                   ref={input}
                   id={`${id}-email`}
+                  name="email"
                   type="email"
                   autoComplete="email"
+                  inputMode="email"
+                  autoCapitalize="none"
+                  spellCheck={false}
                   placeholder="you@company.com"
                   value={email}
                   onChange={(e) => {
                     setEmail(e.target.value);
                     setFormError("");
+                    // A fix clears the error while typing; a new one waits for blur.
+                    if (touched && validEmail(e.target.value)) setTouched(false);
                   }}
                   onBlur={() => email && setTouched(true)}
                   onKeyDown={(e) => {
@@ -332,7 +338,7 @@ export function SocialSignIn({
                   aria-invalid={hasError || undefined}
                   aria-describedby={hasError ? `${id}-err` : undefined}
                   className={cx(
-                    "h-11 w-full rounded-[10px] bg-paper px-3.5 text-[14px] text-ink outline-none transition-shadow duration-200 placeholder:text-mute focus-visible:shadow-[inset_0_0_0_1px_var(--color-brand),0_0_0_4px_color-mix(in_srgb,var(--color-brand)_14%,transparent)]",
+                    "h-11 w-full rounded-[10px] bg-paper px-3.5 text-[16px] sm:text-[14px] text-ink outline-none transition-shadow duration-200 placeholder:text-mute focus-visible:shadow-[inset_0_0_0_1px_var(--color-brand),0_0_0_4px_color-mix(in_srgb,var(--color-brand)_14%,transparent)]",
                     hasError ? "shadow-[inset_0_0_0_1.5px_var(--color-ink)]" : RING,
                   )}
                 />

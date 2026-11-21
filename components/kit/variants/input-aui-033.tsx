@@ -109,10 +109,11 @@ export function SlugInput({
       </label>
       <input
         id={`${id}-t`}
+        autoComplete="off"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder={placeholder}
-        className="mt-1 w-full bg-transparent text-[26px] font-medium leading-[1.15] tracking-[-0.035em] text-ink caret-brand outline-none placeholder:text-mute/60"
+        className="mt-1 w-full bg-transparent text-[26px] font-medium leading-[1.15] tracking-[-0.035em] text-ink caret-brand outline-none placeholder:text-mute"
       />
 
       <div className="mt-3 flex min-h-10 items-center gap-2 rounded-[9px] bg-paper-2 py-1.5 pl-3 pr-1.5 text-[13px]">
@@ -126,6 +127,9 @@ export function SlugInput({
             <input
               ref={slugRef}
               aria-label="Slug"
+              autoComplete="off"
+              autoCapitalize="none"
+              spellCheck={false}
               value={slug}
               onChange={(e) => setCustom(slugFromTitle(e.target.value, true))}
               onBlur={() => {
@@ -135,7 +139,7 @@ export function SlugInput({
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === "Escape") e.currentTarget.blur();
               }}
-              className="min-w-0 flex-1 rounded-[4px] bg-paper px-1 text-ink shadow-[inset_0_0_0_1px_var(--color-brand)] outline-none"
+              className="min-w-0 flex-1 rounded-[4px] bg-paper px-1 text-[16px] text-ink shadow-[inset_0_0_0_1px_var(--color-brand)] outline-none sm:text-[13px]"
             />
           ) : (
             <span aria-label={slug ? `Slug ${slug}` : "No slug yet"} className="shrink-0 text-ink">
@@ -147,7 +151,7 @@ export function SlugInput({
                   </span>
                 ))
               ) : (
-                <span className="text-mute/70">your-title</span>
+                <span className="text-mute">your-title</span>
               )}
             </span>
           )}

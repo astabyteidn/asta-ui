@@ -250,7 +250,7 @@ export function HoverCard({ trigger, children, open, defaultOpen = false, onOpen
               "shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_10%,transparent),0_18px_44px_-16px_rgb(0_0_0/0.32),0_4px_10px_-6px_rgb(0_0_0/0.12)]",
               // An invisible bridge over the gap, so the pointer can cross from the link without the card closing.
               "before:absolute before:inset-x-0 before:h-[var(--asta-hc-gap,10px)] before:content-[''] data-[side=bottom]:before:bottom-full data-[side=top]:before:top-full",
-              "animate-[asta-hovercard-in_.28s_cubic-bezier(.16,1,.3,1)_both] data-[state=closed]:animate-[asta-hovercard-out_.14s_ease-in_both]",
+              "animate-[asta-hovercard-in_.28s_cubic-bezier(.16,1,.3,1)_both] data-[state=closed]:animate-[asta-hovercard-out_.14s_cubic-bezier(.16,1,.3,1)_both]",
               "data-[state=closed]:pointer-events-none motion-reduce:![animation-duration:1ms]",
               className,
             )}

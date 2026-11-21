@@ -44,7 +44,7 @@ export function EmailTagInput({
   domain = "astabyte.com",
   max = 20,
   label = "To",
-  placeholder = "Add people by email",
+  placeholder = "Add people by email…",
   name,
   className,
 }: EmailTagInputProps) {
@@ -171,6 +171,7 @@ export function EmailTagInput({
           value={text}
           inputMode="email"
           autoComplete="off"
+          autoCapitalize="none"
           spellCheck={false}
           placeholder={list.length ? "" : placeholder}
           aria-describedby={`${id}-status`}
@@ -196,7 +197,7 @@ export function EmailTagInput({
             }
           }}
           onBlur={() => text.trim() && add([text])}
-          className="h-8 min-w-[5rem] flex-1 bg-transparent px-1 text-[14px] text-ink outline-none placeholder:text-mute"
+          className="h-8 min-w-[5rem] flex-1 bg-transparent px-1 text-[16px] sm:text-[14px] text-ink outline-none placeholder:text-mute"
         />
       </div>
       {name && list.filter(isEmailAddress).map((e) => <input key={e} type="hidden" name={name} value={e} />)}

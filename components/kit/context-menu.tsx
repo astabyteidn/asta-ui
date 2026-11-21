@@ -255,7 +255,7 @@ function Panel({ uid, items, label, at, bounds, focusFirst, closing, onExited, o
         "fixed left-0 top-0 z-50 min-w-[220px] max-w-[calc(100vw-16px)] select-none rounded-xl bg-paper p-1.5 text-ink outline-none",
         "shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_10%,transparent),0_14px_36px_-14px_rgb(0_0_0/0.3),0_4px_10px_-6px_rgb(0_0_0/0.12)]",
         sub ? "animate-[asta-ctx-in_.2s_cubic-bezier(.16,1,.3,1)_both]" : "animate-[asta-ctx-in_.22s_cubic-bezier(.16,1,.3,1)_both]",
-        "data-[state=closed]:pointer-events-none data-[state=closed]:animate-[asta-ctx-out_.12s_ease-in_both] motion-reduce:![animation-duration:1ms]",
+        "data-[state=closed]:pointer-events-none data-[state=closed]:animate-[asta-ctx-out_.12s_cubic-bezier(.16,1,.3,1)_both] motion-reduce:![animation-duration:1ms]",
         className,
       )}
     >

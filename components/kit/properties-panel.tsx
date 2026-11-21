@@ -177,13 +177,14 @@ export function ScrubInput({ label, name, value, onChange, step = 1, min, max, p
         ref={input}
         aria-label={name ?? (typeof label === "string" ? label : undefined)}
         inputMode="decimal"
+        autoComplete="off"
         disabled={disabled}
         value={draft ?? value.toFixed(precision)}
         onChange={(e) => setDraft(e.target.value)}
         onFocus={(e) => e.target.select()}
         onBlur={commit}
         onKeyDown={onKey}
-        className="h-full min-w-0 flex-1 bg-transparent pr-1.5 font-mono text-[11.5px] tabular-nums outline-none"
+        className="h-full min-w-0 flex-1 bg-transparent pr-1.5 font-mono text-[16px] sm:text-[11.5px] tabular-nums outline-none"
       />
       {unit && <span className="shrink-0 pr-2 text-[11px] text-mute">{unit}</span>}
     </label>
@@ -236,7 +237,8 @@ export function ColorField({ value, onChange, name = "Colour", disabled }: Color
           }
         }}
         spellCheck={false}
-        className="h-full min-w-0 flex-1 bg-transparent px-2 font-mono text-[11.5px] uppercase outline-none"
+        autoComplete="off"
+        className="h-full min-w-0 flex-1 bg-transparent px-2 font-mono text-[16px] sm:text-[11.5px] uppercase outline-none"
       />
     </div>
   );

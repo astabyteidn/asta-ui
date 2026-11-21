@@ -71,7 +71,7 @@ export default function Demo() {
         {search && (
           <div className="absolute inset-0 z-40 flex items-start justify-center bg-ink/15 p-4 pt-16 backdrop-blur-[2px]" onPointerDown={(e) => e.target === e.currentTarget && setSearch(false)}>
             <div role="dialog" aria-label="Search docs" className="demo-013-pop w-full max-w-md rounded-[12px] bg-paper p-1.5 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_10%,transparent),0_24px_50px_-20px_rgb(0_0_0/0.35)]">
-              <input ref={input} placeholder="Search the docs…" aria-label="Search the docs" className="h-11 w-full rounded-[9px] bg-paper-2 px-3 text-[14px] text-ink outline-none placeholder:text-mute" />
+              <input ref={input} type="search" name="q" autoComplete="off" spellCheck={false} placeholder="Search the docs…" aria-label="Search the docs" className="h-11 w-full rounded-[9px] bg-paper-2 px-3 text-[16px] sm:text-[14px] text-ink outline-none placeholder:text-mute [&::-webkit-search-cancel-button]:hidden" />
               <ul className="mt-1">
                 {RESULTS.map((r) => (
                   <li key={r.label}>

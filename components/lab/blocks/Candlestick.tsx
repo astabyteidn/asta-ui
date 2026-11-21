@@ -228,7 +228,11 @@ export default function Candlestick() {
         {ohlc ? (
           <span className="text-mute">
             O <span className="text-ink">{f(ohlc.o)}</span> H <span className="text-ink">{f(ohlc.h)}</span> L <span className="text-ink">{f(ohlc.l)}</span> C{" "}
-            <span style={{ color: ohlc.c >= ohlc.o ? "var(--color-brand)" : "var(--color-ink-2)" }}>{f(ohlc.c)}</span>
+            {/* The signed change says up or down without the colour. */}
+            <span style={{ color: ohlc.c >= ohlc.o ? "var(--color-brand)" : "var(--color-ink-2)" }}>
+              {f(ohlc.c)} {ohlc.c >= ohlc.o ? "+" : "−"}
+              {Math.abs(((ohlc.c - ohlc.o) / ohlc.o) * 100).toFixed(2)}%
+            </span>
           </span>
         ) : (
           <span className="uppercase tracking-[0.12em] text-mute">ASTA / USD · 1m</span>

@@ -57,7 +57,7 @@ export function Textarea({ limit, maxRows = 10, rows = 3, className, ...rest }: 
           rest.onChange?.(e);
         }}
         className={cx(
-          "block w-full resize-none bg-transparent px-3.5 pt-3 text-[14px] leading-[1.55] outline-none placeholder:text-mute transition-[height] duration-150",
+          "block w-full resize-none bg-transparent px-3.5 pt-3 text-[16px] sm:text-[14px] leading-[1.55] outline-none placeholder:text-mute transition-[height] duration-150",
           limit ? "pb-10" : "pb-3",
         )}
       />

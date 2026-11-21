@@ -76,6 +76,7 @@ export function ChatComposer({ placeholder = "Write a message…", onSend, accep
       )}
       <textarea
         ref={area}
+        name="message"
         rows={1}
         value={text}
         disabled={disabled}
@@ -88,7 +89,7 @@ export function ChatComposer({ placeholder = "Write a message…", onSend, accep
         }}
         placeholder={placeholder}
         aria-label="Message"
-        className="block max-h-none w-full resize-none bg-transparent px-2.5 py-2 text-[14px] leading-[1.5] text-ink outline-none placeholder:text-mute"
+        className="block max-h-none w-full resize-none bg-transparent px-2.5 py-2 text-[16px] sm:text-[14px] leading-[1.5] text-ink outline-none placeholder:text-mute"
       />
       <div className="flex items-center justify-between gap-2 pt-1">
         <input

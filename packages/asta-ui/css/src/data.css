@@ -24,7 +24,7 @@
   }
 }
 .asta-data-table-search-input {
-  @apply h-full min-w-0 flex-1 bg-transparent text-[13.5px] text-ink outline-none placeholder:text-mute [&::-webkit-search-cancel-button]:hidden;
+  @apply h-full min-w-0 flex-1 bg-transparent text-[16px] sm:text-[13.5px] text-ink outline-none placeholder:text-mute [&::-webkit-search-cancel-button]:hidden;
 }
 .asta-data-table-actions {
   @apply ml-auto flex items-center gap-2;
@@ -659,7 +659,7 @@
   @apply text-[11.5px] tabular-nums text-mute;
 }
 .asta-notification-center-body {
-  @apply mt-2 min-h-0 flex-1 overflow-y-auto pb-2 [scrollbar-width:thin];
+  @apply mt-2 min-h-0 flex-1 overflow-y-auto overscroll-contain pb-2 [scrollbar-width:thin];
 }
 .asta-notification-center-day {
   @apply px-4 pb-1 pt-3 text-[11.5px] font-medium text-mute;
@@ -801,7 +801,7 @@
   @apply focus-within:shadow-[inset_0_0_0_1px_var(--brand),0_0_0_3px_color-mix(in_srgb,var(--brand)_14%,transparent)];
 }
 .asta-comments-input {
-  @apply block max-h-40 min-h-[44px] w-full resize-none bg-transparent px-3 pt-2.5 text-[14px] leading-relaxed text-ink outline-none [field-sizing:content] placeholder:text-mute;
+  @apply block max-h-40 min-h-[44px] w-full resize-none bg-transparent px-3 pt-2.5 text-[16px] sm:text-[14px] leading-relaxed text-ink outline-none [field-sizing:content] placeholder:text-mute;
 }
 .asta-comments-submit {
   @apply flex items-center justify-end gap-1.5 px-2 pb-2;

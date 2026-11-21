@@ -170,7 +170,7 @@ export function ReviewTextarea({
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder={PROMPTS[shown]}
-          className="block w-full resize-none bg-transparent px-3.5 pt-3 text-[14px] leading-[1.55] text-ink outline-none placeholder:text-mute"
+          className="block w-full resize-none bg-transparent px-3.5 pt-3 text-[16px] sm:text-[14px] leading-[1.55] text-ink outline-none placeholder:text-mute"
         />
         <ul className="flex flex-wrap items-center gap-2 px-3 pb-3 pt-2" aria-label="Photos">
           {photos.map((p, i) => (

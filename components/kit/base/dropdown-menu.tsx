@@ -62,7 +62,7 @@ export function DropdownMenu({ children, groups, align = "start", variant = "out
             "min-w-[232px] rounded-xl bg-paper p-1.5 outline-none",
             "shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_10%,transparent),0_12px_32px_-12px_rgb(0_0_0/0.28),0_4px_10px_-6px_rgb(0_0_0/0.12)]",
             "origin-[var(--transform-origin)] transition-[opacity,transform] duration-200 ease-[cubic-bezier(.16,1,.3,1)]",
-            "data-[starting-style]:scale-[.96] data-[starting-style]:opacity-0 data-[ending-style]:scale-[.97] data-[ending-style]:opacity-0 data-[ending-style]:duration-[120ms] data-[ending-style]:ease-in motion-reduce:!transition-none",
+            "data-[starting-style]:scale-[.96] data-[starting-style]:opacity-0 data-[ending-style]:scale-[.97] data-[ending-style]:opacity-0 data-[ending-style]:duration-[120ms] data-[ending-style]:ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:!transition-none",
           )}
         >
           {groups.map((g, gi) => (

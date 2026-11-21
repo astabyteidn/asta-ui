@@ -239,14 +239,16 @@ export function AssignCombobox({ people = TEAM, value, defaultValue = ["lena", "
               }}
               onKeyDown={onKey}
               onBlur={(e) => !root.current?.contains(e.relatedTarget as Node) && setOpen(false)}
-              placeholder="Assign people"
+              placeholder="Assign people…"
+              autoComplete="off"
+              spellCheck={false}
               role="combobox"
               aria-expanded
               aria-autocomplete="list"
               aria-controls={`${uid}-list`}
               aria-activedescendant={shown[active] ? `${uid}-o-${active}` : undefined}
               aria-label={`Search ${label.toLowerCase()}`}
-              className="h-11 min-w-0 flex-1 bg-transparent text-[13.5px] text-ink outline-none placeholder:text-mute"
+              className="h-11 min-w-0 flex-1 bg-transparent text-[16px] sm:text-[13.5px] text-ink outline-none placeholder:text-mute"
             />
             <button
               type="button"

@@ -111,12 +111,16 @@ function EmailChips({
   taken,
   disabled,
   label,
+  describedBy,
+  invalid,
 }: {
   chips: Chip[];
   onChange: (chips: Chip[]) => void;
   taken: (email: string) => string | undefined;
   disabled?: boolean;
   label: string;
+  describedBy?: string;
+  invalid?: boolean;
 }) {
   const [text, setText] = useState("");
   const [armed, setArmed] = useState(false);
@@ -202,8 +206,14 @@ function EmailChips({
       <input
         ref={input}
         id={id}
+        name="emails"
         type="email"
         multiple
+        autoComplete="off"
+        autoCapitalize="none"
+        spellCheck={false}
+        aria-describedby={describedBy}
+        aria-invalid={invalid || undefined}
         value={text}
         disabled={disabled}
         placeholder={chips.length ? "" : "name@company.com, another@company.com"}
@@ -223,7 +233,7 @@ function EmailChips({
           setArmed(false);
           if (text.trim()) add(text);
         }}
-        className="h-7 min-w-[140px] flex-1 bg-transparent px-1 text-[13.5px] text-ink outline-none placeholder:text-mute"
+        className="h-7 min-w-[140px] flex-1 bg-transparent px-1 text-[16px] sm:text-[13.5px] text-ink outline-none placeholder:text-mute"
       />
     </div>
   );
@@ -259,6 +269,7 @@ export function TeamMembers({
   const [inviteRole, setInviteRole] = useState(defaultInviteRole ?? roles[roles.length - 1]?.value ?? "");
   const [sending, setSending] = useState(false);
   const [inviteMsg, setInviteMsg] = useState("");
+  const inviteMsgId = useId();
   const [removing, setRemoving] = useState<string[]>([]);
   const [resent, setResent] = useState<string[]>([]);
   const [status, setStatus] = useState("");
@@ -356,8 +367,14 @@ export function TeamMembers({
   const good = chips.filter((c) => !c.problem);
   const bad = chips.length - good.length;
 
+  // Invite stays enabled. Pressing it with nothing valid explains what to fix and puts focus back in the field.
   const send = async () => {
-    if (!good.length || bad || sending) return;
+    if (sending) return;
+    if (!good.length || bad) {
+      if (!bad) setInviteMsg("Add an email address first, like name@company.com.");
+      root.current?.querySelector<HTMLInputElement>('[data-tm-focus="invite-input"] input')?.focus();
+      return;
+    }
     const emails = good.map((c) => c.email);
     setSending(true);
     setInviteMsg("");
@@ -433,16 +450,27 @@ export function TeamMembers({
           <div className="min-w-0 flex-1" data-tm-focus="invite-input" tabIndex={-1} onFocus={(e) => {
               if (e.target === e.currentTarget) e.currentTarget.querySelector("input")?.focus();
             }}>
-            <EmailChips chips={chips} onChange={setChips} taken={taken} disabled={sending} label="Email addresses to invite" />
+            <EmailChips
+              chips={chips}
+              onChange={(next) => {
+                setChips(next);
+                if (next.length) setInviteMsg("");
+              }}
+              taken={taken}
+              disabled={sending}
+              label="Email addresses to invite"
+              describedBy={inviteMsgId}
+              invalid={bad > 0}
+            />
           </div>
           <div className="flex gap-2">
-            <Select label="Role for new invites" size="md" options={roles} value={inviteRole} onChange={setInviteRole} disabled={sending} className="w-[124px] bg-paper" />
-            <Button type="submit" variant="accent" loading={sending} disabled={!good.length || bad > 0}>
+            <Select label="Role for new invites" name="role" size="md" options={roles} value={inviteRole} onChange={setInviteRole} disabled={sending} className="w-[124px] bg-paper" />
+            <Button type="submit" variant="accent" loading={sending}>
               Invite
             </Button>
           </div>
         </div>
-        <p className="mt-2 min-h-4 px-1 text-[12px] text-mute" aria-live="polite">
+        <p id={inviteMsgId} className="mt-2 min-h-4 px-1 text-[12px] text-mute" aria-live="polite">
           {bad > 0 ? `Remove ${bad} address${bad > 1 ? "es" : ""} that can't be invited.` : inviteMsg || "Separate addresses with a comma, space or Enter."}
         </p>
       </form>

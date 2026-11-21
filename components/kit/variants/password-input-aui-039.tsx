@@ -65,7 +65,7 @@ export function StrengthPassword({
   onChange,
   label = "Password",
   estimate = true,
-  placeholder = "At least 8 characters",
+  placeholder = "At least 8 characters…",
   autoComplete = "new-password",
   className,
   id,
@@ -154,6 +154,7 @@ export function StrengthPassword({
         style={rise(2)}
       >
         <input
+          name="password"
           {...rest}
           id={inputId}
           type={shown ? "text" : "password"}
@@ -167,7 +168,7 @@ export function StrengthPassword({
             if (value === undefined) setInner(next);
             onChange?.(next, next ? CHECKS.filter((c) => c(next)).length : 0);
           }}
-          className="h-full min-w-0 flex-1 bg-transparent text-[14.5px] tracking-[0.02em] text-ink outline-none placeholder:tracking-normal placeholder:text-mute"
+          className="h-full min-w-0 flex-1 bg-transparent text-[16px] sm:text-[14.5px] tracking-[0.02em] text-ink outline-none placeholder:tracking-normal placeholder:text-mute"
         />
         <button
           type="button"

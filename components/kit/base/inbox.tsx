@@ -191,7 +191,16 @@ export function Inbox({ messages, onArchive, onReply, height = 560, className }:
             </div>
             <label className="flex h-9 items-center gap-2 rounded-lg bg-paper-2 px-2.5 text-mute focus-within:shadow-[inset_0_0_0_1px_var(--color-brand)]">
               <Icon d="M7 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm3.6-1.4L14 14" className="h-3.5 w-3.5 shrink-0" />
-              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search mail" aria-label="Search mail" className="h-full min-w-0 flex-1 bg-transparent text-[13px] text-ink outline-none placeholder:text-mute" />
+              <input
+                type="search"
+                name="q"
+                autoComplete="off"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search mail…"
+                aria-label="Search mail"
+                className="h-full min-w-0 flex-1 bg-transparent text-[16px] sm:text-[13px] text-ink outline-none placeholder:text-mute [&::-webkit-search-cancel-button]:hidden"
+              />
             </label>
             <div role="radiogroup" aria-label="Show" className="flex gap-1">
               {(["all", "unread", "starred"] as const).map((f) => (
@@ -335,6 +344,7 @@ export function Inbox({ messages, onArchive, onReply, height = 560, className }:
                 }}
               >
                 <textarea
+                  name="reply"
                   value={reply}
                   onChange={(e) => setReply(e.target.value)}
                   onKeyDown={(e) => {
@@ -343,7 +353,7 @@ export function Inbox({ messages, onArchive, onReply, height = 560, className }:
                   rows={2}
                   placeholder={`Reply to ${open.from.split(" ")[0]}…`}
                   aria-label="Reply"
-                  className="w-full resize-none bg-transparent px-1.5 text-[13px] leading-relaxed text-ink outline-none placeholder:text-mute"
+                  className="w-full resize-none bg-transparent px-1.5 text-[16px] sm:text-[13px] leading-relaxed text-ink outline-none placeholder:text-mute"
                 />
                 <div className="flex items-center justify-between gap-2">
                   <span className="truncate px-1.5 text-[11.5px] text-mute" aria-live="polite">

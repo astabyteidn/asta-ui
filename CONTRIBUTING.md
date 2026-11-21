@@ -51,7 +51,10 @@ These keep the kit consistent. A PR that breaks them will get a change request.
 
 **Colour.** Use tokens only: `paper`, `ink`, `mute`, `signal`, `brand`. No hard-coded colours. One accent, blue.
 
-**Motion.** Animate `transform` and `opacity` only. Use one easing, `cubic-bezier(.16,1,.3,1)`, or a spring. Respect `prefers-reduced-motion`. Put keyframes in `<style href="asta-<name>" precedence="asta">`.
+**Motion.** Animate `transform` and `opacity` only. Use one easing, `cubic-bezier(.16,1,.3,1)`, or a spring, for exits too. Respect `prefers-reduced-motion`. Put keyframes in `<style href="asta-<name>" precedence="asta">`.
+- Keep it short: 100–160ms for a press, 120–250ms for menus, 200–500ms for dialogs. Exits are quicker than entrances.
+- Surfaces start at scale 0.9 or more, never `scale(0)`. No `transition-all`. Both fail `bun run perf`.
+- Anything that moves on its own for more than 5 seconds must be pausable. On the site the shared pause switch does it for you.
 
 **Performance.** It has to stay smooth on a mid-range phone.
 - Loops pause when offscreen or when the tab is hidden, and stop on unmount.
@@ -59,6 +62,13 @@ These keep the kit consistent. A PR that breaks them will get a change request.
 - No layout reads inside a frame callback.
 - No new runtime dependencies for a component.
 - Budgets: 28 KB for a component file, 14 KB for a demo.
+
+**Craft.**
+- Colour is never the only signal. Up/down and success/error also get a sign, an arrow or a word. Text is at least 4.5:1.
+- Forms: right `type`, `name`, `autocomplete` and `inputmode`. Never block paste. A visible label on every field, not just a placeholder. Errors on blur or submit, and focus moves to the first one. 16px field text on phones.
+- Data components cover loading, empty, error and long content.
+- Buttons are verb + object. Errors say how to fix it. No slop words or stock names.
+- Render it and look: 390px and 1440px, keyboard only, reduced motion on. Say what you didn't check.
 
 **Shape.** Slight rounding. Buttons 6–9px, cards 10–14px. Pills only for switches, avatars and dots.
 

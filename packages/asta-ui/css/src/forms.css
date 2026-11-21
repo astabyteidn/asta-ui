@@ -23,7 +23,7 @@
   }
 }
 .asta-combobox-input {
-  @apply h-8 min-w-[6rem] flex-1 bg-transparent px-1.5 text-[14px] text-ink outline-none placeholder:text-mute disabled:cursor-not-allowed;
+  @apply h-8 min-w-[6rem] flex-1 bg-transparent px-1.5 text-[16px] sm:text-[14px] text-ink outline-none placeholder:text-mute disabled:cursor-not-allowed;
 }
 .asta-combobox-toggle {
   @apply ml-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-mute outline-none transition-colors hover:bg-paper-2 hover:text-ink;
@@ -169,7 +169,7 @@
   @apply text-[13px] text-mute;
 }
 .asta-color-picker-hex {
-  @apply h-full w-full min-w-0 bg-transparent pl-1 pr-2.5 font-mono text-[13px] uppercase tracking-[0.02em] text-ink outline-none placeholder:text-mute;
+  @apply h-full w-full min-w-0 bg-transparent pl-1 pr-2.5 font-mono text-[16px] sm:text-[13px] uppercase tracking-[0.02em] text-ink outline-none placeholder:text-mute;
 }
 .asta-color-picker-hint {
   @apply w-14 text-[12px] text-mute opacity-0 transition-opacity duration-200 data-[on]:opacity-100;
@@ -471,7 +471,7 @@
   }
 }
 .asta-password-input {
-  @apply h-full min-w-0 flex-1 bg-transparent text-[14px] tracking-[0.01em] text-ink outline-none placeholder:text-mute;
+  @apply h-full min-w-0 flex-1 bg-transparent text-[16px] sm:text-[14px] tracking-[0.01em] text-ink outline-none placeholder:text-mute;
 }
 .asta-password-toggle {
   @apply flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-mute outline-none transition-colors duration-200 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50;
@@ -568,7 +568,7 @@
   }
 }
 .asta-tag-input-field {
-  @apply h-8 min-w-[4rem] flex-1 bg-transparent px-2 text-[14px] text-ink outline-none placeholder:text-mute disabled:cursor-not-allowed;
+  @apply h-8 min-w-[4rem] flex-1 bg-transparent px-2 text-[16px] sm:text-[14px] text-ink outline-none placeholder:text-mute disabled:cursor-not-allowed;
 }
 .asta-tag-input-hint {
   @apply mt-2 text-[12px] text-mute;
@@ -811,10 +811,10 @@
  * Sizes: asta-inline-edit-sm, (md), asta-inline-edit-lg. An empty value: asta-inline-edit-empty on the view. Keep the
  * plain "hidden" class on the tick: asta.js toggles it. */
 .asta-inline-edit {
-  @apply relative inline-flex max-w-full items-center gap-1.5 text-[14.5px];
+  @apply relative inline-flex max-w-full items-center gap-1.5 text-[16px] sm:text-[14.5px];
 }
 .asta-inline-edit-sm {
-  @apply text-[13px];
+  @apply text-[16px] sm:text-[13px];
 }
 .asta-inline-edit-lg {
   @apply text-[20px] font-medium tracking-[-0.02em];

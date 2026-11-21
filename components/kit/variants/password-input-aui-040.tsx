@@ -43,7 +43,7 @@ function Eye({ open }: { open: boolean }) {
   return (
     <svg viewBox="0 0 20 20" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <path d="M2.5 10s2.7-5 7.5-5 7.5 5 7.5 5-2.7 5-7.5 5-7.5-5-7.5-5Z" />
-      <circle cx="10" cy="10" r="2.2" className="origin-center transition-transform duration-300 [transform-box:fill-box]" style={{ transform: open ? "none" : "scale(0)", transitionTimingFunction: EASE }} />
+      <circle cx="10" cy="10" r="2.2" className="origin-center transition-transform duration-300 [transform-box:fill-box]" style={{ transform: open ? "none" : "scale(0)" /* perf-ok: eye pupil */, transitionTimingFunction: EASE }} />
       <path d="M4 16 16 4" className="origin-center transition-[opacity,transform] duration-300 [transform-box:fill-box]" style={{ opacity: open ? 0 : 1, transform: open ? "scale(.4)" : "none", transitionTimingFunction: EASE }} />
     </svg>
   );
@@ -66,6 +66,8 @@ export function ChecklistPassword({
   const id = useId();
   const [inner, setInner] = useState(defaultValue);
   const [again, setAgain] = useState("");
+  // The confirm field is only marked invalid after you leave it, never mid-typing.
+  const [againLeft, setAgainLeft] = useState(false);
   const [shown, setShown] = useState(false);
   const v = value ?? inner;
   const passed = rules.map((r) => r.test(v));
@@ -75,7 +77,7 @@ export function ChecklistPassword({
 
   const field =
     "flex h-11 items-center gap-2 rounded-[10px] bg-paper pl-3.5 pr-1.5 transition-shadow duration-200 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent)] hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_24%,transparent)] focus-within:!shadow-[inset_0_0_0_1px_var(--color-brand),0_0_0_4px_color-mix(in_srgb,var(--color-brand)_14%,transparent)]";
-  const input = "h-full min-w-0 flex-1 bg-transparent text-[14.5px] tracking-[0.02em] text-ink outline-none placeholder:tracking-normal placeholder:text-mute";
+  const input = "h-full min-w-0 flex-1 bg-transparent text-[16px] sm:text-[14.5px] tracking-[0.02em] text-ink outline-none placeholder:tracking-normal placeholder:text-mute";
 
   return (
     <div className={cx("aui040 w-full max-w-[420px]", className)}>
@@ -99,7 +101,7 @@ export function ChecklistPassword({
           name={name}
           type={shown ? "text" : "password"}
           value={v}
-          placeholder="Choose a password"
+          placeholder="Choose a password…"
           autoComplete="new-password"
           spellCheck={false}
           autoCapitalize="off"
@@ -156,12 +158,16 @@ export function ChecklistPassword({
               id={`${id}-again`}
               type={shown ? "text" : "password"}
               value={again}
-              placeholder="Type it again"
+              placeholder="Type it again…"
               autoComplete="new-password"
               spellCheck={false}
               autoCapitalize="off"
-              aria-invalid={!!again && !match && again.length >= v.length ? true : undefined}
-              onChange={(e) => setAgain(e.target.value)}
+              aria-invalid={againLeft && !!again && !match ? true : undefined}
+              onChange={(e) => {
+                setAgain(e.target.value);
+                if (e.target.value === v) setAgainLeft(false);
+              }}
+              onBlur={() => setAgainLeft(true)}
               className={input}
             />
             <span

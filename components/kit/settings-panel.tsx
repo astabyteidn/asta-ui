@@ -90,7 +90,7 @@ function ThemePicker({ value, onChange }: { value: Settings["theme"]; onChange: 
             <span className={cx("h-10 w-full rounded-lg shadow-[inset_0_0_0_1px_rgb(0_0_0/0.08)]", t.swatch)} />
             <span className="flex w-full items-center justify-between px-0.5 text-[13px] text-ink">
               {t.label}
-              <span className={cx("h-3.5 w-3.5 rounded-full transition-all duration-300", on ? "bg-brand shadow-[inset_0_0_0_3.5px_var(--color-brand),inset_0_0_0_6px_white]" : RING)} />
+              <span className={cx("h-3.5 w-3.5 rounded-full transition-[background-color,box-shadow] duration-300", on ? "bg-brand shadow-[inset_0_0_0_3.5px_var(--color-brand),inset_0_0_0_6px_white]" : RING)} />
             </span>
           </button>
         );
@@ -108,7 +108,7 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-const inputCls = cx("h-10 w-full rounded-lg bg-paper px-3 text-[14px] text-ink outline-none transition-shadow placeholder:text-mute focus-visible:ring-2 focus-visible:ring-brand/50", RING);
+const inputCls = cx("h-10 w-full rounded-lg bg-paper px-3 text-[16px] sm:text-[14px] text-ink outline-none transition-shadow placeholder:text-mute focus-visible:ring-2 focus-visible:ring-brand/50", RING);
 
 /* ---------- the panel ---------- */
 
@@ -201,13 +201,24 @@ export const SettingsPanel = forwardRef<SettingsPanelHandle, SettingsPanelProps>
                 <label htmlFor={nameId} className="text-[13px] font-medium text-ink">
                   Display name
                 </label>
-                <input id={nameId} value={draft.name} onChange={(e) => set("name", e.target.value)} className={inputCls} autoComplete="name" />
+                <input id={nameId} name="name" value={draft.name} onChange={(e) => set("name", e.target.value)} className={inputCls} autoComplete="name" />
               </div>
               <div className="flex flex-col gap-1.5">
                 <label htmlFor={emailId} className="text-[13px] font-medium text-ink">
                   Email
                 </label>
-                <input id={emailId} type="email" value={draft.email} onChange={(e) => set("email", e.target.value)} className={inputCls} autoComplete="email" />
+                <input
+                  id={emailId}
+                  name="email"
+                  type="email"
+                  value={draft.email}
+                  onChange={(e) => set("email", e.target.value)}
+                  className={inputCls}
+                  autoComplete="email"
+                  inputMode="email"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                />
               </div>
             </div>
           </Section>
@@ -225,6 +236,7 @@ export const SettingsPanel = forwardRef<SettingsPanelHandle, SettingsPanelProps>
               <div className="relative">
                 <select
                   id={langId}
+                  name="language"
                   value={draft.language}
                   onChange={(e) => set("language", e.target.value)}
                   className={cx(inputCls, "w-auto cursor-pointer appearance-none pr-9")}

@@ -149,7 +149,7 @@ export function PlanRadio({ plans = PLANS, value, defaultValue = "team", onChang
               <span aria-hidden className="pointer-events-none absolute inset-0 rounded-[12px] bg-paper-2 opacity-0 transition-opacity duration-300 group-hover/plan:opacity-60" />
               <span aria-hidden className="relative grid h-[18px] w-[18px] shrink-0 place-items-center rounded-full shadow-[inset_0_0_0_1.5px_color-mix(in_srgb,var(--color-ink)_24%,transparent)]">
                 <span className="absolute inset-0 rounded-full bg-brand transition-[transform,opacity] duration-300" style={{ opacity: on ? 1 : 0, transform: on ? "scale(1)" : "scale(0.5)", transitionTimingFunction: SPRING }} />
-                <span className="relative h-1.5 w-1.5 rounded-full bg-white transition-transform duration-300" style={{ transform: on ? "scale(1)" : "scale(0)", transitionTimingFunction: SPRING, transitionDelay: on ? "80ms" : "0ms" }} />
+                <span className="relative h-1.5 w-1.5 rounded-full bg-white transition-transform duration-300" style={{ transform: on ? "scale(1)" : "scale(0)" /* perf-ok: radio dot */, transitionTimingFunction: SPRING, transitionDelay: on ? "80ms" : "0ms" }} />
               </span>
               <span className="relative min-w-0 flex-1">
                 <span className="flex items-center gap-2">

@@ -427,6 +427,9 @@ export function AppNavbar({
               <input
                 ref={search}
                 type="text"
+                name="q"
+                autoComplete="off"
+                spellCheck={false}
                 role="combobox"
                 aria-expanded={palette}
                 aria-controls={`${ids}-list`}
@@ -441,7 +444,7 @@ export function AppNavbar({
                 }}
                 onKeyDown={keys}
                 placeholder={searchPlaceholder}
-                className="min-w-0 flex-1 bg-transparent text-[13px] text-ink outline-none placeholder:text-mute"
+                className="min-w-0 flex-1 bg-transparent text-[16px] sm:text-[13px] text-ink outline-none placeholder:text-mute"
               />
               <kbd className={cx("hidden shrink-0 rounded-[5px] bg-paper px-1.5 py-0.5 font-sans text-[11px] text-mute transition-opacity @min-[760px]:inline", RING, palette && "opacity-0")}>
                 {mac ? "⌘K" : "Ctrl K"}
@@ -549,13 +552,16 @@ export function AppNavbar({
               <input
                 ref={sheetSearch}
                 type="text"
+                name="q"
+                autoComplete="off"
+                spellCheck={false}
                 value={query}
                 onChange={(e) => {
                   setQuery(e.target.value);
                   setActive(0);
                 }}
                 placeholder={searchPlaceholder}
-                className="min-w-0 flex-1 bg-transparent text-[15px] text-ink outline-none placeholder:text-mute"
+                className="min-w-0 flex-1 bg-transparent text-[16px] sm:text-[15px] text-ink outline-none placeholder:text-mute"
               />
             </label>
           </form>

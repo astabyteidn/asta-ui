@@ -89,7 +89,7 @@ export function AffixInput({
         rest.onChange?.(e);
       }}
       className={cx(
-        "h-full min-w-0 bg-transparent text-[14.5px] tracking-[-0.01em] text-ink outline-none placeholder:text-mute",
+        "h-full min-w-0 bg-transparent text-[16px] sm:text-[14.5px] tracking-[-0.01em] text-ink outline-none placeholder:text-mute",
         ride && suffix && !units ? "col-start-1 row-start-1 w-full" : "w-full flex-1",
       )}
     />

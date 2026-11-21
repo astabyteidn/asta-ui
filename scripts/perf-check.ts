@@ -45,8 +45,17 @@ const rules: { rule: string; level: Level; test: (src: string, line: string, i: 
     level: "warn",
     test: (_s, line) =>
       new RegExp(`transition(-property)?\\s*:\\s*[^;"]*\\b(${LAYOUT_PROPS})\\b`).test(line) ||
-      new RegExp(`transition-\\[(?:[^\\]]*,)?(${LAYOUT_PROPS})(?:,[^\\]]*)?\\]`).test(line) ||
-      /\btransition-all\b/.test(line),
+      new RegExp(`transition-\\[(?:[^\\]]*,)?(${LAYOUT_PROPS})(?:,[^\\]]*)?\\]`).test(line),
+  },
+  {
+    rule: "transition-all / transition: all (list the properties, e.g. transition-[transform,opacity])",
+    level: "error",
+    test: (_s, line) => /\btransition-all\b|\btransition(-property)?\s*:\s*["'`]?all\b/.test(line),
+  },
+  {
+    rule: "scale(0) / scale-0 (surfaces enter at ≥0.9 with opacity; mark a real dot or ripple with perf-ok and why)",
+    level: "error",
+    test: (_s, line) => /\bscale\(\s*0\s*(,\s*0\s*)?\)|(?<![\w-])scale-0(?![\w.-])/.test(line),
   },
   {
     rule: "bare <style> (hoist keyframes with <style href precedence>)",

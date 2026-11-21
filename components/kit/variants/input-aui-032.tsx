@@ -88,6 +88,8 @@ export function ValidatedInput({
   const [inner, setInner] = useState(defaultValue);
   const value = valueProp ?? inner;
   const [status, setStatus] = useState<ValidatedInputStatus>(() => validate(value));
+  // An error waits for blur. Until then an unfinished value shows the idle hint; a fix clears it again.
+  const [checked, setChecked] = useState(false);
   const [prev, setPrev] = useState<{ s: ValidatedInputStatus; n: number } | null>(null);
   const statusRef = useRef(status);
   const onStatusRef = useRef(onStatus);
@@ -98,7 +100,8 @@ export function ValidatedInput({
   // Validate once typing pauses, so the message stays calm under your fingers.
   useEffect(() => {
     const t = setTimeout(() => {
-      const next = validate(value);
+      let next = validate(value);
+      if (next.kind === "invalid" && !checked) next = validate("");
       const cur = statusRef.current;
       const same = cur.kind === next.kind && cur.text === next.text && (cur.kind !== "suggest" || (next.kind === "suggest" && cur.suggestion === next.suggestion));
       if (same) return;
@@ -106,12 +109,13 @@ export function ValidatedInput({
       statusRef.current = next;
       setStatus(next);
       onStatusRef.current?.(next);
-    }, value ? delay : 0);
+    }, value && !checked ? delay : 0);
     return () => clearTimeout(t);
-  }, [value, validate, delay]);
+  }, [value, validate, delay, checked]);
 
   const set = (v: string) => {
     if (valueProp === undefined) setInner(v);
+    if (checked && validate(v).kind !== "invalid") setChecked(false);
     onChange?.(v);
   };
 
@@ -166,6 +170,8 @@ export function ValidatedInput({
           id={id}
           type="email"
           autoComplete="email"
+          inputMode="email"
+          autoCapitalize="none"
           spellCheck={false}
           {...rest}
           value={value}
@@ -173,7 +179,11 @@ export function ValidatedInput({
           aria-invalid={status.kind === "invalid" || undefined}
           aria-describedby={`${id}-msg`}
           onChange={(e) => set(e.target.value)}
-          className="h-full min-w-0 flex-1 bg-transparent text-[14.5px] tracking-[-0.01em] text-ink outline-none placeholder:text-mute"
+          onBlur={(e) => {
+            setChecked(true);
+            rest.onBlur?.(e);
+          }}
+          className="h-full min-w-0 flex-1 bg-transparent text-[16px] sm:text-[14.5px] tracking-[-0.01em] text-ink outline-none placeholder:text-mute"
         />
         <span className="grid h-6 w-6 shrink-0 place-items-center" aria-hidden>
           {valid && (

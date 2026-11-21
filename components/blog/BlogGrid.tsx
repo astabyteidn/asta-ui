@@ -39,7 +39,7 @@ export default function BlogGrid({ cards, tabs }: { cards: BlogCard[]; tabs: Blo
               className={`flex h-8 shrink-0 items-center gap-2 rounded-[7px] px-3.5 text-[14px] font-medium transition-colors duration-300 ${tab === t.id ? "bg-ink text-paper" : "text-mute hover:text-ink"}`}
             >
               {t.label}
-              <span className={`font-mono text-[11.5px] tabular-nums ${tab === t.id ? "text-paper/60" : "text-mute/60"}`}>{count(t.id)}</span>
+              <span className={`font-mono text-[11.5px] tabular-nums ${tab === t.id ? "text-paper/60" : "text-mute"}`}>{count(t.id)}</span>
             </button>
           ))}
         </div>

@@ -44,7 +44,7 @@ const panel = (origin: string) =>
     "shadow-[0_0_0_1px_color-mix(in_srgb,var(--color-ink)_10%,transparent),0_12px_32px_-8px_rgb(0_0_0/0.22),0_4px_8px_-4px_rgb(0_0_0/0.08)]",
     origin,
     "transition-[opacity,transform] duration-[220ms] ease-[cubic-bezier(.16,1,.3,1)] data-[starting-style]:opacity-0 data-[starting-style]:[transform:translateY(-4px)_scale(.97)]",
-    "data-[ending-style]:opacity-0 data-[ending-style]:scale-[.98] data-[ending-style]:duration-[120ms] data-[ending-style]:ease-in motion-reduce:!transition-none",
+    "data-[ending-style]:opacity-0 data-[ending-style]:scale-[.98] data-[ending-style]:duration-[120ms] data-[ending-style]:ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:!transition-none",
   );
 
 const row = "flex cursor-pointer select-none items-center gap-2.5 rounded-md px-2.5 py-2 text-[14px] text-ink-2 outline-none transition-colors duration-150";
@@ -208,12 +208,16 @@ function SearchSelect({ options, value, defaultValue, onChange, placeholder = "S
                 setQ(e.target.value);
                 setActive(0);
               }}
-              placeholder="Search"
+              type="search"
+              autoComplete="off"
+              spellCheck={false}
+              placeholder="Search…"
+              aria-label="Search options"
               role="combobox"
               aria-expanded
               aria-controls={`${uid}-list`}
               aria-activedescendant={shown[active] ? `${uid}-o-${active}` : undefined}
-              className="h-9 min-w-0 flex-1 bg-transparent text-[14px] text-ink outline-none placeholder:text-mute"
+              className="h-9 min-w-0 flex-1 bg-transparent text-[16px] sm:text-[14px] text-ink outline-none placeholder:text-mute [&::-webkit-search-cancel-button]:hidden"
             />
           </div>
           <ul ref={listRef} id={`${uid}-list`} role="listbox" aria-label={label} className="max-h-60 overflow-y-auto outline-none [scrollbar-width:thin]">

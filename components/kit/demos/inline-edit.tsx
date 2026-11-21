@@ -27,7 +27,7 @@ export default function InlineEditDemo() {
             </div>
             <div className="flex items-center justify-between gap-4">
               <span className="shrink-0 text-[13px] text-mute">Notes</span>
-              <InlineEdit label="Notes" size="sm" placeholder="Add a note" maxLength={60} />
+              <InlineEdit label="Notes" size="sm" placeholder="Add a note…" maxLength={60} />
             </div>
           </div>
         </div>

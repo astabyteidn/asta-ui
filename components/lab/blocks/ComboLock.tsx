@@ -15,7 +15,7 @@ export default function ComboLock() {
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center gap-4">
-      <svg viewBox="0 0 40 24" className={`h-6 w-10 transition-all duration-500 ease-[cubic-bezier(.5,1.8,.4,.8)] ${open ? "-translate-y-2 text-signal" : "text-mute"}`} fill="none" stroke="currentColor" strokeWidth="3">
+      <svg viewBox="0 0 40 24" className={`h-6 w-10 transition-[translate,color] duration-500 ease-[cubic-bezier(.5,1.8,.4,.8)] ${open ? "-translate-y-2 text-signal" : "text-mute"}`} fill="none" stroke="currentColor" strokeWidth="3">
         <path d={open ? "M10 24V12a10 10 0 0 1 20 0v2" : "M10 24V12a10 10 0 0 1 20 0v12"} />
       </svg>
       <div

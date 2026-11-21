@@ -26,8 +26,13 @@ export default function Demo() {
           <input
             id="aui043d-email"
             type="email"
+            name="email"
+            autoComplete="email"
+            inputMode="email"
+            autoCapitalize="none"
+            spellCheck={false}
             defaultValue="lena@astabyte.com"
-            className="h-10 w-full rounded-[9px] bg-paper-2 px-3 text-[14px] text-ink outline-none transition-shadow placeholder:text-mute focus-visible:bg-paper focus-visible:shadow-[inset_0_0_0_1px_var(--color-brand),0_0_0_4px_color-mix(in_srgb,var(--color-brand)_14%,transparent)]"
+            className="h-10 w-full rounded-[9px] bg-paper-2 px-3 text-[16px] sm:text-[14px] text-ink outline-none transition-shadow placeholder:text-mute focus-visible:bg-paper focus-visible:shadow-[inset_0_0_0_1px_var(--color-brand),0_0_0_4px_color-mix(in_srgb,var(--color-brand)_14%,transparent)]"
           />
         </div>
         <div className="mt-5 flex items-center justify-between" style={{ animation: RISE, animationDelay: "180ms" }}>

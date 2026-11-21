@@ -170,7 +170,7 @@ export default function PaymentReceived() {
         @keyframes lab-pr-in { from { opacity: 0; transform: translateY(-40%) } to { opacity: 1; transform: none } }
         @keyframes lab-pr-draw { from { stroke-dashoffset: 1 } to { stroke-dashoffset: 0 } }
         @keyframes lab-pr-fade { from { opacity: 0 } to { opacity: 1 } }
-        @keyframes lab-pr-dot { 0% { transform: scale(0) } 60% { transform: scale(1.4) } 100% { transform: scale(1) } }
+        @keyframes lab-pr-dot { 0% { transform: scale(0) } 60% { transform: scale(1.4) } 100% { transform: scale(1) } } /* perf-ok: chart end dot, not a surface */
         @keyframes lab-pr-live { from { transform: scale(1); opacity: .6 } to { transform: scale(2.6); opacity: 0 } }
         .lab-pr-drop { animation: lab-pr-drop .6s ${EASE} backwards }
         .lab-pr-in { animation: lab-pr-in .55s ${EASE} backwards }

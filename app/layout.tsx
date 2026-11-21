@@ -7,8 +7,10 @@ import PageviewTracker from "@/components/site/PageviewTracker";
 import CommandMenu from "@/components/ui-site/CommandMenu";
 import GitHubStars from "@/components/ui-site/GitHubStars";
 import MobileMenu from "@/components/ui-site/MobileMenu";
+import { MotionToggle } from "@/components/ui-site/MotionPause";
 import SiteNav from "@/components/ui-site/SiteNav";
 import { DESIGN_URL } from "@/lib/design";
+import { MOTION_SCRIPT } from "@/lib/motion";
 import { PRIMITIVE_SCRIPT } from "@/lib/primitive";
 import { VERSION } from "@/lib/version";
 
@@ -32,10 +34,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning className={`${geist.variable} ${geistMono.variable}`}>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: PRIMITIVE_SCRIPT }} />
+        <script dangerouslySetInnerHTML={{ __html: PRIMITIVE_SCRIPT + MOTION_SCRIPT }} />
       </head>
       <body className="ui-light antialiased">
     <div className="flex min-h-svh flex-col">
+      <a href="#main" className="ui-skip btn btn-primary btn-sm">
+        Skip to content
+      </a>
       <PageviewTracker prefix="/ui" />
       <header className="ui-header px-shell sticky top-0 z-40 flex h-14 items-center gap-3 sm:gap-5">
         <Link href="/" className="nav-logo flex shrink-0 items-center gap-2 text-[15px] font-medium tracking-[-0.01em]">
@@ -45,6 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </Link>
         <SiteNav />
         <div className="ml-auto flex items-center gap-1.5">
+          <MotionToggle className="btn btn-ghost btn-sm btn-icon" />
           <CommandMenu />
           <GitHubStars />
           <a href={`${STUDIO}/contact?utm_source=ui`} className="btn btn-primary btn-sm hidden sm:inline-flex">
@@ -53,7 +59,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <MobileMenu studio={STUDIO} />
         </div>
       </header>
-      <main className="flex-1">{children}</main>
+      <main id="main" tabIndex={-1} className="flex-1 outline-none">
+        {children}
+      </main>
       <footer className="mx-auto mb-6 mt-24 w-[calc(100%-2*var(--gutter))] max-w-[calc(1600px-2*var(--gutter))] rounded-[14px] bg-ink px-6 pb-6 pt-14 text-paper sm:px-10 [&_.btn-quiet]:bg-paper/10 [&_.btn-quiet]:text-paper [&_.btn-quiet]:shadow-none [&_.btn-primary]:bg-paper [&_.btn-primary]:text-ink [&_.text-mute]:text-paper/55">
         <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-md">

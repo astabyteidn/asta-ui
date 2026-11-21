@@ -55,8 +55,8 @@ export default function SnapGrid() {
       >
         <div className={`pointer-events-none absolute inset-0 bg-paper transition-opacity duration-300 ${dragging ? "opacity-0" : "opacity-100"}`} />
         <div
-          className="pointer-events-none absolute border border-dashed border-signal/60 transition-all duration-150"
-          style={{ left: cx * CELL, top: cy * CELL, width: CELL, height: CELL, opacity: dragging ? 1 : 0 }}
+          className="pointer-events-none absolute left-0 top-0 border border-dashed border-signal/60 transition-[transform,opacity] duration-150"
+          style={{ width: CELL, height: CELL, transform: `translate(${cx * CELL}px, ${cy * CELL}px)`, opacity: dragging ? 1 : 0 }}
         />
         <div
           onPointerDown={down}
