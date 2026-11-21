@@ -2,6 +2,13 @@
 
 Releases are git tags (`vX.Y.Z`); pushing a tag deploys ui.astabyte.com. Merging to `main` does not.
 
+## 0.9.3 — 2026-11-21
+
+- **Blog: motion and web techniques.** 15 posts at https://ui.astabyte.com/blog with 35 live demos you can replay and tweak, and the code that runs them: easing curves, duration and distance, springs, stagger, FLIP, scroll-driven animation, `@starting-style`, View Transitions, fluid type with `clamp()`, container queries, `:has()` and keeping motion smooth on mid-range phones. Each post lists browser support and the fallback. `/blog/motion-that-feels-good` now redirects to `/blog/easing`.
+- **Blog layout** matches the rest of the site: section header, topic tabs and a card grid where each post shows its own demo.
+- **Steadier nav menus.** Components and Motion open after a short hover pause instead of on any pass of the pointer, switch instantly once one is open, and stay open when you click right after hovering. Each panel ends with an "All components" or "All motion" link.
+- **README** shows the npm version and downloads.
+
 ## 0.9.2 — 2026-11-21
 
 - **Blog.** Short posts on interface design at https://ui.astabyte.com/blog: touch target sizes, motion timing, hierarchy in dense UI, and empty, loading and error states. Each one has numbers you can copy.
