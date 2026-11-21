@@ -36,7 +36,7 @@ function activeKey(path: string) {
 }
 
 const LAYER_NOTE: Record<string, string> = {
-  Atoms: "Buttons, fields, the small parts",
+  Atoms: "Buttons, fields, toggles",
   Molecules: "Pickers, menus, uploads",
   Organisms: "Tables, chat, checkout",
 };
@@ -68,34 +68,66 @@ function Tile({ href, title, note, count, picks, onGo }: { href: string; title: 
   );
 }
 
+function PanelFoot({ href, label, note, onGo }: { href: string; label: string; note: string; onGo: () => void }) {
+  return (
+    <Link href={href} onClick={onGo} className="nav-foot group mt-1.5 flex items-center justify-between rounded-[10px] px-3.5 py-2.5 text-[13px] transition-colors duration-300 hover:bg-paper-2">
+      <span className="text-mute">{note}</span>
+      <span className="flex items-center gap-1.5 font-medium text-ink">
+        {label}{" "}
+        <span aria-hidden className="nav-arrow">
+          →
+        </span>
+      </span>
+    </Link>
+  );
+}
+
 function Panel({ menu, onGo }: { menu: Menu; onGo: () => void }) {
   if (menu === "components") {
     return (
-      <div className="grid grid-cols-4 gap-1.5">
-        {LAYERS.map((l) => {
-          const list = kitItems.filter((k) => k.layer === l);
-          return <Tile key={l} href={`/${list[0].slug}`} title={l} note={LAYER_NOTE[l]} count={list.length} picks={list.slice(0, 4).map((k) => ({ href: `/${k.slug}`, title: k.title }))} onGo={onGo} />;
-        })}
-        <Link href="/#kit" onClick={onGo} className="nav-tile group relative flex flex-col justify-between overflow-hidden rounded-[10px] bg-ink p-3.5 text-paper">
-          <span>
-            <span className="text-[14px] font-medium">Variants</span>
-            <span className="mt-0.5 block text-[12.5px] text-paper/60">Navbars, sign-in, pricing, footers and more, each with its own motion.</span>
-          </span>
-          <span className="flex items-end justify-between">
-            <span className="display text-[40px] leading-none tabular-nums">{variants.length}</span>
-            <span className="nav-arrow mb-1 text-[13px] text-paper/70">Browse →</span>
-          </span>
-        </Link>
-      </div>
+      <>
+        <div className="grid grid-cols-4 gap-1.5">
+          {LAYERS.map((l) => {
+            const list = kitItems.filter((k) => k.layer === l);
+            return (
+              <Tile key={l} href={`/${list[0].slug}`} title={l} note={LAYER_NOTE[l]} count={list.length} picks={list.slice(0, 4).map((k) => ({ href: `/${k.slug}`, title: k.title }))} onGo={onGo} />
+            );
+          })}
+          <Link href="/#kit" onClick={onGo} className="nav-tile group relative flex flex-col justify-between overflow-hidden rounded-[10px] bg-ink p-3.5 text-paper">
+            <span>
+              <span className="text-[14px] font-medium">Variants</span>
+              <span className="mt-0.5 block text-[12.5px] text-paper/60">Navbars, sign-in, pricing, footers and more, each with its own motion.</span>
+            </span>
+            <span className="flex items-end justify-between">
+              <span className="display text-[40px] leading-none tabular-nums">{variants.length}</span>
+              <span className="nav-arrow mb-1 text-[13px] text-paper/70">Browse →</span>
+            </span>
+          </Link>
+        </div>
+        <PanelFoot href="/#kit" label="All components" note={`${kitItems.length} components, React or plain HTML + CSS`} onGo={onGo} />
+      </>
     );
   }
   return (
-    <div className="grid grid-cols-4 gap-1.5">
-      {KINDS.map((k) => {
-        const list = labBlocks.filter((b) => b.kind[0] === k);
-        return <Tile key={k} href={list[0] ? `/${list[0].slug}` : "/#components"} title={k} note={KIND_NOTE[k]} count={list.length} picks={list.slice(0, 4).map((b) => ({ href: `/${b.slug}`, title: b.title }))} onGo={onGo} />;
-      })}
-    </div>
+    <>
+      <div className="grid grid-cols-4 gap-1.5">
+        {KINDS.map((k) => {
+          const list = labBlocks.filter((b) => b.kind[0] === k);
+          return (
+            <Tile
+              key={k}
+              href={list[0] ? `/${list[0].slug}` : "/#components"}
+              title={k}
+              note={KIND_NOTE[k]}
+              count={list.length}
+              picks={list.slice(0, 4).map((b) => ({ href: `/${b.slug}`, title: b.title }))}
+              onGo={onGo}
+            />
+          );
+        })}
+      </div>
+      <PanelFoot href="/#components" label="All motion" note={`${labBlocks.length} blocks for trading, payments and shops`} onGo={onGo} />
+    </>
   );
 }
 
@@ -150,10 +182,24 @@ export default function SiteNav() {
     setMenuState(null);
   }
 
+  // Hover intent: a pointer passing over Components on its way to Icons shouldn't throw the panel open.
+  // Once a panel is open, moving to the other menu swaps it straight away. Leaving waits a beat.
+  const hoveredAt = useRef(0);
   const openSoon = (m: Menu | null) => {
     if (timer.current) clearTimeout(timer.current);
-    timer.current = setTimeout(() => setMenu(m), m ? 60 : 160);
+    const delay = !m ? 220 : menu ? 0 : 140;
+    timer.current = setTimeout(() => {
+      if (m) hoveredAt.current = performance.now();
+      setMenu(m);
+    }, delay);
   };
+  const wrap = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!menu) return;
+    const onDown = (e: PointerEvent) => !wrap.current?.contains(e.target as globalThis.Node) && setMenu(null);
+    document.addEventListener("pointerdown", onDown);
+    return () => document.removeEventListener("pointerdown", onDown);
+  }, [menu, setMenu]);
 
   const close = () => {
     setMenu(null);
@@ -162,6 +208,7 @@ export default function SiteNav() {
 
   return (
     <div
+      ref={wrap}
       className="relative hidden lg:block"
       onPointerLeave={() => {
         openSoon(null);
@@ -191,10 +238,23 @@ export default function SiteNav() {
               aria-haspopup="true"
               onPointerEnter={enter}
               onFocus={() => place(it.key)}
-              onClick={() => setMenu((m) => (m === it.menu ? null : it.menu!))}
+              onClick={() => {
+                if (timer.current) clearTimeout(timer.current);
+                // A click right after hover opened this panel means "show it", not "close it".
+                if (menu === it.menu && performance.now() - hoveredAt.current < 700) return;
+                hoveredAt.current = 0;
+                setMenu((m) => (m === it.menu ? null : it.menu!));
+              }}
             >
               {it.label}
-              <svg viewBox="0 0 12 12" className={`h-2.5 w-2.5 text-mute transition-transform duration-300 ease-expo ${menu === it.menu ? "rotate-180" : ""}`} fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
+              <svg
+                viewBox="0 0 12 12"
+                className={`h-2.5 w-2.5 text-mute transition-transform duration-300 ease-expo ${menu === it.menu ? "rotate-180" : ""}`}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                aria-hidden
+              >
                 <path d="m3 4.5 3 3 3-3" />
               </svg>
             </button>
@@ -206,18 +266,22 @@ export default function SiteNav() {
               </span>
             </a>
           ) : (
-            <Link key={it.key} ref={(el) => void (links.current[it.key] = el)} href={it.href} className={cls} aria-current={on ? "page" : undefined} onPointerEnter={enter} onFocus={() => place(it.key)}>
+            <Link
+              key={it.key}
+              ref={(el) => void (links.current[it.key] = el)}
+              href={it.href}
+              className={cls}
+              aria-current={on ? "page" : undefined}
+              onPointerEnter={enter}
+              onFocus={() => place(it.key)}
+            >
               {it.label}
             </Link>
           );
         })}
       </div>
 
-      <div
-        className="nav-panel absolute left-0 top-full w-[760px] pt-2"
-        data-open={menu ? "true" : "false"}
-        onPointerEnter={() => timer.current && clearTimeout(timer.current)}
-      >
+      <div className="nav-panel absolute left-0 top-full w-[760px] pt-2" data-open={menu ? "true" : "false"} onPointerEnter={() => timer.current && clearTimeout(timer.current)}>
         <div className="rounded-[14px] bg-paper p-1.5 shadow-[0_0_0_1px_color-mix(in_srgb,var(--color-ink)_8%,transparent),0_8px_24px_-12px_rgb(0_0_0/0.10)]">
           <div key={last} className="nav-swap">
             <Panel menu={last} onGo={close} />
