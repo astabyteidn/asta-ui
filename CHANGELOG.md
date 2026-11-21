@@ -2,6 +2,18 @@
 
 Releases are git tags (`vX.Y.Z`); pushing a tag deploys ui.astabyte.com. Merging to `main` does not.
 
+## 0.9.4 — 2026-11-21
+
+- **12 new kit components:** countdown, meter, menubar, phone input, sortable list, cookie consent, chart card, invoice, inbox, file manager, billing and testimonials. Each works in React and in plain HTML + CSS (`asta.css` / `asta.js`). The kit now has 122 components.
+- **4 new motion blocks:** watchlist, split bill, flash sale and price alert.
+- **Pause motion.** A Pause button in the header, on every preview frame and on blog demos stops looping animation. The choice is remembered.
+- **Exits use ease-out**, the ⌘K palette fades in over 120 ms, and nothing scales in from zero any more (small dots excepted).
+- **Colour is never the only signal.** Price moves carry an arrow or a sign, statuses carry a word, and avatar status dots differ in shape.
+- **Easier-to-read secondary text.** The `mute` colour is darker in light mode (5.2:1 contrast instead of 3.4:1) and slightly lighter in dark mode.
+- **Forms:** correct `autocomplete` and `inputmode`, paste always allowed, errors appear when you leave a field and say how to fix it, focus moves to the first invalid field on submit, and inputs are 16px on phones so iOS doesn't zoom.
+- **Site:** a "Skip to content" link, keyboard focus no longer hides under the header, and 44px header buttons on touch screens.
+- **SKILL.md** lists these rules, so agents using the kit follow them too.
+
 ## 0.9.3 — 2026-11-21
 
 - **Blog: motion and web techniques.** 15 posts at https://ui.astabyte.com/blog with 35 live demos you can replay and tweak, and the code that runs them: easing curves, duration and distance, springs, stagger, FLIP, scroll-driven animation, `@starting-style`, View Transitions, fluid type with `clamp()`, container queries, `:has()` and keeping motion smooth on mid-range phones. Each post lists browser support and the fallback. `/blog/motion-that-feels-good` now redirects to `/blog/easing`.

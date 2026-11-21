@@ -14,7 +14,24 @@ export const GUIDES = [
   { href: "/changelog", title: "Changelog" },
 ];
 /** The latest additions, tagged in the index. */
-export const NEW = new Set(["button", "motion-button", "navbar", "command-palette"]);
+export const NEW = new Set([
+  "countdown",
+  "meter",
+  "menubar",
+  "phone-input",
+  "sortable-list",
+  "cookie-consent",
+  "chart-card",
+  "invoice",
+  "inbox",
+  "file-manager",
+  "billing",
+  "testimonials",
+  "watchlist",
+  "split-bill",
+  "flash-sale",
+  "price-alert",
+]);
 
 type Item = { href: string; title: string; id?: string; isNew?: boolean };
 type Section = "kit" | "motion";
@@ -80,9 +97,7 @@ function Index({ items, onNavigate }: { items: UiItem[]; onNavigate?: () => void
     { label: "Get started", items: GUIDES.filter((g) => match(g.title)) },
     ...UI_GROUPS.filter(inSection).map((g) => ({
       label: g,
-      items: items
-        .filter((b) => b.group === g && match(b.title))
-        .map((b) => ({ href: `/${b.slug}`, title: b.title, id: b.id.slice(3), isNew: NEW.has(b.slug) })),
+      items: items.filter((b) => b.group === g && match(b.title)).map((b) => ({ href: `/${b.slug}`, title: b.title, id: b.id.slice(3), isNew: NEW.has(b.slug) })),
     })),
   ].filter((g) => g.items.length);
 
@@ -126,48 +141,48 @@ function Index({ items, onNavigate }: { items: UiItem[]; onNavigate?: () => void
   return (
     <div>
       <div className="sticky top-0 z-10 -mx-1.5 bg-paper px-1.5 pb-3 pt-4 after:pointer-events-none after:absolute after:inset-x-0 after:top-full after:h-5 after:bg-gradient-to-b after:from-paper after:to-transparent">
-      <label className="flex h-10 items-center gap-2 rounded-lg bg-paper px-3 text-[14px] text-mute shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_10%,transparent),0_1px_2px_rgb(0_0_0/0.04)] transition-shadow focus-within:shadow-[inset_0_0_0_1px_var(--color-accent),0_0_0_3px_color-mix(in_srgb,var(--color-accent)_15%,transparent)]">
-        <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
-          <circle cx="7" cy="7" r="4.5" />
-          <path d="m10.5 10.5 3 3" />
-        </svg>
-        <input
-          ref={input}
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder={`Filter ${items.length} components`}
-          aria-label="Filter components"
-          className="min-w-0 flex-1 bg-transparent text-ink outline-none placeholder:text-mute"
-        />
-        {q ? (
-          <button type="button" onClick={() => setQ("")} className="text-mute transition-colors hover:text-ink" aria-label="Clear filter">
-            ✕
-          </button>
-        ) : (
-          <span className="kbd">/</span>
-        )}
-      </label>
+        <label className="flex h-10 items-center gap-2 rounded-lg bg-paper px-3 text-[14px] text-mute shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_10%,transparent),0_1px_2px_rgb(0_0_0/0.04)] transition-shadow focus-within:shadow-[inset_0_0_0_1px_var(--color-accent),0_0_0_3px_color-mix(in_srgb,var(--color-accent)_15%,transparent)]">
+          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
+            <circle cx="7" cy="7" r="4.5" />
+            <path d="m10.5 10.5 3 3" />
+          </svg>
+          <input
+            ref={input}
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder={`Filter ${items.length} components`}
+            aria-label="Filter components"
+            className="min-w-0 flex-1 bg-transparent text-ink outline-none placeholder:text-mute"
+          />
+          {q ? (
+            <button type="button" onClick={() => setQ("")} className="text-mute transition-colors hover:text-ink" aria-label="Clear filter">
+              ✕
+            </button>
+          ) : (
+            <span className="kbd">/</span>
+          )}
+        </label>
 
-      <div className={`relative mt-3 grid grid-cols-2 rounded-lg bg-paper-2 p-1 transition-opacity ${term ? "pointer-events-none opacity-40" : ""}`} role="tablist" aria-label="Section">
-        <span
-          aria-hidden
-          className="absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-[5px] bg-paper shadow-[0_1px_2px_rgb(0_0_0/0.08),inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_7%,transparent)] transition-transform duration-500 ease-expo"
-          style={{ transform: section === "motion" ? "translateX(100%)" : "none" }}
-        />
-        {(["kit", "motion"] as const).map((sct) => (
-          <button
-            key={sct}
-            type="button"
-            role="tab"
-            aria-selected={section === sct}
-            onClick={() => setSection(sct)}
-            className={`relative flex h-8 items-center justify-center gap-1.5 text-[14px] font-medium capitalize transition-colors duration-300 ${section === sct ? "text-ink" : "text-mute hover:text-ink"}`}
-          >
-            {sct}
-            <span className="font-mono text-[11.5px] tabular-nums text-mute">{count(sct)}</span>
-          </button>
-        ))}
-      </div>
+        <div className={`relative mt-3 grid grid-cols-2 rounded-lg bg-paper-2 p-1 transition-opacity ${term ? "pointer-events-none opacity-40" : ""}`} role="tablist" aria-label="Section">
+          <span
+            aria-hidden
+            className="absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-[5px] bg-paper shadow-[0_1px_2px_rgb(0_0_0/0.08),inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_7%,transparent)] transition-transform duration-500 ease-expo"
+            style={{ transform: section === "motion" ? "translateX(100%)" : "none" }}
+          />
+          {(["kit", "motion"] as const).map((sct) => (
+            <button
+              key={sct}
+              type="button"
+              role="tab"
+              aria-selected={section === sct}
+              onClick={() => setSection(sct)}
+              className={`relative flex h-8 items-center justify-center gap-1.5 text-[14px] font-medium capitalize transition-colors duration-300 ${section === sct ? "text-ink" : "text-mute hover:text-ink"}`}
+            >
+              {sct}
+              <span className="font-mono text-[11.5px] tabular-nums text-mute">{count(sct)}</span>
+            </button>
+          ))}
+        </div>
       </div>
 
       <div ref={nav} className="relative mt-4" onPointerLeave={() => setHover(null)}>
@@ -224,7 +239,9 @@ function Index({ items, onNavigate }: { items: UiItem[]; onNavigate?: () => void
                             <span className="truncate">{it.title}</span>
                             {it.isNew && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" title="New" />}
                             {it.id && (
-                              <span className={`ml-auto font-mono text-[11px] tabular-nums transition-opacity duration-200 ${on ? "text-accent opacity-100" : "text-mute opacity-0 group-hover/i:opacity-100"}`}>
+                              <span
+                                className={`ml-auto font-mono text-[11px] tabular-nums transition-opacity duration-200 ${on ? "text-accent opacity-100" : "text-mute opacity-0 group-hover/i:opacity-100"}`}
+                              >
                                 {it.id}
                               </span>
                             )}
@@ -249,8 +266,7 @@ export default function Sidebar({ items }: { items: UiItem[] }) {
   const path = usePathname();
   const [open, setOpen] = useState(false);
   const aside = useRef<HTMLElement>(null);
-  const current =
-    GUIDES.find((g) => g.href === path)?.title ?? items.find((b) => `/${b.slug}` === path)?.title ?? "Components";
+  const current = GUIDES.find((g) => g.href === path)?.title ?? items.find((b) => `/${b.slug}` === path)?.title ?? "Components";
 
   // Keep the current page in view inside the sticky column.
   useEffect(() => {
