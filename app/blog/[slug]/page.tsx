@@ -90,7 +90,7 @@ export default async function BlogPost({ params }: Props) {
                         aria-current={q.slug === p.slug ? "page" : undefined}
                         className={`flex gap-3 rounded-[7px] py-1.5 text-[14px] leading-snug transition-colors ${q.slug === p.slug ? "text-ink" : "text-mute hover:text-ink"}`}
                       >
-                        <span className={`w-[52px] shrink-0 font-mono text-[11px] leading-5 tabular-nums ${q.slug === p.slug ? "text-accent" : "text-mute/70"}`}>{postId(q)}</span>
+                        <span className={`w-[52px] shrink-0 font-mono text-[11px] leading-5 tabular-nums ${q.slug === p.slug ? "text-accent" : "text-mute"}`}>{postId(q)}</span>
                         <span>{q.title}</span>
                       </Link>
                     </li>

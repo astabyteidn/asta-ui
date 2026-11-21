@@ -51,7 +51,7 @@ export default function LitText({ text, className = "" }: { text: string; classN
   }, []);
 
   return (
-    <p ref={ref} className={`ui-lit text-mute/70 ${className}`}>
+    <p ref={ref} className={`ui-lit text-mute ${className}`}>
       {words.map(({ w, b }, n) => (
         <span key={n} data-w className={b ? "font-semibold" : undefined}>
           {w}

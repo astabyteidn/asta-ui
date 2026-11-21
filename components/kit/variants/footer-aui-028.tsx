@@ -196,8 +196,9 @@ export function StatusFooter({
                     key={i}
                     onPointerEnter={() => setHover(i)}
                     className={cx(
-                      "aui-f28-bar h-full flex-1 rounded-[2px] transition-opacity duration-200",
-                      v >= 1 ? "bg-brand" : "bg-ink/35",
+                      "aui-f28-bar flex-1 rounded-[2px] transition-opacity duration-200",
+                      // A day with an incident is shorter as well as grey, so it reads without the colour.
+                      v >= 1 ? "h-full bg-brand" : "h-[60%] bg-ink/35",
                       shown !== null && shown !== i && "opacity-40",
                     )}
                     style={step(i)}
@@ -206,6 +207,7 @@ export function StatusFooter({
               </div>
               <p className="sr-only">
                 {avg.toFixed(2)}% uptime over the last {uptime.length} days
+                {uptime.some((v) => v < 1) && `, ${uptime.filter((v) => v < 1).length} with incidents`}
               </p>
               <div aria-hidden className="mt-2 flex justify-between font-mono text-[10.5px] text-mute">
                 <span className={cx("transition-opacity duration-200", shown !== null && "opacity-0")}>{uptime.length} days ago</span>
@@ -270,12 +272,13 @@ export function StatusFooter({
             </svg>
             <select
               id={langId}
+              name="language"
               value={lang}
               onChange={(e) => {
                 setOwn(e.target.value);
                 onLanguageChange?.(e.target.value);
               }}
-              className={cx("h-9 w-full cursor-pointer appearance-none rounded-[8px] bg-paper-2 pl-8 pr-8 text-[12.5px] text-ink transition-shadow duration-300 hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent)]", ring)}
+              className={cx("h-9 w-full cursor-pointer appearance-none rounded-[8px] bg-paper-2 pl-8 pr-8 text-[16px] sm:text-[12.5px] text-ink transition-shadow duration-300 hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_14%,transparent)]", ring)}
             >
               {languages.map((l) => (
                 <option key={l.value} value={l.value}>

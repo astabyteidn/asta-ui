@@ -196,7 +196,8 @@ export default function PriceAlert() {
               <Roll value={money(price)} instant={instant} />
             </p>
             <p className={`mt-1 text-[12px] tabular-nums ${change >= 0 ? "text-brand" : "text-mute"}`}>
-              {change >= 0 ? "▲" : "▼"} {Math.abs(change).toFixed(2)}% today
+              <span aria-hidden>{change >= 0 ? "▲" : "▼"}</span>
+              <span className="sr-only">{change >= 0 ? "Up" : "Down"}</span> {Math.abs(change).toFixed(2)}% today
             </p>
           </div>
           <span className={`flex shrink-0 items-center gap-1.5 rounded-md px-2 py-1 text-[11.5px] font-medium ${hit ? "bg-brand text-paper" : "bg-paper-2 text-ink-2"}`} style={{ transition: `background-color .4s ${EASE}, color .4s ${EASE}` }}>

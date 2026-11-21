@@ -27,7 +27,7 @@ export default function Showcase({ picks }: { picks: LabMeta[] }) {
             className={`group/pick relative shrink-0 rounded-[10px] px-4 py-3 text-left transition-colors duration-300 lg:py-3.5 ${n === i ? "bg-paper-2" : "hover:bg-paper-2/60"}`}
           >
             <span className="flex items-baseline gap-3">
-              <span className={`font-mono text-[11.5px] tabular-nums transition-colors ${n === i ? "text-accent" : "text-mute/70"}`}>{String(n + 1).padStart(2, "0")}</span>
+              <span className={`font-mono text-[11.5px] tabular-nums transition-colors ${n === i ? "text-accent" : "text-mute"}`}>{String(n + 1).padStart(2, "0")}</span>
               <span className={`whitespace-nowrap text-[16px] font-medium tracking-[-0.01em] transition-colors ${n === i ? "text-ink" : "text-mute group-hover/pick:text-ink"}`}>{p.title}</span>
             </span>
             <span className={`mt-1.5 hidden pl-[34px] text-[13.5px] leading-snug text-mute lg:line-clamp-2 ${n === i ? "" : "lg:hidden"}`}>{p.description}</span>

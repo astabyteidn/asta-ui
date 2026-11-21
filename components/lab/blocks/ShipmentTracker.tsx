@@ -190,7 +190,7 @@ export default function ShipmentTracker() {
                   onClick={() => go(i)}
                   tabIndex={i === s.stage ? 0 : -1}
                   aria-current={i === s.stage ? "step" : undefined}
-                  aria-label={`${st.label}${reached ? `, ${st.time}` : ""}`}
+                  aria-label={`${st.label}, ${i < s.stage ? `done, ${st.time}` : reached ? st.time : "not yet"}`}
                   className="group absolute top-1/2 -ml-3 -mt-3 flex h-6 w-6 items-center justify-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-brand/60"
                   style={{ left: `${(i / LAST) * 100}%` }}
                 >

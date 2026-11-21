@@ -191,7 +191,7 @@ export default function LogoGrid() {
             className={`flex h-8 shrink-0 items-center gap-2 rounded-[7px] px-3.5 text-[14px] font-medium focus-visible:outline-2 focus-visible:outline-brand ${cat === k ? "bg-ink text-paper" : "text-mute hover:text-ink"}`}
           >
             {k}
-            <span className={`font-mono text-[11.5px] tabular-nums ${cat === k ? "text-paper/60" : "text-mute/60"}`}>{COUNT[k]}</span>
+            <span className={`font-mono text-[11.5px] tabular-nums ${cat === k ? "text-paper/60" : "text-mute"}`}>{COUNT[k]}</span>
           </button>
         ))}
       </div>

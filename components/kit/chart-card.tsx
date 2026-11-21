@@ -299,7 +299,9 @@ export function ChartCard({ title, value, delta, deltaLabel, actions, className,
               <span className="text-[26px] font-medium leading-none tracking-[-0.04em] tabular-nums text-ink">{value}</span>
               {delta !== undefined && (
                 <span className={cx("text-[12.5px] font-medium tabular-nums", up ? "text-brand" : "text-mute")}>
-                  {delta > 0 ? "▲" : delta < 0 ? "▼" : ""} {Math.abs(delta).toFixed(1)}%{deltaLabel && <span className="ml-1 font-normal text-mute">{deltaLabel}</span>}
+                  {delta !== 0 && <span aria-hidden>{delta > 0 ? "▲" : "▼"}</span>}
+                  <span className="sr-only">{delta > 0 ? "Up" : delta < 0 ? "Down" : "No change"}</span> {Math.abs(delta).toFixed(1)}%
+                  {deltaLabel && <span className="ml-1 font-normal text-mute">{deltaLabel}</span>}
                 </span>
               )}
             </p>
@@ -311,7 +313,18 @@ export function ChartCard({ title, value, delta, deltaLabel, actions, className,
         <ul className="flex flex-wrap gap-x-4 gap-y-1 text-[12px] text-mute">
           {chart.series.map((s, i) => (
             <li key={s.label} className="flex items-center gap-1.5">
-              <span aria-hidden className={cx("h-[3px] w-3.5 rounded-full", i === 0 ? "bg-brand" : "bg-[color-mix(in_srgb,var(--color-ink)_30%,transparent)]")} />
+              {/* Lines draw the other series dashed, so the key does too: it reads without the colour. */}
+              <span
+                aria-hidden
+                className={cx(
+                  "h-[3px] w-3.5 rounded-full",
+                  i === 0
+                    ? "bg-brand"
+                    : chart.type === "bar"
+                      ? "bg-[color-mix(in_srgb,var(--color-ink)_30%,transparent)]"
+                      : "bg-[linear-gradient(90deg,color-mix(in_srgb,var(--color-ink)_30%,transparent)_40%,transparent_0_60%,color-mix(in_srgb,var(--color-ink)_30%,transparent)_0)]",
+                )}
+              />
               {s.label}
             </li>
           ))}

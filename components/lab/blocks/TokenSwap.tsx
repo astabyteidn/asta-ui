@@ -227,7 +227,9 @@ export default function TokenSwap() {
                 <span className="flex items-center justify-between gap-3">
                   {isPay ? (
                     <input
+                      name="amount"
                       inputMode="decimal"
+                      autoComplete="off"
                       aria-label={`Amount of ${tk.sym} to pay`}
                       placeholder="0"
                       value={amt}
@@ -281,7 +283,8 @@ export default function TokenSwap() {
           </span>
           {delta !== 0 && (
             <span key={rate} className={`lab-sw-in tabular-nums ${delta > 0 ? "text-brand" : "text-mute"}`}>
-              {delta > 0 ? "▲" : "▼"} {Math.abs(delta * 100).toFixed(2)}%
+              <span aria-hidden>{delta > 0 ? "▲" : "▼"}</span>
+              <span className="sr-only">Rate {delta > 0 ? "up" : "down"}</span> {Math.abs(delta * 100).toFixed(2)}%
             </span>
           )}
         </div>

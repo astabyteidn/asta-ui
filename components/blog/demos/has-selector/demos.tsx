@@ -13,7 +13,7 @@ export function HasField() {
         <label className="field flex h-14 items-center gap-3 bg-paper px-3.5">
           <span className="flex min-w-0 flex-1 flex-col">
             <span className="text-[11.5px] text-mute">Work email</span>
-            <input type="email" required placeholder="you@astabyte.com" className="w-full bg-transparent text-[15px] text-ink outline-none placeholder:text-mute/70" />
+            <input type="email" required placeholder="you@astabyte.com" className="w-full bg-transparent text-[15px] text-ink outline-none placeholder:text-mute" />
           </span>
           <span className="ok grid h-6 w-6 place-items-center rounded-full bg-brand text-[12px] text-white" aria-hidden>
             ✓

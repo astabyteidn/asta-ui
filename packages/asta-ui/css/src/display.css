@@ -99,7 +99,7 @@
  *   <span class="asta-avatar-face asta-avatar-brand">AL<img class="asta-avatar-img" src="…" alt=""></span>
  *   <span class="asta-avatar-status" data-status="online" aria-hidden="true"></span></span>
  * Sizes: xs sm (md) lg xl. Shape: asta-avatar-square. Fills on the face: (ink) brand soft tint gray.
- * Status: online away busy offline. */
+ * Status: online away busy offline. Each has a shape as well as a colour: solid, crescent, bar, ring. */
 .asta-avatar {
   @apply relative inline-flex h-10 w-10 shrink-0;
 }
@@ -123,15 +123,16 @@
   @apply absolute inset-0 h-full w-full object-cover;
 }
 .asta-avatar-status {
-  @apply absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-mute shadow-[0_0_0_2px_var(--paper)];
+  @apply absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full shadow-[0_0_0_2px_var(--paper)];
+  background: radial-gradient(closest-side, var(--paper) 48%, var(--mute) 56%);
   &[data-status="online"] {
-    @apply bg-[#30a46c];
+    background: #30a46c;
   }
   &[data-status="away"] {
-    @apply bg-[#f5a524];
+    background: radial-gradient(closest-side at 30% 30%, var(--paper) 92%, #f5a524 100%);
   }
   &[data-status="busy"] {
-    @apply bg-[#e5484d];
+    background: linear-gradient(var(--paper), var(--paper)) center / 60% 20% no-repeat, #e5484d;
   }
 }
 .asta-avatar-xs {

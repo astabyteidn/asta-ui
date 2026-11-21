@@ -219,7 +219,8 @@ export default function PriceChart() {
             className="rounded-md px-2 py-1 font-mono text-[12px] leading-none tabular-nums transition-[color,background-color] duration-700"
             style={{ color: pill, background: `color-mix(in srgb, ${pill} 14%, transparent)`, transitionTimingFunction: EASE }}
           >
-            {up ? "▲" : "▼"} {Math.abs(pct).toFixed(2)}%
+            <span aria-hidden>{up ? "▲" : "▼"}</span>
+            <span className="sr-only">{up ? "Up" : "Down"}</span> {Math.abs(pct).toFixed(2)}%
           </span>
         </div>
       </div>
