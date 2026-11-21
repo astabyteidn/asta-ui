@@ -1,63 +1,79 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import BlogGrid, { type BlogCard, type BlogTab } from "@/components/blog/BlogGrid";
+import { thumbOf } from "@/components/blog/Thumb";
 import Icon from "@/components/icons/Icon";
-import { formatDate, POSTS, readingTime } from "@/lib/blog";
+import { GROUPS, POSTS, postId, readingTime } from "@/lib/blog";
 import { DESIGN_URL } from "@/lib/design";
 
-const TITLE = "Blog";
-const DESCRIPTION = "Practical interface design tips from building the Astabyte UI kit and motion lab. Short posts with numbers you can use.";
+const TITLE = "Motion and web techniques, with live demos";
+const DESCRIPTION =
+  "Learn easing, timing, springs, FLIP, scroll-driven animation, View Transitions, @starting-style, container queries and :has(). Every post has live demos and code to copy.";
+const DEMOS = POSTS.reduce((n, p) => n + Object.keys(p.demos ?? {}).length, 0);
 
 export const metadata: Metadata = {
-  title: TITLE,
+  title: "Blog",
   description: DESCRIPTION,
   alternates: { canonical: "/blog" },
   openGraph: { type: "website", siteName: "Astabyte UI", url: "/blog", title: `${TITLE} — Astabyte UI`, description: DESCRIPTION },
 };
 
-/** Blog index: newest first, one row per post. */
+const SHORT: Record<string, string> = { motion: "Motion", web: "Web", basics: "Basics" };
+
+/** Blog index: laid out like a home section. Topic tabs, then cards in the kit and motion lab style. */
 export default function Blog() {
+  const tabs: BlogTab[] = [
+    { id: "all", label: "All", lead: "A learning path. Start at B01 and go in order, or jump to a topic." },
+    ...GROUPS.map((g) => ({ id: g.id, label: SHORT[g.id], lead: g.lead })),
+  ];
+  const cards: BlogCard[] = POSTS.map((p) => {
+    const demos = Object.keys(p.demos ?? {}).length;
+    return {
+      slug: p.slug,
+      group: p.group,
+      id: postId(p),
+      title: p.title,
+      summary: p.summary,
+      meta: [SHORT[p.group], `${readingTime(p)} min`, demos ? `${demos} demos` : ""].filter(Boolean).join(" · "),
+      ...thumbOf(p),
+    };
+  });
+
   return (
-    <div className="px-shell pt-10 sm:pt-16">
-      <p className="label ui-enter text-accent">Blog · {POSTS.length} posts</p>
-      <h1 className="display ui-enter mt-4 max-w-3xl text-[clamp(2.6rem,7vw,5.5rem)] leading-[0.95] [--i:1]">Notes on interface design.</h1>
-      <p className="ui-enter mt-6 max-w-xl text-[clamp(1.05rem,1.4vw,1.25rem)] leading-normal text-ink-2 [--i:2]">
-        What we learned building the kit and the motion lab. Short posts, with numbers you can put straight into your own UI.
-      </p>
+    <>
+      <section className="px-shell pb-4 pt-12 sm:pt-20" aria-labelledby="blog-title">
+        <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="label text-accent">
+              § Blog · {POSTS.length} posts · {DEMOS} live demos
+            </p>
+            <h1 id="blog-title" className="display mt-3 text-[clamp(2rem,4.4vw,3.6rem)]">
+              Motion and web techniques
+            </h1>
+          </div>
+          <p className="max-w-sm text-[15px] leading-relaxed text-mute sm:text-right">
+            Every post has live demos you can replay and tweak, and the code that runs them.
+          </p>
+        </div>
+        <BlogGrid cards={cards} tabs={tabs} />
+      </section>
 
-      <ul className="ui-enter mt-14 flex max-w-[1080px] flex-col gap-2 [--i:3]">
-        {POSTS.map((p) => (
-          <li key={p.slug}>
-            <Link
-              href={`/blog/${p.slug}`}
-              className="group -mx-4 grid gap-2 rounded-[12px] px-4 py-5 transition-colors duration-300 hover:bg-paper-2 sm:-mx-5 sm:px-5 md:grid-cols-[11rem_1fr] md:gap-8"
-            >
-              <span className="label pt-1.5 text-mute">
-                <time dateTime={p.date}>{formatDate(p.date)}</time> · {readingTime(p)} min
-              </span>
-              <span>
-                <span className="display block text-[clamp(1.45rem,2.4vw,2rem)] leading-[1.05] transition-colors group-hover:text-accent">{p.title}</span>
-                <span className="mt-2 block max-w-[60ch] text-[16px] leading-relaxed text-mute">{p.summary}</span>
-              </span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-
-      <a
-        href={`${DESIGN_URL}&utm_campaign=blog-index`}
-        className="icon-hover group mt-16 flex max-w-[1080px] flex-col gap-4 rounded-[14px] bg-paper-2 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8"
-      >
-        <span>
-          <span className="label text-accent">New · Design by Astabyte</span>
-          <span className="mt-3 block text-[clamp(1.2rem,1.8vw,1.5rem)] font-medium tracking-[-0.02em]">Try a layout before you build it.</span>
-          <span className="mt-1.5 block max-w-[52ch] text-[15px] leading-relaxed text-mute">
-            A design editor in the browser. AI agents work on the same canvas as you, over MCP.
+      <section className="px-shell mt-24" aria-label="Design by Astabyte">
+        <a
+          href={`${DESIGN_URL}&utm_campaign=blog-index`}
+          className="icon-hover group flex flex-col gap-6 rounded-2xl bg-paper-2 px-6 py-10 sm:flex-row sm:items-end sm:justify-between sm:px-10 sm:py-12"
+        >
+          <span>
+            <span className="label text-accent">New · Design by Astabyte</span>
+            <span className="display mt-4 block text-[clamp(1.8rem,3.4vw,2.8rem)]">Try a layout before you build it.</span>
+            <span className="mt-3 block max-w-[52ch] text-[16px] leading-relaxed text-ink-2">
+              A design editor in the browser. AI agents work on the same canvas as you, over MCP.
+            </span>
           </span>
-        </span>
-        <span className="btn btn-quiet btn-lg shrink-0 self-start sm:self-auto">
-          Open Design <Icon name="arrow-up-right" className="h-4 w-4" />
-        </span>
-      </a>
-    </div>
+          <span className="btn btn-primary btn-lg shrink-0 self-start sm:self-auto">
+            Open Design <Icon name="arrow-up-right" className="h-4 w-4" />
+          </span>
+        </a>
+      </section>
+    </>
   );
 }

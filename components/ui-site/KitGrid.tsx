@@ -6,7 +6,7 @@ import { Live, Spot } from "@/components/ui-site/Live";
 import { kitId, kitItems, LAYERS, type Layer } from "@/lib/kit";
 
 /** Renders a demo at a fixed design width and scales it down to the card, so big demos still read as thumbnails. */
-function Fit({ width, children }: { width: number; children: ReactNode }) {
+export function Fit({ width, children }: { width: number; children: ReactNode }) {
   const box = useRef<HTMLDivElement>(null);
   const [s, setS] = useState(0);
   useLayoutEffect(() => {

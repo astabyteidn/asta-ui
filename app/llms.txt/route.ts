@@ -1,6 +1,6 @@
 import { LOGOS } from "@/components/logos/logos";
 import { BASE_SLUGS } from "@/lib/base-slugs";
-import { POSTS } from "@/lib/blog";
+import { GROUPS, postsIn } from "@/lib/blog";
 import { uiItems } from "@/lib/ui-catalog";
 import { variantItems } from "@/lib/variant-items";
 import { VERSION } from "@/lib/version";
@@ -32,7 +32,7 @@ Also an npm component library: \`pnpm add asta-ui radix-ui\` then \`import { Dia
 - [Changelog](${SITE}/changelog): every release, newest first.
 - [Prompts](${SITE}/prompts): copy-ready prompts to set up the kit or build a trading dashboard, checkout, settings page, landing page or sign-in with it.
 - [Icons](${SITE}/icons): Astabyte Icons, a small hand-drawn set with a hover motion each. Click to copy the SVG.
-- [Blog](${SITE}/blog): short posts on interface design, motion and UI states.
+- [Blog](${SITE}/blog): motion and web techniques (easing, springs, FLIP, scroll-driven animation, View Transitions, @starting-style, container queries, :has()), each with live demos.
 - [Logos](${SITE}/logos): ${LOGOS.length} logos of well-known tools, frameworks and brands as 24×24 SVG (Simple Icons data, CC0). Copy as SVG or a React component, mono or brand colour.
 - [Agent skill (SKILL.md)](${SITE}/skill.md): rules and the full catalogue in one file.
 - [MCP server](${SITE}/mcp): Streamable HTTP, no auth, read-only. Tools: search_components, get_component, get_setup, get_design_guide, get_use_cases, get_skills. Claude Code: \`claude mcp add --transport http astabyte-ui ${SITE}/mcp\`.
@@ -42,9 +42,9 @@ Also an npm component library: \`pnpm add asta-ui radix-ui\` then \`import { Dia
 
 ## Blog
 
-Practical interface design tips from building the kit and the motion lab.
+Motion and web techniques, with live demos and the code that runs them. A learning path, in order.
 
-${POSTS.map((p) => `- [${p.title}](${SITE}/blog/${p.slug}) (${p.date}): ${p.summary}`).join("\n")}
+${GROUPS.map((g) => `### ${g.title}\n\n${postsIn(g.id).map((p) => `- [${p.title}](${SITE}/blog/${p.slug}): ${p.summary}`).join("\n")}`).join("\n\n")}
 
 ## Kit
 

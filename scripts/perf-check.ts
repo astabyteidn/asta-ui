@@ -1,5 +1,5 @@
 /**
- * Performance check for kit components, variants, demos and lab blocks.
+ * Performance check for kit components, variants, demos, lab blocks and blog demos.
  * Static rules that catch the usual jank before it ships. Run `bun run perf`.
  *
  *   error  = CI fails
@@ -9,7 +9,7 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 
 const ROOT = process.cwd();
-const DIRS = ["components/kit", "components/lab", "components/ui-site", "components/icons", "components/logos"];
+const DIRS = ["components/kit", "components/lab", "components/ui-site", "components/icons", "components/logos", "components/blog"];
 const strict = process.argv.includes("--strict");
 const only = process.argv.slice(2).filter((a) => !a.startsWith("--"));
 
