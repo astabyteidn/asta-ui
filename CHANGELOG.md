@@ -2,6 +2,10 @@
 
 Releases are git tags (`vX.Y.Z`); pushing a tag deploys ui.astabyte.com. Merging to `main` does not.
 
+## 0.9.5 — 2026-11-22
+
+- **Home: no charts in Try one.** The featured stage opens with Now playing and shows Plan switcher in place of Price chart and Order book.
+
 ## 0.9.4 — 2026-11-21
 
 - **12 new kit components:** countdown, meter, menubar, phone input, sortable list, cookie consent, chart card, invoice, inbox, file manager, billing and testimonials. Each works in React and in plain HTML + CSS (`asta.css` / `asta.js`). The kit now has 122 components.
