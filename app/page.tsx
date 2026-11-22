@@ -9,7 +9,7 @@ import { kitItems } from "@/lib/kit";
 import { labBlocks } from "@/lib/lab";
 
 // The showcase: specimens that read best on their own, one at a time.
-const FEATURED = ["price-chart", "card-checkout", "add-to-cart", "order-book", "payment-status", "cart-drawer"];
+const FEATURED = ["now-playing", "card-checkout", "add-to-cart", "plan-switcher", "payment-status", "cart-drawer"];
 
 const HEADLINE = ["Interfaces", "that", "feel"];
 const FEELS = ["alive.", "tactile.", "weighty.", "playful.", "honest."];
