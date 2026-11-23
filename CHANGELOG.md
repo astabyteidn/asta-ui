@@ -6,6 +6,7 @@ Releases are git tags (`vX.Y.Z`); pushing a tag deploys ui.astabyte.com. Merging
 
 - **10 new kit components for AI products:** thinking, context meter, scrub input, model picker, citations, tool approval, agent plan, prompt composer, trace waterfall and API keys. Each works in React and in plain HTML + CSS (`asta.css` / `asta.js`). The kit now has 132 components.
 - **4 new motion blocks:** fallback chain, autonomy dial, agent team and change ledger.
+- **Calmer sidebar.** Scrolling to the end of the list no longer scrolls the page. The current page stays highlighted while you hover other rows, instead of a slab that slid after the pointer. In the filter, ↑ ↓ pick a result and Enter opens it. Get started folds away on component pages, the list sits where you left it on load, a thin scrollbar shows on hover, and on phones the menu opens at the current page.
 
 ## 0.9.5 — 2026-11-22
 

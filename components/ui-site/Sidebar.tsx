@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { UI_GROUPS, type UiItem } from "@/lib/ui-catalog";
 
 export const GUIDES = [
@@ -15,22 +15,20 @@ export const GUIDES = [
 ];
 /** The latest additions, tagged in the index. */
 export const NEW = new Set([
-  "countdown",
-  "meter",
-  "menubar",
-  "phone-input",
-  "sortable-list",
-  "cookie-consent",
-  "chart-card",
-  "invoice",
-  "inbox",
-  "file-manager",
-  "billing",
-  "testimonials",
-  "watchlist",
-  "split-bill",
-  "flash-sale",
-  "price-alert",
+  "thinking",
+  "context-meter",
+  "scrub-input",
+  "model-picker",
+  "citations",
+  "tool-approval",
+  "agent-plan",
+  "prompt-composer",
+  "trace-waterfall",
+  "api-keys",
+  "fallback-chain",
+  "autonomy-dial",
+  "agent-team",
+  "change-ledger",
 ]);
 
 type Item = { href: string; title: string; id?: string; isNew?: boolean };
@@ -69,19 +67,21 @@ function Glyph({ group }: { group: string }) {
 }
 
 /**
- * Docs index. A Kit / Motion switch keeps the list short, groups fold, and one white slab follows the
- * pointer between rows and settles back on the current page when the pointer leaves.
+ * Docs index. A Kit / Motion switch keeps the list short and groups fold. The current page keeps its white slab while
+ * the pointer moves, so you never lose your place. In the filter, ↑ ↓ pick a result and Enter opens it.
  */
 function Index({ items, onNavigate }: { items: UiItem[]; onNavigate?: () => void }) {
   const path = usePathname();
+  const router = useRouter();
   const nav = useRef<HTMLDivElement>(null);
-  const [hover, setHover] = useState<string | null>(null);
-  const slab = useRef<HTMLSpanElement>(null);
   const [q, setQ] = useState("");
   const input = useRef<HTMLInputElement>(null);
   const current = items.find((b) => `/${b.slug}` === path);
+  const onGuide = GUIDES.some((g) => g.href === path);
   const [section, setSection] = useState<Section>(current?.source === "lab" ? "motion" : "kit");
-  const [closed, setClosed] = useState<Set<string>>(new Set());
+  // Get started folds away on component pages: it is one click to open and leaves room for the list.
+  const [closed, setClosed] = useState<Set<string>>(() => new Set(onGuide ? [] : ["Get started"]));
+  const [cursor, setCursor] = useState(-1);
 
   // Follow the page: opening a motion component switches the index to Motion (adjusted during render).
   const [seen, setSeen] = useState(path);
@@ -111,19 +111,33 @@ function Index({ items, onNavigate }: { items: UiItem[]; onNavigate?: () => void
       return next;
     });
 
-  const target = hover ?? path;
-  useLayoutEffect(() => {
-    const s = slab.current;
-    const el = nav.current?.querySelector<HTMLElement>(`[data-href="${CSS.escape(target)}"]`);
-    if (!s) return;
-    if (!el) {
-      s.style.opacity = "0";
-      return;
+  // Rows the keyboard can reach, in order.
+  const flat = groups.flatMap((g) => (open(g.label) ? g.items : []));
+  const picked = term && flat.length ? flat[Math.min(Math.max(cursor, 0), flat.length - 1)]?.href : null;
+
+  const filter = (v: string) => {
+    setQ(v);
+    setCursor(0);
+    nav.current?.closest<HTMLElement>("[data-scroll]")?.scrollTo({ top: 0 });
+  };
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Escape") {
+      if (q) filter("");
+      else input.current?.blur();
+    } else if (term && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+      e.preventDefault();
+      const next = (Math.max(cursor, 0) + (e.key === "ArrowDown" ? 1 : -1) + flat.length) % flat.length;
+      setCursor(next);
+      nav.current?.querySelector(`[data-href="${CSS.escape(flat[next].href)}"]`)?.scrollIntoView({ block: "nearest" });
+    } else if (e.key === "Enter" && picked) {
+      e.preventDefault();
+      router.push(picked);
+      filter("");
+      input.current?.blur();
+      onNavigate?.();
     }
-    s.style.opacity = "1";
-    s.style.transform = `translateY(${el.offsetTop}px)`;
-    s.style.height = `${el.offsetHeight}px`;
-  }, [target, term, section, closed]);
+  };
 
   // "/" focuses the filter (unless typing somewhere else).
   useEffect(() => {
@@ -140,8 +154,8 @@ function Index({ items, onNavigate }: { items: UiItem[]; onNavigate?: () => void
 
   return (
     <div>
-      <div className="sticky top-0 z-10 -mx-1.5 bg-paper px-1.5 pb-3 pt-4 after:pointer-events-none after:absolute after:inset-x-0 after:top-full after:h-5 after:bg-gradient-to-b after:from-paper after:to-transparent">
-        <label className="flex h-10 items-center gap-2 rounded-lg bg-paper px-3 text-[14px] text-mute shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_10%,transparent),0_1px_2px_rgb(0_0_0/0.04)] transition-shadow focus-within:shadow-[inset_0_0_0_1px_var(--color-accent),0_0_0_3px_color-mix(in_srgb,var(--color-accent)_15%,transparent)]">
+      <div className="sticky top-0 z-10 -mx-1.5 bg-paper px-1.5 pb-2 pt-4 after:pointer-events-none after:absolute after:inset-x-0 after:top-full after:h-3 after:bg-gradient-to-b after:from-paper after:to-transparent">
+        <label className="flex h-9 items-center gap-2 rounded-lg bg-paper px-3 text-[14px] text-mute shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_10%,transparent),0_1px_2px_rgb(0_0_0/0.04)] transition-shadow focus-within:shadow-[inset_0_0_0_1px_var(--color-accent),0_0_0_3px_color-mix(in_srgb,var(--color-accent)_15%,transparent)]">
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
             <circle cx="7" cy="7" r="4.5" />
             <path d="m10.5 10.5 3 3" />
@@ -149,24 +163,29 @@ function Index({ items, onNavigate }: { items: UiItem[]; onNavigate?: () => void
           <input
             ref={input}
             value={q}
-            onChange={(e) => setQ(e.target.value)}
+            onChange={(e) => filter(e.target.value)}
+            onKeyDown={onKeyDown}
+            role="combobox"
+            aria-expanded={!!term}
+            aria-controls="docs-index"
+            aria-activedescendant={picked ? `docs-${picked.slice(1)}` : undefined}
             placeholder={`Filter ${items.length} components`}
             aria-label="Filter components"
             className="min-w-0 flex-1 bg-transparent text-ink outline-none placeholder:text-mute"
           />
           {q ? (
-            <button type="button" onClick={() => setQ("")} className="text-mute transition-colors hover:text-ink" aria-label="Clear filter">
+            <button type="button" onClick={() => filter("")} className="text-mute transition-colors hover:text-ink" aria-label="Clear filter">
               ✕
             </button>
           ) : (
-            <span className="kbd">/</span>
+            <span className="kbd max-lg:hidden">/</span>
           )}
         </label>
 
-        <div className={`relative mt-3 grid grid-cols-2 rounded-lg bg-paper-2 p-1 transition-opacity ${term ? "pointer-events-none opacity-40" : ""}`} role="tablist" aria-label="Section">
+        <div className={`relative mt-2 grid grid-cols-2 rounded-lg bg-paper-2 p-1 transition-opacity ${term ? "pointer-events-none opacity-40" : ""}`} role="tablist" aria-label="Section">
           <span
             aria-hidden
-            className="absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-[5px] bg-paper shadow-[0_1px_2px_rgb(0_0_0/0.08),inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_7%,transparent)] transition-transform duration-500 ease-expo"
+            className="absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-[5px] bg-paper shadow-[0_1px_2px_rgb(0_0_0/0.08),inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_7%,transparent)] transition-transform duration-300 ease-expo"
             style={{ transform: section === "motion" ? "translateX(100%)" : "none" }}
           />
           {(["kit", "motion"] as const).map((sct) => (
@@ -176,7 +195,7 @@ function Index({ items, onNavigate }: { items: UiItem[]; onNavigate?: () => void
               role="tab"
               aria-selected={section === sct}
               onClick={() => setSection(sct)}
-              className={`relative flex h-8 items-center justify-center gap-1.5 text-[14px] font-medium capitalize transition-colors duration-300 ${section === sct ? "text-ink" : "text-mute hover:text-ink"}`}
+              className={`relative flex h-7 items-center justify-center gap-1.5 text-[14px] font-medium capitalize transition-colors duration-300 ${section === sct ? "text-ink" : "text-mute hover:text-ink"}`}
             >
               {sct}
               <span className="font-mono text-[11.5px] tabular-nums text-mute">{count(sct)}</span>
@@ -185,13 +204,8 @@ function Index({ items, onNavigate }: { items: UiItem[]; onNavigate?: () => void
         </div>
       </div>
 
-      <div ref={nav} className="relative mt-4" onPointerLeave={() => setHover(null)}>
-        <span
-          ref={slab}
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 h-0 rounded-md bg-paper opacity-0 shadow-[0_1px_2px_rgb(0_0_0/0.06),inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_8%,transparent)] transition-[transform,height,opacity] duration-500 ease-expo"
-        />
-        <nav className="relative flex flex-col gap-4" aria-label="Docs">
+      <div ref={nav} className="mt-3">
+        <nav id="docs-index" className="flex flex-col gap-3" aria-label="Docs">
           {groups.map((g) => {
             const isOpen = open(g.label);
             const name = g.label.replace("Motion · ", "");
@@ -219,22 +233,30 @@ function Index({ items, onNavigate }: { items: UiItem[]; onNavigate?: () => void
                     <path d="m4 6 4 4 4-4" />
                   </svg>
                 </button>
-                <div className={`grid transition-[grid-template-rows] duration-500 ease-expo ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
+                <div className={`grid transition-[grid-template-rows] duration-300 ease-expo ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
                   <ul className="mt-0.5 overflow-hidden">
                     {g.items.map((it) => {
                       const on = it.href === path;
+                      const hit = it.href === picked;
                       return (
                         <li key={it.href}>
                           <Link
                             href={it.href}
+                            id={`docs-${it.href.slice(1)}`}
                             data-href={isOpen ? it.href : undefined}
                             tabIndex={isOpen ? undefined : -1}
-                            onPointerEnter={() => setHover(it.href)}
-                            onFocus={() => setHover(it.href)}
-                            onBlur={() => setHover(null)}
-                            onClick={onNavigate}
+                            onClick={() => {
+                              if (term) filter("");
+                              onNavigate?.();
+                            }}
                             aria-current={on ? "page" : undefined}
-                            className={`group/i flex h-8 items-center gap-2 pl-[34px] pr-2.5 text-[14.5px] outline-none transition-colors duration-200 ${on ? "font-medium text-ink" : hover === it.href ? "text-ink" : "text-mute"}`}
+                            className={`group/i flex h-8 items-center gap-2 rounded-md pl-[34px] pr-2.5 text-[14.5px] outline-none transition-colors duration-150 focus-visible:shadow-[inset_0_0_0_2px_var(--color-accent)] ${
+                              on
+                                ? "bg-paper font-medium text-ink shadow-[0_1px_2px_rgb(0_0_0/0.06),inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_8%,transparent)]"
+                                : hit
+                                  ? "bg-[color-mix(in_srgb,var(--color-ink)_6%,transparent)] text-ink"
+                                  : "text-mute hover:bg-[color-mix(in_srgb,var(--color-ink)_4%,transparent)] hover:text-ink"
+                            }`}
                           >
                             <span className="truncate">{it.title}</span>
                             {it.isNew && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" title="New" />}
@@ -268,14 +290,24 @@ export default function Sidebar({ items }: { items: UiItem[] }) {
   const aside = useRef<HTMLElement>(null);
   const current = GUIDES.find((g) => g.href === path)?.title ?? items.find((b) => `/${b.slug}` === path)?.title ?? "Components";
 
-  // Keep the current page in view inside the sticky column.
+  // Keep the current page in view inside the sticky column: placed at once on first load, eased after that.
+  const placed = useRef(false);
   useEffect(() => {
     const box = aside.current;
     const el = box?.querySelector<HTMLElement>('[aria-current="page"]');
     if (!box || !el) return;
     const top = el.getBoundingClientRect().top - box.getBoundingClientRect().top;
-    if (top < 80 || top > box.clientHeight - 80) box.scrollTo({ top: box.scrollTop + top - box.clientHeight / 3, behavior: "smooth" });
+    if (top < 120 || top > box.clientHeight - 80) box.scrollTo({ top: box.scrollTop + top - box.clientHeight / 3, behavior: placed.current ? "smooth" : "instant" });
+    placed.current = true;
   }, [path]);
+
+  // The sheet opens on the current page instead of the top of a long list.
+  const sheet = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const box = sheet.current;
+    const el = box?.querySelector<HTMLElement>('[aria-current="page"]');
+    if (box && el) box.scrollTop = el.getBoundingClientRect().top - box.getBoundingClientRect().top - box.clientHeight / 3;
+  }, [open]);
 
   useEffect(() => {
     document.documentElement.style.overflow = open ? "hidden" : "";
@@ -286,7 +318,7 @@ export default function Sidebar({ items }: { items: UiItem[] }) {
 
   return (
     <>
-      <aside ref={aside} className="sticky top-14 hidden h-[calc(100svh-3.5rem)] -ml-1.5 w-[15.75rem] shrink-0 overflow-y-auto px-1.5 pb-12 [scrollbar-width:none] lg:block" data-lenis-prevent>
+      <aside ref={aside} className="sticky top-14 hidden h-[calc(100svh-3.5rem)] -ml-1.5 w-[15.75rem] shrink-0 overflow-y-auto overscroll-contain px-1.5 pb-12 [scrollbar-color:transparent_transparent] [scrollbar-width:thin] hover:[scrollbar-color:color-mix(in_srgb,var(--color-ink)_18%,transparent)_transparent] lg:block" data-lenis-prevent data-scroll>
         <Index items={items} />
         <a href="https://astabyte.com/contact?utm_source=ui&utm_campaign=sidebar" className="group mt-10 block rounded-[10px] bg-paper-2 p-4">
           <span className="label text-accent">Astabyte studio</span>
@@ -311,8 +343,8 @@ export default function Sidebar({ items }: { items: UiItem[] }) {
       {open && (
         <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Docs">
           <button type="button" aria-label="Close" onClick={() => setOpen(false)} className="absolute inset-0 animate-[ui-fade_.3s_ease_both] bg-black/60" />
-          <div className="absolute inset-y-0 left-0 w-[min(84vw,320px)] animate-[ui-sheet_.5s_var(--ease-expo)_both] overflow-y-auto bg-paper px-4 pb-10 pt-5" data-lenis-prevent>
-            <div className="mb-5 flex items-center justify-between">
+          <div ref={sheet} className="absolute inset-y-0 left-0 w-[min(84vw,320px)] animate-[ui-sheet_.5s_var(--ease-expo)_both] overflow-y-auto overscroll-contain bg-paper px-4 pb-10" data-lenis-prevent data-scroll>
+            <div className="mb-1 flex items-center justify-between pt-5">
               <span className="label text-mute">{items.length} components</span>
               <button type="button" onClick={() => setOpen(false)} className="btn btn-ghost btn-sm btn-icon" aria-label="Close">
                 ✕
