@@ -1,0 +1,484 @@
+/* Agent: thinking, context meter, agent plan, tool approval. Class lists mirror the React kit.
+ * The context meter opens with core's popover (popovertarget + data-asta-popover) and the tool approval split menu is
+ * an asta-dropdown, so asta.js positions both. Tool approval decisions, Enter / Esc and the elapsed timers come from
+ * runtime/agent.js; its state CSS (shimmer, spinners, checks) lives in runtime/agent.css. */
+
+/* ---- Thinking ----
+ * <details class="asta-thinking" data-status="thinking" open>
+ *   <summary class="asta-thinking-head"><svg class="asta-thinking-icon">…</svg>
+ *     <span class="asta-thinking-label">Thinking<span class="asta-thinking-shine" aria-hidden="true"><span><span>Thinking</span></span></span></span>
+ *     <span class="asta-thinking-time" data-asta-elapsed="now">0s</span><svg class="asta-thinking-chevron">…</svg>
+ *     <span class="asta-thinking-preview">Latest line, shown while folded</span></summary>
+ *   <ol class="asta-thinking-steps"><li>…</li></ol></details>
+ * data-status: thinking | done | stopped. Done: drop the shine and time, label "Thought for 12s". Variant
+ * asta-thinking-inline (one line, no panel: use a <div> and a <span class="asta-thinking-head">). Size asta-thinking-sm. */
+.asta-thinking {
+  @apply flex w-full min-w-0 flex-col text-[13.5px] text-ink;
+}
+.asta-thinking-sm {
+  @apply text-[12.5px];
+}
+.asta-thinking-inline {
+  @apply inline-flex w-auto max-w-full align-middle;
+}
+.asta-thinking-head {
+  @apply -mx-1.5 flex min-w-0 max-w-full cursor-pointer flex-wrap list-none items-center gap-x-1.5 gap-y-0.5 self-start rounded-md px-1.5 py-1 font-medium outline-none transition-colors duration-200;
+  @apply hover:bg-paper-2 focus-visible:ring-2 focus-visible:ring-brand/50 [&::-webkit-details-marker]:hidden;
+  span& {
+    @apply mx-0 cursor-default px-0 hover:bg-transparent;
+  }
+}
+.asta-thinking-icon {
+  @apply h-4 w-4 shrink-0 text-mute;
+  .asta-thinking-sm & {
+    @apply h-3.5 w-3.5;
+  }
+  [data-status="thinking"] & {
+    @apply text-brand;
+  }
+}
+.asta-thinking-label {
+  @apply relative inline-block truncate text-ink;
+  [data-status="thinking"] > .asta-thinking-head > & {
+    @apply text-mute;
+  }
+}
+.asta-thinking-shine {
+  @apply pointer-events-none absolute inset-0 hidden overflow-hidden;
+  [data-status="thinking"] & {
+    @apply block;
+  }
+  & > span {
+    @apply absolute inset-0 [mask-image:linear-gradient(90deg,transparent_32%,#000_50%,transparent_68%)];
+  }
+  & > span > span {
+    @apply absolute inset-0 whitespace-nowrap text-ink;
+  }
+}
+.asta-thinking-time {
+  @apply hidden shrink-0 font-normal tabular-nums text-mute;
+  [data-status="thinking"] & {
+    @apply inline;
+  }
+}
+.asta-thinking-chevron {
+  @apply h-3.5 w-3.5 shrink-0 text-mute transition-transform duration-300 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  [open] > .asta-thinking-head > & {
+    @apply rotate-90;
+  }
+}
+.asta-thinking-preview {
+  @apply block w-full basis-full truncate pl-[22px] font-normal text-mute;
+  [open] > summary > & {
+    @apply hidden;
+  }
+  .asta-thinking-sm & {
+    @apply pl-5;
+  }
+}
+.asta-thinking-steps {
+  @apply ml-[7px] mt-1 flex flex-col gap-2 pb-1 pl-[14px] shadow-[inset_1px_0_0_color-mix(in_srgb,var(--ink)_12%,transparent)];
+  & > li {
+    @apply leading-relaxed text-ink-2;
+  }
+}
+
+/* ---- Context meter ----
+ * <button class="asta-context-meter" popovertarget="ctx" aria-haspopup="dialog" aria-label="Context window: 62% used" data-warn>
+ *   <svg class="asta-context-meter-ring" viewBox="0 0 16 16" aria-hidden="true"><circle class="asta-context-meter-ring-track" cx="8" cy="8" r="6.25"/>
+ *   <circle class="asta-context-meter-ring-bar" cx="8" cy="8" r="6.25" pathLength="100" stroke-dasharray="100 100" stroke-dashoffset="38"/></svg>
+ *   <span>62%</span><span class="asta-context-meter-of">of 200k</span><span class="asta-context-meter-warn">· Near limit</span></button>
+ * <div id="ctx" popover="auto" role="dialog" data-asta-popover data-side="top" data-align="end" class="asta-float asta-popover asta-context-meter-panel">
+ *   <div class="asta-context-meter-breakdown">head · total · bar (asta-context-meter-seg with --start/--value) · legend · warn · compact</div></div>
+ * data-warn on the button and the breakdown near the limit. Segments and legend dots take their fill from their position. */
+.asta-context-meter {
+  @apply inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md px-2 text-[12.5px] tabular-nums text-mute outline-none transition-colors duration-200;
+  @apply hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50 aria-expanded:bg-paper-2;
+  &[data-warn] {
+    @apply font-medium text-ink;
+  }
+}
+.asta-context-meter-sm {
+  @apply h-7 px-1.5;
+  & .asta-context-meter-of,
+  & .asta-context-meter-warn {
+    @apply hidden;
+  }
+}
+.asta-context-meter-of {
+  [data-warn] > & {
+    @apply hidden;
+  }
+}
+.asta-context-meter-warn {
+  @apply hidden;
+  [data-warn] > & {
+    @apply inline;
+  }
+}
+.asta-context-meter-ring {
+  @apply h-4 w-4 shrink-0 -rotate-90;
+}
+.asta-context-meter-ring-track {
+  @apply fill-none stroke-[color-mix(in_srgb,var(--ink)_11%,transparent)] [stroke-width:2.5];
+}
+.asta-context-meter-ring-bar {
+  @apply fill-none stroke-brand [stroke-linecap:round] [stroke-width:2.5] transition-[stroke-dashoffset,stroke] duration-700 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  [data-warn] & {
+    @apply stroke-ink;
+  }
+}
+/* Doubled with .asta-popover so it beats the popover's w-max, whatever order the groups load in. */
+.asta-context-meter-panel,
+.asta-popover.asta-context-meter-panel {
+  @apply w-[300px] p-4;
+}
+.asta-context-meter-breakdown {
+  @apply flex w-full flex-col gap-3 text-ink;
+}
+.asta-context-meter-head {
+  @apply flex items-baseline justify-between gap-3;
+  & > :first-child {
+    @apply text-[13.5px] font-medium;
+  }
+  & > :last-child:not(:first-child) {
+    @apply truncate text-[12px] text-mute;
+  }
+}
+.asta-context-meter-total {
+  @apply flex items-baseline justify-between gap-3 text-[12.5px] tabular-nums text-mute;
+  & b {
+    @apply text-[22px] font-medium tracking-[-0.03em] text-ink;
+  }
+  [data-warn] & > :last-child {
+    @apply font-medium text-ink;
+  }
+}
+.asta-context-meter-bar {
+  @apply relative h-2 w-full overflow-hidden rounded-full bg-paper-2 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_6%,transparent)];
+}
+.asta-context-meter-seg {
+  @apply absolute inset-0 origin-left bg-brand shadow-[inset_-1px_0_0_var(--paper)] transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  transform: translateX(calc(var(--start, 0) * 100%)) scaleX(var(--value, 0));
+}
+.asta-context-meter-seg:nth-child(2),
+.asta-context-meter-legend > li:nth-child(2) > .asta-context-meter-dot {
+  @apply bg-[color-mix(in_srgb,var(--brand)_55%,var(--paper))];
+}
+.asta-context-meter-seg:nth-child(3),
+.asta-context-meter-legend > li:nth-child(3) > .asta-context-meter-dot {
+  @apply bg-[color-mix(in_srgb,var(--ink)_62%,var(--paper))];
+}
+.asta-context-meter-seg:nth-child(4),
+.asta-context-meter-legend > li:nth-child(4) > .asta-context-meter-dot {
+  @apply bg-[color-mix(in_srgb,var(--ink)_28%,var(--paper))];
+}
+.asta-context-meter-legend {
+  @apply flex flex-col gap-1.5 text-[12.5px];
+  & > li {
+    @apply flex items-center gap-2 text-ink-2;
+  }
+  & > li > :nth-child(2) {
+    @apply min-w-0 flex-1 truncate;
+  }
+  & > li > :nth-child(3) {
+    @apply tabular-nums text-ink;
+  }
+  & > li > :nth-child(4) {
+    @apply w-9 text-right tabular-nums text-mute;
+  }
+  & > li[data-free] > :nth-child(2) {
+    @apply text-mute;
+  }
+}
+.asta-context-meter-dot {
+  @apply h-2 w-2 shrink-0 rounded-full bg-brand;
+  [data-free] > & {
+    @apply bg-transparent shadow-[inset_0_0_0_1.5px_color-mix(in_srgb,var(--ink)_22%,transparent)];
+  }
+}
+.asta-context-meter-note {
+  @apply flex gap-1.5 rounded-lg bg-paper-2 px-2.5 py-2 text-[12.5px] leading-snug text-ink [&>svg]:mt-px [&>svg]:h-3.5 [&>svg]:w-3.5 [&>svg]:shrink-0;
+  & b {
+    @apply font-medium;
+  }
+}
+.asta-context-meter-compact {
+  @apply flex h-8 w-full items-center justify-center gap-2 rounded-md bg-paper-2 text-[13px] font-medium text-ink outline-none transition-[background-color,opacity,transform] duration-200 [&>svg]:h-3.5 [&>svg]:w-3.5;
+  @apply hover:bg-[color-mix(in_srgb,var(--ink)_8%,var(--paper-2))] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-brand/50;
+  @apply disabled:pointer-events-none disabled:opacity-60 aria-busy:pointer-events-none aria-busy:opacity-60 [&.htmx-request]:opacity-60;
+}
+
+/* ---- Agent plan ----
+ * <section class="asta-agent-plan" aria-label="Migrate billing">
+ *   <header class="asta-agent-plan-head"><p class="asta-agent-plan-state">Running · 8.3s</p><h3 class="asta-agent-plan-title">…</h3>
+ *     <div class="asta-agent-plan-progress"><span class="asta-agent-plan-track"><span style="--value:.43"></span></span><span><b>3</b> of 7</span></div></header>
+ *   <ol class="asta-agent-plan-steps">
+ *     <li class="asta-agent-plan-step" data-status="done"><details><summary class="asta-agent-plan-row"><span class="asta-agent-plan-icon"></span>
+ *       <span class="asta-agent-plan-name">…</span><span class="asta-agent-plan-time">1.6s</span><svg class="asta-agent-plan-chevron">…</svg></summary>
+ *       <div class="asta-agent-plan-body"><p class="asta-agent-plan-detail">…</p><ul class="asta-agent-plan-subs"><li data-status="done"><span class="asta-agent-plan-icon"></span>…</li></ul></div></details></li>
+ *     <li class="asta-agent-plan-step" data-status="pending"><div class="asta-agent-plan-row">…</div></li></ol></section>
+ * data-status: pending | running | done | skipped | failed. The icon is drawn from it. Add <span class="asta-agent-plan-badge">Failed</span>
+ * after the name for skipped and failed steps, open the running step's <details>, and data-failed on the section after a failure. */
+.asta-agent-plan {
+  @apply flex w-full flex-col rounded-[14px] bg-paper text-ink shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_9%,transparent),0_1px_2px_rgb(0_0_0/0.04)];
+}
+.asta-agent-plan-head {
+  @apply flex flex-col px-4 pb-3 pt-4;
+}
+.asta-agent-plan-state {
+  @apply flex items-center gap-1.5 text-[12px] tabular-nums text-mute;
+  [data-failed] & {
+    @apply font-medium text-ink;
+  }
+}
+.asta-agent-plan-title {
+  @apply mt-0.5 text-[14.5px] font-medium leading-snug tracking-[-0.01em];
+}
+.asta-agent-plan-progress {
+  @apply mt-3 flex items-center gap-3 text-[12px] tabular-nums text-mute;
+  & b {
+    @apply font-medium text-ink;
+  }
+}
+.asta-agent-plan-track {
+  @apply relative h-1 flex-1 overflow-hidden rounded-full bg-paper-2;
+  & > span {
+    @apply absolute inset-0 origin-left scale-x-[var(--value,0)] bg-brand transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+    [data-failed] & {
+      @apply bg-ink;
+    }
+  }
+}
+.asta-agent-plan-steps {
+  @apply flex flex-col px-2 pb-2;
+}
+.asta-agent-plan-step {
+  @apply relative;
+  &:not(:last-child) {
+    @apply after:pointer-events-none after:absolute after:bottom-[-6px] after:left-[17px] after:top-[30px] after:w-px after:bg-[color-mix(in_srgb,var(--ink)_10%,transparent)] after:content-[''];
+  }
+}
+.asta-agent-plan-row {
+  @apply flex min-h-10 w-full list-none items-center gap-2.5 rounded-lg px-2 py-2 outline-none [&::-webkit-details-marker]:hidden;
+  summary& {
+    @apply cursor-pointer transition-colors duration-200 hover:bg-paper-2 focus-visible:ring-2 focus-visible:ring-brand/50;
+  }
+}
+.asta-agent-plan-name {
+  @apply min-w-0 flex-1 text-left text-[13.5px] leading-snug [overflow-wrap:anywhere];
+  [data-status="pending"] > * > &,
+  [data-status="pending"] > * > * > & {
+    @apply text-mute;
+  }
+  [data-status="running"] > * > &,
+  [data-status="running"] > * > * > &,
+  [data-status="failed"] > * > &,
+  [data-status="failed"] > * > * > & {
+    @apply font-medium;
+  }
+  [data-status="done"] > * > &,
+  [data-status="done"] > * > * > & {
+    @apply text-ink-2;
+  }
+  [data-status="skipped"] > * > &,
+  [data-status="skipped"] > * > * > & {
+    @apply text-mute line-through decoration-[color-mix(in_srgb,var(--ink)_30%,transparent)];
+  }
+}
+.asta-agent-plan-badge {
+  @apply shrink-0 rounded bg-paper-2 px-1.5 py-px text-[11px] text-mute;
+  [data-status="failed"] > * > &,
+  [data-status="failed"] > * > * > & {
+    @apply bg-ink font-medium text-paper;
+  }
+}
+.asta-agent-plan-time {
+  @apply w-12 shrink-0 text-right text-[12px] tabular-nums text-mute;
+}
+.asta-agent-plan-chevron {
+  @apply h-3.5 w-3.5 shrink-0 text-mute transition-transform duration-300 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  [open] > summary > & {
+    @apply rotate-90;
+  }
+}
+.asta-agent-plan-body {
+  @apply flex flex-col gap-1.5 pb-2 pl-[38px] pr-2;
+}
+.asta-agent-plan-detail {
+  @apply truncate text-[12px] leading-relaxed text-mute;
+  [data-status="running"] & {
+    @apply font-mono;
+  }
+  [data-status="failed"] & {
+    @apply whitespace-normal text-ink;
+  }
+}
+.asta-agent-plan-subs {
+  @apply flex flex-col gap-1;
+  & > li {
+    @apply flex items-center gap-2 text-[12.5px] text-ink-2;
+  }
+  & > li[data-status="pending"] {
+    @apply text-mute;
+  }
+  & .asta-agent-plan-icon {
+    @apply h-3.5 w-3.5;
+  }
+}
+.asta-agent-plan-icon {
+  @apply relative grid h-[18px] w-[18px] shrink-0 place-items-center rounded-full shadow-[inset_0_0_0_1.5px_color-mix(in_srgb,var(--ink)_20%,transparent)];
+}
+
+/* ---- Tool approval ----
+ * <div class="asta-tool-approval" data-asta-tool-approval>
+ *   <ul class="asta-tool-approval-receipts" aria-label="Tool calls"></ul>
+ *   <div class="asta-tool-approval-queue">
+ *     <div class="asta-tool-approval-card" role="group" tabindex="0" aria-label="Approve run_sql" data-tool="run_sql" data-id="c1">
+ *       <div class="asta-tool-approval-head"><span class="asta-tool-approval-icon"><svg/></span><div class="asta-tool-approval-meta">
+ *         <p class="asta-tool-approval-source">Wants to use a tool · Postgres</p><p class="asta-tool-approval-tool">run_sql</p></div>
+ *         <span class="asta-tool-approval-count">1 of 3</span></div>
+ *       <p class="asta-tool-approval-summary">…</p>  then <pre class="asta-tool-approval-code">, .asta-tool-approval-diff or <dl class="asta-tool-approval-args">
+ *       <div class="asta-tool-approval-foot"><p class="asta-tool-approval-risk" data-risk="read|write|destructive"><svg/>Read only</p>
+ *         <div class="asta-tool-approval-actions"><button class="asta-tool-approval-deny" data-asta-decide="deny">Deny <kbd>Esc</kbd></button>
+ *         <div class="asta-dropdown asta-tool-approval-split" data-asta-dropdown data-align="end"><button class="asta-tool-approval-allow" data-asta-decide="once">Allow once</button>
+ *         <button class="asta-tool-approval-more" data-asta-dropdown-trigger aria-haspopup="menu" …><svg/></button>
+ *         <div role="menu" popover="manual" data-asta-mpanel class="asta-float asta-dropdown-panel">…data-asta-decide="always"…</div></div></div></div></div>
+ *     …more cards queue behind the first</div></div>
+ * asta.js turns a decision into a receipt (data-decision), runs queued calls to an always-allowed tool, and fires
+ * "asta:tool-decision". The server can replace a receipt with one that carries a time: <span class="asta-tool-approval-receipt-time">. */
+.asta-tool-approval {
+  @apply flex w-full flex-col gap-3 text-ink;
+}
+.asta-tool-approval-receipts {
+  @apply -mx-2.5 flex flex-col empty:hidden;
+}
+.asta-tool-approval-receipt {
+  @apply flex min-h-8 items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12.5px] [&>svg]:h-3.5 [&>svg]:w-3.5 [&>svg]:shrink-0 [&>svg]:text-brand;
+  &[data-decision="deny"] > svg,
+  &[data-state="error"] > svg {
+    @apply text-ink;
+  }
+  & > b {
+    @apply font-medium;
+  }
+  & > code {
+    @apply min-w-0 truncate font-mono text-[12px] text-ink-2;
+  }
+}
+.asta-tool-approval-receipt-sep {
+  @apply text-mute;
+}
+.asta-tool-approval-receipts:focus {
+  @apply outline-none;
+}
+.asta-tool-approval-receipt-summary {
+  @apply hidden min-w-0 flex-1 truncate text-mute sm:block;
+}
+.asta-tool-approval-receipt-time {
+  @apply ml-auto shrink-0 tabular-nums text-mute;
+}
+.asta-tool-approval-queue {
+  @apply relative isolate empty:hidden;
+}
+.asta-tool-approval-card {
+  @apply relative flex flex-col gap-3 rounded-[14px] bg-paper p-4 outline-none;
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent),0_10px_28px_-16px_rgb(0_0_0/0.25),0_1px_2px_rgb(0_0_0/0.04)];
+  @apply focus-visible:shadow-[inset_0_0_0_1px_var(--brand),0_0_0_3px_color-mix(in_srgb,var(--brand)_16%,transparent)];
+  .asta-tool-approval-queue > &:not(:first-child) {
+    @apply hidden;
+  }
+}
+.asta-tool-approval-head {
+  @apply flex items-start gap-3;
+}
+.asta-tool-approval-icon {
+  @apply grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-paper-2 text-ink [&>svg]:h-4 [&>svg]:w-4;
+}
+.asta-tool-approval-meta {
+  @apply min-w-0 flex-1;
+}
+.asta-tool-approval-source {
+  @apply truncate text-[12px] text-mute;
+}
+.asta-tool-approval-tool {
+  @apply truncate font-mono text-[13.5px] font-medium;
+}
+.asta-tool-approval-count {
+  @apply shrink-0 rounded-md bg-paper-2 px-1.5 py-0.5 text-[11.5px] tabular-nums text-mute;
+}
+.asta-tool-approval-summary {
+  @apply text-[13.5px] leading-snug text-ink-2;
+}
+.asta-tool-approval-code {
+  @apply overflow-x-auto rounded-lg bg-paper-2 px-3 py-2.5 font-mono text-[12px] leading-[1.6] text-ink [scrollbar-width:thin];
+}
+.asta-tool-approval-diff {
+  @apply overflow-hidden rounded-lg bg-paper-2 text-[12px];
+}
+.asta-tool-approval-diff-file {
+  @apply flex items-center justify-between gap-3 px-3 pb-1 pt-2 font-mono text-ink-2;
+  & > :last-child {
+    @apply shrink-0 tabular-nums text-mute;
+  }
+}
+.asta-tool-approval-diff-lines {
+  @apply overflow-x-auto pb-1.5 font-mono leading-[1.6] [scrollbar-width:thin];
+  & > div {
+    @apply flex min-w-max whitespace-pre pr-3 text-ink before:w-6 before:shrink-0 before:select-none before:text-center before:text-mute before:content-['_'];
+  }
+  & > div[data-sign="+"] {
+    @apply bg-[color-mix(in_srgb,var(--brand)_9%,transparent)] before:text-brand before:content-['+'];
+  }
+  & > div[data-sign="-"] {
+    @apply text-mute line-through decoration-[color-mix(in_srgb,var(--ink)_25%,transparent)] before:content-['−'];
+  }
+}
+.asta-tool-approval-args {
+  @apply grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 rounded-lg bg-paper-2 px-3 py-2.5 text-[12.5px];
+  & dt {
+    @apply text-mute;
+  }
+  & dd {
+    @apply min-w-0 break-words font-mono text-[12px] text-ink;
+  }
+}
+.asta-tool-approval-foot {
+  @apply flex flex-wrap items-center justify-between gap-x-3 gap-y-2.5 pt-0.5;
+}
+.asta-tool-approval-risk {
+  @apply flex items-center gap-1.5 text-[12.5px] text-mute [&>svg]:h-3.5 [&>svg]:w-3.5 [&>svg]:shrink-0;
+  &[data-risk="destructive"] {
+    @apply font-medium text-ink;
+  }
+}
+.asta-tool-approval-actions {
+  @apply ml-auto flex items-center gap-2;
+  & kbd {
+    @apply ml-1 hidden rounded bg-[color-mix(in_srgb,currentColor_14%,transparent)] px-1 font-sans text-[10.5px] leading-[1.5] sm:inline;
+  }
+}
+.asta-tool-approval-deny {
+  @apply inline-flex h-8 items-center rounded-md px-3 text-[13px] font-medium text-ink-2 outline-none shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)];
+  @apply transition-[background-color,color,transform] duration-150 hover:bg-paper-2 hover:text-ink active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-brand/50;
+}
+.asta-tool-approval-split {
+  @apply flex;
+}
+.asta-tool-approval-allow,
+.asta-tool-approval-more {
+  @apply inline-flex h-8 items-center bg-ink text-[13px] font-medium text-paper outline-none transition-[background-color,transform] duration-150;
+  @apply hover:bg-[color-mix(in_srgb,var(--ink)_86%,var(--paper))] active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 focus-visible:ring-offset-paper;
+}
+.asta-tool-approval-allow {
+  @apply rounded-l-md pl-3 pr-2.5;
+}
+.asta-tool-approval-more {
+  @apply w-7 justify-center rounded-r-md shadow-[inset_1px_0_0_color-mix(in_srgb,var(--paper)_22%,transparent)] [&>svg]:h-3.5 [&>svg]:w-3.5;
+  & > svg {
+    @apply transition-transform duration-300 ease-[cubic-bezier(.16,1,.3,1)];
+  }
+  [data-open] > & > svg {
+    @apply rotate-180;
+  }
+}

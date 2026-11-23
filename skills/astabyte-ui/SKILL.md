@@ -7,8 +7,8 @@ description: Build React UI with Astabyte UI (ui.astabyte.com), a motion-first s
 
 A React 19 + Tailwind CSS v4 component kit with hand-tuned motion, distributed as a [shadcn](https://ui.shadcn.com) registry. Components are copied into the project as source by default; the same components are also an npm library (`asta-ui`) for projects that would rather import than own them. Interactive components (dialog, dropdown menu, select, tooltip, tabs, accordion, checkbox, switch, slider, radio group, segmented control, avatar, command palette) come in two builds with the same props, look and motion: on Radix (`radix-ui`) or on Base UI (`@base-ui/react`). The headless library handles behaviour (focus trap, keyboard, ARIA); Astabyte adds the styling and motion. Use the build that matches the project: if it already depends on `@base-ui/react` (or `components.json` has a `base-*` style, or the `@astabyte` registry points at `/r/base/`), use Base UI; if it has `radix-ui` or `@radix-ui/*`, use Radix. Don't mix the two in one project.
 
-- **Kit** (84): everyday building blocks by atomic layer (Atoms, Molecules, Organisms).
-- **Motion lab** (38): focused motion components for real products: trading, payments, ecommerce, plus interaction pieces.
+- **Kit** (94): everyday building blocks by atomic layer (Atoms, Molecules, Organisms).
+- **Motion lab** (42): focused motion components for real products: trading, payments, ecommerce, plus interaction pieces.
 
 Browse: https://ui.astabyte.com · Machine-readable index: https://ui.astabyte.com/llms.txt · Registry index: https://ui.astabyte.com/r/registry.json (Base UI: https://ui.astabyte.com/r/base/registry.json)
 
@@ -130,6 +130,9 @@ Typical things users ask for, and the components that cover them (more at https:
 | [Inline edit](https://ui.astabyte.com/inline-edit) `inline-edit` | Atoms | Text that turns into a field when you click it. Enter saves, Esc puts the old text back, and a small tick fades in once it's saved. | — |
 | [Countdown](https://ui.astabyte.com/countdown) `countdown` | Atoms | Time left until a sale ends or a code can be sent again. Each digit rolls down as it changes. Use boxed tiles or an inline clock. It pauses while offscreen. | — |
 | [Meter](https://ui.astabyte.com/meter) `meter` | Atoms | How much of a limit is used: storage, seats, API calls. Split it into parts with a legend. The bar sweeps in and glides when values change. Near the limit it turns ink and says so. | — |
+| [Thinking](https://ui.astabyte.com/thinking) `thinking` | Atoms | Shows that a model is reasoning, with a shimmering label and a live timer. Open it to watch the reasoning lines arrive. When it finishes it folds to one summary line that reads Thought for 12s. | — |
+| [Context meter](https://ui.astabyte.com/context-meter) `context-meter` | Atoms | A small ring that shows how much of the context window is used. Click it for a breakdown by conversation, files, tools and system prompt. Near the limit it warns in words and offers to compact the conversation. | — |
+| [Scrub input](https://ui.astabyte.com/scrub-input) `scrub-input` | Atoms | The number field of a design tool. Drag its label to scrub, Shift for ×10 and Alt for ×0.1, or click and type units and sums like 1.5rem or 24*2. At a limit the value nudges toward the edge instead of shaking. | — |
 | [Radio group](https://ui.astabyte.com/radio-group) `radio-group` | Molecules | Choose one: option cards with a ring that glides to the selection, or a compact list. | Radix + Base UI |
 | [Segmented control](https://ui.astabyte.com/segmented-control) `segmented-control` | Molecules | A pill that slides between options and squashes a little on the way. | Radix + Base UI |
 | [Tabs](https://ui.astabyte.com/tabs) `tabs` | Molecules | Underline tabs with an indicator that stretches between them and content that cross-fades. | Radix + Base UI |
@@ -165,6 +168,10 @@ Typical things users ask for, and the components that cover them (more at https:
 | [Phone input](https://ui.astabyte.com/phone-input) `phone-input` | Molecules | A phone field with a country picker. The number formats as you type and the caret stays put. Paste a number with its +code and the country follows. A check pops in once it's complete. | — |
 | [Sortable list](https://ui.astabyte.com/sortable-list) `sortable-list` | Molecules | Put a list in order. Drag a row by its handle and the others slide aside to make room. From the keyboard, Space picks a row up and the arrows move it. Every move is announced. | — |
 | [Cookie consent](https://ui.astabyte.com/cookie-consent) `cookie-consent` | Molecules | A cookie banner that asks once. It slides up with Accept, Reject and Customize. Customize slides over to a switch per category, and the choice can be saved for next time. | Radix + Base UI |
+| [Model picker](https://ui.astabyte.com/model-picker) `model-picker` | Molecules | Pick an AI model from a list grouped by family. Each row shows a hint, speed and intelligence dots, the context size and a New badge. Search or type to jump, and the selection mark slides to your pick. | — |
+| [Citations](https://ui.astabyte.com/citations) `citations` | Molecules | An answer with numbered source pills. Hover, focus or tap a pill to preview the source with the quoted part highlighted. The sources row below expands into a full list and lights the pills of the source you point at. | — |
+| [Tool approval](https://ui.astabyte.com/tool-approval) `tool-approval` | Molecules | Asks before an agent runs a tool, and shows the query, diff or arguments plus how risky the call is. Deny it, allow it once or always allow that tool. Each answer folds into a short receipt and the next request in the queue moves up. | — |
+| [Agent plan](https://ui.astabyte.com/agent-plan) `agent-plan` | Molecules | A task list that fills in as an agent works through a plan. Each step shows whether it is waiting, running, done, skipped or failed, with its own timer and sub-steps. The running step opens to show its live log line. | — |
 | [Navbar](https://ui.astabyte.com/navbar) `navbar` | Organisms | A site header with a mega menu: the panel morphs between sections, tiles dim their neighbours, and it folds on mobile. | Radix + Base UI |
 | [Sign-in card](https://ui.astabyte.com/sign-in) `sign-in` | Organisms | Email and password with social buttons, inline validation and a submit that shows progress then success. | Radix + Base UI |
 | [Properties panel](https://ui.astabyte.com/properties-panel) `properties-panel` | Organisms | The inspector of a design editor: collapsible sections, compact number fields you drag to scrub (Shift ×10, Alt ×0.1), and a colour field with a swatch and a hex input. | — |
@@ -188,6 +195,9 @@ Typical things users ask for, and the components that cover them (more at https:
 | [File manager](https://ui.astabyte.com/file-manager) `file-manager` | Organisms | Browse folders in a tree and files in a grid or a list. Breadcrumbs follow you down, search filters as you type, and a storage meter sits in the sidebar. | Radix + Base UI |
 | [Billing](https://ui.astabyte.com/billing) `billing` | Organisms | A billing page with the current plan, usage, the card on file and past invoices. Pick another plan and the price difference rolls in before you confirm. | Radix + Base UI |
 | [Testimonials](https://ui.astabyte.com/testimonials) `testimonials` | Organisms | Customer quotes for a marketing page. Two rows drift past in opposite directions and pause on hover. Or lay them out as a grid, which is also what reduced motion gets. | Radix + Base UI |
+| [Prompt composer](https://ui.astabyte.com/prompt-composer) `prompt-composer` | Organisms | A message field that grows as you type. Type @ to mention a file, person or doc and / for a command, and each pick becomes a chip that one Backspace removes. Attach files, pick a model, and stop the agent while a band of light circles the border. | — |
+| [Trace waterfall](https://ui.astabyte.com/trace-waterfall) `trace-waterfall` | Organisms | Every step of an agent run on one time axis, as a tree you can fold. Bars grow in from the left, and tokens, cost and latency sit in their own columns. Select a span to read its input and output, and watch new spans arrive in live mode. | — |
+| [API keys](https://ui.astabyte.com/api-keys) `api-keys` | Organisms | A settings section for API keys with masked prefixes, permissions, last use and status. A new key shows once in a highlighted row with a copy button, then masks for good. Revoking asks first and leaves a few seconds to undo. | — |
 
 ## Catalogue: motion lab
 
@@ -231,6 +241,10 @@ Typical things users ask for, and the components that cover them (more at https:
 | [Split bill](https://ui.astabyte.com/split-bill) `split-bill` | Feedback | Friends join the bill and everyone's share rolls down. Requests go out and each one ticks over to Paid. | — |
 | [Flash sale](https://ui.astabyte.com/flash-sale) `flash-sale` | Feedback | Stock drains, the claimed count rolls and the clock ticks until it sells out and turns into a waitlist. | — |
 | [Price alert](https://ui.astabyte.com/price-alert) `price-alert` | Feedback | The price walks up to your alert line and crosses it. The alert drops in and the bell rings. | — |
+| [Fallback chain](https://ui.astabyte.com/fallback-chain) `fallback-chain` | Feedback | A request falls down a chain of models. Astra 2 Pro times out, Astra 2 is rate limited, then Astra Fast answers and the reply streams in with its latency. Click a model to make it fail or recover next run, press R to retry. | — |
+| [Autonomy dial](https://ui.astabyte.com/autonomy-dial) `autonomy-dial` | Inputs | Turn an agent from Ask me first to Runs on its own. Actions like Send email, Run SQL and Deploy glide from Asks first to Runs alone as it moves. It sweeps by itself until you drag it or use the arrows. | — |
+| [Agent team](https://ui.astabyte.com/agent-team) `agent-team` | Feedback | A lead agent splits a goal into three subagent tasks that branch out and fill their progress. They report back one by one and merge into a summary card. Hover to pause. | — |
+| [Change ledger](https://ui.astabyte.com/change-ledger) `change-ledger` | Feedback | Every change an agent makes lands at the top of a feed. Hover one to undo it, and it strikes through while the changes that depend on it dim. Arrows move between rows, Enter undoes or restores. | — |
 
 ## Catalogue: variants
 

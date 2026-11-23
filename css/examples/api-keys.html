@@ -1,0 +1,99 @@
+<!-- asta.js opens the form, checks it, shows a new secret once and revokes with an undo window. Add hx-post (or action) to the
+     form to create keys on your server; return a .asta-api-keys-reveal row and listen for "asta:key-revoke". Loading: a
+     <ul class="asta-api-keys-list" aria-busy="true"> of three <li class="asta-api-keys-skeleton"> rows with six <span>s each.
+     Error: <div class="asta-api-keys-error" role="alert"> with an icon, two lines and a "Try again" button. -->
+<section class="asta-api-keys" data-asta-keys data-undo-ms="8000" aria-labelledby="ak-title" style="max-width:880px">
+<header class="asta-api-keys-header"><div><h3 class="asta-api-keys-title" id="ak-title">API keys</h3><p class="asta-api-keys-desc">Keys let your servers call the Astabyte API. Keep them out of client code and rotate them often.</p></div>
+<button type="button" class="asta-btn asta-btn-sm" data-asta-keys-create aria-expanded="false" aria-controls="ak-form"><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9"/></svg>Create key</button></header>
+<form class="asta-api-keys-form" id="ak-form" data-asta-keys-form novalidate hidden>
+<div class="asta-api-keys-fields">
+<div class="asta-api-keys-field"><label for="ak-name">Key name</label><input class="asta-api-keys-control" id="ak-name" name="name" maxlength="60" autocomplete="off" placeholder="e.g. Production server" aria-describedby="ak-name-msg">
+<p class="asta-api-keys-msg" id="ak-name-msg" data-hint="Only your team sees this." data-error-text="Give the key a name so you can tell it apart later."><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.5 14 13H2zM8 6.5v3M8 11.2h.01"/></svg><span>Only your team sees this.</span></p></div>
+<div class="asta-api-keys-field"><label for="ak-exp">Expires</label><span class="asta-api-keys-select"><select class="asta-api-keys-control" id="ak-exp" name="expires"><option value="30">30 days</option><option value="90" selected>90 days</option><option value="365">1 year</option><option value="">Never</option></select><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4.5 6.5 3.5 3.5 3.5-3.5"/></svg></span></div>
+</div>
+<fieldset class="asta-api-keys-scopes" aria-describedby="ak-scope-msg"><legend>Permissions</legend>
+<div class="asta-api-keys-scope-grid">
+<label class="asta-api-keys-scope"><span class="asta-api-keys-box"><input type="checkbox" name="scopes" value="projects:read"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 8.5 2.5 2.5 5.5-6"/></svg></span><span><span class="asta-api-keys-scope-label">Read projects</span><span class="asta-api-keys-scope-hint"><code>projects:read</code> · List projects and their settings</span></span></label>
+<label class="asta-api-keys-scope"><span class="asta-api-keys-box"><input type="checkbox" name="scopes" value="projects:write"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 8.5 2.5 2.5 5.5-6"/></svg></span><span><span class="asta-api-keys-scope-label">Change projects</span><span class="asta-api-keys-scope-hint"><code>projects:write</code> · Create, rename and archive</span></span></label>
+<label class="asta-api-keys-scope"><span class="asta-api-keys-box"><input type="checkbox" name="scopes" value="deploys:write"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 8.5 2.5 2.5 5.5-6"/></svg></span><span><span class="asta-api-keys-scope-label">Start deploys</span><span class="asta-api-keys-scope-hint"><code>deploys:write</code> · Trigger and roll back builds</span></span></label>
+<label class="asta-api-keys-scope"><span class="asta-api-keys-box"><input type="checkbox" name="scopes" value="billing:read"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 8.5 2.5 2.5 5.5-6"/></svg></span><span><span class="asta-api-keys-scope-label">Read billing</span><span class="asta-api-keys-scope-hint"><code>billing:read</code> · Invoices and usage</span></span></label>
+</div>
+<p class="asta-api-keys-msg" id="ak-scope-msg" data-hint="Give it only what it needs." data-error-text="Pick at least one permission."><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.5 14 13H2zM8 6.5v3M8 11.2h.01"/></svg><span>Give it only what it needs.</span></p></fieldset>
+<p class="asta-api-keys-alert" role="alert" data-asta-keys-alert hidden><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.5 14 13H2zM8 6.5v3M8 11.2h.01"/></svg>Couldn't create the key. Try again in a moment.</p>
+<div class="asta-api-keys-actions"><button type="button" class="asta-btn asta-btn-ghost asta-btn-sm" data-asta-keys-cancel>Cancel</button><button type="submit" class="asta-btn asta-btn-sm">Create key</button></div>
+</form>
+<div class="asta-api-keys-body">
+<div class="asta-api-keys-head" aria-hidden="true"><span>Name</span><span>Key</span><span>Permissions</span><span>Last used</span><span>Status</span><span></span></div>
+<h4 class="asta-sr-only" tabindex="-1" data-asta-keys-heading>Your API keys</h4>
+<ul class="asta-api-keys-list" aria-label="API keys">
+<li class="asta-api-keys-row" data-id="k1">
+<div class="asta-api-keys-grid">
+<div class="asta-api-keys-name"><p title="Production server">Production server</p><p>Created Aug 23</p></div>
+<div class="asta-api-keys-menu"><button type="button" class="asta-btn asta-btn-ghost asta-btn-xs" data-asta-keys-revoke aria-expanded="false" aria-label="Revoke Production server">Revoke</button></div>
+<div class="asta-api-keys-cell"><span class="asta-api-keys-cell-label">Key</span><code class="asta-api-keys-key">ak_live_…9f2c</code></div>
+<div class="asta-api-keys-cell"><span class="asta-api-keys-cell-label">Permissions</span><span class="asta-api-keys-chips"><code>projects:read</code><span title="deploys:write">+1<span class="asta-sr-only"> more: deploys:write</span></span></span></div>
+<div class="asta-api-keys-meta"><span class="asta-api-keys-cell-label">Last used</span><span>3 min ago</span></div>
+<div class="asta-api-keys-meta"><span class="asta-api-keys-cell-label">Status</span><span class="asta-api-keys-status">Active</span></div>
+</div>
+<div class="asta-api-keys-confirm" role="group" aria-label="Confirm revoking Production server" hidden><p>Apps using ak_live_…9f2c stop working right away.</p><div><button type="button" class="asta-btn asta-btn-ghost asta-btn-sm" data-asta-keys-keep>Keep key</button><button type="button" class="asta-btn asta-btn-sm" data-asta-keys-confirm>Revoke key</button></div></div>
+<div class="asta-api-keys-undo"><p>Revoked <b>Production server</b><span>. Requests with ak_live_…9f2c now fail.</span></p><button type="button" class="asta-btn asta-btn-ghost asta-btn-xs" data-asta-keys-undo>Undo</button><span class="asta-api-keys-countdown" aria-hidden="true"></span></div>
+</li>
+<li class="asta-api-keys-row" data-id="k2">
+<div class="asta-api-keys-grid">
+<div class="asta-api-keys-name"><p title="GitHub Actions deploy pipeline for the marketing site and the docs">GitHub Actions deploy pipeline for the marketing site and the docs</p><p>Created Sep 3</p></div>
+<div class="asta-api-keys-menu"><button type="button" class="asta-btn asta-btn-ghost asta-btn-xs" data-asta-keys-revoke aria-expanded="false" aria-label="Revoke GitHub Actions deploy pipeline for the marketing site and the docs">Revoke</button></div>
+<div class="asta-api-keys-cell"><span class="asta-api-keys-cell-label">Key</span><code class="asta-api-keys-key">ak_live_…a71e</code></div>
+<div class="asta-api-keys-cell"><span class="asta-api-keys-cell-label">Permissions</span><span class="asta-api-keys-chips"><code>deploys:write</code><span title="projects:read, projects:write">+2<span class="asta-sr-only"> more: projects:read, projects:write</span></span></span></div>
+<div class="asta-api-keys-meta"><span class="asta-api-keys-cell-label">Last used</span><span>2 h ago</span></div>
+<div class="asta-api-keys-meta"><span class="asta-api-keys-cell-label">Status</span><span class="asta-api-keys-status">Expires in 9 d</span></div>
+</div>
+<div class="asta-api-keys-confirm" role="group" aria-label="Confirm revoking GitHub Actions deploy pipeline for the marketing site and the docs" hidden><p>Apps using ak_live_…a71e stop working right away.</p><div><button type="button" class="asta-btn asta-btn-ghost asta-btn-sm" data-asta-keys-keep>Keep key</button><button type="button" class="asta-btn asta-btn-sm" data-asta-keys-confirm>Revoke key</button></div></div>
+<div class="asta-api-keys-undo"><p>Revoked <b>GitHub Actions deploy pipeline for the marketing site and the docs</b><span>. Requests with ak_live_…a71e now fail.</span></p><button type="button" class="asta-btn asta-btn-ghost asta-btn-xs" data-asta-keys-undo>Undo</button><span class="asta-api-keys-countdown" aria-hidden="true"></span></div>
+</li>
+<li class="asta-api-keys-row" data-id="k3">
+<div class="asta-api-keys-grid">
+<div class="asta-api-keys-name"><p title="Staging">Staging</p><p>Created Oct 14</p></div>
+<div class="asta-api-keys-menu"><button type="button" class="asta-btn asta-btn-ghost asta-btn-xs" data-asta-keys-revoke aria-expanded="false" aria-label="Revoke Staging">Revoke</button></div>
+<div class="asta-api-keys-cell"><span class="asta-api-keys-cell-label">Key</span><code class="asta-api-keys-key">ak_test_…04bd</code></div>
+<div class="asta-api-keys-cell"><span class="asta-api-keys-cell-label">Permissions</span><span class="asta-api-keys-chips"><code>projects:read</code></span></div>
+<div class="asta-api-keys-meta"><span class="asta-api-keys-cell-label">Last used</span><span>6 d ago</span></div>
+<div class="asta-api-keys-meta"><span class="asta-api-keys-cell-label">Status</span><span class="asta-api-keys-status">Active</span></div>
+</div>
+<div class="asta-api-keys-confirm" role="group" aria-label="Confirm revoking Staging" hidden><p>Apps using ak_test_…04bd stop working right away.</p><div><button type="button" class="asta-btn asta-btn-ghost asta-btn-sm" data-asta-keys-keep>Keep key</button><button type="button" class="asta-btn asta-btn-sm" data-asta-keys-confirm>Revoke key</button></div></div>
+<div class="asta-api-keys-undo"><p>Revoked <b>Staging</b><span>. Requests with ak_test_…04bd now fail.</span></p><button type="button" class="asta-btn asta-btn-ghost asta-btn-xs" data-asta-keys-undo>Undo</button><span class="asta-api-keys-countdown" aria-hidden="true"></span></div>
+</li>
+<li class="asta-api-keys-row" data-id="k4">
+<div class="asta-api-keys-grid">
+<div class="asta-api-keys-name"><p title="Old analytics export">Old analytics export</p><p>Created Oct 19, 2025</p></div>
+<div class="asta-api-keys-menu"><button type="button" class="asta-btn asta-btn-ghost asta-btn-xs" data-asta-keys-revoke aria-expanded="false" aria-label="Revoke Old analytics export">Revoke</button></div>
+<div class="asta-api-keys-cell"><span class="asta-api-keys-cell-label">Key</span><code class="asta-api-keys-key">ak_live_…e3a8</code></div>
+<div class="asta-api-keys-cell"><span class="asta-api-keys-cell-label">Permissions</span><span class="asta-api-keys-chips"><code>billing:read</code></span></div>
+<div class="asta-api-keys-meta"><span class="asta-api-keys-cell-label">Last used</span><span>Aug 11</span></div>
+<div class="asta-api-keys-meta"><span class="asta-api-keys-cell-label">Status</span><span class="asta-api-keys-status" data-expired>Expired</span></div>
+</div>
+<div class="asta-api-keys-confirm" role="group" aria-label="Confirm revoking Old analytics export" hidden><p>It has already expired. Revoking removes it from the list.</p><div><button type="button" class="asta-btn asta-btn-ghost asta-btn-sm" data-asta-keys-keep>Keep key</button><button type="button" class="asta-btn asta-btn-sm" data-asta-keys-confirm>Revoke key</button></div></div>
+<div class="asta-api-keys-undo"><p>Revoked <b>Old analytics export</b><span>. Requests with ak_live_…e3a8 now fail.</span></p><button type="button" class="asta-btn asta-btn-ghost asta-btn-xs" data-asta-keys-undo>Undo</button><span class="asta-api-keys-countdown" aria-hidden="true"></span></div>
+</li>
+</ul>
+<div class="asta-api-keys-empty"><span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.5 2.5a3 3 0 1 1-2.6 4.5L3 11.9V13.5h1.6v-1.2h1.2v-1.2H7l1.1-1.1A3 3 0 0 1 10.5 2.5ZM11 5h.01"/></svg></span><p>No API keys yet</p><p>Create one to call the Astabyte API from your server or CI.</p><button type="button" class="asta-btn asta-btn-sm" data-asta-keys-create><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9"/></svg>Create your first key</button></div>
+</div>
+<template data-asta-keys-reveal><li class="asta-api-keys-reveal">
+<p class="asta-api-keys-reveal-title"><span data-slot="name"></span><span>New</span></p>
+<p class="asta-api-keys-reveal-text">Copy this key and store it somewhere safe, like a secrets manager.</p>
+<div class="asta-api-keys-secret"><input readonly aria-label="Secret" value=""><button type="button" class="asta-copy-button asta-copy-button-outline asta-copy-button-text" data-asta-copy="" data-timeout="1600" data-state="idle" data-copied="Copied"><span class="asta-copy-button-icons" aria-hidden="true"><svg viewBox="0 0 16 16" class="asta-copy-button-copy" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="5.25" y="5.25" width="8" height="8" rx="2"></rect><path d="M10.75 3.5V3.75A1.75 1.75 0 0 0 9 2H4A2 2 0 0 0 2 4v5a1.75 1.75 0 0 0 1.75 1.75H4" stroke-linecap="round"></path></svg><svg viewBox="0 0 16 16" class="asta-copy-button-done" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m3.5 8.5 3 3 6-7" pathLength="1" class="asta-copy-tick"></path></svg></span><span class="asta-copy-button-labels" aria-hidden="true"><span class="asta-copy-button-idle">Copy key</span><span class="asta-copy-button-copied"><span class="asta-copy-button-ok">Copied</span><span class="asta-copy-button-fail">Couldn't copy</span></span></span><span class="asta-sr-only">Copy key</span></button><span class="asta-sr-only" role="status" aria-live="polite" data-asta-copy-status></span></div>
+<div class="asta-api-keys-note"><p><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.5 14 13H2zM8 6.5v3M8 11.2h.01"/></svg><span data-when="calm">You won't see this key again.</span><span data-when="warn">You haven't copied it. It can't be shown again.</span></p>
+<button type="button" class="asta-btn asta-btn-ghost asta-btn-sm" data-asta-keys-dismiss><span data-when="calm">I've saved it</span><span data-when="warn">Close anyway</span></button></div>
+</li></template>
+<template data-asta-keys-row><li class="asta-api-keys-row" data-id="">
+<div class="asta-api-keys-grid">
+<div class="asta-api-keys-name"><p title=""><span data-slot="name"></span></p><p data-slot="created">Created </p></div>
+<div class="asta-api-keys-menu"><button type="button" class="asta-btn asta-btn-ghost asta-btn-xs" data-asta-keys-revoke aria-expanded="false" aria-label="Revoke ">Revoke</button></div>
+<div class="asta-api-keys-cell"><span class="asta-api-keys-cell-label">Key</span><code class="asta-api-keys-key" data-slot="key"></code></div>
+<div class="asta-api-keys-cell"><span class="asta-api-keys-cell-label">Permissions</span><span class="asta-api-keys-chips" data-slot="scopes"><code>projects:read</code></span></div>
+<div class="asta-api-keys-meta"><span class="asta-api-keys-cell-label">Last used</span><span>Never</span></div>
+<div class="asta-api-keys-meta"><span class="asta-api-keys-cell-label">Status</span><span class="asta-api-keys-status">Active</span></div>
+</div>
+<div class="asta-api-keys-confirm" role="group" aria-label="Confirm revoking this key" hidden><p>Apps using <span data-slot="key"></span> stop working right away.</p><div><button type="button" class="asta-btn asta-btn-ghost asta-btn-sm" data-asta-keys-keep>Keep key</button><button type="button" class="asta-btn asta-btn-sm" data-asta-keys-confirm>Revoke key</button></div></div>
+<div class="asta-api-keys-undo"><p>Revoked <b><span data-slot="name"></span></b><span>. Requests with the key now fail.</span></p><button type="button" class="asta-btn asta-btn-ghost asta-btn-xs" data-asta-keys-undo>Undo</button><span class="asta-api-keys-countdown" aria-hidden="true"></span></div>
+</li></template>
+</section>
