@@ -8,7 +8,7 @@ import { DESIGN_URL } from "@/lib/design";
 
 type Item = { key: string; label: string; href: string; external?: boolean };
 
-const ITEMS: Item[] = [
+export const ITEMS: Item[] = [
   { key: "docs", label: "Docs", href: "/introduction" },
   { key: "components", label: "Components", href: "/#kit" },
   { key: "motion", label: "Motion", href: "/#components" },
@@ -22,7 +22,7 @@ const GUIDES = ["/introduction", "/installation", "/skill", "/css", "/prompts", 
 const KIT = new Set(kitItems.map((k) => `/${k.slug}`));
 const LAB = new Set(labBlocks.map((b) => `/${b.slug}`));
 
-function activeKey(path: string) {
+export function activeKey(path: string) {
   if (GUIDES.includes(path)) return "docs";
   if (KIT.has(path)) return "components";
   if (LAB.has(path)) return "motion";

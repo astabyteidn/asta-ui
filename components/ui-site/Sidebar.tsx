@@ -24,7 +24,7 @@ const BAR = "top-16";
  * you always know where you are. No folding, no tabs, no animation: rows react at once. In the filter, ↑ ↓ pick a
  * result, Enter opens it and Esc clears.
  */
-function Index({ items, onNavigate }: { items: UiItem[]; onNavigate?: () => void }) {
+export function Index({ items, onNavigate }: { items: UiItem[]; onNavigate?: () => void }) {
   const path = usePathname();
   const router = useRouter();
   const nav = useRef<HTMLElement>(null);
@@ -148,12 +148,10 @@ function Index({ items, onNavigate }: { items: UiItem[]; onNavigate?: () => void
   );
 }
 
-/** Desktop: a sticky column. Mobile: a bar that opens the same index as a sheet. */
+/** Desktop only: a sticky column. On phones the same index lives in the header menu (MobileMenu). */
 export default function Sidebar({ items }: { items: UiItem[] }) {
   const path = usePathname();
-  const [open, setOpen] = useState(false);
   const aside = useRef<HTMLElement>(null);
-  const current = GUIDES.find((g) => g.href === path)?.title ?? items.find((b) => `/${b.slug}` === path)?.title ?? "Components";
 
   // Keep the current page in view inside the sticky column: placed at once on first load, eased after that.
   const placed = useRef(false);
@@ -166,59 +164,16 @@ export default function Sidebar({ items }: { items: UiItem[] }) {
     placed.current = true;
   }, [path]);
 
-  // The sheet opens on the current page instead of the top of a long list.
-  const sheet = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const box = sheet.current;
-    const el = box?.querySelector<HTMLElement>('[aria-current="page"]');
-    if (box && el) box.scrollTop = el.getBoundingClientRect().top - box.getBoundingClientRect().top - box.clientHeight / 3;
-  }, [open]);
-
-  useEffect(() => {
-    document.documentElement.style.overflow = open ? "hidden" : "";
-    return () => {
-      document.documentElement.style.overflow = "";
-    };
-  }, [open]);
-
   return (
-    <>
-      <aside ref={aside} className="sticky top-14 hidden h-[calc(100svh-3.5rem)] -ml-1.5 w-[15.75rem] shrink-0 overflow-y-auto overscroll-contain px-1.5 pb-12 [scrollbar-color:transparent_transparent] [scrollbar-width:thin] hover:[scrollbar-color:color-mix(in_srgb,var(--color-ink)_18%,transparent)_transparent] lg:block" data-lenis-prevent data-scroll>
-        <Index items={items} />
-        <a href="https://astabyte.com/contact?utm_source=ui&utm_campaign=sidebar" className="group mt-10 block rounded-[10px] bg-paper-2 p-4">
-          <span className="label text-accent">Astabyte studio</span>
-          <span className="mt-2 block text-[15px] leading-snug text-ink">Need a product that feels like this?</span>
-          <span className="mt-3 flex items-center gap-2 text-[14px] text-mute transition-colors group-hover:text-ink">
-            Work with us <span className="btn-arrow" />
-          </span>
-        </a>
-      </aside>
-
-      <div className="sticky top-14 z-30 -mx-[var(--gutter)] bg-paper/90 px-[var(--gutter)] py-2 backdrop-blur lg:hidden">
-        <button type="button" onClick={() => setOpen(true)} className="btn btn-quiet btn-sm w-full !justify-start">
-          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
-            <path d="M2 4h12M2 8h12M2 12h7" />
-          </svg>
-          <span className="text-mute">Docs</span>
-          <span className="text-mute/50">/</span>
-          <span className="truncate">{current}</span>
-        </button>
-      </div>
-
-      {open && (
-        <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Docs">
-          <button type="button" aria-label="Close" onClick={() => setOpen(false)} className="absolute inset-0 animate-[ui-fade_.3s_ease_both] bg-black/60" />
-          <div ref={sheet} className="absolute inset-y-0 left-0 w-[min(84vw,320px)] animate-[ui-sheet_.5s_var(--ease-expo)_both] overflow-y-auto overscroll-contain bg-paper px-4 pb-10" data-lenis-prevent data-scroll>
-            <div className="mb-1 flex items-center justify-between pt-5">
-              <span className="label text-mute">{items.length} components</span>
-              <button type="button" onClick={() => setOpen(false)} className="btn btn-ghost btn-sm btn-icon" aria-label="Close">
-                ✕
-              </button>
-            </div>
-            <Index items={items} onNavigate={() => setOpen(false)} />
-          </div>
-        </div>
-      )}
-    </>
+    <aside ref={aside} className="sticky top-14 hidden h-[calc(100svh-3.5rem)] -ml-1.5 w-[15.75rem] shrink-0 overflow-y-auto overscroll-contain px-1.5 pb-12 [scrollbar-color:transparent_transparent] [scrollbar-width:thin] hover:[scrollbar-color:color-mix(in_srgb,var(--color-ink)_18%,transparent)_transparent] lg:block" data-lenis-prevent data-scroll>
+      <Index items={items} />
+      <a href="https://astabyte.com/contact?utm_source=ui&utm_campaign=sidebar" className="group mt-10 block rounded-[10px] bg-paper-2 p-4">
+        <span className="label text-accent">Astabyte studio</span>
+        <span className="mt-2 block text-[15px] leading-snug text-ink">Need a product that feels like this?</span>
+        <span className="mt-3 flex items-center gap-2 text-[14px] text-mute transition-colors group-hover:text-ink">
+          Work with us <span className="btn-arrow" />
+        </span>
+      </a>
+    </aside>
   );
 }
