@@ -5,11 +5,12 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Icon from "@/components/icons/Icon";
 import { DESIGN_URL } from "@/lib/design";
+import { MotionToggle } from "./MotionPause";
 
 const EASE = "cubic-bezier(.16,1,.3,1)";
 
-/** Phone menu: the header's links and Hire us, in a panel that drops under the header. */
-export default function MobileMenu({ studio }: { studio: string }) {
+/** Phone menu: the header's links, GitHub, the motion switch and Hire us, in a panel that drops under the header. */
+export default function MobileMenu({ studio, children }: { studio: string; children?: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const path = usePathname();
 
@@ -32,7 +33,7 @@ export default function MobileMenu({ studio }: { studio: string }) {
 
   const links = [
     { href: "/introduction", label: "Docs" },
-    { href: "/#kit", label: "Kit" },
+    { href: "/#kit", label: "Components" },
     { href: "/#components", label: "Motion" },
     { href: "/icons", label: "Icons" },
     { href: "/logos", label: "Logos" },
@@ -91,7 +92,11 @@ export default function MobileMenu({ studio }: { studio: string }) {
             <Icon name="arrow-up-right" className="h-5 w-5 text-mute" />
           </a>
         </nav>
-        <a href={`${studio}/contact?utm_source=ui`} className="btn btn-primary btn-lg mt-8 w-full justify-center">
+        <div className="mt-6 flex items-center gap-2">
+          {children}
+          <MotionToggle className="btn btn-quiet btn-sm btn-icon" />
+        </div>
+        <a href={`${studio}/contact?utm_source=ui`} className="btn btn-primary btn-lg mt-6 w-full justify-center">
           Hire us <span className="btn-arrow" />
         </a>
       </div>
