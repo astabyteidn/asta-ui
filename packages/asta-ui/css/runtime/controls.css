@@ -1,0 +1,48 @@
+/* Controls: scrub input, API keys.
+ * Only what Tailwind classes can't express. Motion is transform and opacity only, with the kit's easing. */
+
+@keyframes asta-scrub-tip { from { opacity: 0; transform: translateY(-3px) } }
+@keyframes asta-ak-in { from { opacity: 0; transform: translateY(6px) } }
+@keyframes asta-ak-count { from { transform: scaleX(1) } to { transform: scaleX(0) } }
+@keyframes asta-ak-pulse { 50% { opacity: 0.45 } }
+
+/* ---------- Scrub input: the error tip drops in ---------- */
+
+.asta-scrub:has(> [aria-invalid="true"]) > .asta-scrub-tip {
+  animation: asta-scrub-tip 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---------- API keys: form, new key, confirm and undo rise in; the undo bar runs down ---------- */
+
+.asta-api-keys-form:not([hidden]),
+.asta-api-keys-reveal,
+.asta-api-keys-confirm:not([hidden]),
+.asta-api-keys-row[data-revoked] > .asta-api-keys-undo {
+  animation: asta-ak-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.asta-api-keys-row[data-revoked] .asta-api-keys-countdown {
+  animation: asta-ak-count var(--asta-undo, 8s) linear forwards;
+}
+.asta-api-keys-skeleton {
+  animation: asta-ak-pulse 1.6s ease-in-out infinite;
+}
+.asta-api-keys-skeleton:nth-child(2) { animation-delay: 150ms }
+.asta-api-keys-skeleton:nth-child(3) { animation-delay: 300ms }
+
+@media (prefers-reduced-motion: reduce) {
+  .asta-scrub-input,
+  .asta-scrub-tip,
+  .asta-scrub-limit,
+  .asta-api-keys,
+  .asta-api-keys * {
+    animation-duration: 0s !important;
+    transition-duration: 0s !important;
+  }
+  .asta-api-keys-row[data-revoked] .asta-api-keys-countdown {
+    animation: none !important;
+    opacity: 0.5;
+  }
+  .asta-api-keys-skeleton {
+    animation: none !important;
+  }
+}

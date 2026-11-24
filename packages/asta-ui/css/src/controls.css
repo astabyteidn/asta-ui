@@ -1,0 +1,424 @@
+/* Controls: scrub input and API keys. Class lists mirror the React kit. Buttons use the core asta-btn classes and the
+ * copy button is the core asta-copy-button. The runtime CSS and asta.js key on the data-asta-* attributes, so keep them
+ * in the markup. Modifiers come after the base class. */
+
+/* ---- Scrub input ----
+ * <div class="asta-scrub-row" role="group" aria-label="Position"><span class="asta-scrub-row-label">Position</span>
+ *   <div class="asta-scrub-cells">
+ *     <label class="asta-scrub" data-asta-scrub data-unit="px" data-min="0" data-max="560" data-step="1">
+ *       <span class="asta-scrub-handle" data-asta-scrub-handle aria-hidden="true">X</span>
+ *       <input class="asta-scrub-input" role="spinbutton" aria-label="X position" value="140" inputmode="text">
+ *       <span class="asta-scrub-unit" aria-hidden="true">px</span>
+ *       <span class="asta-scrub-limit" aria-hidden="true"></span>
+ *       <span class="asta-scrub-tip">Try 24, 1.5rem or 24*2. Esc puts it back.</span>
+ *       <input type="hidden" name="x" value="140">
+ *     </label> … </div></div>
+ * asta.js sets data-scrubbing, data-mod="10|0.1", data-limit="min|max" and aria-invalid on the input.
+ * Size asta-scrub-sm. Columns asta-scrub-cells-1 (default 2), -3, -4. */
+.asta-scrub {
+  @apply relative flex h-9 min-w-0 items-center rounded-[7px] bg-[color-mix(in_srgb,var(--ink)_5%,transparent)] text-ink transition-[background-color,box-shadow] duration-150 sm:h-8;
+  @apply hover:bg-[color-mix(in_srgb,var(--ink)_8%,transparent)] focus-within:bg-paper focus-within:shadow-[inset_0_0_0_1.5px_var(--brand)];
+  @apply data-[scrubbing]:bg-paper data-[scrubbing]:shadow-[inset_0_0_0_1.5px_var(--brand)];
+  @apply has-[:disabled]:pointer-events-none has-[:disabled]:opacity-45;
+  @apply has-[[aria-invalid=true]]:!shadow-[inset_0_0_0_1.5px_var(--ink)];
+}
+.asta-scrub-sm {
+  @apply h-8 sm:h-7;
+}
+.asta-scrub-handle {
+  @apply grid h-full w-7 shrink-0 cursor-ew-resize touch-none select-none place-items-center text-[11.5px] font-medium text-mute transition-colors duration-150 hover:text-ink [&>svg]:h-3.5 [&>svg]:w-3.5;
+  .asta-scrub-sm > & {
+    @apply w-6;
+  }
+  .asta-scrub[data-scrubbing] > & {
+    @apply text-brand;
+  }
+}
+.asta-scrub-input {
+  @apply h-full min-w-0 flex-1 bg-transparent pr-1 text-[16px] tabular-nums tracking-[-0.01em] outline-none sm:text-[12.5px];
+  @apply transition-transform duration-200 ease-[cubic-bezier(.16,1,.3,1)] selection:bg-[color-mix(in_srgb,var(--brand)_22%,transparent)];
+  .asta-scrub-sm > & {
+    @apply sm:text-[12px];
+  }
+  .asta-scrub[data-limit="max"] > & {
+    @apply translate-x-[3px];
+  }
+  .asta-scrub[data-limit="min"] > & {
+    @apply -translate-x-[3px];
+  }
+}
+.asta-scrub-unit {
+  @apply shrink-0 pr-2 text-[11.5px] text-mute;
+}
+/* The ×10 / ×0.1 badge; asta.js writes the text while a modifier is held. */
+.asta-scrub-badge {
+  @apply mr-1.5 hidden shrink-0 rounded-[4px] bg-brand px-1 text-[10.5px] font-medium leading-4 tabular-nums text-white;
+}
+.asta-scrub[data-scrubbing][data-mod] {
+  & > .asta-scrub-badge {
+    @apply inline;
+  }
+  & > .asta-scrub-unit {
+    @apply hidden;
+  }
+}
+.asta-scrub-limit {
+  @apply pointer-events-none absolute inset-y-1.5 right-0.5 w-[2px] rounded-full bg-brand opacity-0 transition-opacity duration-500 ease-[cubic-bezier(.16,1,.3,1)];
+  .asta-scrub[data-limit] > & {
+    @apply opacity-100 duration-100;
+  }
+  .asta-scrub[data-limit="min"] > & {
+    @apply left-0.5 right-auto;
+  }
+}
+.asta-scrub-tip {
+  @apply absolute left-0 top-[calc(100%+6px)] z-10 hidden w-max max-w-[220px] rounded-[8px] bg-ink px-2.5 py-1.5 text-[12px] leading-snug text-paper shadow-[0_8px_24px_-10px_rgb(0_0_0/0.4)];
+  .asta-scrub:has(> [aria-invalid="true"]) > & {
+    @apply block;
+  }
+  .asta-scrub[data-tip-end] > & {
+    @apply left-auto right-0;
+  }
+}
+.asta-scrub-row {
+  @apply grid grid-cols-[64px_1fr] items-center gap-x-3;
+}
+.asta-scrub-row-label {
+  @apply truncate text-[12px] text-mute;
+}
+.asta-scrub-cells {
+  @apply grid min-w-0 grid-cols-2 gap-1.5;
+}
+.asta-scrub-cells-1 {
+  @apply grid-cols-1;
+}
+.asta-scrub-cells-3 {
+  @apply grid-cols-3;
+}
+.asta-scrub-cells-4 {
+  @apply grid-cols-4;
+}
+
+/* ---- API keys ----
+ * <section class="asta-api-keys" data-asta-keys data-undo-ms="8000">
+ *   <header class="asta-api-keys-header"><div><h3 class="asta-api-keys-title">API keys</h3><p class="asta-api-keys-desc">…</p></div>
+ *     <button class="asta-btn asta-btn-sm" data-asta-keys-create aria-expanded="false" aria-controls="ak-form">Create key</button></header>
+ *   <form class="asta-api-keys-form" id="ak-form" hidden> …name, expiry, fieldset of .asta-api-keys-scope… </form>
+ *   <div class="asta-api-keys-head" aria-hidden="true"><span>Name</span>…</div>
+ *   <ul class="asta-api-keys-list">
+ *     <li class="asta-api-keys-row" data-id="k1" data-name="Production server" data-key="ak_live_…9f2c">
+ *       <div class="asta-api-keys-grid">…cells…<button data-asta-keys-revoke aria-expanded="false">Revoke</button></div>
+ *       <div class="asta-api-keys-confirm" role="group" hidden>…[data-asta-keys-keep] [data-asta-keys-confirm]</div></li>
+ *     <li class="asta-api-keys-reveal">…secret, asta-copy-button, [data-asta-keys-dismiss]</li> </ul></section>
+ * asta.js opens the form, checks it, asks before revoking and swaps the row for an undo strip ([data-revoked]). */
+.asta-api-keys {
+  @apply @container w-full text-ink;
+}
+.asta-api-keys-header {
+  @apply flex flex-wrap items-start justify-between gap-x-6 gap-y-3;
+  & > div {
+    @apply min-w-0 max-w-[520px];
+  }
+}
+.asta-api-keys-title {
+  @apply text-[17px] font-medium tracking-[-0.02em];
+}
+.asta-api-keys-desc {
+  @apply mt-1 text-[13px] leading-relaxed text-mute;
+}
+.asta-api-keys-form {
+  @apply mt-5 rounded-[12px] bg-paper-2 p-4 sm:p-5;
+}
+.asta-api-keys-fields {
+  @apply grid gap-5 @min-[640px]:grid-cols-[1fr_200px];
+}
+.asta-api-keys-field {
+  @apply flex flex-col gap-1.5;
+  & > label,
+  & > legend {
+    @apply text-[13px] font-medium;
+  }
+}
+.asta-api-keys-control {
+  @apply h-10 w-full rounded-lg bg-paper px-3 text-[16px] text-ink outline-none transition-shadow duration-200 placeholder:text-mute sm:text-[14px];
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)] hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_24%,transparent)];
+  @apply focus:!shadow-[inset_0_0_0_1px_var(--brand),0_0_0_3px_color-mix(in_srgb,var(--brand)_18%,transparent)] aria-[invalid=true]:shadow-[inset_0_0_0_1.5px_var(--ink)];
+}
+.asta-api-keys-select {
+  @apply relative;
+  & > select {
+    @apply cursor-pointer appearance-none pr-9;
+  }
+  & > svg {
+    @apply pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-mute;
+  }
+}
+/* Hint under a field; data-error turns it into the message, with the icon shown. */
+.asta-api-keys-msg {
+  @apply flex min-h-4 items-center gap-1.5 text-[12px] text-mute;
+  & > svg {
+    @apply hidden h-3.5 w-3.5 shrink-0;
+  }
+  &[data-error] {
+    @apply font-medium text-ink;
+    & > svg {
+      @apply block;
+    }
+  }
+}
+.asta-api-keys-scopes {
+  @apply mt-5 min-w-0;
+  & > legend {
+    @apply text-[13px] font-medium;
+  }
+}
+.asta-api-keys-scope-grid {
+  @apply mt-2 grid gap-1 @min-[560px]:grid-cols-2;
+}
+.asta-api-keys-scope {
+  @apply flex cursor-pointer items-start gap-3 rounded-lg p-2 transition-colors hover:bg-ink/4;
+}
+.asta-api-keys-box {
+  @apply relative mt-px grid h-[18px] w-[18px] shrink-0 place-items-center;
+  & > input {
+    @apply col-start-1 row-start-1 h-[18px] w-[18px] cursor-pointer appearance-none rounded-[6px] bg-paper shadow-[inset_0_0_0_1.5px_color-mix(in_srgb,var(--ink)_22%,transparent)] outline-none transition-[background-color,box-shadow] duration-200;
+    @apply checked:bg-brand checked:shadow-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 focus-visible:ring-offset-paper-2;
+  }
+  & > svg {
+    @apply pointer-events-none col-start-1 row-start-1 h-3 w-3 scale-50 text-white opacity-0 transition-[opacity,transform] duration-300;
+  }
+  & > input:checked + svg {
+    @apply scale-100 opacity-100;
+  }
+}
+.asta-api-keys-scope-label {
+  @apply block text-[13.5px] leading-[18px] text-ink;
+}
+.asta-api-keys-scope-hint {
+  @apply mt-0.5 block text-[12px] text-mute;
+  & > code {
+    @apply font-mono text-[11.5px] text-ink-2;
+  }
+}
+.asta-api-keys-alert {
+  @apply mt-4 flex items-center gap-2 rounded-lg bg-paper px-3 py-2 text-[13px] text-ink shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)];
+  & > svg {
+    @apply h-4 w-4 shrink-0;
+  }
+}
+.asta-api-keys-actions {
+  @apply mt-5 flex justify-end gap-2;
+}
+.asta-api-keys-body {
+  @apply mt-6;
+}
+.asta-api-keys-head {
+  @apply hidden gap-4 px-3 pb-2 text-[12px] text-mute @2xl:grid;
+  @apply @2xl:grid-cols-[minmax(0,1.3fr)_120px_minmax(0,1.4fr)_minmax(0,.7fr)_minmax(0,1fr)_64px];
+}
+.asta-api-keys-list {
+  @apply flex flex-col gap-2 @2xl:gap-0.5;
+}
+.asta-api-keys-row {
+  @apply rounded-[12px] bg-paper-2 transition-colors duration-200 @2xl:rounded-[10px] @2xl:bg-transparent @2xl:hover:bg-paper-2/60;
+  &:has(> .asta-api-keys-confirm:not([hidden])) {
+    @apply @2xl:bg-paper-2;
+  }
+}
+.asta-api-keys-grid {
+  @apply grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-3 p-4 @2xl:min-h-[60px] @2xl:px-3 @2xl:py-2.5;
+  @apply @2xl:grid-cols-[minmax(0,1.3fr)_120px_minmax(0,1.4fr)_minmax(0,.7fr)_minmax(0,1fr)_64px];
+}
+.asta-api-keys-name {
+  @apply min-w-0;
+  & > p:first-child {
+    @apply line-clamp-2 break-words text-[13.5px] font-medium @2xl:line-clamp-1 @2xl:truncate;
+  }
+  & > p + p {
+    @apply mt-0.5 text-[12px] text-mute;
+  }
+}
+.asta-api-keys-menu {
+  @apply col-start-2 row-start-1 @2xl:col-start-6 @2xl:justify-self-end;
+}
+.asta-api-keys-cell {
+  @apply col-span-2 flex min-w-0 items-center gap-2 @2xl:col-span-1 @2xl:row-start-1;
+  &:nth-child(3) {
+    @apply @2xl:col-start-2;
+  }
+  &:nth-child(4) {
+    @apply @2xl:col-start-3;
+  }
+}
+.asta-api-keys-meta {
+  @apply flex flex-col gap-0.5 text-[12.5px] @2xl:row-start-1;
+  &:nth-child(5) {
+    @apply @2xl:col-start-4;
+  }
+  &:nth-child(6) {
+    @apply @2xl:col-start-5;
+  }
+  & > span:last-child {
+    @apply tabular-nums text-ink-2;
+  }
+}
+.asta-api-keys-cell-label {
+  @apply text-[11.5px] text-mute @2xl:sr-only;
+}
+.asta-api-keys-key {
+  @apply truncate font-mono text-[12.5px] text-ink-2;
+}
+.asta-api-keys-chips {
+  @apply flex min-w-0 flex-wrap gap-1;
+  & > span {
+    @apply rounded-[5px] bg-ink/6 px-1.5 text-[11.5px] leading-5 text-mute;
+  }
+  & > code {
+    @apply rounded-[5px] bg-ink/6 px-1.5 font-mono text-[11.5px] leading-5 text-ink-2;
+  }
+}
+/* Status in words. The dot is filled for active, a ring for data-expired. */
+.asta-api-keys-status {
+  @apply inline-flex items-center gap-1.5 whitespace-nowrap text-ink;
+  &::before {
+    @apply h-2 w-2 shrink-0 rounded-full bg-brand content-[''];
+  }
+  &[data-expired] {
+    @apply text-mute before:bg-transparent before:shadow-[inset_0_0_0_1.5px_currentColor];
+  }
+}
+.asta-api-keys-confirm {
+  @apply flex flex-wrap items-center justify-between gap-3 px-4 pb-4 @2xl:px-3 @2xl:pb-3;
+  & > p {
+    @apply text-[12.5px] text-ink-2;
+  }
+  & > div {
+    @apply flex gap-2;
+  }
+  &[hidden] {
+    @apply hidden;
+  }
+}
+/* A revoked row becomes the undo strip until the window ends. */
+.asta-api-keys-undo {
+  @apply relative hidden min-h-[60px] items-center gap-3 overflow-hidden rounded-[10px] bg-paper-2 px-3 py-2;
+  & > p {
+    @apply min-w-0 flex-1 text-[13px] text-ink-2;
+  }
+  & > p b {
+    @apply font-medium text-ink;
+  }
+  & > p span {
+    @apply hidden text-mute @min-[480px]:inline;
+  }
+  & > button {
+    @apply text-brand hover:text-brand;
+  }
+}
+.asta-api-keys-row[data-revoked] {
+  @apply bg-transparent @2xl:hover:bg-transparent;
+  & > :not(.asta-api-keys-undo) {
+    @apply hidden;
+  }
+  & > .asta-api-keys-undo {
+    @apply flex;
+  }
+}
+.asta-api-keys-countdown {
+  @apply absolute inset-x-0 bottom-0 h-0.5 origin-left bg-brand/40;
+}
+.asta-api-keys-reveal {
+  @apply rounded-[12px] bg-[color-mix(in_srgb,var(--brand)_6%,var(--paper))] p-4 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--brand)_35%,transparent)] sm:p-5;
+  &[hidden] {
+    @apply hidden;
+  }
+}
+.asta-api-keys-reveal-title {
+  @apply flex flex-wrap items-center gap-2 text-[14px] font-medium;
+  & > span:last-child {
+    @apply rounded-[5px] bg-brand px-1.5 text-[11px] font-medium leading-5 text-white;
+  }
+}
+.asta-api-keys-reveal-text {
+  @apply mt-1 text-[12.5px] text-ink-2;
+}
+.asta-api-keys-secret {
+  @apply mt-3 flex flex-col gap-2 @min-[480px]:flex-row;
+  & > input {
+    @apply h-10 min-w-0 shrink-0 rounded-lg bg-paper px-3 font-mono text-[13px] text-ink outline-none shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)] focus:shadow-[inset_0_0_0_1px_var(--brand)] @min-[480px]:flex-1;
+  }
+  & > .asta-copy-button {
+    @apply h-10 bg-paper;
+  }
+}
+/* The note under the secret. data-warn swaps it for the "not copied" line and the solid close button. */
+.asta-api-keys-note {
+  @apply mt-3 flex flex-wrap items-center justify-between gap-3;
+  & > p {
+    @apply flex items-center gap-1.5 text-[12.5px] font-medium text-ink;
+  }
+  & > p > svg {
+    @apply h-3.5 w-3.5 shrink-0;
+  }
+  & [data-when="warn"] {
+    @apply hidden;
+  }
+  &[data-warn] [data-when="warn"] {
+    @apply inline;
+  }
+  &[data-warn] [data-when="calm"] {
+    @apply hidden;
+  }
+  &[data-warn] > .asta-btn {
+    @apply bg-ink text-paper hover:bg-[color-mix(in_srgb,var(--ink)_84%,var(--paper))] hover:text-paper;
+  }
+}
+.asta-api-keys-empty {
+  @apply flex flex-col items-center rounded-[12px] bg-paper-2 px-6 py-12 text-center;
+  & > span {
+    @apply grid h-11 w-11 place-items-center rounded-full bg-paper text-mute shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_8%,transparent)] [&>svg]:h-5 [&>svg]:w-5;
+  }
+  & > p:first-of-type {
+    @apply mt-4 text-[14px] font-medium;
+  }
+  & > p + p {
+    @apply mt-1 max-w-[300px] text-[12.5px] text-mute;
+  }
+  & > button {
+    @apply mt-5;
+  }
+  /* Shown only while the list has no rows and the form is closed. */
+  .asta-api-keys:has(.asta-api-keys-list > li) &,
+  .asta-api-keys:has(.asta-api-keys-form:not([hidden])) & {
+    @apply hidden;
+  }
+}
+.asta-api-keys:not(:has(.asta-api-keys-list > li)) .asta-api-keys-head {
+  @apply hidden;
+}
+.asta-api-keys-skeleton {
+  @apply grid h-[76px] grid-cols-[1fr_auto] items-center gap-4 rounded-[12px] bg-paper-2 px-4 @2xl:h-[60px] @2xl:bg-transparent @2xl:px-3;
+  @apply @2xl:grid-cols-[minmax(0,1.3fr)_120px_minmax(0,1.4fr)_minmax(0,.7fr)_minmax(0,1fr)_64px];
+  & > span {
+    @apply hidden h-3 rounded-full bg-ink/8 @2xl:block;
+  }
+  & > span:first-child,
+  & > span:last-child {
+    @apply block;
+  }
+  & > span:last-child {
+    @apply w-16 justify-self-end;
+  }
+}
+.asta-api-keys-error {
+  @apply flex flex-col items-center rounded-[12px] bg-paper-2 px-6 py-10 text-center [&>svg]:h-5 [&>svg]:w-5;
+  & > p:first-of-type {
+    @apply mt-3 text-[14px] font-medium;
+  }
+  & > p + p {
+    @apply mt-1 text-[12.5px] text-mute;
+  }
+  & > button {
+    @apply mt-4;
+  }
+}

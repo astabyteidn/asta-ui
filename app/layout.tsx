@@ -49,14 +49,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <span className="rounded-[5px] bg-brand/10 px-1.5 font-mono text-[11px] leading-[18px] text-brand">UI</span>
         </Link>
         <SiteNav />
-        <div className="ml-auto flex items-center gap-1.5">
-          <MotionToggle className="btn btn-ghost btn-sm btn-icon" />
+        <div className="ml-auto flex items-center gap-1">
           <CommandMenu />
-          <GitHubStars />
-          <a href={`${STUDIO}/contact?utm_source=ui`} className="btn btn-primary btn-sm hidden sm:inline-flex">
+          <span className="hidden items-center gap-1 lg:flex">
+            <MotionToggle className="btn btn-ghost btn-sm btn-icon" />
+            <GitHubStars />
+          </span>
+          <a href={`${STUDIO}/contact?utm_source=ui`} className="btn btn-primary btn-sm ml-2 hidden lg:inline-flex">
             Hire us <span className="btn-arrow" />
           </a>
-          <MobileMenu studio={STUDIO} />
+          <MobileMenu studio={STUDIO}>
+            <GitHubStars className="btn-quiet !h-11 !px-3.5" />
+          </MobileMenu>
         </div>
       </header>
       <main id="main" tabIndex={-1} className="flex-1 outline-none">

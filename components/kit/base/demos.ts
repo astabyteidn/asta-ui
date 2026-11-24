@@ -16,6 +16,7 @@ export const baseDemos: Record<string, ComponentType> = {
   "chart-card": load(() => import("./demos/chart-card")),
   "checkbox": load(() => import("./demos/checkbox")),
   "checkout": load(() => import("./demos/checkout")),
+  "citations": load(() => import("./demos/citations")),
   "command-palette": load(() => import("./demos/command-palette")),
   "comments": load(() => import("./demos/comments")),
   "cookie-consent": load(() => import("./demos/cookie-consent")),
@@ -54,5 +55,6 @@ export const baseDemos: Record<string, ComponentType> = {
   "testimonials": load(() => import("./demos/testimonials")),
   "toast": load(() => import("./demos/toast")),
   "tooltip": load(() => import("./demos/tooltip")),
+  "trace-waterfall": load(() => import("./demos/trace-waterfall")),
   "textarea-aui-008": load(() => import("./variants/demos/textarea-aui-008")),
 };

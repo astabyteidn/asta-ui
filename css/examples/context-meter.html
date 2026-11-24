@@ -1,0 +1,29 @@
+<!-- The ring button opens the breakdown with the native popovertarget attribute; asta.js positions it. Set the ring's stroke-dashoffset to 100 minus the percentage, each segment's --start and --value (0 to 1), and data-warn on the button and breakdown near the limit. Compact posts to your server, e.g. hx-post. -->
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px">
+  <button type="button" class="asta-context-meter" popovertarget="ex-ctx" aria-haspopup="dialog" aria-label="Context window: 91% used, 183k of 200k tokens, near the limit" data-warn>
+    <svg class="asta-context-meter-ring" viewBox="0 0 16 16" aria-hidden="true"><circle class="asta-context-meter-ring-track" cx="8" cy="8" r="6.25"/><circle class="asta-context-meter-ring-bar" cx="8" cy="8" r="6.25" pathLength="100" stroke-dasharray="100 100" stroke-dashoffset="9"/></svg>
+    <span>91%</span><span class="asta-context-meter-of">of 200k</span><span class="asta-context-meter-warn">· Near limit</span>
+  </button>
+  <div id="ex-ctx" popover="auto" role="dialog" tabindex="-1" data-asta-popover data-side="bottom" data-align="start" aria-label="Context window" class="asta-float asta-popover asta-context-meter-panel">
+    <div class="asta-context-meter-breakdown" data-warn>
+      <div class="asta-context-meter-head"><span>Context window</span><span>Astra 2 Pro</span></div>
+      <div class="asta-context-meter-total"><span><b>183k</b> of 200k tokens</span><span>91% used</span></div>
+      <div class="asta-context-meter-bar" role="meter" aria-label="Context used" aria-valuemin="0" aria-valuemax="200000" aria-valuenow="182600">
+        <span class="asta-context-meter-seg" style="--start:0;--value:.65"></span><span class="asta-context-meter-seg" style="--start:.65;--value:.206"></span><span class="asta-context-meter-seg" style="--start:.856;--value:.042"></span><span class="asta-context-meter-seg" style="--start:.898;--value:.016"></span>
+      </div>
+      <ul class="asta-context-meter-legend">
+        <li><span class="asta-context-meter-dot"></span><span>Conversation</span><span>130k</span><span>65%</span></li>
+        <li><span class="asta-context-meter-dot"></span><span>Files</span><span>41.2k</span><span>21%</span></li>
+        <li><span class="asta-context-meter-dot"></span><span>Tools</span><span>8.4k</span><span>4%</span></li>
+        <li><span class="asta-context-meter-dot"></span><span>System prompt</span><span>3.1k</span><span>2%</span></li>
+        <li data-free><span class="asta-context-meter-dot"></span><span>Free</span><span>17.4k</span><span>9%</span></li>
+      </ul>
+      <p class="asta-context-meter-note"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.5 14 13H2zM8 6.5v3M8 11.2h.01"/></svg><span><b>Near the limit.</b> Older messages get summarised soon. Compact now to choose when.</span></p>
+      <button type="button" class="asta-context-meter-compact"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h10M3 10h10M8 1.5V4.5L6.5 3M8 4.5 9.5 3M8 14.5v-3L6.5 13M8 11.5l1.5 1.5"/></svg>Compact conversation</button>
+    </div>
+  </div>
+  <button type="button" class="asta-context-meter asta-context-meter-sm" aria-label="Context window: 17% used">
+    <svg class="asta-context-meter-ring" viewBox="0 0 16 16" aria-hidden="true"><circle class="asta-context-meter-ring-track" cx="8" cy="8" r="6.25"/><circle class="asta-context-meter-ring-bar" cx="8" cy="8" r="6.25" pathLength="100" stroke-dasharray="100 100" stroke-dashoffset="83"/></svg>
+    <span>17%</span>
+  </button>
+</div>

@@ -45,4 +45,8 @@ export const labComponents: Record<string, ComponentType> = {
   "split-bill": load(() => import("./blocks/SplitBill")),
   "flash-sale": load(() => import("./blocks/FlashSale")),
   "price-alert": load(() => import("./blocks/PriceAlert")),
+  "fallback-chain": load(() => import("./blocks/FallbackChain")),
+  "autonomy-dial": load(() => import("./blocks/AutonomyDial")),
+  "agent-team": load(() => import("./blocks/AgentTeam")),
+  "change-ledger": load(() => import("./blocks/ChangeLedger")),
 };

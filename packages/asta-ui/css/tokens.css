@@ -75,6 +75,18 @@
 @keyframes asta-spinner-bar { 0%, 100% { transform: scaleY(0.35) } 50% { transform: scaleY(1) } }
 @keyframes asta-progress-sweep { from { transform: translateX(-100%) } to { transform: translateX(260%) } }
 @keyframes asta-skeleton-shimmer { from { transform: translateX(-100%) } to { transform: translateX(100%) } }
+@keyframes asta-agent-sweep { from { transform: translateX(-100%) } 70%, to { transform: translateX(100%) } }
+@keyframes asta-agent-counter { from { transform: translateX(100%) } 70%, to { transform: translateX(-100%) } }
+@keyframes asta-agent-pulse { 0%, 100% { opacity: 0.4 } 50% { opacity: 1 } }
+@keyframes asta-agent-in { from { opacity: 0; transform: translateY(4px) } }
+@keyframes asta-agent-pop { from { opacity: 0; transform: scale(0.6) } }
+@keyframes asta-agent-spin { to { transform: rotate(360deg) } }
+@keyframes asta-agent-card { from { opacity: 0; transform: translateY(6px) scale(0.98) } }
+@keyframes asta-assist-in { from { opacity: 0; transform: translateY(var(--asta-assist-y, 4px)) scale(0.98) } }
+@keyframes asta-assist-rise { from { opacity: 0; transform: translateY(6px) } }
+@keyframes asta-trace-grow { from { transform: translateX(var(--x, 0%)) scaleX(0) } }
+@keyframes asta-trace-run { 50% { opacity: 0.45 } }
+@keyframes asta-prompt-orbit { to { transform: translate(-50%, -50%) rotate(1turn) } }
 @keyframes asta-blk-shake {
   0%, 100% { transform: none }
   20% { transform: translateX(-6px) }
@@ -90,6 +102,10 @@
 @keyframes asta-blk-roll-down { from { opacity: 0; transform: translateY(-70%) } }
 @keyframes asta-blk-count { from { transform: scaleX(1) } to { transform: scaleX(0) } }
 @keyframes asta-blk-prop-in { from { opacity: 0; transform: translateY(-3px) } }
+@keyframes asta-scrub-tip { from { opacity: 0; transform: translateY(-3px) } }
+@keyframes asta-ak-in { from { opacity: 0; transform: translateY(6px) } }
+@keyframes asta-ak-count { from { transform: scaleX(1) } to { transform: scaleX(0) } }
+@keyframes asta-ak-pulse { 50% { opacity: 0.45 } }
 @keyframes asta-tree-in { from { opacity: 0; transform: translateY(-4px) } }
 @keyframes asta-timeline-in { from { opacity: 0; transform: translateY(8px) } }
 @keyframes asta-timeline-line { from { transform: scaleY(0) } }

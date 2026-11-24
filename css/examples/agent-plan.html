@@ -1,0 +1,35 @@
+<!-- Static markup: your server (or htmx) re-renders it as the agent works. data-status on each step draws its icon. Open the running step's details, and asta.js counts data-asta-elapsed up from that time. -->
+<section class="asta-agent-plan" aria-label="Migrate billing to usage-based plans" style="max-width:520px">
+  <header class="asta-agent-plan-head">
+    <p class="asta-agent-plan-state">Running · 9.4s</p>
+    <h3 class="asta-agent-plan-title">Migrate billing to usage-based plans</h3>
+    <div class="asta-agent-plan-progress"><span class="asta-agent-plan-track"><span style="--value:.43"></span></span><span><b>3</b> of 7</span></div>
+  </header>
+  <ol class="asta-agent-plan-steps">
+    <li class="asta-agent-plan-step" data-status="done"><details><summary class="asta-agent-plan-row"><span class="asta-agent-plan-icon"></span><span class="asta-agent-plan-name">Read the current plan schema</span><span class="asta-agent-plan-time">1.6s</span><svg class="asta-agent-plan-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4"/></svg></summary>
+      <div class="asta-agent-plan-body"><p class="asta-agent-plan-detail">4 plans, 2,318 active subscriptions</p></div></details></li>
+    <li class="asta-agent-plan-step" data-status="done"><details><summary class="asta-agent-plan-row"><span class="asta-agent-plan-icon"></span><span class="asta-agent-plan-name">Map seat plans to usage tiers</span><span class="asta-agent-plan-time">2.4s</span><svg class="asta-agent-plan-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4"/></svg></summary>
+      <div class="asta-agent-plan-body"><ul class="asta-agent-plan-subs"><li data-status="done"><span class="asta-agent-plan-icon"></span>Starter → Usage Lite</li><li data-status="done"><span class="asta-agent-plan-icon"></span>Team → Usage Standard</li><li data-status="done"><span class="asta-agent-plan-icon"></span>Business → Usage Pro</li></ul></div></details></li>
+    <li class="asta-agent-plan-step" data-status="done"><div class="asta-agent-plan-row"><span class="asta-agent-plan-icon"></span><span class="asta-agent-plan-name">Write migration 0042_usage_pricing.sql</span><span class="asta-agent-plan-time">1.8s</span></div></li>
+    <li class="asta-agent-plan-step" data-status="running"><details open><summary class="asta-agent-plan-row"><span class="asta-agent-plan-icon"></span><span class="asta-agent-plan-name">Backfill 90 days of usage events</span><span class="asta-agent-plan-time">3.6s</span><svg class="asta-agent-plan-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4"/></svg></summary>
+      <div class="asta-agent-plan-body"><p class="asta-agent-plan-detail">backfilled 640k of 1.28M events</p></div></details></li>
+    <li class="asta-agent-plan-step" data-status="pending"><div class="asta-agent-plan-row"><span class="asta-agent-plan-icon"></span><span class="asta-agent-plan-name">Dry-run invoices for 20 sample accounts</span></div></li>
+    <li class="asta-agent-plan-step" data-status="skipped"><div class="asta-agent-plan-row"><span class="asta-agent-plan-icon"></span><span class="asta-agent-plan-name">Email Enterprise admins about the change</span><span class="asta-agent-plan-badge">Skipped</span></div></li>
+    <li class="asta-agent-plan-step" data-status="pending"><div class="asta-agent-plan-row"><span class="asta-agent-plan-icon"></span><span class="asta-agent-plan-name">Open a pull request</span></div></li>
+  </ol>
+</section>
+
+<!-- After a failure: data-failed on the section, the failed step open with its reason. -->
+<section class="asta-agent-plan" aria-label="Rotate API keys" data-failed style="max-width:520px;margin-top:24px">
+  <header class="asta-agent-plan-head">
+    <p class="asta-agent-plan-state">Stopped at step 2 · 3.1s</p>
+    <h3 class="asta-agent-plan-title">Rotate the production API keys</h3>
+    <div class="asta-agent-plan-progress"><span class="asta-agent-plan-track"><span style="--value:.67"></span></span><span><b>2</b> of 3</span></div>
+  </header>
+  <ol class="asta-agent-plan-steps">
+    <li class="asta-agent-plan-step" data-status="done"><div class="asta-agent-plan-row"><span class="asta-agent-plan-icon"></span><span class="asta-agent-plan-name">Create new keys in the vault</span><span class="asta-agent-plan-time">1.2s</span></div></li>
+    <li class="asta-agent-plan-step" data-status="failed"><details open><summary class="asta-agent-plan-row"><span class="asta-agent-plan-icon"></span><span class="asta-agent-plan-name">Update the worker secrets</span><span class="asta-agent-plan-badge">Failed</span><span class="asta-agent-plan-time">1.9s</span><svg class="asta-agent-plan-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4"/></svg></summary>
+      <div class="asta-agent-plan-body"><p class="asta-agent-plan-detail">The deploy token can't write secrets. Give it the Secrets: write scope and retry.</p></div></details></li>
+    <li class="asta-agent-plan-step" data-status="pending"><div class="asta-agent-plan-row"><span class="asta-agent-plan-icon"></span><span class="asta-agent-plan-name">Revoke the old keys</span></div></li>
+  </ol>
+</section>

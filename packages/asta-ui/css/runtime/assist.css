@@ -1,0 +1,79 @@
+/* Assist: model picker, citations, trace waterfall, prompt composer.
+ * Only what Tailwind classes can't express. Motion is transform and opacity only, with the kit's easing. */
+
+@keyframes asta-assist-in { from { opacity: 0; transform: translateY(var(--asta-assist-y, 4px)) scale(0.98) } }
+@keyframes asta-assist-rise { from { opacity: 0; transform: translateY(6px) } }
+@keyframes asta-trace-grow { from { transform: translateX(var(--x, 0%)) scaleX(0) } }
+@keyframes asta-trace-run { 50% { opacity: 0.45 } }
+@keyframes asta-prompt-orbit { to { transform: translate(-50%, -50%) rotate(1turn) } }
+
+/* ---------- Model picker: the popup and its marks ---------- */
+
+.asta-model-picker-panel:not([hidden]) {
+  animation: asta-assist-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.asta-model-picker-top .asta-model-picker-panel { --asta-assist-y: -4px; }
+.asta-model-picker-mark,
+.asta-model-picker-bar { will-change: transform; }
+
+/* ---------- Citations: card pops in, the expanded list rises ---------- */
+
+.asta-citations-card:not([hidden]) {
+  animation: asta-assist-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.asta-citations-card[data-below] { --asta-assist-y: -4px; }
+.asta-citations[data-expanded] .asta-citations-list > li {
+  animation: asta-assist-rise 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.asta-citations[data-expanded] .asta-citations-list > li:nth-child(2) { animation-delay: 30ms; }
+.asta-citations[data-expanded] .asta-citations-list > li:nth-child(3) { animation-delay: 60ms; }
+.asta-citations[data-expanded] .asta-citations-list > li:nth-child(4) { animation-delay: 90ms; }
+.asta-citations[data-expanded] .asta-citations-list > li:nth-child(n + 5) { animation-delay: 120ms; }
+
+/* ---------- Trace waterfall: bars grow in from the left, running spans breathe ---------- */
+
+.asta-trace-bar {
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: asta-trace-grow 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.asta-trace-bar[data-running] {
+  animation: asta-trace-grow 0.6s cubic-bezier(0.16, 1, 0.3, 1) both, asta-trace-run 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.6s infinite;
+}
+.asta-trace:is([data-offscreen], [data-paused]) .asta-trace-bar[data-running] { animation-play-state: running, paused; }
+.asta-trace-detail[data-fresh] {
+  animation: asta-assist-rise 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.asta-trace-row[hidden] { display: none; }
+
+/* ---------- Prompt composer: a band of light orbits the border while it works ---------- */
+
+.asta-prompt-ring {
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+.asta-prompt[data-running] .asta-prompt-spin {
+  animation: asta-prompt-orbit 2.6s linear infinite;
+}
+.asta-prompt:is([data-offscreen], [data-paused]) .asta-prompt-spin { animation-play-state: paused; }
+.asta-prompt-menu:not([hidden]) {
+  animation: asta-assist-in 0.14s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.asta-prompt-menu [hidden] { display: none; }
+.asta-prompt-file {
+  animation: asta-assist-rise 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .asta-model-picker-panel:not([hidden]),
+  .asta-citations-card:not([hidden]),
+  .asta-citations[data-expanded] .asta-citations-list > li,
+  .asta-trace-bar,
+  .asta-trace-detail[data-fresh],
+  .asta-prompt-menu:not([hidden]),
+  .asta-prompt-file { animation: none; }
+  .asta-model-picker-mark,
+  .asta-model-picker-bar { transition: none !important; }
+  /* A still brand ring instead of the orbit. */
+  .asta-prompt[data-running] .asta-prompt-spin { animation: none; background: var(--brand); }
+}

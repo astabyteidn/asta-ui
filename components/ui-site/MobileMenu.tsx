@@ -4,14 +4,19 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Icon from "@/components/icons/Icon";
-import { DESIGN_URL } from "@/lib/design";
+import { uiItems } from "@/lib/ui-catalog";
+import { MotionToggle } from "./MotionPause";
+import { Index } from "./Sidebar";
+import { activeKey, ITEMS } from "./SiteNav";
 
-const EASE = "cubic-bezier(.16,1,.3,1)";
-
-/** Phone menu: the header's links and Hire us, in a panel that drops under the header. */
-export default function MobileMenu({ studio }: { studio: string }) {
+/**
+ * Phone menu, the only menu on small screens: the site links in a compact grid, GitHub and the motion switch, then the
+ * full component index with its filter. Hire us stays pinned at the bottom. It opens under the header with a short fade.
+ */
+export default function MobileMenu({ studio, children }: { studio: string; children?: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const path = usePathname();
+  const current = activeKey(path);
 
   // Close on route change (back/forward too), adjusted during render instead of in an effect.
   const [at, setAt] = useState(path);
@@ -30,71 +35,51 @@ export default function MobileMenu({ studio }: { studio: string }) {
     };
   }, [open]);
 
-  const links = [
-    { href: "/introduction", label: "Docs" },
-    { href: "/#kit", label: "Kit" },
-    { href: "/#components", label: "Motion" },
-    { href: "/icons", label: "Icons" },
-    { href: "/logos", label: "Logos" },
-    { href: "/blog", label: "Blog" },
-  ];
+  const links = [...ITEMS, { key: "studio", label: "Studio", href: `${studio}/?utm_source=ui`, external: true }];
+  const close = () => setOpen(false);
 
   return (
     <div className="lg:hidden">
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        aria-expanded={open}
-        aria-label={open ? "Close menu" : "Open menu"}
-        className="btn btn-ghost btn-sm btn-icon"
-      >
+      <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-label={open ? "Close menu" : "Open menu"} className="btn btn-ghost btn-sm btn-icon">
         <Icon name={open ? "x" : "menu"} className="h-[18px] w-[18px]" />
       </button>
-      <div
-        className="fixed inset-x-0 bottom-0 top-14 z-50 overflow-y-auto overscroll-contain bg-paper px-[var(--gutter)] pb-8 pt-4"
-        style={{
-          opacity: open ? 1 : 0,
-          transform: open ? "none" : "translateY(-8px)",
-          pointerEvents: open ? "auto" : "none",
-          visibility: open ? "visible" : "hidden",
-          transition: `opacity .35s ${EASE}, transform .45s ${EASE}, visibility 0s linear ${open ? "0s" : ".35s"}`,
-        }}
-        aria-hidden={!open}
-      >
-        <nav className="flex flex-col">
-          {links.map((l, i) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              onClick={() => setOpen(false)}
-              className="icon-hover flex items-center justify-between py-3.5 text-[24px] font-medium tracking-[-0.02em]"
-              style={{ opacity: open ? 1 : 0, transform: open ? "none" : "translateY(10px)", transition: `opacity .4s ${EASE} ${open ? 60 + i * 40 : 0}ms, transform .5s ${EASE} ${open ? 60 + i * 40 : 0}ms` }}
-            >
-              {l.label}
-              <Icon name="arrow-right" className="h-5 w-5 text-mute" />
-            </Link>
-          ))}
-          <a
-            href={DESIGN_URL}
-            className="icon-hover flex items-center justify-between py-3.5 text-[24px] font-medium tracking-[-0.02em]"
-            style={{ opacity: open ? 1 : 0, transition: `opacity .4s ${EASE} ${open ? 300 : 0}ms` }}
-          >
-            Design
-            <Icon name="arrow-up-right" className="h-5 w-5 text-mute" />
-          </a>
-          <a
-            href={`${studio}/?utm_source=ui`}
-            className="icon-hover flex items-center justify-between py-3.5 text-[24px] font-medium tracking-[-0.02em]"
-            style={{ opacity: open ? 1 : 0, transition: `opacity .4s ${EASE} ${open ? 340 : 0}ms` }}
-          >
-            Studio
-            <Icon name="arrow-up-right" className="h-5 w-5 text-mute" />
-          </a>
-        </nav>
-        <a href={`${studio}/contact?utm_source=ui`} className="btn btn-primary btn-lg mt-8 w-full justify-center">
-          Hire us <span className="btn-arrow" />
-        </a>
-      </div>
+
+      {open && (
+        <div role="dialog" aria-modal="true" aria-label="Menu" className="fixed inset-x-0 bottom-0 top-14 z-50 flex animate-[ui-fade_.15s_ease-out_both] flex-col bg-paper">
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-[var(--gutter)] pb-6" data-lenis-prevent data-scroll>
+            <nav aria-label="Main" className="grid grid-cols-2 gap-1 pt-2">
+              {links.map((l) => {
+                const on = current === l.key;
+                const cls = `flex h-11 items-center justify-between rounded-lg px-3 text-[15px] ${on ? "bg-paper-2 font-medium text-ink" : "text-ink-2 active:bg-paper-2"}`;
+                return l.external ? (
+                  <a key={l.key} href={l.href} className={cls}>
+                    {l.label}
+                    <span aria-hidden className="text-[13px] text-mute">
+                      ↗
+                    </span>
+                  </a>
+                ) : (
+                  <Link key={l.key} href={l.href} onClick={close} aria-current={on ? "page" : undefined} className={cls}>
+                    {l.label}
+                  </Link>
+                );
+              })}
+            </nav>
+            <div className="mt-3 flex items-center gap-2 px-1">
+              {children}
+              <MotionToggle className="btn btn-quiet btn-sm btn-icon" />
+            </div>
+            <div className="mt-2">
+              <Index items={uiItems} onNavigate={close} />
+            </div>
+          </div>
+          <div className="px-[var(--gutter)] pb-[max(12px,env(safe-area-inset-bottom))] pt-2 shadow-[0_-12px_16px_-8px_var(--color-paper)]">
+            <a href={`${studio}/contact?utm_source=ui`} className="btn btn-primary btn-lg w-full justify-center">
+              Hire us <span className="btn-arrow" />
+            </a>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,0 +1,136 @@
+/* Agent: thinking shimmer, agent plan status icons, tool approval entrances.
+ * Only what Tailwind classes can't express. Motion is transform and opacity only, with the kit's easing. */
+
+@keyframes asta-agent-sweep { from { transform: translateX(-100%) } 70%, to { transform: translateX(100%) } }
+@keyframes asta-agent-counter { from { transform: translateX(100%) } 70%, to { transform: translateX(-100%) } }
+@keyframes asta-agent-pulse { 0%, 100% { opacity: 0.4 } 50% { opacity: 1 } }
+@keyframes asta-agent-in { from { opacity: 0; transform: translateY(4px) } }
+@keyframes asta-agent-pop { from { opacity: 0; transform: scale(0.6) } }
+@keyframes asta-agent-spin { to { transform: rotate(360deg) } }
+@keyframes asta-agent-card { from { opacity: 0; transform: translateY(6px) scale(0.98) } }
+
+/* ---------- Thinking: the light slides, the letters stay ---------- */
+
+.asta-thinking[data-status="thinking"] .asta-thinking-shine > span {
+  animation: asta-agent-sweep 2.2s linear infinite;
+}
+.asta-thinking[data-status="thinking"] .asta-thinking-shine > span > span {
+  animation: asta-agent-counter 2.2s linear infinite;
+}
+.asta-thinking[data-status="thinking"] .asta-thinking-icon {
+  animation: asta-agent-pulse 1.6s ease-in-out infinite;
+}
+.asta-thinking[open] .asta-thinking-steps > li {
+  animation: asta-agent-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.asta-thinking[data-status="thinking"] .asta-thinking-steps > li:last-child::after {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: 6px;
+  border-radius: 999px;
+  vertical-align: middle;
+  background: var(--brand);
+  animation: asta-agent-pulse 1.2s ease-in-out infinite;
+}
+
+/* ---------- Agent plan: the icon follows data-status ---------- */
+
+:is([data-status="running"] > .asta-agent-plan-icon, [data-status="running"] > * > .asta-agent-plan-icon, [data-status="running"] > * > * > .asta-agent-plan-icon) {
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--brand) 20%, transparent);
+}
+:is([data-status="running"] > .asta-agent-plan-icon, [data-status="running"] > * > .asta-agent-plan-icon, [data-status="running"] > * > * > .asta-agent-plan-icon)::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  border-top-color: var(--brand);
+  animation: asta-agent-spin 0.8s linear infinite;
+}
+:is([data-status="done"] > .asta-agent-plan-icon, [data-status="done"] > * > .asta-agent-plan-icon, [data-status="done"] > * > * > .asta-agent-plan-icon) {
+  background: var(--brand);
+  box-shadow: none;
+  animation: asta-agent-pop 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+:is([data-status="done"] > .asta-agent-plan-icon, [data-status="done"] > * > .asta-agent-plan-icon, [data-status="done"] > * > * > .asta-agent-plan-icon)::after {
+  content: "";
+  width: 28%;
+  height: 50%;
+  margin-top: -12%;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+:is([data-status="failed"] > .asta-agent-plan-icon, [data-status="failed"] > * > .asta-agent-plan-icon, [data-status="failed"] > * > * > .asta-agent-plan-icon) {
+  background: var(--ink);
+  box-shadow: none;
+  animation: asta-agent-pop 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+:is([data-status="failed"] > .asta-agent-plan-icon, [data-status="failed"] > * > .asta-agent-plan-icon, [data-status="failed"] > * > * > .asta-agent-plan-icon)::after {
+  content: "!";
+  color: var(--paper);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+:is([data-status="skipped"] > .asta-agent-plan-icon, [data-status="skipped"] > * > .asta-agent-plan-icon, [data-status="skipped"] > * > * > .asta-agent-plan-icon)::after {
+  content: "";
+  width: 40%;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--mute);
+}
+.asta-agent-plan-step[data-status="running"] > details[open] > .asta-agent-plan-body,
+.asta-agent-plan-detail {
+  animation: asta-agent-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ---------- Tool approval: the next card rises in, receipts slide down ---------- */
+
+.asta-tool-approval-card {
+  animation: asta-agent-card 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.asta-tool-approval-receipt {
+  animation: asta-agent-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+/* Queued calls show as two cards stacked behind the first. */
+.asta-tool-approval-queue[data-more] {
+  padding-bottom: 12px;
+}
+.asta-tool-approval-queue[data-more]::before,
+.asta-tool-approval-queue[data-more="2"]::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 12px;
+  z-index: -1;
+  border-radius: 14px;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 9%, transparent);
+  transform: translateY(7px) scaleX(0.96);
+  opacity: 0.75;
+}
+.asta-tool-approval-queue[data-more="2"]::after {
+  z-index: -2;
+  transform: translateY(14px) scaleX(0.92);
+  opacity: 0.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .asta-thinking *,
+  .asta-thinking-steps > li,
+  .asta-agent-plan-icon,
+  .asta-agent-plan-body,
+  .asta-agent-plan-detail,
+  .asta-tool-approval-card,
+  .asta-tool-approval-receipt {
+    animation: none !important;
+  }
+  .asta-agent-plan-icon::after {
+    animation-duration: 2.4s !important;
+  }
+  .asta-thinking-shine {
+    display: none !important;
+  }
+}

@@ -1,0 +1,85 @@
+<!-- Needs asta.js: Deny / Allow once / Always allow (or Enter / Esc on the focused card) turn the card into a receipt and fire "asta:tool-decision" with { id, tool, decision }. Queued cards wait behind the first. -->
+<div class="asta-tool-approval" data-asta-tool-approval style="max-width:520px">
+  <ul class="asta-tool-approval-receipts" aria-label="Tool calls">
+    <li class="asta-tool-approval-receipt" data-decision="once"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3.5 8.5 3 3 6-7"/></svg><b>Allowed</b><span class="asta-tool-approval-receipt-sep" aria-hidden="true">·</span><code>read_file</code><span class="asta-tool-approval-receipt-summary">Read src/plans.ts</span><span class="asta-tool-approval-receipt-time">0.2s</span></li>
+  </ul>
+  <div class="asta-tool-approval-queue">
+    <div class="asta-tool-approval-card" role="group" tabindex="0" aria-label="Approve run_sql" data-tool="run_sql" data-id="c1">
+      <div class="asta-tool-approval-head">
+        <span class="asta-tool-approval-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4c0-1.1 2.2-2 5-2s5 .9 5 2-2.2 2-5 2-5-.9-5-2Zm0 0v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/></svg></span>
+        <div class="asta-tool-approval-meta"><p class="asta-tool-approval-source">Wants to use a tool · Postgres · billing-prod</p><p class="asta-tool-approval-tool">run_sql</p></div>
+        <span class="asta-tool-approval-count">2 of 4</span>
+      </div>
+      <p class="asta-tool-approval-summary">Count active subscriptions per plan for the migration report.</p>
+      <pre class="asta-tool-approval-code">select plan_id, count(*) as active
+from subscriptions
+where status = 'active'
+group by plan_id;</pre>
+      <div class="asta-tool-approval-foot">
+        <p class="asta-tool-approval-risk" data-risk="read"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8ZM8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/></svg>Read only</p>
+        <div class="asta-tool-approval-actions">
+          <button type="button" class="asta-tool-approval-deny" data-asta-decide="deny" aria-keyshortcuts="Escape">Deny<kbd aria-hidden="true">Esc</kbd></button>
+          <div class="asta-dropdown asta-tool-approval-split" data-asta-dropdown data-align="end">
+            <button type="button" class="asta-tool-approval-allow" data-asta-decide="once" aria-keyshortcuts="Enter">Allow once<kbd aria-hidden="true">↵</kbd></button>
+            <button type="button" class="asta-tool-approval-more" data-asta-dropdown-trigger aria-haspopup="menu" aria-expanded="false" aria-controls="ex-ta-menu-1" aria-label="More ways to allow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></button>
+            <div role="menu" popover="manual" tabindex="-1" data-asta-mpanel id="ex-ta-menu-1" aria-label="Allow run_sql" class="asta-float asta-dropdown-panel">
+              <button type="button" role="menuitem" tabindex="-1" class="asta-menu-item" data-asta-decide="once"><span class="asta-menu-item-text">Allow once</span></button>
+              <button type="button" role="menuitem" tabindex="-1" class="asta-menu-item" data-asta-decide="always"><span class="asta-menu-item-text">Always allow run_sql</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="asta-tool-approval-card" role="group" tabindex="0" aria-label="Approve edit_file" data-tool="edit_file" data-id="c2">
+      <div class="asta-tool-approval-head">
+        <span class="asta-tool-approval-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2H4.5v12h7V4.5zM9 2v2.5h2.5M6.5 8.5h3M6.5 11h3"/></svg></span>
+        <div class="asta-tool-approval-meta"><p class="asta-tool-approval-source">Wants to use a tool · astabyte/billing-service</p><p class="asta-tool-approval-tool">edit_file</p></div>
+        <span class="asta-tool-approval-count">3 of 4</span>
+      </div>
+      <p class="asta-tool-approval-summary">Switch the Team plan to metered pricing.</p>
+      <div class="asta-tool-approval-diff">
+        <p class="asta-tool-approval-diff-file"><span>src/plans.ts</span><span>+2 −1</span></p>
+        <div class="asta-tool-approval-diff-lines"><div>export const team = {</div><div data-sign="-">  price: { seat: 1200 },</div><div data-sign="+">  price: { unit: 0.4, included: 50_000 },</div><div data-sign="+">  meter: "api_requests",</div><div>};</div></div>
+      </div>
+      <div class="asta-tool-approval-foot">
+        <p class="asta-tool-approval-risk" data-risk="write"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.5 2.5 13.5 5.5 6 13H3v-3zM9 4l3 3"/></svg>Changes data</p>
+        <div class="asta-tool-approval-actions">
+          <button type="button" class="asta-tool-approval-deny" data-asta-decide="deny" aria-keyshortcuts="Escape">Deny<kbd aria-hidden="true">Esc</kbd></button>
+          <div class="asta-dropdown asta-tool-approval-split" data-asta-dropdown data-align="end">
+            <button type="button" class="asta-tool-approval-allow" data-asta-decide="once" aria-keyshortcuts="Enter">Allow once<kbd aria-hidden="true">↵</kbd></button>
+            <button type="button" class="asta-tool-approval-more" data-asta-dropdown-trigger aria-haspopup="menu" aria-expanded="false" aria-controls="ex-ta-menu-2" aria-label="More ways to allow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></button>
+            <div role="menu" popover="manual" tabindex="-1" data-asta-mpanel id="ex-ta-menu-2" aria-label="Allow edit_file" class="asta-float asta-dropdown-panel">
+              <button type="button" role="menuitem" tabindex="-1" class="asta-menu-item" data-asta-decide="once"><span class="asta-menu-item-text">Allow once</span></button>
+              <button type="button" role="menuitem" tabindex="-1" class="asta-menu-item" data-asta-decide="always"><span class="asta-menu-item-text">Always allow edit_file</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="asta-tool-approval-card" role="group" tabindex="0" aria-label="Approve send_email" data-tool="send_email" data-id="c3">
+      <div class="asta-tool-approval-head">
+        <span class="asta-tool-approval-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h12v8.5H2zM2.5 4.5 8 9l5.5-4.5"/></svg></span>
+        <div class="asta-tool-approval-meta"><p class="asta-tool-approval-source">Wants to use a tool · Astabyte Mail</p><p class="asta-tool-approval-tool">send_email</p></div>
+        <span class="asta-tool-approval-count">4 of 4</span>
+      </div>
+      <p class="asta-tool-approval-summary">Tell Team admins about the new pricing.</p>
+      <dl class="asta-tool-approval-args"><dt>to</dt><dd>Team plan admins (214)</dd><dt>subject</dt><dd>Your plan moves to usage pricing on Jan 1</dd><dt>template</dt><dd>pricing-change-v2</dd></dl>
+      <div class="asta-tool-approval-foot">
+        <p class="asta-tool-approval-risk" data-risk="destructive"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.5 14 13H2zM8 6.5v3M8 11.2h.01"/></svg>Sends to 214 people</p>
+        <div class="asta-tool-approval-actions">
+          <button type="button" class="asta-tool-approval-deny" data-asta-decide="deny" aria-keyshortcuts="Escape">Deny<kbd aria-hidden="true">Esc</kbd></button>
+          <div class="asta-dropdown asta-tool-approval-split" data-asta-dropdown data-align="end">
+            <button type="button" class="asta-tool-approval-allow" data-asta-decide="once" aria-keyshortcuts="Enter">Allow once<kbd aria-hidden="true">↵</kbd></button>
+            <button type="button" class="asta-tool-approval-more" data-asta-dropdown-trigger aria-haspopup="menu" aria-expanded="false" aria-controls="ex-ta-menu-3" aria-label="More ways to allow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></button>
+            <div role="menu" popover="manual" tabindex="-1" data-asta-mpanel id="ex-ta-menu-3" aria-label="Allow send_email" class="asta-float asta-dropdown-panel">
+              <button type="button" role="menuitem" tabindex="-1" class="asta-menu-item" data-asta-decide="once"><span class="asta-menu-item-text">Allow once</span></button>
+              <button type="button" role="menuitem" tabindex="-1" class="asta-menu-item" data-asta-decide="always"><span class="asta-menu-item-text">Always allow send_email</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

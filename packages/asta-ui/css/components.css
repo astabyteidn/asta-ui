@@ -110,6 +110,211 @@
   }
 }
 
+/* ---- runtime/agent.css ---- */
+/* Agent: thinking shimmer, agent plan status icons, tool approval entrances.
+ * Only what Tailwind classes can't express. Motion is transform and opacity only, with the kit's easing. */
+
+/* ---------- Thinking: the light slides, the letters stay ---------- */
+
+.asta-thinking[data-status="thinking"] .asta-thinking-shine > span {
+  animation: asta-agent-sweep 2.2s linear infinite;
+}
+.asta-thinking[data-status="thinking"] .asta-thinking-shine > span > span {
+  animation: asta-agent-counter 2.2s linear infinite;
+}
+.asta-thinking[data-status="thinking"] .asta-thinking-icon {
+  animation: asta-agent-pulse 1.6s ease-in-out infinite;
+}
+.asta-thinking[open] .asta-thinking-steps > li {
+  animation: asta-agent-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.asta-thinking[data-status="thinking"] .asta-thinking-steps > li:last-child::after {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: 6px;
+  border-radius: 999px;
+  vertical-align: middle;
+  background: var(--brand);
+  animation: asta-agent-pulse 1.2s ease-in-out infinite;
+}
+
+/* ---------- Agent plan: the icon follows data-status ---------- */
+
+:is([data-status="running"] > .asta-agent-plan-icon, [data-status="running"] > * > .asta-agent-plan-icon, [data-status="running"] > * > * > .asta-agent-plan-icon) {
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--brand) 20%, transparent);
+}
+:is([data-status="running"] > .asta-agent-plan-icon, [data-status="running"] > * > .asta-agent-plan-icon, [data-status="running"] > * > * > .asta-agent-plan-icon)::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  border-top-color: var(--brand);
+  animation: asta-agent-spin 0.8s linear infinite;
+}
+:is([data-status="done"] > .asta-agent-plan-icon, [data-status="done"] > * > .asta-agent-plan-icon, [data-status="done"] > * > * > .asta-agent-plan-icon) {
+  background: var(--brand);
+  box-shadow: none;
+  animation: asta-agent-pop 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+:is([data-status="done"] > .asta-agent-plan-icon, [data-status="done"] > * > .asta-agent-plan-icon, [data-status="done"] > * > * > .asta-agent-plan-icon)::after {
+  content: "";
+  width: 28%;
+  height: 50%;
+  margin-top: -12%;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+:is([data-status="failed"] > .asta-agent-plan-icon, [data-status="failed"] > * > .asta-agent-plan-icon, [data-status="failed"] > * > * > .asta-agent-plan-icon) {
+  background: var(--ink);
+  box-shadow: none;
+  animation: asta-agent-pop 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+:is([data-status="failed"] > .asta-agent-plan-icon, [data-status="failed"] > * > .asta-agent-plan-icon, [data-status="failed"] > * > * > .asta-agent-plan-icon)::after {
+  content: "!";
+  color: var(--paper);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+:is([data-status="skipped"] > .asta-agent-plan-icon, [data-status="skipped"] > * > .asta-agent-plan-icon, [data-status="skipped"] > * > * > .asta-agent-plan-icon)::after {
+  content: "";
+  width: 40%;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--mute);
+}
+.asta-agent-plan-step[data-status="running"] > details[open] > .asta-agent-plan-body,
+.asta-agent-plan-detail {
+  animation: asta-agent-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ---------- Tool approval: the next card rises in, receipts slide down ---------- */
+
+.asta-tool-approval-card {
+  animation: asta-agent-card 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.asta-tool-approval-receipt {
+  animation: asta-agent-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+/* Queued calls show as two cards stacked behind the first. */
+.asta-tool-approval-queue[data-more] {
+  padding-bottom: 12px;
+}
+.asta-tool-approval-queue[data-more]::before,
+.asta-tool-approval-queue[data-more="2"]::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 12px;
+  z-index: -1;
+  border-radius: 14px;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 9%, transparent);
+  transform: translateY(7px) scaleX(0.96);
+  opacity: 0.75;
+}
+.asta-tool-approval-queue[data-more="2"]::after {
+  z-index: -2;
+  transform: translateY(14px) scaleX(0.92);
+  opacity: 0.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .asta-thinking *,
+  .asta-thinking-steps > li,
+  .asta-agent-plan-icon,
+  .asta-agent-plan-body,
+  .asta-agent-plan-detail,
+  .asta-tool-approval-card,
+  .asta-tool-approval-receipt {
+    animation: none !important;
+  }
+  .asta-agent-plan-icon::after {
+    animation-duration: 2.4s !important;
+  }
+  .asta-thinking-shine {
+    display: none !important;
+  }
+}
+
+/* ---- runtime/assist.css ---- */
+/* Assist: model picker, citations, trace waterfall, prompt composer.
+ * Only what Tailwind classes can't express. Motion is transform and opacity only, with the kit's easing. */
+
+/* ---------- Model picker: the popup and its marks ---------- */
+
+.asta-model-picker-panel:not([hidden]) {
+  animation: asta-assist-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.asta-model-picker-top .asta-model-picker-panel { --asta-assist-y: -4px; }
+.asta-model-picker-mark,
+.asta-model-picker-bar { will-change: transform; }
+
+/* ---------- Citations: card pops in, the expanded list rises ---------- */
+
+.asta-citations-card:not([hidden]) {
+  animation: asta-assist-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.asta-citations-card[data-below] { --asta-assist-y: -4px; }
+.asta-citations[data-expanded] .asta-citations-list > li {
+  animation: asta-assist-rise 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.asta-citations[data-expanded] .asta-citations-list > li:nth-child(2) { animation-delay: 30ms; }
+.asta-citations[data-expanded] .asta-citations-list > li:nth-child(3) { animation-delay: 60ms; }
+.asta-citations[data-expanded] .asta-citations-list > li:nth-child(4) { animation-delay: 90ms; }
+.asta-citations[data-expanded] .asta-citations-list > li:nth-child(n + 5) { animation-delay: 120ms; }
+
+/* ---------- Trace waterfall: bars grow in from the left, running spans breathe ---------- */
+
+.asta-trace-bar {
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: asta-trace-grow 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.asta-trace-bar[data-running] {
+  animation: asta-trace-grow 0.6s cubic-bezier(0.16, 1, 0.3, 1) both, asta-trace-run 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.6s infinite;
+}
+.asta-trace:is([data-offscreen], [data-paused]) .asta-trace-bar[data-running] { animation-play-state: running, paused; }
+.asta-trace-detail[data-fresh] {
+  animation: asta-assist-rise 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.asta-trace-row[hidden] { display: none; }
+
+/* ---------- Prompt composer: a band of light orbits the border while it works ---------- */
+
+.asta-prompt-ring {
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+.asta-prompt[data-running] .asta-prompt-spin {
+  animation: asta-prompt-orbit 2.6s linear infinite;
+}
+.asta-prompt:is([data-offscreen], [data-paused]) .asta-prompt-spin { animation-play-state: paused; }
+.asta-prompt-menu:not([hidden]) {
+  animation: asta-assist-in 0.14s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.asta-prompt-menu [hidden] { display: none; }
+.asta-prompt-file {
+  animation: asta-assist-rise 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .asta-model-picker-panel:not([hidden]),
+  .asta-citations-card:not([hidden]),
+  .asta-citations[data-expanded] .asta-citations-list > li,
+  .asta-trace-bar,
+  .asta-trace-detail[data-fresh],
+  .asta-prompt-menu:not([hidden]),
+  .asta-prompt-file { animation: none; }
+  .asta-model-picker-mark,
+  .asta-model-picker-bar { transition: none !important; }
+  /* A still brand ring instead of the orbit. */
+  .asta-prompt[data-running] .asta-prompt-spin { animation: none; background: var(--brand); }
+}
+
 /* ---- runtime/blocks.css ---- */
 /* Blocks: sign-in, onboarding, pricing, AI chat, checkout, properties and settings panels, team members.
  * Only what Tailwind classes can't express. Motion is transform and opacity only, with the kit's easing. */
@@ -193,6 +398,51 @@
   [data-asta-checkout] *,
   [data-asta-team] * {
     transition-duration: 0s !important;
+    animation: none !important;
+  }
+}
+
+/* ---- runtime/controls.css ---- */
+/* Controls: scrub input, API keys.
+ * Only what Tailwind classes can't express. Motion is transform and opacity only, with the kit's easing. */
+
+/* ---------- Scrub input: the error tip drops in ---------- */
+
+.asta-scrub:has(> [aria-invalid="true"]) > .asta-scrub-tip {
+  animation: asta-scrub-tip 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---------- API keys: form, new key, confirm and undo rise in; the undo bar runs down ---------- */
+
+.asta-api-keys-form:not([hidden]),
+.asta-api-keys-reveal,
+.asta-api-keys-confirm:not([hidden]),
+.asta-api-keys-row[data-revoked] > .asta-api-keys-undo {
+  animation: asta-ak-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.asta-api-keys-row[data-revoked] .asta-api-keys-countdown {
+  animation: asta-ak-count var(--asta-undo, 8s) linear forwards;
+}
+.asta-api-keys-skeleton {
+  animation: asta-ak-pulse 1.6s ease-in-out infinite;
+}
+.asta-api-keys-skeleton:nth-child(2) { animation-delay: 150ms }
+.asta-api-keys-skeleton:nth-child(3) { animation-delay: 300ms }
+
+@media (prefers-reduced-motion: reduce) {
+  .asta-scrub-input,
+  .asta-scrub-tip,
+  .asta-scrub-limit,
+  .asta-api-keys,
+  .asta-api-keys * {
+    animation-duration: 0s !important;
+    transition-duration: 0s !important;
+  }
+  .asta-api-keys-row[data-revoked] .asta-api-keys-countdown {
+    animation: none !important;
+    opacity: 0.5;
+  }
+  .asta-api-keys-skeleton {
     animation: none !important;
   }
 }
@@ -1312,6 +1562,1092 @@ details[open] > .asta-nav-sec { animation: asta-nav-rise 0.3s cubic-bezier(0.16,
  * an HX-Trigger header {"asta:toast": {...}}. A <template data-asta-toast='[{"title":"Saved"}]'> in the page shows
  * them on load. Their utility classes come with components.css (it @source's asta.js) and with asta.css. */
 
+/* ---- css/src/agent.css ---- */
+/* Agent: thinking, context meter, agent plan, tool approval. Class lists mirror the React kit.
+ * The context meter opens with core's popover (popovertarget + data-asta-popover) and the tool approval split menu is
+ * an asta-dropdown, so asta.js positions both. Tool approval decisions, Enter / Esc and the elapsed timers come from
+ * runtime/agent.js; its state CSS (shimmer, spinners, checks) lives in runtime/agent.css. */
+
+/* ---- Thinking ----
+ * <details class="asta-thinking" data-status="thinking" open>
+ *   <summary class="asta-thinking-head"><svg class="asta-thinking-icon">…</svg>
+ *     <span class="asta-thinking-label">Thinking<span class="asta-thinking-shine" aria-hidden="true"><span><span>Thinking</span></span></span></span>
+ *     <span class="asta-thinking-time" data-asta-elapsed="now">0s</span><svg class="asta-thinking-chevron">…</svg>
+ *     <span class="asta-thinking-preview">Latest line, shown while folded</span></summary>
+ *   <ol class="asta-thinking-steps"><li>…</li></ol></details>
+ * data-status: thinking | done | stopped. Done: drop the shine and time, label "Thought for 12s". Variant
+ * asta-thinking-inline (one line, no panel: use a <div> and a <span class="asta-thinking-head">). Size asta-thinking-sm. */
+.asta-thinking {
+  @apply flex w-full min-w-0 flex-col text-[13.5px] text-ink;
+}
+.asta-thinking-sm {
+  @apply text-[12.5px];
+}
+.asta-thinking-inline {
+  @apply inline-flex w-auto max-w-full align-middle;
+}
+.asta-thinking-head {
+  @apply -mx-1.5 flex min-w-0 max-w-full cursor-pointer flex-wrap list-none items-center gap-x-1.5 gap-y-0.5 self-start rounded-md px-1.5 py-1 font-medium outline-none transition-colors duration-200;
+  @apply hover:bg-paper-2 focus-visible:ring-2 focus-visible:ring-brand/50 [&::-webkit-details-marker]:hidden;
+  span& {
+    @apply mx-0 cursor-default px-0 hover:bg-transparent;
+  }
+}
+.asta-thinking-icon {
+  @apply h-4 w-4 shrink-0 text-mute;
+  .asta-thinking-sm & {
+    @apply h-3.5 w-3.5;
+  }
+  [data-status="thinking"] & {
+    @apply text-brand;
+  }
+}
+.asta-thinking-label {
+  @apply relative inline-block truncate text-ink;
+  [data-status="thinking"] > .asta-thinking-head > & {
+    @apply text-mute;
+  }
+}
+.asta-thinking-shine {
+  @apply pointer-events-none absolute inset-0 hidden overflow-hidden;
+  [data-status="thinking"] & {
+    @apply block;
+  }
+  & > span {
+    @apply absolute inset-0 [mask-image:linear-gradient(90deg,transparent_32%,#000_50%,transparent_68%)];
+  }
+  & > span > span {
+    @apply absolute inset-0 whitespace-nowrap text-ink;
+  }
+}
+.asta-thinking-time {
+  @apply hidden shrink-0 font-normal tabular-nums text-mute;
+  [data-status="thinking"] & {
+    @apply inline;
+  }
+}
+.asta-thinking-chevron {
+  @apply h-3.5 w-3.5 shrink-0 text-mute transition-transform duration-300 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  [open] > .asta-thinking-head > & {
+    @apply rotate-90;
+  }
+}
+.asta-thinking-preview {
+  @apply block w-full basis-full truncate pl-[22px] font-normal text-mute;
+  [open] > summary > & {
+    @apply hidden;
+  }
+  .asta-thinking-sm & {
+    @apply pl-5;
+  }
+}
+.asta-thinking-steps {
+  @apply ml-[7px] mt-1 flex flex-col gap-2 pb-1 pl-[14px] shadow-[inset_1px_0_0_color-mix(in_srgb,var(--ink)_12%,transparent)];
+  & > li {
+    @apply leading-relaxed text-ink-2;
+  }
+}
+
+/* ---- Context meter ----
+ * <button class="asta-context-meter" popovertarget="ctx" aria-haspopup="dialog" aria-label="Context window: 62% used" data-warn>
+ *   <svg class="asta-context-meter-ring" viewBox="0 0 16 16" aria-hidden="true"><circle class="asta-context-meter-ring-track" cx="8" cy="8" r="6.25"/>
+ *   <circle class="asta-context-meter-ring-bar" cx="8" cy="8" r="6.25" pathLength="100" stroke-dasharray="100 100" stroke-dashoffset="38"/></svg>
+ *   <span>62%</span><span class="asta-context-meter-of">of 200k</span><span class="asta-context-meter-warn">· Near limit</span></button>
+ * <div id="ctx" popover="auto" role="dialog" data-asta-popover data-side="top" data-align="end" class="asta-float asta-popover asta-context-meter-panel">
+ *   <div class="asta-context-meter-breakdown">head · total · bar (asta-context-meter-seg with --start/--value) · legend · warn · compact</div></div>
+ * data-warn on the button and the breakdown near the limit. Segments and legend dots take their fill from their position. */
+.asta-context-meter {
+  @apply inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md px-2 text-[12.5px] tabular-nums text-mute outline-none transition-colors duration-200;
+  @apply hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50 aria-expanded:bg-paper-2;
+  &[data-warn] {
+    @apply font-medium text-ink;
+  }
+}
+.asta-context-meter-sm {
+  @apply h-7 px-1.5;
+  & .asta-context-meter-of,
+  & .asta-context-meter-warn {
+    @apply hidden;
+  }
+}
+.asta-context-meter-of {
+  [data-warn] > & {
+    @apply hidden;
+  }
+}
+.asta-context-meter-warn {
+  @apply hidden;
+  [data-warn] > & {
+    @apply inline;
+  }
+}
+.asta-context-meter-ring {
+  @apply h-4 w-4 shrink-0 -rotate-90;
+}
+.asta-context-meter-ring-track {
+  @apply fill-none stroke-[color-mix(in_srgb,var(--ink)_11%,transparent)] [stroke-width:2.5];
+}
+.asta-context-meter-ring-bar {
+  @apply fill-none stroke-brand [stroke-linecap:round] [stroke-width:2.5] transition-[stroke-dashoffset,stroke] duration-700 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  [data-warn] & {
+    @apply stroke-ink;
+  }
+}
+/* Doubled with .asta-popover so it beats the popover's w-max, whatever order the groups load in. */
+.asta-context-meter-panel,
+.asta-popover.asta-context-meter-panel {
+  @apply w-[300px] p-4;
+}
+.asta-context-meter-breakdown {
+  @apply flex w-full flex-col gap-3 text-ink;
+}
+.asta-context-meter-head {
+  @apply flex items-baseline justify-between gap-3;
+  & > :first-child {
+    @apply text-[13.5px] font-medium;
+  }
+  & > :last-child:not(:first-child) {
+    @apply truncate text-[12px] text-mute;
+  }
+}
+.asta-context-meter-total {
+  @apply flex items-baseline justify-between gap-3 text-[12.5px] tabular-nums text-mute;
+  & b {
+    @apply text-[22px] font-medium tracking-[-0.03em] text-ink;
+  }
+  [data-warn] & > :last-child {
+    @apply font-medium text-ink;
+  }
+}
+.asta-context-meter-bar {
+  @apply relative h-2 w-full overflow-hidden rounded-full bg-paper-2 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_6%,transparent)];
+}
+.asta-context-meter-seg {
+  @apply absolute inset-0 origin-left bg-brand shadow-[inset_-1px_0_0_var(--paper)] transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  transform: translateX(calc(var(--start, 0) * 100%)) scaleX(var(--value, 0));
+}
+.asta-context-meter-seg:nth-child(2),
+.asta-context-meter-legend > li:nth-child(2) > .asta-context-meter-dot {
+  @apply bg-[color-mix(in_srgb,var(--brand)_55%,var(--paper))];
+}
+.asta-context-meter-seg:nth-child(3),
+.asta-context-meter-legend > li:nth-child(3) > .asta-context-meter-dot {
+  @apply bg-[color-mix(in_srgb,var(--ink)_62%,var(--paper))];
+}
+.asta-context-meter-seg:nth-child(4),
+.asta-context-meter-legend > li:nth-child(4) > .asta-context-meter-dot {
+  @apply bg-[color-mix(in_srgb,var(--ink)_28%,var(--paper))];
+}
+.asta-context-meter-legend {
+  @apply flex flex-col gap-1.5 text-[12.5px];
+  & > li {
+    @apply flex items-center gap-2 text-ink-2;
+  }
+  & > li > :nth-child(2) {
+    @apply min-w-0 flex-1 truncate;
+  }
+  & > li > :nth-child(3) {
+    @apply tabular-nums text-ink;
+  }
+  & > li > :nth-child(4) {
+    @apply w-9 text-right tabular-nums text-mute;
+  }
+  & > li[data-free] > :nth-child(2) {
+    @apply text-mute;
+  }
+}
+.asta-context-meter-dot {
+  @apply h-2 w-2 shrink-0 rounded-full bg-brand;
+  [data-free] > & {
+    @apply bg-transparent shadow-[inset_0_0_0_1.5px_color-mix(in_srgb,var(--ink)_22%,transparent)];
+  }
+}
+.asta-context-meter-note {
+  @apply flex gap-1.5 rounded-lg bg-paper-2 px-2.5 py-2 text-[12.5px] leading-snug text-ink [&>svg]:mt-px [&>svg]:h-3.5 [&>svg]:w-3.5 [&>svg]:shrink-0;
+  & b {
+    @apply font-medium;
+  }
+}
+.asta-context-meter-compact {
+  @apply flex h-8 w-full items-center justify-center gap-2 rounded-md bg-paper-2 text-[13px] font-medium text-ink outline-none transition-[background-color,opacity,transform] duration-200 [&>svg]:h-3.5 [&>svg]:w-3.5;
+  @apply hover:bg-[color-mix(in_srgb,var(--ink)_8%,var(--paper-2))] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-brand/50;
+  @apply disabled:pointer-events-none disabled:opacity-60 aria-busy:pointer-events-none aria-busy:opacity-60 [&.htmx-request]:opacity-60;
+}
+
+/* ---- Agent plan ----
+ * <section class="asta-agent-plan" aria-label="Migrate billing">
+ *   <header class="asta-agent-plan-head"><p class="asta-agent-plan-state">Running · 8.3s</p><h3 class="asta-agent-plan-title">…</h3>
+ *     <div class="asta-agent-plan-progress"><span class="asta-agent-plan-track"><span style="--value:.43"></span></span><span><b>3</b> of 7</span></div></header>
+ *   <ol class="asta-agent-plan-steps">
+ *     <li class="asta-agent-plan-step" data-status="done"><details><summary class="asta-agent-plan-row"><span class="asta-agent-plan-icon"></span>
+ *       <span class="asta-agent-plan-name">…</span><span class="asta-agent-plan-time">1.6s</span><svg class="asta-agent-plan-chevron">…</svg></summary>
+ *       <div class="asta-agent-plan-body"><p class="asta-agent-plan-detail">…</p><ul class="asta-agent-plan-subs"><li data-status="done"><span class="asta-agent-plan-icon"></span>…</li></ul></div></details></li>
+ *     <li class="asta-agent-plan-step" data-status="pending"><div class="asta-agent-plan-row">…</div></li></ol></section>
+ * data-status: pending | running | done | skipped | failed. The icon is drawn from it. Add <span class="asta-agent-plan-badge">Failed</span>
+ * after the name for skipped and failed steps, open the running step's <details>, and data-failed on the section after a failure. */
+.asta-agent-plan {
+  @apply flex w-full flex-col rounded-[14px] bg-paper text-ink shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_9%,transparent),0_1px_2px_rgb(0_0_0/0.04)];
+}
+.asta-agent-plan-head {
+  @apply flex flex-col px-4 pb-3 pt-4;
+}
+.asta-agent-plan-state {
+  @apply flex items-center gap-1.5 text-[12px] tabular-nums text-mute;
+  [data-failed] & {
+    @apply font-medium text-ink;
+  }
+}
+.asta-agent-plan-title {
+  @apply mt-0.5 text-[14.5px] font-medium leading-snug tracking-[-0.01em];
+}
+.asta-agent-plan-progress {
+  @apply mt-3 flex items-center gap-3 text-[12px] tabular-nums text-mute;
+  & b {
+    @apply font-medium text-ink;
+  }
+}
+.asta-agent-plan-track {
+  @apply relative h-1 flex-1 overflow-hidden rounded-full bg-paper-2;
+  & > span {
+    @apply absolute inset-0 origin-left scale-x-[var(--value,0)] bg-brand transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+    [data-failed] & {
+      @apply bg-ink;
+    }
+  }
+}
+.asta-agent-plan-steps {
+  @apply flex flex-col px-2 pb-2;
+}
+.asta-agent-plan-step {
+  @apply relative;
+  &:not(:last-child) {
+    @apply after:pointer-events-none after:absolute after:bottom-[-6px] after:left-[17px] after:top-[30px] after:w-px after:bg-[color-mix(in_srgb,var(--ink)_10%,transparent)] after:content-[''];
+  }
+}
+.asta-agent-plan-row {
+  @apply flex min-h-10 w-full list-none items-center gap-2.5 rounded-lg px-2 py-2 outline-none [&::-webkit-details-marker]:hidden;
+  summary& {
+    @apply cursor-pointer transition-colors duration-200 hover:bg-paper-2 focus-visible:ring-2 focus-visible:ring-brand/50;
+  }
+}
+.asta-agent-plan-name {
+  @apply min-w-0 flex-1 text-left text-[13.5px] leading-snug [overflow-wrap:anywhere];
+  [data-status="pending"] > * > &,
+  [data-status="pending"] > * > * > & {
+    @apply text-mute;
+  }
+  [data-status="running"] > * > &,
+  [data-status="running"] > * > * > &,
+  [data-status="failed"] > * > &,
+  [data-status="failed"] > * > * > & {
+    @apply font-medium;
+  }
+  [data-status="done"] > * > &,
+  [data-status="done"] > * > * > & {
+    @apply text-ink-2;
+  }
+  [data-status="skipped"] > * > &,
+  [data-status="skipped"] > * > * > & {
+    @apply text-mute line-through decoration-[color-mix(in_srgb,var(--ink)_30%,transparent)];
+  }
+}
+.asta-agent-plan-badge {
+  @apply shrink-0 rounded bg-paper-2 px-1.5 py-px text-[11px] text-mute;
+  [data-status="failed"] > * > &,
+  [data-status="failed"] > * > * > & {
+    @apply bg-ink font-medium text-paper;
+  }
+}
+.asta-agent-plan-time {
+  @apply w-12 shrink-0 text-right text-[12px] tabular-nums text-mute;
+}
+.asta-agent-plan-chevron {
+  @apply h-3.5 w-3.5 shrink-0 text-mute transition-transform duration-300 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none;
+  [open] > summary > & {
+    @apply rotate-90;
+  }
+}
+.asta-agent-plan-body {
+  @apply flex flex-col gap-1.5 pb-2 pl-[38px] pr-2;
+}
+.asta-agent-plan-detail {
+  @apply truncate text-[12px] leading-relaxed text-mute;
+  [data-status="running"] & {
+    @apply font-mono;
+  }
+  [data-status="failed"] & {
+    @apply whitespace-normal text-ink;
+  }
+}
+.asta-agent-plan-subs {
+  @apply flex flex-col gap-1;
+  & > li {
+    @apply flex items-center gap-2 text-[12.5px] text-ink-2;
+  }
+  & > li[data-status="pending"] {
+    @apply text-mute;
+  }
+  & .asta-agent-plan-icon {
+    @apply h-3.5 w-3.5;
+  }
+}
+.asta-agent-plan-icon {
+  @apply relative grid h-[18px] w-[18px] shrink-0 place-items-center rounded-full shadow-[inset_0_0_0_1.5px_color-mix(in_srgb,var(--ink)_20%,transparent)];
+}
+
+/* ---- Tool approval ----
+ * <div class="asta-tool-approval" data-asta-tool-approval>
+ *   <ul class="asta-tool-approval-receipts" aria-label="Tool calls"></ul>
+ *   <div class="asta-tool-approval-queue">
+ *     <div class="asta-tool-approval-card" role="group" tabindex="0" aria-label="Approve run_sql" data-tool="run_sql" data-id="c1">
+ *       <div class="asta-tool-approval-head"><span class="asta-tool-approval-icon"><svg/></span><div class="asta-tool-approval-meta">
+ *         <p class="asta-tool-approval-source">Wants to use a tool · Postgres</p><p class="asta-tool-approval-tool">run_sql</p></div>
+ *         <span class="asta-tool-approval-count">1 of 3</span></div>
+ *       <p class="asta-tool-approval-summary">…</p>  then <pre class="asta-tool-approval-code">, .asta-tool-approval-diff or <dl class="asta-tool-approval-args">
+ *       <div class="asta-tool-approval-foot"><p class="asta-tool-approval-risk" data-risk="read|write|destructive"><svg/>Read only</p>
+ *         <div class="asta-tool-approval-actions"><button class="asta-tool-approval-deny" data-asta-decide="deny">Deny <kbd>Esc</kbd></button>
+ *         <div class="asta-dropdown asta-tool-approval-split" data-asta-dropdown data-align="end"><button class="asta-tool-approval-allow" data-asta-decide="once">Allow once</button>
+ *         <button class="asta-tool-approval-more" data-asta-dropdown-trigger aria-haspopup="menu" …><svg/></button>
+ *         <div role="menu" popover="manual" data-asta-mpanel class="asta-float asta-dropdown-panel">…data-asta-decide="always"…</div></div></div></div></div>
+ *     …more cards queue behind the first</div></div>
+ * asta.js turns a decision into a receipt (data-decision), runs queued calls to an always-allowed tool, and fires
+ * "asta:tool-decision". The server can replace a receipt with one that carries a time: <span class="asta-tool-approval-receipt-time">. */
+.asta-tool-approval {
+  @apply flex w-full flex-col gap-3 text-ink;
+}
+.asta-tool-approval-receipts {
+  @apply -mx-2.5 flex flex-col empty:hidden;
+}
+.asta-tool-approval-receipt {
+  @apply flex min-h-8 items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12.5px] [&>svg]:h-3.5 [&>svg]:w-3.5 [&>svg]:shrink-0 [&>svg]:text-brand;
+  &[data-decision="deny"] > svg,
+  &[data-state="error"] > svg {
+    @apply text-ink;
+  }
+  & > b {
+    @apply font-medium;
+  }
+  & > code {
+    @apply min-w-0 truncate font-mono text-[12px] text-ink-2;
+  }
+}
+.asta-tool-approval-receipt-sep {
+  @apply text-mute;
+}
+.asta-tool-approval-receipts:focus {
+  @apply outline-none;
+}
+.asta-tool-approval-receipt-summary {
+  @apply hidden min-w-0 flex-1 truncate text-mute sm:block;
+}
+.asta-tool-approval-receipt-time {
+  @apply ml-auto shrink-0 tabular-nums text-mute;
+}
+.asta-tool-approval-queue {
+  @apply relative isolate empty:hidden;
+}
+.asta-tool-approval-card {
+  @apply relative flex flex-col gap-3 rounded-[14px] bg-paper p-4 outline-none;
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent),0_10px_28px_-16px_rgb(0_0_0/0.25),0_1px_2px_rgb(0_0_0/0.04)];
+  @apply focus-visible:shadow-[inset_0_0_0_1px_var(--brand),0_0_0_3px_color-mix(in_srgb,var(--brand)_16%,transparent)];
+  .asta-tool-approval-queue > &:not(:first-child) {
+    @apply hidden;
+  }
+}
+.asta-tool-approval-head {
+  @apply flex items-start gap-3;
+}
+.asta-tool-approval-icon {
+  @apply grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-paper-2 text-ink [&>svg]:h-4 [&>svg]:w-4;
+}
+.asta-tool-approval-meta {
+  @apply min-w-0 flex-1;
+}
+.asta-tool-approval-source {
+  @apply truncate text-[12px] text-mute;
+}
+.asta-tool-approval-tool {
+  @apply truncate font-mono text-[13.5px] font-medium;
+}
+.asta-tool-approval-count {
+  @apply shrink-0 rounded-md bg-paper-2 px-1.5 py-0.5 text-[11.5px] tabular-nums text-mute;
+}
+.asta-tool-approval-summary {
+  @apply text-[13.5px] leading-snug text-ink-2;
+}
+.asta-tool-approval-code {
+  @apply overflow-x-auto rounded-lg bg-paper-2 px-3 py-2.5 font-mono text-[12px] leading-[1.6] text-ink [scrollbar-width:thin];
+}
+.asta-tool-approval-diff {
+  @apply overflow-hidden rounded-lg bg-paper-2 text-[12px];
+}
+.asta-tool-approval-diff-file {
+  @apply flex items-center justify-between gap-3 px-3 pb-1 pt-2 font-mono text-ink-2;
+  & > :last-child {
+    @apply shrink-0 tabular-nums text-mute;
+  }
+}
+.asta-tool-approval-diff-lines {
+  @apply overflow-x-auto pb-1.5 font-mono leading-[1.6] [scrollbar-width:thin];
+  & > div {
+    @apply flex min-w-max whitespace-pre pr-3 text-ink before:w-6 before:shrink-0 before:select-none before:text-center before:text-mute before:content-['_'];
+  }
+  & > div[data-sign="+"] {
+    @apply bg-[color-mix(in_srgb,var(--brand)_9%,transparent)] before:text-brand before:content-['+'];
+  }
+  & > div[data-sign="-"] {
+    @apply text-mute line-through decoration-[color-mix(in_srgb,var(--ink)_25%,transparent)] before:content-['−'];
+  }
+}
+.asta-tool-approval-args {
+  @apply grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 rounded-lg bg-paper-2 px-3 py-2.5 text-[12.5px];
+  & dt {
+    @apply text-mute;
+  }
+  & dd {
+    @apply min-w-0 break-words font-mono text-[12px] text-ink;
+  }
+}
+.asta-tool-approval-foot {
+  @apply flex flex-wrap items-center justify-between gap-x-3 gap-y-2.5 pt-0.5;
+}
+.asta-tool-approval-risk {
+  @apply flex items-center gap-1.5 text-[12.5px] text-mute [&>svg]:h-3.5 [&>svg]:w-3.5 [&>svg]:shrink-0;
+  &[data-risk="destructive"] {
+    @apply font-medium text-ink;
+  }
+}
+.asta-tool-approval-actions {
+  @apply ml-auto flex items-center gap-2;
+  & kbd {
+    @apply ml-1 hidden rounded bg-[color-mix(in_srgb,currentColor_14%,transparent)] px-1 font-sans text-[10.5px] leading-[1.5] sm:inline;
+  }
+}
+.asta-tool-approval-deny {
+  @apply inline-flex h-8 items-center rounded-md px-3 text-[13px] font-medium text-ink-2 outline-none shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)];
+  @apply transition-[background-color,color,transform] duration-150 hover:bg-paper-2 hover:text-ink active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-brand/50;
+}
+.asta-tool-approval-split {
+  @apply flex;
+}
+.asta-tool-approval-allow,
+.asta-tool-approval-more {
+  @apply inline-flex h-8 items-center bg-ink text-[13px] font-medium text-paper outline-none transition-[background-color,transform] duration-150;
+  @apply hover:bg-[color-mix(in_srgb,var(--ink)_86%,var(--paper))] active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 focus-visible:ring-offset-paper;
+}
+.asta-tool-approval-allow {
+  @apply rounded-l-md pl-3 pr-2.5;
+}
+.asta-tool-approval-more {
+  @apply w-7 justify-center rounded-r-md shadow-[inset_1px_0_0_color-mix(in_srgb,var(--paper)_22%,transparent)] [&>svg]:h-3.5 [&>svg]:w-3.5;
+  & > svg {
+    @apply transition-transform duration-300 ease-[cubic-bezier(.16,1,.3,1)];
+  }
+  [data-open] > & > svg {
+    @apply rotate-180;
+  }
+}
+
+/* ---- css/src/assist.css ---- */
+/* AI assistant UI: prompt composer, model picker, citations and trace waterfall. Class lists mirror the React kit.
+ * asta.js drives them through data-asta-* hooks (runtime/assist.js); states come only from aria-*, data-* and
+ * disabled. Modifiers come after the base class. */
+
+/* ---- Model picker ----
+ * <div class="asta-model-picker" data-asta-model>
+ *   <button class="asta-model-picker-trigger" aria-haspopup="listbox" aria-expanded="false" data-asta-model-trigger>…value, tag, chevron…</button>
+ *   <input type="hidden" name="model" value="astra-2" data-asta-model-value>
+ *   <div class="asta-model-picker-panel" hidden>
+ *     <div class="asta-model-picker-search">…<input class="asta-model-picker-search-input" role="combobox" data-asta-model-search></div>
+ *     <div class="asta-model-picker-list" role="listbox"><span class="asta-model-picker-mark"></span><span class="asta-model-picker-bar"></span>
+ *       <div role="group"><p class="asta-model-picker-group">Astra 2</p><div class="asta-model-picker-option" role="option" data-value data-label aria-selected>…</div></div>
+ *     </div></div></div>
+ * Variant asta-model-picker-chip (quiet toolbar trigger), asta-model-picker-top (opens upward). */
+.asta-model-picker {
+  @apply relative w-full;
+}
+.asta-model-picker-chip {
+  @apply inline-flex w-auto;
+}
+.asta-model-picker-trigger {
+  @apply flex h-10 w-full cursor-pointer items-center gap-2 rounded-lg bg-paper px-3 text-left text-[14px] text-ink outline-none transition-[background-color,box-shadow,color] duration-200;
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)] hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_24%,transparent)];
+  @apply aria-expanded:shadow-[inset_0_0_0_1px_var(--brand),0_0_0_3px_color-mix(in_srgb,var(--brand)_18%,transparent)];
+  @apply focus-visible:ring-2 focus-visible:ring-brand/50 disabled:cursor-not-allowed disabled:opacity-45;
+  & > svg {
+    @apply h-3.5 w-3.5 shrink-0;
+  }
+}
+.asta-model-picker-chip .asta-model-picker-trigger {
+  @apply h-8 w-auto max-w-[220px] rounded-md bg-transparent px-2 text-[13px] text-ink-2 shadow-none hover:bg-paper-2 hover:text-ink hover:shadow-none aria-expanded:bg-paper-2 aria-expanded:text-ink aria-expanded:shadow-none;
+}
+.asta-model-picker-icon {
+  @apply text-brand;
+}
+.asta-model-picker-value {
+  @apply min-w-0 truncate font-medium;
+}
+.asta-model-picker-tag {
+  @apply shrink-0 rounded-[5px] bg-[color-mix(in_srgb,var(--ink)_7%,transparent)] px-1.5 py-px text-[11px] font-medium text-ink-2;
+}
+.asta-model-picker-chevron {
+  @apply ml-auto text-mute transition-transform duration-300 ease-[cubic-bezier(.16,1,.3,1)];
+}
+.asta-model-picker-trigger[aria-expanded="true"] .asta-model-picker-chevron {
+  @apply rotate-180;
+}
+.asta-model-picker-panel {
+  @apply absolute left-0 top-full z-50 mt-1.5 flex w-[372px] max-w-[calc(100vw-32px)] origin-top flex-col overflow-hidden rounded-xl bg-paper;
+  @apply shadow-[0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent),0_16px_40px_-12px_rgb(0_0_0/0.25),0_4px_10px_-6px_rgb(0_0_0/0.1)];
+}
+.asta-model-picker-top .asta-model-picker-panel {
+  @apply bottom-full top-auto mb-1.5 mt-0 origin-bottom;
+}
+.asta-model-picker-search {
+  @apply flex items-center gap-2 px-3 pb-1.5 pt-2.5 text-mute;
+  & > svg {
+    @apply h-4 w-4 shrink-0;
+  }
+}
+.asta-model-picker-search-input {
+  @apply h-8 min-w-0 flex-1 bg-transparent text-[16px] text-ink outline-none placeholder:text-mute sm:text-[13.5px] [&::-webkit-search-cancel-button]:hidden;
+}
+.asta-model-picker-list {
+  @apply relative max-h-[min(360px,60vh)] overflow-y-auto overscroll-contain p-1.5 outline-none [scrollbar-width:thin];
+}
+.asta-model-picker-mark {
+  @apply pointer-events-none absolute inset-x-1.5 top-0 h-14 rounded-lg bg-paper-2 opacity-0;
+}
+.asta-model-picker-bar {
+  @apply pointer-events-none absolute left-1.5 top-0 z-[1] h-[22px] w-[3px] rounded-full bg-brand opacity-0;
+}
+.asta-model-picker-group {
+  @apply relative px-3.5 pb-1 pt-2.5 font-mono text-[10.5px] uppercase tracking-wider text-mute;
+}
+.asta-model-picker-option {
+  @apply relative flex h-14 cursor-pointer select-none items-center gap-3 rounded-lg pl-3.5 pr-2.5;
+  @apply aria-disabled:cursor-not-allowed;
+}
+.asta-model-picker-main {
+  @apply min-w-0 flex-1;
+}
+.asta-model-picker-option[aria-disabled="true"] :is(.asta-model-picker-main, .asta-model-picker-meters, .asta-model-picker-context) {
+  @apply opacity-55;
+}
+.asta-model-picker-name {
+  @apply flex items-center gap-1.5 truncate text-[13.5px] font-medium text-ink-2;
+}
+.asta-model-picker-option[aria-selected="true"] .asta-model-picker-name {
+  @apply text-ink;
+}
+.asta-model-picker-new {
+  @apply shrink-0 rounded-[5px] bg-brand px-1.5 text-[10px] font-semibold leading-[16px] text-white;
+}
+.asta-model-picker-hint {
+  @apply mt-0.5 block truncate text-[12px] text-mute;
+}
+.asta-model-picker-meters {
+  @apply flex shrink-0 flex-col items-end gap-1.5;
+}
+.asta-model-picker-meter {
+  @apply flex items-center gap-1.5 text-mute;
+  & > svg {
+    @apply h-3 w-3;
+  }
+}
+.asta-model-picker-dots {
+  @apply flex items-center gap-[3px];
+  & > span {
+    @apply h-[5px] w-[5px] rounded-full bg-[color-mix(in_srgb,var(--ink)_14%,transparent)] data-on:bg-ink;
+  }
+}
+.asta-model-picker-context {
+  @apply w-9 shrink-0 text-right font-mono text-[11px] tabular-nums text-mute;
+}
+.asta-model-picker-check {
+  @apply h-3.5 w-3.5 shrink-0 scale-75 text-brand opacity-0 transition-[opacity,transform] duration-200 ease-[cubic-bezier(.16,1,.3,1)];
+}
+.asta-model-picker-option[aria-selected="true"] .asta-model-picker-check {
+  @apply scale-100 opacity-100;
+}
+.asta-model-picker-empty {
+  @apply flex flex-col items-center gap-1 px-3 py-8 text-center text-[12px] text-mute;
+  & b {
+    @apply text-[13px] font-medium text-ink-2;
+  }
+}
+.asta-model-picker-foot {
+  @apply hidden items-center gap-3 bg-paper-2 px-3.5 py-2 text-[11.5px] text-mute sm:flex;
+  & > span:last-child {
+    @apply ml-auto;
+  }
+}
+
+/* ---- Citations ----
+ * <div class="asta-citations" data-asta-cite>
+ *   <div class="asta-citations-text"><p>Revenue grew 23% <span class="asta-citations-cite"><button class="asta-citations-pill" data-src="1" aria-label="Source 1: …" aria-expanded="false">1</button>
+ *     <span class="asta-citations-card" role="tooltip" hidden>…tile, domain, title, quote with <mark>…</span></span>.</p></div>
+ *   <section class="asta-citations-sources"><div class="asta-citations-head"><h4 class="asta-citations-title">Sources <span class="asta-citations-count">5</span></h4>
+ *     <button class="asta-citations-toggle" aria-expanded="false" data-asta-cite-toggle>Show all 5</button></div>
+ *     <ol class="asta-citations-list"><li><a class="asta-citations-source" data-src="1" href="…">…</a></li> … <li data-extra hidden>…</li></ol></section></div>
+ * asta.js shows a card on hover/focus/tap, lights a source's pills (data-lit) and expands the list (data-expanded). */
+.asta-citations {
+  @apply flex w-full flex-col gap-5;
+}
+.asta-citations-text {
+  @apply flex flex-col gap-3 text-[15px] leading-[1.7] text-ink;
+}
+.asta-citations-cite {
+  @apply relative inline-block whitespace-nowrap;
+}
+.asta-citations-pill {
+  @apply mx-px inline-grid h-[18px] min-w-[18px] -translate-y-px cursor-pointer place-items-center rounded-[5px] bg-[color-mix(in_srgb,var(--ink)_8%,transparent)] px-1 align-middle text-[11px] font-semibold leading-none tabular-nums text-ink-2 outline-none;
+  @apply transition-[background-color,color,transform] duration-200 hover:bg-[color-mix(in_srgb,var(--ink)_14%,transparent)] hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50 active:scale-95;
+  @apply aria-expanded:bg-brand aria-expanded:text-white data-lit:bg-brand data-lit:text-white;
+}
+.asta-citations-card {
+  @apply absolute bottom-full left-1/2 z-50 mb-2 block w-[304px] max-w-[calc(100vw-32px)] -translate-x-1/2 origin-bottom whitespace-normal rounded-xl bg-paper p-3.5 text-left leading-normal;
+  @apply shadow-[0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent),0_16px_36px_-12px_rgb(0_0_0/0.28),0_4px_10px_-6px_rgb(0_0_0/0.1)];
+  @apply data-below:bottom-auto data-below:top-full data-below:mb-0 data-below:mt-2 data-below:origin-top;
+  & mark {
+    @apply rounded-[3px] bg-[color-mix(in_srgb,var(--brand)_14%,transparent)] px-0.5 text-ink [box-decoration-break:clone];
+  }
+}
+.asta-citations-card-head {
+  @apply flex items-center gap-2 text-[12px] text-mute;
+  & > span:nth-child(2) {
+    @apply min-w-0 flex-1 truncate;
+  }
+}
+.asta-citations-card-num {
+  @apply font-mono text-[11px];
+}
+.asta-citations-card-title {
+  @apply mt-2 line-clamp-2 text-[13.5px] font-medium leading-snug text-ink;
+}
+.asta-citations-card-quote {
+  @apply mt-1.5 line-clamp-4 text-[12.5px] leading-relaxed text-ink-2;
+}
+.asta-citations-tile {
+  @apply grid h-[18px] w-[18px] shrink-0 place-items-center rounded-[5px] bg-ink text-[10px] font-semibold uppercase text-paper;
+}
+.asta-citations-tile-2 {
+  @apply bg-brand text-white;
+}
+.asta-citations-tile-3 {
+  @apply bg-paper-2 text-ink shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent)];
+}
+.asta-citations-sources {
+  @apply flex flex-col gap-2.5;
+}
+.asta-citations-head {
+  @apply flex items-center justify-between gap-3;
+}
+.asta-citations-title {
+  @apply flex items-center gap-2 text-[12.5px] font-medium text-ink-2;
+}
+.asta-citations-count {
+  @apply rounded-[5px] bg-paper-2 px-1.5 text-[11px] tabular-nums text-mute;
+}
+.asta-citations-toggle {
+  @apply flex h-7 cursor-pointer items-center gap-1 rounded-md px-2 text-[12.5px] font-medium text-ink-2 outline-none transition-colors duration-150 hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50;
+  & > svg {
+    @apply h-3.5 w-3.5 transition-transform duration-300 ease-[cubic-bezier(.16,1,.3,1)];
+  }
+  &[aria-expanded="true"] > svg {
+    @apply rotate-180;
+  }
+}
+.asta-citations-list {
+  @apply grid grid-cols-1 gap-2 min-[480px]:grid-cols-2 sm:grid-cols-4;
+}
+.asta-citations[data-expanded] .asta-citations-list {
+  @apply flex flex-col gap-1;
+}
+.asta-citations-source {
+  @apply block w-full rounded-[10px] bg-paper-2 p-2.5 text-left outline-none transition-[background-color,box-shadow] duration-200 hover:bg-[color-mix(in_srgb,var(--ink)_7%,var(--paper-2))] focus-visible:ring-2 focus-visible:ring-brand/50;
+  @apply data-lit:bg-[color-mix(in_srgb,var(--brand)_7%,var(--paper))] data-lit:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--brand)_35%,transparent)];
+}
+.asta-citations[data-expanded] .asta-citations-source:not([data-lit]) {
+  @apply bg-transparent hover:bg-paper-2;
+}
+.asta-citations-source-head {
+  @apply flex items-center gap-1.5 text-[11.5px] text-mute;
+  & > span:nth-child(2) {
+    @apply min-w-0 flex-1 truncate;
+  }
+}
+.asta-citations-source-num {
+  @apply font-mono text-[11px] tabular-nums;
+}
+.asta-citations-source-title {
+  @apply mt-1.5 line-clamp-2 text-[12.5px] font-medium leading-snug text-ink;
+}
+.asta-citations-source-quote {
+  @apply mt-1 hidden text-[12.5px] leading-relaxed text-ink-2;
+  & mark {
+    @apply rounded-[3px] bg-[color-mix(in_srgb,var(--brand)_14%,transparent)] px-0.5 text-ink;
+  }
+}
+.asta-citations[data-expanded] .asta-citations-source-quote {
+  @apply line-clamp-2;
+}
+.asta-citations[data-expanded] .asta-citations-source-title {
+  @apply text-[13.5px];
+}
+.asta-citations-more {
+  @apply hidden sm:block;
+}
+.asta-citations[data-expanded] .asta-citations-more {
+  @apply hidden;
+}
+
+/* ---- Trace waterfall ----
+ * <div class="asta-trace" data-asta-trace>
+ *   <header class="asta-trace-header"><h3 class="asta-trace-title">…</h3><dl class="asta-trace-stats">…</dl><ul class="asta-trace-legend">…</ul></header>
+ *   <div class="asta-trace-scroll"><div class="asta-trace-grid" role="treegrid">
+ *     <div class="asta-trace-row asta-trace-head" role="row">…</div>
+ *     <div class="asta-trace-row" role="row" data-id="plan" data-parent="run" aria-level="2" tabindex="-1">
+ *       <span class="asta-trace-name" role="gridcell" style="--depth:1">…kind tile, label…</span>
+ *       <span class="asta-trace-timeline" role="gridcell"><span class="asta-trace-track"><span class="asta-trace-bar asta-trace-bar-llm" style="--x:1%;--w:.14"></span></span></span>
+ *       <span class="asta-trace-num" role="gridcell">2,052</span> … </div></div></div>
+ *   <section class="asta-trace-detail" hidden data-asta-trace-detail></section>
+ *   <template data-asta-trace-for="plan">…detail markup…</template></div>
+ * asta.js folds rows ([data-asta-trace-toggle], ←/→), moves focus (↑/↓) and opens the detail for the selected row. */
+.asta-trace {
+  @apply flex w-full flex-col overflow-hidden rounded-[14px] bg-paper text-ink shadow-[0_0_0_1px_color-mix(in_srgb,var(--ink)_9%,transparent),0_1px_2px_rgb(0_0_0/0.04)];
+}
+.asta-trace-header {
+  @apply flex flex-wrap items-center gap-x-4 gap-y-2 px-4 pb-3 pt-4 sm:px-5;
+}
+.asta-trace-title {
+  @apply truncate text-[14px] font-medium tracking-[-0.01em] text-ink;
+}
+.asta-trace-stats {
+  @apply flex flex-wrap items-center gap-x-4 gap-y-1 text-[12.5px] tabular-nums text-mute;
+  & > div {
+    @apply flex items-center gap-1.5;
+  }
+  & dd {
+    @apply font-medium text-ink;
+  }
+  & svg {
+    @apply h-3.5 w-3.5 text-ink;
+  }
+}
+.asta-trace-legend {
+  @apply flex flex-wrap items-center gap-3 text-[11.5px] text-mute sm:ml-auto;
+  & > li {
+    @apply flex items-center gap-1.5;
+  }
+  & > li > span {
+    @apply h-2 w-2 rounded-[2px];
+  }
+}
+.asta-trace-scroll {
+  @apply max-h-[440px] overflow-auto overscroll-contain [scrollbar-width:thin];
+}
+.asta-trace-grid {
+  @apply min-w-[700px] pb-2 sm:min-w-[740px];
+}
+.asta-trace-row {
+  @apply grid h-10 cursor-pointer grid-cols-[minmax(200px,1.3fr)_minmax(240px,2fr)_56px_68px_76px] sm:grid-cols-[minmax(232px,1.3fr)_minmax(240px,2fr)_56px_68px_76px] items-center gap-x-3 bg-paper text-[13px] outline-none transition-colors duration-150 hover:bg-paper-2;
+  @apply focus-visible:shadow-[inset_0_0_0_2px_color-mix(in_srgb,var(--brand)_55%,transparent)];
+  @apply aria-selected:bg-[color-mix(in_srgb,var(--brand)_7%,var(--paper))];
+}
+.asta-trace-head {
+  @apply sticky top-0 z-20 h-8 cursor-default font-mono text-[10.5px] uppercase tracking-wider text-mute hover:bg-paper;
+  & > span:first-child {
+    @apply left-0 z-10 bg-paper pl-4 sm:sticky sm:pl-5;
+  }
+  & > span:nth-child(n + 3) {
+    @apply text-right;
+  }
+  & > span:last-child {
+    @apply pr-4 sm:pr-5;
+  }
+}
+.asta-trace-ticks {
+  @apply relative h-full;
+  & > span {
+    @apply absolute top-1/2 -translate-x-1/2 -translate-y-1/2 normal-case tracking-normal;
+  }
+  & > span:first-child {
+    @apply translate-x-0;
+  }
+  & > span:last-child {
+    @apply -translate-x-full;
+  }
+}
+.asta-trace-name {
+  @apply left-0 z-10 flex h-full min-w-0 items-center gap-1.5 bg-inherit pr-3 text-ink-2 sm:sticky;
+  padding-left: calc(16px + var(--depth, 0) * 18px);
+}
+.asta-trace-row:hover .asta-trace-name {
+  @apply bg-paper-2;
+}
+.asta-trace-row[aria-selected="true"] .asta-trace-name {
+  @apply bg-[color-mix(in_srgb,var(--brand)_7%,var(--paper))];
+}
+.asta-trace-toggle {
+  @apply -ml-1 grid h-5 w-5 shrink-0 cursor-pointer place-items-center rounded text-mute hover:bg-[color-mix(in_srgb,var(--ink)_8%,transparent)] hover:text-ink;
+  & > svg {
+    @apply h-3 w-3 rotate-90 transition-transform duration-200 ease-[cubic-bezier(.16,1,.3,1)];
+  }
+}
+.asta-trace-row[aria-expanded="false"] .asta-trace-toggle > svg {
+  @apply rotate-0;
+}
+.asta-trace-spacer {
+  @apply w-4 shrink-0;
+}
+.asta-trace-kind {
+  @apply grid h-5 w-5 shrink-0 place-items-center rounded-[5px] bg-paper-2 text-ink-2;
+  & > svg {
+    @apply h-3 w-3;
+  }
+}
+.asta-trace-kind-llm {
+  @apply bg-[color-mix(in_srgb,var(--brand)_12%,transparent)] text-brand;
+}
+.asta-trace-label {
+  @apply min-w-0 truncate;
+}
+.asta-trace-root .asta-trace-label {
+  @apply font-medium text-ink;
+}
+.asta-trace-error {
+  @apply grid h-5 w-5 shrink-0 place-items-center rounded-[5px] bg-ink text-paper;
+  & > svg {
+    @apply h-3 w-3;
+  }
+}
+.asta-trace-timeline {
+  @apply relative h-full;
+}
+.asta-trace-gridline {
+  @apply absolute inset-y-0 w-px bg-[color-mix(in_srgb,var(--ink)_6%,transparent)];
+}
+.asta-trace-track {
+  @apply absolute inset-x-0 top-1/2 -mt-[5px] h-2.5;
+}
+.asta-trace-bar {
+  @apply absolute inset-0 origin-left rounded-[2px] bg-ink;
+  transform: translateX(var(--x, 0%)) scaleX(var(--w, 0));
+}
+.asta-trace-bar-llm {
+  @apply bg-brand;
+}
+.asta-trace-bar-retrieval {
+  @apply bg-[color-mix(in_srgb,var(--brand)_42%,var(--paper))];
+}
+.asta-trace-bar-agent {
+  @apply bg-[color-mix(in_srgb,var(--ink)_22%,var(--paper))];
+}
+.asta-trace-bar[data-error] {
+  @apply opacity-60;
+}
+.asta-trace-num {
+  @apply text-right text-[12.5px] tabular-nums text-ink-2;
+}
+.asta-trace-latency {
+  @apply pr-4 text-right text-[12.5px] tabular-nums text-ink sm:pr-5;
+}
+.asta-trace-detail {
+  @apply flex flex-col gap-4 bg-paper-2 px-4 py-4 sm:px-5;
+}
+.asta-trace-detail-head {
+  @apply flex items-start gap-2.5;
+  & h4 {
+    @apply truncate text-[14px] font-medium text-ink;
+  }
+  & p {
+    @apply text-[12px] text-mute;
+  }
+}
+.asta-trace-detail-close {
+  @apply ml-auto grid h-7 w-7 shrink-0 cursor-pointer place-items-center rounded-md text-mute outline-none transition-colors hover:bg-paper hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50;
+  & > svg {
+    @apply h-3.5 w-3.5;
+  }
+}
+.asta-trace-detail-stats {
+  @apply grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-5;
+  & dt {
+    @apply text-[11.5px] text-mute;
+  }
+  & dd {
+    @apply mt-0.5 truncate text-[13px] tabular-nums text-ink;
+  }
+}
+.asta-trace-note {
+  @apply flex gap-2 rounded-lg bg-paper px-3 py-2.5 text-[12.5px] leading-relaxed text-ink shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)];
+  & > svg {
+    @apply mt-0.5 h-3.5 w-3.5 shrink-0;
+  }
+}
+.asta-trace-io {
+  @apply grid gap-3 md:grid-cols-2;
+  & p {
+    @apply mb-1.5 font-mono text-[10.5px] uppercase tracking-wider text-mute;
+  }
+  & pre {
+    @apply max-h-40 overflow-auto overscroll-contain whitespace-pre-wrap break-words rounded-lg bg-paper p-3 font-mono text-[12px] leading-relaxed text-ink-2 [scrollbar-width:thin];
+  }
+}
+
+/* ---- Prompt composer ----
+ * <div class="asta-prompt" data-asta-prompt>
+ *   <ul class="asta-prompt-menu" role="listbox" data-asta-prompt-menu="@" hidden><li class="asta-prompt-group">Files</li>
+ *     <li class="asta-prompt-option" role="option" id="…" data-id="f1" data-label="pricing-v3.fig" data-type="file">…</li></ul>
+ *   <ul class="asta-prompt-menu" role="listbox" data-asta-prompt-menu="/" hidden>…</ul>
+ *   <form class="asta-prompt-box" hx-post="/agent">
+ *     <span class="asta-prompt-ring" aria-hidden="true"><span class="asta-prompt-spin"></span></span>
+ *     <ul class="asta-prompt-files" data-asta-prompt-files hidden></ul>
+ *     <div class="asta-prompt-field-wrap"><span class="asta-prompt-placeholder">…</span>
+ *       <div class="asta-prompt-field" role="textbox" contenteditable="true" aria-multiline="true" aria-label="Message" data-asta-prompt-field></div></div>
+ *     <input type="hidden" name="prompt" data-asta-prompt-value><input type="hidden" name="refs" data-asta-prompt-refs>
+ *     <div class="asta-prompt-bar"><label class="asta-prompt-attach">…<input type="file" name="files" multiple class="asta-sr-only" data-asta-prompt-input></label>
+ *       …model picker (asta-model-picker asta-model-picker-chip asta-model-picker-top)…
+ *       <button class="asta-prompt-send" type="submit" disabled>…</button><button class="asta-prompt-stop" type="button" data-asta-prompt-stop>Stop</button></div></form>
+ *   <p class="asta-prompt-note" data-asta-prompt-note>…</p></div>
+ * data-running on the root (set by asta.js during an htmx request, or by you) swaps Send for Stop and starts the orbit. */
+.asta-prompt {
+  @apply relative w-full;
+}
+.asta-prompt-menu {
+  @apply absolute bottom-full left-0 z-50 mb-2 max-h-[280px] w-[320px] max-w-full overflow-y-auto overscroll-contain rounded-xl bg-paper p-1.5 [scrollbar-width:thin];
+  @apply shadow-[0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent),0_16px_40px_-12px_rgb(0_0_0/0.25),0_4px_10px_-6px_rgb(0_0_0/0.1)];
+}
+.asta-prompt-group {
+  @apply px-2.5 pb-1 pt-2 font-mono text-[10.5px] uppercase tracking-wider text-mute;
+}
+.asta-prompt-option {
+  @apply flex h-9 cursor-pointer select-none items-center gap-2.5 rounded-lg px-2.5 text-[13.5px] text-ink-2 transition-colors duration-100;
+  @apply aria-selected:bg-paper-2 aria-selected:text-ink;
+  & > b {
+    @apply min-w-0 flex-1 truncate font-medium;
+  }
+  & > small {
+    @apply max-w-[45%] shrink-0 truncate text-[12px] text-mute;
+  }
+}
+.asta-prompt-option-icon {
+  @apply grid h-5 w-5 shrink-0 place-items-center rounded-[5px] bg-paper-2 text-ink-2;
+  & > svg {
+    @apply h-3 w-3;
+  }
+}
+.asta-prompt-option-avatar {
+  @apply grid h-5 w-5 shrink-0 place-items-center rounded-full bg-ink text-[9px] font-semibold text-paper;
+}
+.asta-prompt-option-command {
+  @apply bg-ink text-paper;
+}
+.asta-prompt-empty {
+  @apply px-2.5 py-5 text-center text-[12.5px] text-mute;
+}
+.asta-prompt-box {
+  @apply relative flex flex-col rounded-[14px] bg-paper transition-shadow duration-200;
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_12%,transparent),0_1px_2px_rgb(0_0_0/0.04),0_8px_24px_-16px_rgb(0_0_0/0.18)];
+  @apply focus-within:shadow-[inset_0_0_0_1px_var(--brand),0_0_0_3px_color-mix(in_srgb,var(--brand)_14%,transparent)];
+  @apply data-drag:shadow-[inset_0_0_0_1.5px_var(--brand),0_0_0_4px_color-mix(in_srgb,var(--brand)_14%,transparent)];
+}
+.asta-prompt[data-running] .asta-prompt-box {
+  @apply focus-within:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_12%,transparent),0_1px_2px_rgb(0_0_0/0.04),0_8px_24px_-16px_rgb(0_0_0/0.18)];
+}
+.asta-prompt-ring {
+  @apply pointer-events-none absolute -inset-px overflow-hidden rounded-[15px] p-[1.5px] opacity-0 transition-opacity duration-500;
+}
+.asta-prompt[data-running] .asta-prompt-ring {
+  @apply opacity-100;
+}
+.asta-prompt-spin {
+  @apply absolute left-1/2 top-1/2 aspect-square w-[220%];
+  background: conic-gradient(from 0deg, transparent 0 52%, color-mix(in srgb, var(--brand) 25%, transparent) 70%, var(--brand) 92%, transparent 100%);
+  transform: translate(-50%, -50%);
+}
+.asta-prompt-files {
+  @apply flex flex-wrap gap-1.5 px-3 pt-3;
+}
+.asta-prompt-file {
+  @apply flex h-9 max-w-full items-center gap-2 rounded-lg bg-paper-2 pl-2 pr-1 text-[12.5px];
+}
+.asta-prompt-file-icon {
+  @apply grid h-6 w-6 shrink-0 place-items-center rounded-md bg-paper text-ink-2;
+  & > svg {
+    @apply h-3.5 w-3.5;
+  }
+}
+.asta-prompt-file-name {
+  @apply min-w-0 truncate font-medium text-ink sm:max-w-[180px];
+}
+.asta-prompt-file-size {
+  @apply shrink-0 tabular-nums text-mute;
+}
+.asta-prompt-file-remove {
+  @apply grid h-7 w-7 shrink-0 cursor-pointer place-items-center rounded-md text-mute outline-none transition-colors hover:bg-paper hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50;
+  & > svg {
+    @apply h-3 w-3;
+  }
+}
+.asta-prompt-field-wrap {
+  @apply relative px-4 pt-3.5;
+}
+.asta-prompt-placeholder {
+  @apply pointer-events-none absolute left-4 top-3.5 truncate pr-4 text-[16px] leading-relaxed text-mute sm:text-[14.5px];
+}
+.asta-prompt[data-filled] .asta-prompt-placeholder {
+  @apply hidden;
+}
+.asta-prompt-field {
+  @apply max-h-[200px] min-h-[52px] overflow-y-auto whitespace-pre-wrap break-words pb-2 text-[16px] leading-relaxed text-ink outline-none sm:text-[14.5px] [scrollbar-width:thin];
+}
+.asta-prompt-chip {
+  @apply mx-px inline-flex items-center gap-1 whitespace-nowrap rounded-[5px] bg-[color-mix(in_srgb,var(--brand)_11%,transparent)] px-1.5 align-baseline text-[0.93em] font-medium leading-[1.5] text-brand;
+  & > svg {
+    @apply h-3 w-3 shrink-0;
+  }
+}
+.asta-prompt-chip-command {
+  @apply bg-ink text-paper;
+}
+.asta-prompt-bar {
+  @apply flex items-center gap-1 px-2 pb-2;
+}
+.asta-prompt-attach {
+  @apply grid h-8 w-8 shrink-0 cursor-pointer place-items-center rounded-md text-ink-2 outline-none transition-colors duration-150 hover:bg-paper-2 hover:text-ink focus-within:ring-2 focus-within:ring-brand/50;
+  & > svg {
+    @apply h-4 w-4;
+  }
+}
+.asta-prompt-send {
+  @apply ml-auto grid h-8 w-8 shrink-0 cursor-pointer place-items-center rounded-lg bg-brand text-white outline-none transition-[opacity,transform] duration-150 active:scale-95 disabled:cursor-default disabled:opacity-35;
+  @apply focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 focus-visible:ring-offset-paper;
+  & > svg {
+    @apply h-4 w-4;
+  }
+}
+.asta-prompt-stop {
+  @apply ml-auto hidden h-8 shrink-0 cursor-pointer items-center gap-1.5 rounded-lg bg-ink pl-2.5 pr-3 text-[13px] font-medium text-paper outline-none transition-transform duration-150 active:scale-95;
+  @apply focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 focus-visible:ring-offset-paper;
+  &::before {
+    @apply h-2.5 w-2.5 rounded-[2px] bg-current content-[''];
+  }
+}
+.asta-prompt[data-running] .asta-prompt-send {
+  @apply hidden;
+}
+.asta-prompt[data-running] .asta-prompt-stop {
+  @apply flex;
+}
+.asta-prompt-note {
+  @apply mt-2 flex min-h-[18px] items-center gap-1.5 px-1 text-[12px] text-mute;
+  &[data-error] {
+    @apply font-medium text-ink;
+  }
+}
+
 /* ---- css/src/blocks.css ---- */
 /* Blocks: sign-in, onboarding, pricing, AI chat, checkout, properties and settings panels, team members.
  * Class lists mirror the React kit. Embedded controls use the core classes (asta-btn, asta-input, asta-field,
@@ -2231,6 +3567,432 @@ details[open] > .asta-nav-sec { animation: asta-nav-rise 0.3s cubic-bezier(0.16,
 }
 .asta-team-invitee-meta {
   @apply truncate text-[12px] text-mute;
+}
+
+/* ---- css/src/controls.css ---- */
+/* Controls: scrub input and API keys. Class lists mirror the React kit. Buttons use the core asta-btn classes and the
+ * copy button is the core asta-copy-button. The runtime CSS and asta.js key on the data-asta-* attributes, so keep them
+ * in the markup. Modifiers come after the base class. */
+
+/* ---- Scrub input ----
+ * <div class="asta-scrub-row" role="group" aria-label="Position"><span class="asta-scrub-row-label">Position</span>
+ *   <div class="asta-scrub-cells">
+ *     <label class="asta-scrub" data-asta-scrub data-unit="px" data-min="0" data-max="560" data-step="1">
+ *       <span class="asta-scrub-handle" data-asta-scrub-handle aria-hidden="true">X</span>
+ *       <input class="asta-scrub-input" role="spinbutton" aria-label="X position" value="140" inputmode="text">
+ *       <span class="asta-scrub-unit" aria-hidden="true">px</span>
+ *       <span class="asta-scrub-limit" aria-hidden="true"></span>
+ *       <span class="asta-scrub-tip">Try 24, 1.5rem or 24*2. Esc puts it back.</span>
+ *       <input type="hidden" name="x" value="140">
+ *     </label> … </div></div>
+ * asta.js sets data-scrubbing, data-mod="10|0.1", data-limit="min|max" and aria-invalid on the input.
+ * Size asta-scrub-sm. Columns asta-scrub-cells-1 (default 2), -3, -4. */
+.asta-scrub {
+  @apply relative flex h-9 min-w-0 items-center rounded-[7px] bg-[color-mix(in_srgb,var(--ink)_5%,transparent)] text-ink transition-[background-color,box-shadow] duration-150 sm:h-8;
+  @apply hover:bg-[color-mix(in_srgb,var(--ink)_8%,transparent)] focus-within:bg-paper focus-within:shadow-[inset_0_0_0_1.5px_var(--brand)];
+  @apply data-[scrubbing]:bg-paper data-[scrubbing]:shadow-[inset_0_0_0_1.5px_var(--brand)];
+  @apply has-[:disabled]:pointer-events-none has-[:disabled]:opacity-45;
+  @apply has-[[aria-invalid=true]]:!shadow-[inset_0_0_0_1.5px_var(--ink)];
+}
+.asta-scrub-sm {
+  @apply h-8 sm:h-7;
+}
+.asta-scrub-handle {
+  @apply grid h-full w-7 shrink-0 cursor-ew-resize touch-none select-none place-items-center text-[11.5px] font-medium text-mute transition-colors duration-150 hover:text-ink [&>svg]:h-3.5 [&>svg]:w-3.5;
+  .asta-scrub-sm > & {
+    @apply w-6;
+  }
+  .asta-scrub[data-scrubbing] > & {
+    @apply text-brand;
+  }
+}
+.asta-scrub-input {
+  @apply h-full min-w-0 flex-1 bg-transparent pr-1 text-[16px] tabular-nums tracking-[-0.01em] outline-none sm:text-[12.5px];
+  @apply transition-transform duration-200 ease-[cubic-bezier(.16,1,.3,1)] selection:bg-[color-mix(in_srgb,var(--brand)_22%,transparent)];
+  .asta-scrub-sm > & {
+    @apply sm:text-[12px];
+  }
+  .asta-scrub[data-limit="max"] > & {
+    @apply translate-x-[3px];
+  }
+  .asta-scrub[data-limit="min"] > & {
+    @apply -translate-x-[3px];
+  }
+}
+.asta-scrub-unit {
+  @apply shrink-0 pr-2 text-[11.5px] text-mute;
+}
+/* The ×10 / ×0.1 badge; asta.js writes the text while a modifier is held. */
+.asta-scrub-badge {
+  @apply mr-1.5 hidden shrink-0 rounded-[4px] bg-brand px-1 text-[10.5px] font-medium leading-4 tabular-nums text-white;
+}
+.asta-scrub[data-scrubbing][data-mod] {
+  & > .asta-scrub-badge {
+    @apply inline;
+  }
+  & > .asta-scrub-unit {
+    @apply hidden;
+  }
+}
+.asta-scrub-limit {
+  @apply pointer-events-none absolute inset-y-1.5 right-0.5 w-[2px] rounded-full bg-brand opacity-0 transition-opacity duration-500 ease-[cubic-bezier(.16,1,.3,1)];
+  .asta-scrub[data-limit] > & {
+    @apply opacity-100 duration-100;
+  }
+  .asta-scrub[data-limit="min"] > & {
+    @apply left-0.5 right-auto;
+  }
+}
+.asta-scrub-tip {
+  @apply absolute left-0 top-[calc(100%+6px)] z-10 hidden w-max max-w-[220px] rounded-[8px] bg-ink px-2.5 py-1.5 text-[12px] leading-snug text-paper shadow-[0_8px_24px_-10px_rgb(0_0_0/0.4)];
+  .asta-scrub:has(> [aria-invalid="true"]) > & {
+    @apply block;
+  }
+  .asta-scrub[data-tip-end] > & {
+    @apply left-auto right-0;
+  }
+}
+.asta-scrub-row {
+  @apply grid grid-cols-[64px_1fr] items-center gap-x-3;
+}
+.asta-scrub-row-label {
+  @apply truncate text-[12px] text-mute;
+}
+.asta-scrub-cells {
+  @apply grid min-w-0 grid-cols-2 gap-1.5;
+}
+.asta-scrub-cells-1 {
+  @apply grid-cols-1;
+}
+.asta-scrub-cells-3 {
+  @apply grid-cols-3;
+}
+.asta-scrub-cells-4 {
+  @apply grid-cols-4;
+}
+
+/* ---- API keys ----
+ * <section class="asta-api-keys" data-asta-keys data-undo-ms="8000">
+ *   <header class="asta-api-keys-header"><div><h3 class="asta-api-keys-title">API keys</h3><p class="asta-api-keys-desc">…</p></div>
+ *     <button class="asta-btn asta-btn-sm" data-asta-keys-create aria-expanded="false" aria-controls="ak-form">Create key</button></header>
+ *   <form class="asta-api-keys-form" id="ak-form" hidden> …name, expiry, fieldset of .asta-api-keys-scope… </form>
+ *   <div class="asta-api-keys-head" aria-hidden="true"><span>Name</span>…</div>
+ *   <ul class="asta-api-keys-list">
+ *     <li class="asta-api-keys-row" data-id="k1" data-name="Production server" data-key="ak_live_…9f2c">
+ *       <div class="asta-api-keys-grid">…cells…<button data-asta-keys-revoke aria-expanded="false">Revoke</button></div>
+ *       <div class="asta-api-keys-confirm" role="group" hidden>…[data-asta-keys-keep] [data-asta-keys-confirm]</div></li>
+ *     <li class="asta-api-keys-reveal">…secret, asta-copy-button, [data-asta-keys-dismiss]</li> </ul></section>
+ * asta.js opens the form, checks it, asks before revoking and swaps the row for an undo strip ([data-revoked]). */
+.asta-api-keys {
+  @apply @container w-full text-ink;
+}
+.asta-api-keys-header {
+  @apply flex flex-wrap items-start justify-between gap-x-6 gap-y-3;
+  & > div {
+    @apply min-w-0 max-w-[520px];
+  }
+}
+.asta-api-keys-title {
+  @apply text-[17px] font-medium tracking-[-0.02em];
+}
+.asta-api-keys-desc {
+  @apply mt-1 text-[13px] leading-relaxed text-mute;
+}
+.asta-api-keys-form {
+  @apply mt-5 rounded-[12px] bg-paper-2 p-4 sm:p-5;
+}
+.asta-api-keys-fields {
+  @apply grid gap-5 @min-[640px]:grid-cols-[1fr_200px];
+}
+.asta-api-keys-field {
+  @apply flex flex-col gap-1.5;
+  & > label,
+  & > legend {
+    @apply text-[13px] font-medium;
+  }
+}
+.asta-api-keys-control {
+  @apply h-10 w-full rounded-lg bg-paper px-3 text-[16px] text-ink outline-none transition-shadow duration-200 placeholder:text-mute sm:text-[14px];
+  @apply shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)] hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_24%,transparent)];
+  @apply focus:!shadow-[inset_0_0_0_1px_var(--brand),0_0_0_3px_color-mix(in_srgb,var(--brand)_18%,transparent)] aria-[invalid=true]:shadow-[inset_0_0_0_1.5px_var(--ink)];
+}
+.asta-api-keys-select {
+  @apply relative;
+  & > select {
+    @apply cursor-pointer appearance-none pr-9;
+  }
+  & > svg {
+    @apply pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-mute;
+  }
+}
+/* Hint under a field; data-error turns it into the message, with the icon shown. */
+.asta-api-keys-msg {
+  @apply flex min-h-4 items-center gap-1.5 text-[12px] text-mute;
+  & > svg {
+    @apply hidden h-3.5 w-3.5 shrink-0;
+  }
+  &[data-error] {
+    @apply font-medium text-ink;
+    & > svg {
+      @apply block;
+    }
+  }
+}
+.asta-api-keys-scopes {
+  @apply mt-5 min-w-0;
+  & > legend {
+    @apply text-[13px] font-medium;
+  }
+}
+.asta-api-keys-scope-grid {
+  @apply mt-2 grid gap-1 @min-[560px]:grid-cols-2;
+}
+.asta-api-keys-scope {
+  @apply flex cursor-pointer items-start gap-3 rounded-lg p-2 transition-colors hover:bg-ink/4;
+}
+.asta-api-keys-box {
+  @apply relative mt-px grid h-[18px] w-[18px] shrink-0 place-items-center;
+  & > input {
+    @apply col-start-1 row-start-1 h-[18px] w-[18px] cursor-pointer appearance-none rounded-[6px] bg-paper shadow-[inset_0_0_0_1.5px_color-mix(in_srgb,var(--ink)_22%,transparent)] outline-none transition-[background-color,box-shadow] duration-200;
+    @apply checked:bg-brand checked:shadow-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 focus-visible:ring-offset-paper-2;
+  }
+  & > svg {
+    @apply pointer-events-none col-start-1 row-start-1 h-3 w-3 scale-50 text-white opacity-0 transition-[opacity,transform] duration-300;
+  }
+  & > input:checked + svg {
+    @apply scale-100 opacity-100;
+  }
+}
+.asta-api-keys-scope-label {
+  @apply block text-[13.5px] leading-[18px] text-ink;
+}
+.asta-api-keys-scope-hint {
+  @apply mt-0.5 block text-[12px] text-mute;
+  & > code {
+    @apply font-mono text-[11.5px] text-ink-2;
+  }
+}
+.asta-api-keys-alert {
+  @apply mt-4 flex items-center gap-2 rounded-lg bg-paper px-3 py-2 text-[13px] text-ink shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)];
+  & > svg {
+    @apply h-4 w-4 shrink-0;
+  }
+}
+.asta-api-keys-actions {
+  @apply mt-5 flex justify-end gap-2;
+}
+.asta-api-keys-body {
+  @apply mt-6;
+}
+.asta-api-keys-head {
+  @apply hidden gap-4 px-3 pb-2 text-[12px] text-mute @2xl:grid;
+  @apply @2xl:grid-cols-[minmax(0,1.3fr)_120px_minmax(0,1.4fr)_minmax(0,.7fr)_minmax(0,1fr)_64px];
+}
+.asta-api-keys-list {
+  @apply flex flex-col gap-2 @2xl:gap-0.5;
+}
+.asta-api-keys-row {
+  @apply rounded-[12px] bg-paper-2 transition-colors duration-200 @2xl:rounded-[10px] @2xl:bg-transparent @2xl:hover:bg-paper-2/60;
+  &:has(> .asta-api-keys-confirm:not([hidden])) {
+    @apply @2xl:bg-paper-2;
+  }
+}
+.asta-api-keys-grid {
+  @apply grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-3 p-4 @2xl:min-h-[60px] @2xl:px-3 @2xl:py-2.5;
+  @apply @2xl:grid-cols-[minmax(0,1.3fr)_120px_minmax(0,1.4fr)_minmax(0,.7fr)_minmax(0,1fr)_64px];
+}
+.asta-api-keys-name {
+  @apply min-w-0;
+  & > p:first-child {
+    @apply line-clamp-2 break-words text-[13.5px] font-medium @2xl:line-clamp-1 @2xl:truncate;
+  }
+  & > p + p {
+    @apply mt-0.5 text-[12px] text-mute;
+  }
+}
+.asta-api-keys-menu {
+  @apply col-start-2 row-start-1 @2xl:col-start-6 @2xl:justify-self-end;
+}
+.asta-api-keys-cell {
+  @apply col-span-2 flex min-w-0 items-center gap-2 @2xl:col-span-1 @2xl:row-start-1;
+  &:nth-child(3) {
+    @apply @2xl:col-start-2;
+  }
+  &:nth-child(4) {
+    @apply @2xl:col-start-3;
+  }
+}
+.asta-api-keys-meta {
+  @apply flex flex-col gap-0.5 text-[12.5px] @2xl:row-start-1;
+  &:nth-child(5) {
+    @apply @2xl:col-start-4;
+  }
+  &:nth-child(6) {
+    @apply @2xl:col-start-5;
+  }
+  & > span:last-child {
+    @apply tabular-nums text-ink-2;
+  }
+}
+.asta-api-keys-cell-label {
+  @apply text-[11.5px] text-mute @2xl:sr-only;
+}
+.asta-api-keys-key {
+  @apply truncate font-mono text-[12.5px] text-ink-2;
+}
+.asta-api-keys-chips {
+  @apply flex min-w-0 flex-wrap gap-1;
+  & > span {
+    @apply rounded-[5px] bg-ink/6 px-1.5 text-[11.5px] leading-5 text-mute;
+  }
+  & > code {
+    @apply rounded-[5px] bg-ink/6 px-1.5 font-mono text-[11.5px] leading-5 text-ink-2;
+  }
+}
+/* Status in words. The dot is filled for active, a ring for data-expired. */
+.asta-api-keys-status {
+  @apply inline-flex items-center gap-1.5 whitespace-nowrap text-ink;
+  &::before {
+    @apply h-2 w-2 shrink-0 rounded-full bg-brand content-[''];
+  }
+  &[data-expired] {
+    @apply text-mute before:bg-transparent before:shadow-[inset_0_0_0_1.5px_currentColor];
+  }
+}
+.asta-api-keys-confirm {
+  @apply flex flex-wrap items-center justify-between gap-3 px-4 pb-4 @2xl:px-3 @2xl:pb-3;
+  & > p {
+    @apply text-[12.5px] text-ink-2;
+  }
+  & > div {
+    @apply flex gap-2;
+  }
+  &[hidden] {
+    @apply hidden;
+  }
+}
+/* A revoked row becomes the undo strip until the window ends. */
+.asta-api-keys-undo {
+  @apply relative hidden min-h-[60px] items-center gap-3 overflow-hidden rounded-[10px] bg-paper-2 px-3 py-2;
+  & > p {
+    @apply min-w-0 flex-1 text-[13px] text-ink-2;
+  }
+  & > p b {
+    @apply font-medium text-ink;
+  }
+  & > p span {
+    @apply hidden text-mute @min-[480px]:inline;
+  }
+  & > button {
+    @apply text-brand hover:text-brand;
+  }
+}
+.asta-api-keys-row[data-revoked] {
+  @apply bg-transparent @2xl:hover:bg-transparent;
+  & > :not(.asta-api-keys-undo) {
+    @apply hidden;
+  }
+  & > .asta-api-keys-undo {
+    @apply flex;
+  }
+}
+.asta-api-keys-countdown {
+  @apply absolute inset-x-0 bottom-0 h-0.5 origin-left bg-brand/40;
+}
+.asta-api-keys-reveal {
+  @apply rounded-[12px] bg-[color-mix(in_srgb,var(--brand)_6%,var(--paper))] p-4 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--brand)_35%,transparent)] sm:p-5;
+  &[hidden] {
+    @apply hidden;
+  }
+}
+.asta-api-keys-reveal-title {
+  @apply flex flex-wrap items-center gap-2 text-[14px] font-medium;
+  & > span:last-child {
+    @apply rounded-[5px] bg-brand px-1.5 text-[11px] font-medium leading-5 text-white;
+  }
+}
+.asta-api-keys-reveal-text {
+  @apply mt-1 text-[12.5px] text-ink-2;
+}
+.asta-api-keys-secret {
+  @apply mt-3 flex flex-col gap-2 @min-[480px]:flex-row;
+  & > input {
+    @apply h-10 min-w-0 shrink-0 rounded-lg bg-paper px-3 font-mono text-[13px] text-ink outline-none shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_14%,transparent)] focus:shadow-[inset_0_0_0_1px_var(--brand)] @min-[480px]:flex-1;
+  }
+  & > .asta-copy-button {
+    @apply h-10 bg-paper;
+  }
+}
+/* The note under the secret. data-warn swaps it for the "not copied" line and the solid close button. */
+.asta-api-keys-note {
+  @apply mt-3 flex flex-wrap items-center justify-between gap-3;
+  & > p {
+    @apply flex items-center gap-1.5 text-[12.5px] font-medium text-ink;
+  }
+  & > p > svg {
+    @apply h-3.5 w-3.5 shrink-0;
+  }
+  & [data-when="warn"] {
+    @apply hidden;
+  }
+  &[data-warn] [data-when="warn"] {
+    @apply inline;
+  }
+  &[data-warn] [data-when="calm"] {
+    @apply hidden;
+  }
+  &[data-warn] > .asta-btn {
+    @apply bg-ink text-paper hover:bg-[color-mix(in_srgb,var(--ink)_84%,var(--paper))] hover:text-paper;
+  }
+}
+.asta-api-keys-empty {
+  @apply flex flex-col items-center rounded-[12px] bg-paper-2 px-6 py-12 text-center;
+  & > span {
+    @apply grid h-11 w-11 place-items-center rounded-full bg-paper text-mute shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_8%,transparent)] [&>svg]:h-5 [&>svg]:w-5;
+  }
+  & > p:first-of-type {
+    @apply mt-4 text-[14px] font-medium;
+  }
+  & > p + p {
+    @apply mt-1 max-w-[300px] text-[12.5px] text-mute;
+  }
+  & > button {
+    @apply mt-5;
+  }
+  /* Shown only while the list has no rows and the form is closed. */
+  .asta-api-keys:has(.asta-api-keys-list > li) &,
+  .asta-api-keys:has(.asta-api-keys-form:not([hidden])) & {
+    @apply hidden;
+  }
+}
+.asta-api-keys:not(:has(.asta-api-keys-list > li)) .asta-api-keys-head {
+  @apply hidden;
+}
+.asta-api-keys-skeleton {
+  @apply grid h-[76px] grid-cols-[1fr_auto] items-center gap-4 rounded-[12px] bg-paper-2 px-4 @2xl:h-[60px] @2xl:bg-transparent @2xl:px-3;
+  @apply @2xl:grid-cols-[minmax(0,1.3fr)_120px_minmax(0,1.4fr)_minmax(0,.7fr)_minmax(0,1fr)_64px];
+  & > span {
+    @apply hidden h-3 rounded-full bg-ink/8 @2xl:block;
+  }
+  & > span:first-child,
+  & > span:last-child {
+    @apply block;
+  }
+  & > span:last-child {
+    @apply w-16 justify-self-end;
+  }
+}
+.asta-api-keys-error {
+  @apply flex flex-col items-center rounded-[12px] bg-paper-2 px-6 py-10 text-center [&>svg]:h-5 [&>svg]:w-5;
+  & > p:first-of-type {
+    @apply mt-3 text-[14px] font-medium;
+  }
+  & > p + p {
+    @apply mt-1 text-[12.5px] text-mute;
+  }
+  & > button {
+    @apply mt-4;
+  }
 }
 
 /* ---- css/src/data.css ---- */

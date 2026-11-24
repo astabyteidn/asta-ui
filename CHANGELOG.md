@@ -2,6 +2,13 @@
 
 Releases are git tags (`vX.Y.Z`); pushing a tag deploys ui.astabyte.com. Merging to `main` does not.
 
+## 0.9.6 — 2026-11-23
+
+- **10 new kit components for AI products:** thinking, context meter, scrub input, model picker, citations, tool approval, agent plan, prompt composer, trace waterfall and API keys. Each works in React and in plain HTML + CSS (`asta.css` / `asta.js`). The kit now has 132 components.
+- **4 new motion blocks:** fallback chain, autonomy dial, agent team and change ledger.
+- **Quieter header.** Plain links with the current section in ink, no dropdown panels or sliding pill (the sidebar and ⌘K reach every component). GitHub is a plain link next to the motion switch. On phones there is one bar with search and a menu: no second "Docs" bar on component pages. The menu holds the site links in a compact grid, GitHub, the motion switch and the full component index with its filter, with Hire us pinned at the bottom.
+- **New sidebar.** One plain list with guides, kit and motion together: no Kit / Motion tabs, no folding groups, counts, ids or dots. Group headings stick while you scroll, rows react at once with no sliding highlight, and the current page stays marked. Scrolling to the end of the list no longer scrolls the page. In the filter, ↑ ↓ pick a result and Enter opens it.
+
 ## 0.9.5 — 2026-11-22
 
 - **Home: no charts in Try one.** The featured stage opens with Now playing and shows Plan switcher in place of Price chart and Order book.
