@@ -742,6 +742,66 @@ html:has(.ui-light), html:has(.ui-light) body { background: #fcfcfb; }
 }
 @keyframes ui-header-fade { to { opacity: 1; } }
 
+/* Home timeline (components/ui-site/Timeline.tsx): a rail that fills while the list passes the middle of the screen,
+   and a node per step that lights up when the step reaches it. Scroll timelines only, transform and opacity only. */
+.ui-tl { --tl-x: 15px; }
+.ui-tl-rail, .ui-tl-fill {
+  position: absolute;
+  top: 16px;
+  bottom: 0;
+  left: var(--tl-x);
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 2px;
+  pointer-events: none;
+}
+.ui-tl-rail { background: color-mix(in srgb, var(--color-ink) 9%, transparent); }
+.ui-tl-fill { background: var(--color-brand); transform-origin: top; transform: scaleY(0); }
+.ui-tl-node {
+  position: absolute;
+  top: 0;
+  left: calc(var(--tl-x) - 16px);
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--color-paper);
+  color: var(--color-mute);
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--color-ink) 14%, transparent);
+}
+.ui-tl-node > * { grid-area: 1 / 1; }
+.ui-tl-on {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--color-brand);
+  color: #fff;
+  opacity: 0;
+}
+@supports (animation-timeline: view()) {
+  .ui-tl { view-timeline: --ui-tl block; }
+  .ui-tl-fill {
+    animation: ui-tl-fill linear both;
+    animation-timeline: --ui-tl;
+    animation-range: cover 50vh cover calc(100% - 50vh);
+  }
+  .ui-tl-on {
+    animation: ui-tl-on linear both;
+    animation-timeline: view();
+    animation-range: cover calc(50vh - 24px) cover 50vh;
+  }
+}
+@keyframes ui-tl-fill { to { transform: scaleY(1); } }
+@keyframes ui-tl-on { to { opacity: 1; } }
+@media (min-width: 640px) { .ui-tl { --tl-x: 19px; } }
+@media (prefers-reduced-motion: reduce) {
+  .ui-tl-fill { display: none; }
+  .ui-tl-on { animation: none; }
+}
+
 /* Anchors land below the sticky header. */
 main :is(h2, h3, section)[id], :is(h2, h3, section)[id] { scroll-margin-top: 5rem; }
 /* Keyboard focus and in-page jumps never land under the sticky header (h-14) either. */
