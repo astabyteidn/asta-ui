@@ -72,7 +72,7 @@ export default function ChangelogPage() {
       {list.map((r, n) => (
         <section key={r.version} id={id(r.version)} className="mt-16 scroll-mt-28">
           <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-            <h2 className="display text-[clamp(1.5rem,2.4vw,2rem)]">v{r.version}</h2>
+            <h2 className="doc-h2">v{r.version}</h2>
             <time dateTime={r.date} className="font-mono text-[12px] text-mute">
               {when(r.date)}
             </time>

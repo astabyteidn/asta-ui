@@ -2,10 +2,10 @@
 "use client";
 
 import { useState } from "react";
-import { Sidebar, type SidebarGroup } from "@/components/kit/base/sidebar";
+import { Sidebar, type SidebarGroup, type SidebarItem } from "@/components/kit/base/sidebar";
 
 const icon = (d: string) => (
-  <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
     <path d={d} />
   </svg>
 );
@@ -14,42 +14,56 @@ const GROUPS: SidebarGroup[] = [
   {
     items: [
       { id: "home", label: "Home", icon: icon("M2.5 7 8 2.5 13.5 7v6.5h-11zM6.5 13.5v-4h3v4") },
-      { id: "inbox", label: "Inbox", icon: icon("M2.5 9.5h3l1 2h3l1-2h3M2.5 9.5 4 3.5h8l1.5 6v4h-11z"), badge: 4 },
       { id: "projects", label: "Projects", icon: icon("M2.5 4.5h4l1.5 1.5h5.5v7h-11z") },
+      { id: "studio", label: "Studio", icon: icon("M2.5 3.5h8v9h-8zM10.5 6.5l3-2v7l-3-2M5.5 6.5l2 1.5-2 1.5z") },
+      { id: "flows", label: "Flows", icon: icon("M4 5.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM12 13.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM4 5.5v2a2 2 0 0 0 2 2h4a2 2 0 0 1 2 2") },
+      { id: "assets", label: "Assets", icon: icon("M2.5 5.5h11v7h-11zM4 3.5h8"), badge: 3 },
     ],
   },
   {
-    label: "Workspace",
+    label: "Pinned",
     items: [
-      { id: "reports", label: "Reports", icon: icon("M3 13V8M8 13V3M13 13V6") },
-      { id: "customers", label: "Customers", icon: icon("M5.5 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM2 13c0-2 1.5-3.5 3.5-3.5S9 11 9 13M11 7.5a1.6 1.6 0 1 0 0-3.2M11.5 9.6c1.5.3 2.5 1.6 2.5 3.4") },
-      { id: "billing", label: "Billing", icon: icon("M2 4.5h12v7H2zM2 7h12") },
-      { id: "settings", label: "Settings", icon: icon("M8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4") },
+      { id: "image", label: "Image editor", icon: icon("M2.5 3.5h11v9h-11zM2.5 10.5l3-3 3 3 2-2 3 3M10.5 6.5h.01") },
+      { id: "video", label: "Video", icon: icon("M2.5 4.5h8v7h-8zM10.5 7l3-1.5v5l-3-1.5") },
+      { id: "voice", label: "Voice", icon: icon("M8 2.5a2 2 0 0 0-2 2v3a2 2 0 1 0 4 0v-3a2 2 0 0 0-2-2ZM4.5 7.5a3.5 3.5 0 0 0 7 0M8 11v2.5") },
+      { id: "captions", label: "Captions", icon: icon("M2.5 3.5h11v9h-11zM5 8h3M9.5 8H11M5 10.5h6") },
+      { id: "more", label: "More tools", icon: icon("M3.5 8h.01M8 8h.01M12.5 8h.01") },
     ],
   },
 ];
 
+const FOOTER: SidebarItem[] = [{ id: "api", label: "MCP and API", icon: icon("M2.5 3.5h11v9h-11zM5 6.5l2 1.5-2 1.5M8.5 10h2.5") }];
+
 export default function SidebarDemo() {
-  const [page, setPage] = useState("home");
-  const title = GROUPS.flatMap((g) => g.items).find((i) => i.id === page)?.label;
+  const [page, setPage] = useState("studio");
+  const title = [...GROUPS.flatMap((g) => g.items), ...FOOTER].find((i) => i.id === page)?.label;
 
   return (
-    <div className="flex min-h-[460px] w-full items-center justify-center p-3 sm:p-6">
+    <div className="flex min-h-[820px] w-full items-center justify-center p-3 sm:p-6">
       {/* A small app frame: the sidebar on the left, a mock page on the right. */}
-      <div className="flex h-[460px] w-full max-w-[860px] overflow-hidden rounded-xl bg-paper shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_12%,transparent),0_24px_60px_-30px_rgb(0_0_0/0.35)]">
+      <div className="flex h-[820px] w-full max-w-[860px] overflow-hidden rounded-xl bg-paper shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_12%,transparent),0_24px_60px_-30px_rgb(0_0_0/0.35)]">
         <Sidebar
-          workspaces={[
-            { id: "north", name: "Astabyte", plan: "Team plan" },
-            { id: "halcyon", name: "Personal", plan: "Pro plan" },
-            { id: "Astabyte", name: "Side project", plan: "Free" },
-          ]}
+          brand="Astabyte"
           groups={GROUPS}
+          footer={FOOTER}
           active={page}
           onNavigate={setPage}
-          user={{ name: "Rani Pratama", email: "rani@astabyte.com" }}
+          promo={{
+            title: "Invite your team",
+            text: "Bring people in to edit and share projects together.",
+            icon: icon("M13.5 2.5 7 9M13.5 2.5l-4 11-2.5-4.5-4.5-2.5z"),
+            onClick: () => setPage("home"),
+            onDismiss: () => {},
+          }}
+          cta={{ label: "Upgrade" }}
+          workspaces={[
+            { id: "studio", name: "Astabyte Studio", plan: "Team plan" },
+            { id: "personal", name: "Personal", plan: "Pro plan" },
+            { id: "labs", name: "Astabyte Labs", plan: "Free" },
+          ]}
         />
-        <main className="min-w-0 flex-1 p-6">
-          <p className="text-[12px] text-mute">Astabyte</p>
+        <main className="min-w-0 flex-1 p-6 max-sm:hidden">
+          <p className="text-[12px] text-mute">Astabyte Studio</p>
           <h3 className="mt-1 text-[20px] font-medium tracking-[-0.02em] text-ink">{title}</h3>
           <div className="mt-6 grid gap-3 sm:grid-cols-3">
             {Array.from({ length: 3 }, (_, i) => (
