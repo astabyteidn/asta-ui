@@ -57,7 +57,7 @@ export default async function BlogPost({ params }: Props) {
           <p className="label text-accent">
             § {postId(p)} · {group?.title}
           </p>
-          <h1 className="display mt-3 max-w-[20ch] text-balance text-[clamp(2rem,4.4vw,3.6rem)] leading-[1.02]">
+          <h1 className="doc-h1 mt-3">
             {/* Keep code-like words such as @starting-style on one line instead of breaking at the hyphen. */}
             {p.title.split(" ").map((w, i) => (
               <span key={i}>
@@ -120,7 +120,7 @@ export default async function BlogPost({ params }: Props) {
             <span className="label flex items-center gap-2 text-mute">
               Next · {postId(next)} <span className="btn-arrow" />
             </span>
-            <span className="display mt-3 text-[clamp(1.4rem,2.4vw,2rem)] leading-[1.05] transition-colors group-hover:text-accent">{next.title}</span>
+            <span className="mt-2 text-[18px] font-medium tracking-[-0.015em] transition-colors group-hover:text-accent">{next.title}</span>
           </Link>
         </article>
       </div>
