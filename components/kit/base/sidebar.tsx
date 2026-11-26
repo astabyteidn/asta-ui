@@ -7,6 +7,8 @@ import { Avatar } from "@/components/kit/base/avatar";
 const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(" ");
 const EASE = "ease-[cubic-bezier(.16,1,.3,1)]";
 const RING = "shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_10%,transparent)]";
+const HOVER = "hover:bg-[color-mix(in_srgb,var(--color-ink)_4%,transparent)]";
+const ON = "bg-[color-mix(in_srgb,var(--color-ink)_6%,transparent)]";
 
 export interface SidebarItem {
   id: string;
@@ -23,12 +25,30 @@ export interface SidebarWorkspace {
   id: string;
   name: string;
   plan?: string;
+  /** Square logo. Leave it out and the first letter is used. */
+  logo?: ReactNode;
+}
+export interface SidebarPromo {
+  title: string;
+  text?: string;
+  icon?: ReactNode;
+  onClick?: () => void;
+  /** Shows a close button. The card hides itself and this is called. */
+  onDismiss?: () => void;
 }
 export interface SidebarProps {
-  workspaces: SidebarWorkspace[];
+  /** Wordmark at the top. Defaults to the current workspace name. */
+  brand?: ReactNode;
+  groups: SidebarGroup[];
+  /** Links pinned to the bottom, under the promo card. */
+  footer?: SidebarItem[];
+  promo?: SidebarPromo;
+  /** The striped button near the bottom, for an upgrade or a plan. */
+  cta?: { label: string; icon?: ReactNode; onClick?: () => void };
+  /** Workspace switcher at the very bottom. The menu opens upward. */
+  workspaces?: SidebarWorkspace[];
   defaultWorkspace?: string;
   onWorkspaceChange?: (id: string) => void;
-  groups: SidebarGroup[];
   /** Controlled active item. Leave it out and the sidebar tracks clicks itself. */
   active?: string;
   defaultActive?: string;
@@ -36,26 +56,26 @@ export interface SidebarProps {
   collapsed?: boolean;
   defaultCollapsed?: boolean;
   onCollapsedChange?: (collapsed: boolean) => void;
-  user: { name: string; email: string; src?: string };
+  user?: { name: string; email: string; src?: string };
   className?: string;
 }
 
 const Icon = ({ d, className = "" }: { d: string; className?: string }) => (
-  <svg viewBox="0 0 16 16" className={cx("h-4 w-4", className)} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+  <svg viewBox="0 0 16 16" className={cx("h-4 w-4", className)} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
     <path d={d} />
   </svg>
 );
 
-function Tile({ name, on }: { name: string; on?: boolean }) {
+function Logo({ w, size = "sm" }: { w: SidebarWorkspace; size?: "sm" | "md" }) {
   return (
     <span
       aria-hidden
       className={cx(
-        "flex h-7 w-7 shrink-0 items-center justify-center rounded-[7px] text-[12.5px] font-semibold tracking-[-0.02em]",
-        on ? "bg-ink text-paper" : cx("bg-paper text-ink", RING),
+        "flex shrink-0 items-center justify-center overflow-hidden bg-brand font-semibold text-paper [&>*]:h-full [&>*]:w-full",
+        size === "sm" ? "h-5 w-5 rounded-[5px] text-[11px]" : "h-7 w-7 rounded-[7px] text-[12.5px]",
       )}
     >
-      {name.charAt(0)}
+      {w.logo ?? w.name.charAt(0)}
     </span>
   );
 }
@@ -93,18 +113,62 @@ function Tip({ children }: { children: ReactNode }) {
 }
 
 const itemCls =
-  "group/item relative flex h-9 w-full items-center rounded-lg text-[13.5px] outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-brand/50";
+  "group/item relative flex h-9 w-full items-center rounded-lg text-[14px] outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-brand/50";
+
+function Row({ it, on, collapsed, onClick, flat }: { it: SidebarItem; on: boolean; collapsed: boolean; onClick: () => void; flat?: boolean }) {
+  return (
+    <button
+      type="button"
+      data-sb-id={flat ? undefined : it.id}
+      aria-current={on ? "page" : undefined}
+      aria-label={collapsed ? it.label : undefined}
+      onClick={onClick}
+      className={cx(itemCls, on ? cx("text-ink", flat && ON) : cx("text-ink-2 hover:text-ink", HOVER))}
+    >
+      <span className={cx("relative flex w-10 shrink-0 justify-center transition-colors duration-200 [&_svg]:h-[18px] [&_svg]:w-[18px]", on ? "text-ink" : "text-mute group-hover/item:text-ink")}>
+        {it.icon}
+        {!!it.badge && (
+          <span
+            className={cx(
+              "absolute right-2 top-0 h-1.5 w-1.5 rounded-full bg-brand shadow-[0_0_0_2px_var(--color-paper-2)] transition-[opacity,transform] duration-300",
+              EASE,
+              collapsed ? "scale-100 opacity-100" : "scale-50 opacity-0",
+            )}
+          />
+        )}
+      </span>
+      <Label hidden={collapsed} className="relative">
+        {it.label}
+      </Label>
+      {!!it.badge && (
+        <span
+          className={cx(
+            "relative mr-2 rounded-md bg-[color-mix(in_srgb,var(--color-ink)_6%,transparent)] px-1.5 text-[11.5px] tabular-nums leading-5 text-mute transition-opacity duration-300",
+            collapsed ? "opacity-0" : "opacity-100",
+          )}
+        >
+          {it.badge}
+        </span>
+      )}
+      {collapsed && <Tip>{it.label}</Tip>}
+    </button>
+  );
+}
 
 /**
- * App sidebar: a workspace switcher, grouped navigation with a sliding active indicator, and the
- * signed-in user at the bottom. It folds to a 64px icon rail where labels fade out and tooltips take
- * over. Arrow keys move between items.
+ * App sidebar: a wordmark, grouped navigation with a sliding grey pill, then a promo card, footer
+ * links, a striped call to action and the workspace switcher at the bottom. It folds to a 64px icon
+ * rail where labels fade out and tooltips take over. Arrow keys move between items.
  */
 export function Sidebar({
-  workspaces,
+  brand,
+  groups,
+  footer = [],
+  promo,
+  cta,
+  workspaces = [],
   defaultWorkspace,
   onWorkspaceChange,
-  groups,
   active: activeProp,
   defaultActive,
   onNavigate,
@@ -118,6 +182,7 @@ export function Sidebar({
   const [collapsedState, setCollapsed] = useState(defaultCollapsed);
   const [workspace, setWorkspace] = useState(defaultWorkspace ?? workspaces[0]?.id);
   const [menu, setMenu] = useState(false);
+  const [promoOpen, setPromoOpen] = useState(true);
   const active = activeProp ?? activeState;
   const collapsed = collapsedProp ?? collapsedState;
   const current = workspaces.find((w) => w.id === workspace) ?? workspaces[0];
@@ -128,7 +193,7 @@ export function Sidebar({
   const switcher = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
 
-  // Slide the indicator under the active item. Rows keep their height when folded, so only `active` matters.
+  // Slide the pill under the active item. Rows keep their height when folded, so only `active` matters.
   useLayoutEffect(() => {
     const ind = indicator.current;
     const el = nav.current?.querySelector<HTMLElement>(`[data-sb-id="${CSS.escape(active)}"]`);
@@ -188,102 +253,56 @@ export function Sidebar({
       aria-label="Sidebar"
       data-collapsed={collapsed || undefined}
       className={cx(
-        "relative flex h-full shrink-0 flex-col bg-paper-2 px-3 py-3 transition-[width] duration-500",
+        "relative flex h-full shrink-0 flex-col bg-paper-2 px-3 py-3 shadow-[inset_-1px_0_0_color-mix(in_srgb,var(--color-ink)_8%,transparent)] transition-[width] duration-500",
         EASE,
         collapsed ? "w-16" : "w-[248px]",
         className,
       )}
     >
       <style href="asta-sidebar" precedence="asta">{`
-        @keyframes kit-sb-pop { from { opacity: 0; transform: translateY(-4px) scale(.98); } to { opacity: 1; transform: none; } }
+        @keyframes kit-sb-pop { from { opacity: 0; transform: translateY(4px) scale(.98); } to { opacity: 1; transform: none; } }
+        @keyframes kit-sb-fade { from { opacity: 0; } to { opacity: 1; } }
         @media (prefers-reduced-motion: reduce) { .kit-sb, .kit-sb * { animation: none !important; transition-duration: 0s !important; } }
       `}</style>
 
       <div className="kit-sb flex min-h-0 flex-1 flex-col">
-        {/* Workspace switcher */}
-        <div ref={switcher} className="relative">
+        {/* Wordmark + fold */}
+        <div className="flex h-11 shrink-0 items-center">
+          <Label hidden={collapsed} className="pl-3 text-[19px] font-semibold tracking-[-0.03em] text-ink">
+            {brand ?? current?.name}
+          </Label>
           <button
-            ref={trigger}
             type="button"
-            aria-haspopup="menu"
-            aria-expanded={menu}
-            aria-label={collapsed ? `Workspace: ${current?.name}` : undefined}
-            onClick={() => setMenu((v) => !v)}
-            onKeyDown={(e) => {
-              if (e.key === "ArrowDown" && !menu) {
-                e.preventDefault();
-                setMenu(true);
-              }
-            }}
-            className={cx(itemCls, "h-11 hover:bg-[color-mix(in_srgb,var(--color-ink)_5%,transparent)] aria-expanded:bg-[color-mix(in_srgb,var(--color-ink)_5%,transparent)]")}
+            aria-pressed={collapsed}
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            onClick={toggle}
+            className={cx(
+              "group/item relative flex h-9 w-10 shrink-0 items-center justify-center rounded-lg text-mute outline-none transition-colors duration-200 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50",
+              HOVER,
+            )}
           >
-            <span className="flex w-10 shrink-0 justify-center">{current && <Tile name={current.name} on />}</span>
-            <Label hidden={collapsed} className="flex flex-col leading-tight">
-              <span className="truncate text-[13.5px] font-medium text-ink">{current?.name}</span>
-              {current?.plan && <span className="truncate text-[11.5px] text-mute">{current.plan}</span>}
-            </Label>
-            <Icon
-              d="m5.5 6 2.5-2.5L10.5 6M5.5 10l2.5 2.5 2.5-2.5"
-              className={cx("mr-2 shrink-0 text-mute transition-opacity duration-300", collapsed ? "opacity-0" : "opacity-100")}
-            />
-            {collapsed && <Tip>{current?.name}</Tip>}
+            <Icon d="M2.5 3.5h11v9h-11zM6 3.5v9M10.5 6.5 9 8l1.5 1.5" className={cx("transition-transform duration-500", EASE, collapsed && "-scale-x-100")} />
+            {collapsed && <Tip>Expand</Tip>}
           </button>
-
-          {menu && (
-            <div
-              role="menu"
-              aria-label="Switch workspace"
-              onKeyDown={(e) => {
-                if (e.key === "Escape" || e.key === "Tab") {
-                  if (e.key === "Escape") e.preventDefault();
-                  setMenu(false);
-                  trigger.current?.focus();
-                } else rove(e, "[role=menuitemradio]", e.currentTarget);
-              }}
-              className="absolute left-0 top-[calc(100%+6px)] z-30 w-[232px] origin-top-left rounded-xl bg-paper p-1.5 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_10%,transparent),0_16px_36px_-14px_rgb(0_0_0/0.3)]"
-              style={{ animation: "kit-sb-pop .32s cubic-bezier(.16,1,.3,1) both" }}
-            >
-              <p className="px-2 pb-1.5 pt-1 text-[11.5px] text-mute">Workspaces</p>
-              {workspaces.map((w) => {
-                const on = w.id === current?.id;
-                return (
-                  <button
-                    key={w.id}
-                    type="button"
-                    role="menuitemradio"
-                    aria-checked={on}
-                    onClick={() => pick(w.id)}
-                    className="flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 text-left outline-none transition-colors hover:bg-paper-2 focus-visible:bg-paper-2"
-                  >
-                    <Tile name={w.name} on={on} />
-                    <span className="flex min-w-0 flex-1 flex-col leading-tight">
-                      <span className="truncate text-[13.5px] text-ink">{w.name}</span>
-                      {w.plan && <span className="truncate text-[11.5px] text-mute">{w.plan}</span>}
-                    </span>
-                    {on && <Icon d="M3.5 8.5l3 3 6-7" className="shrink-0 text-brand" />}
-                  </button>
-                );
-              })}
-            </div>
-          )}
         </div>
 
         {/* Navigation */}
-        <nav aria-label="Main" className="mt-4 min-h-0 flex-1" onKeyDown={(e) => rove(e, "[data-sb-id]", nav.current)}>
-          <div ref={nav} className="relative">
+        <nav
+          aria-label="Main"
+          className={cx("-mx-1 mt-3 min-h-0 flex-1 px-1 [scrollbar-width:none]", collapsed ? "overflow-visible" : "overflow-y-auto overscroll-contain [mask-image:linear-gradient(to_bottom,black_calc(100%-20px),transparent)]")}
+          onKeyDown={(e) => rove(e, "[data-sb-id]", nav.current)}
+        >
+          <div ref={nav} className="relative pb-2">
             <span
               ref={indicator}
               aria-hidden
-              className={cx(
-                "absolute inset-x-0 top-0 h-9 rounded-lg bg-paper opacity-0 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_8%,transparent),0_1px_2px_rgb(0_0_0/0.06)] transition-[transform,opacity] duration-500",
-                EASE,
-              )}
+              className={cx("absolute inset-x-0 top-0 h-9 rounded-lg opacity-0 transition-[transform,opacity] duration-500", ON, EASE)}
             />
             {groups.map((g, gi) => (
-              <div key={g.label ?? gi} className={cx(gi > 0 && "mt-3")}>
+              <div key={g.label ?? gi} className={cx(gi > 0 && "mt-5")}>
                 {g.label && (
-                  <div className="relative flex h-7 items-center px-3" aria-hidden={collapsed || undefined}>
-                    <span className={cx("text-[11.5px] text-mute transition-opacity duration-300", collapsed ? "opacity-0" : "opacity-100")}>{g.label}</span>
+                  <div className="relative flex h-8 items-center px-3" aria-hidden={collapsed || undefined}>
+                    <span className={cx("text-[13px] text-mute transition-opacity duration-300", collapsed ? "opacity-0" : "opacity-100")}>{g.label}</span>
                     <span
                       className={cx(
                         "absolute left-1/2 h-px w-3 -translate-x-1/2 bg-[color-mix(in_srgb,var(--color-ink)_14%,transparent)] transition-opacity duration-300",
@@ -293,77 +312,169 @@ export function Sidebar({
                   </div>
                 )}
                 <ul className="flex flex-col gap-0.5">
-                  {g.items.map((it) => {
-                    const on = it.id === active;
-                    return (
-                      <li key={it.id}>
-                        <button
-                          type="button"
-                          data-sb-id={it.id}
-                          aria-current={on ? "page" : undefined}
-                          aria-label={collapsed ? it.label : undefined}
-                          onClick={() => navigate(it.id)}
-                          className={cx(itemCls, on ? "text-ink" : "text-ink-2 hover:text-ink hover:bg-[color-mix(in_srgb,var(--color-ink)_4%,transparent)]")}
-                        >
-                          <span className={cx("relative flex w-10 shrink-0 justify-center transition-colors duration-300", on ? "text-brand" : "text-mute group-hover/item:text-ink")}>
-                            {it.icon}
-                            {!!it.badge && (
-                              <span
-                                className={cx(
-                                  "absolute right-2 top-0 h-1.5 w-1.5 rounded-full bg-brand shadow-[0_0_0_2px_var(--color-paper-2)] transition-[opacity,transform] duration-300",
-                                  EASE,
-                                  collapsed ? "scale-100 opacity-100" : "scale-50 opacity-0",
-                                )}
-                              />
-                            )}
-                          </span>
-                          <Label hidden={collapsed} className="relative">
-                            {it.label}
-                          </Label>
-                          {!!it.badge && (
-                            <span
-                              className={cx(
-                                "relative mr-2 rounded-md bg-[color-mix(in_srgb,var(--color-ink)_6%,transparent)] px-1.5 text-[11.5px] tabular-nums leading-5 text-mute transition-opacity duration-300",
-                                collapsed ? "opacity-0" : "opacity-100",
-                              )}
-                            >
-                              {it.badge}
-                            </span>
-                          )}
-                          {collapsed && <Tip>{it.label}</Tip>}
-                        </button>
-                      </li>
-                    );
-                  })}
+                  {g.items.map((it) => (
+                    <li key={it.id}>
+                      <Row it={it} on={it.id === active} collapsed={collapsed} onClick={() => navigate(it.id)} />
+                    </li>
+                  ))}
                 </ul>
               </div>
             ))}
           </div>
         </nav>
 
-        {/* Fold + user */}
-        <button
-          type="button"
-          aria-pressed={collapsed}
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          onClick={toggle}
-          className={cx(itemCls, "text-mute hover:bg-[color-mix(in_srgb,var(--color-ink)_4%,transparent)] hover:text-ink")}
-        >
-          <span className="flex w-10 shrink-0 justify-center">
-            <Icon d="M2.5 3.5h11v9h-11zM6 3.5v9M10.5 6.5 9 8l1.5 1.5" className={cx("transition-transform duration-500", EASE, collapsed && "-scale-x-100")} />
-          </span>
-          <Label hidden={collapsed}>Collapse</Label>
-          {collapsed && <Tip>Expand</Tip>}
-        </button>
-        <div className="mt-2 flex h-12 items-center rounded-lg">
-          <span className="flex w-10 shrink-0 justify-center">
-            <Avatar name={user.name} src={user.src} size="sm" />
-          </span>
-          <Label hidden={collapsed} className="flex flex-col pl-1 leading-tight">
-            <span className="truncate text-[13px] font-medium text-ink">{user.name}</span>
-            <span className="truncate text-[11.5px] text-mute">{user.email}</span>
-          </Label>
-        </div>
+        {/* Promo card: gone on the rail, fades back in once the column has room again. */}
+        {promo && promoOpen && !collapsed && (
+          <div
+            className={cx("group/promo relative mt-3 min-w-[222px] shrink-0 rounded-xl bg-paper p-4", RING, promo.onClick && "transition-colors hover:bg-[color-mix(in_srgb,var(--color-ink)_2%,var(--color-paper))]")}
+            style={{ animation: "kit-sb-fade .3s .25s cubic-bezier(.16,1,.3,1) both" }}
+          >
+            {promo.icon && <span className="mb-3 flex h-8 w-8 items-center justify-center rounded-full bg-paper-2 text-mute [&_svg]:h-4 [&_svg]:w-4">{promo.icon}</span>}
+            {promo.onClick ? (
+              <button type="button" onClick={promo.onClick} className="block text-left text-[14px] font-medium text-ink outline-none after:absolute after:inset-0 after:rounded-xl focus-visible:after:ring-2 focus-visible:after:ring-brand/50">
+                {promo.title}
+              </button>
+            ) : (
+              <p className="text-[14px] font-medium text-ink">{promo.title}</p>
+            )}
+            {promo.text && <p className="mt-1 text-[13px] leading-snug text-mute">{promo.text}</p>}
+            {promo.onDismiss && (
+              <button
+                type="button"
+                aria-label={`Dismiss ${promo.title}`}
+                onClick={() => {
+                  setPromoOpen(false);
+                  promo.onDismiss?.();
+                }}
+                className="absolute right-2 top-2 z-10 flex h-7 w-7 items-center justify-center rounded-md text-mute outline-none transition-colors hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50"
+              >
+                <Icon d="M4.5 4.5l7 7M11.5 4.5l-7 7" className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Footer links */}
+        {footer.length > 0 && (
+          <ul className="mt-2 flex shrink-0 flex-col gap-0.5">
+            {footer.map((it) => (
+              <li key={it.id}>
+                <Row it={it} on={it.id === active} collapsed={collapsed} onClick={() => navigate(it.id)} flat />
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {/* Call to action: outlined, with a hatched tail. */}
+        {cta && (
+          <button
+            type="button"
+            onClick={cta.onClick}
+            aria-label={collapsed ? cta.label : undefined}
+            className={cx(itemCls, "mt-2 h-10 shrink-0 overflow-visible bg-paper font-medium text-ink", RING, "hover:bg-[color-mix(in_srgb,var(--color-ink)_3%,var(--color-paper))]")}
+          >
+            <span
+              aria-hidden
+              className={cx(
+                "pointer-events-none absolute inset-y-0 right-0 w-3/5 rounded-r-lg bg-[repeating-linear-gradient(-45deg,color-mix(in_srgb,var(--color-ink)_9%,transparent)_0_1px,transparent_1px_6px)] [mask-image:linear-gradient(to_right,transparent,black)] transition-opacity duration-300",
+                collapsed ? "opacity-0" : "opacity-100",
+              )}
+            />
+            <span className="relative flex w-10 shrink-0 justify-center">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-ink text-paper [&_svg]:h-3 [&_svg]:w-3">
+                {cta.icon ?? <Icon d="M9 1.5 3.5 9H8l-1 5.5L12.5 7H8z" />}
+              </span>
+            </span>
+            <Label hidden={collapsed} className="relative">
+              <span className="block text-center">{cta.label}</span>
+            </Label>
+            {!collapsed && <span aria-hidden className="w-10 shrink-0" />}
+            {collapsed && <Tip>{cta.label}</Tip>}
+          </button>
+        )}
+
+        {/* Workspace switcher */}
+        {current && (
+          <div ref={switcher} className="relative mt-2 shrink-0">
+            <button
+              ref={trigger}
+              type="button"
+              aria-haspopup="menu"
+              aria-expanded={menu}
+              aria-label={collapsed ? `Workspace: ${current.name}` : undefined}
+              onClick={() => setMenu((v) => !v)}
+              onKeyDown={(e) => {
+                if (e.key === "ArrowUp" && !menu) {
+                  e.preventDefault();
+                  setMenu(true);
+                }
+              }}
+              className={cx(itemCls, "h-10 text-ink", HOVER, "aria-expanded:bg-[color-mix(in_srgb,var(--color-ink)_5%,transparent)]")}
+            >
+              <span className="flex w-10 shrink-0 justify-center">
+                <Logo w={current} />
+              </span>
+              <Label hidden={collapsed} className="truncate">
+                {current.name}
+              </Label>
+              <Icon
+                d="m5.5 6 2.5-2.5L10.5 6M5.5 10l2.5 2.5 2.5-2.5"
+                className={cx("mr-2 shrink-0 text-mute transition-opacity duration-300", collapsed ? "opacity-0" : "opacity-100")}
+              />
+              {collapsed && <Tip>{current.name}</Tip>}
+            </button>
+
+            {menu && (
+              <div
+                role="menu"
+                aria-label="Switch workspace"
+                onKeyDown={(e) => {
+                  if (e.key === "Escape" || e.key === "Tab") {
+                    if (e.key === "Escape") e.preventDefault();
+                    setMenu(false);
+                    trigger.current?.focus();
+                  } else rove(e, "[role=menuitemradio]", e.currentTarget);
+                }}
+                className="absolute bottom-[calc(100%+6px)] left-0 z-30 w-[232px] origin-bottom-left rounded-xl bg-paper p-1.5 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-ink)_10%,transparent),0_16px_36px_-14px_rgb(0_0_0/0.3)]"
+                style={{ animation: "kit-sb-pop .28s cubic-bezier(.16,1,.3,1) both" }}
+              >
+                <p className="px-2 pb-1.5 pt-1 text-[11.5px] text-mute">Workspaces</p>
+                {workspaces.map((w) => {
+                  const on = w.id === current.id;
+                  return (
+                    <button
+                      key={w.id}
+                      type="button"
+                      role="menuitemradio"
+                      aria-checked={on}
+                      onClick={() => pick(w.id)}
+                      className="flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 text-left outline-none transition-colors hover:bg-paper-2 focus-visible:bg-paper-2"
+                    >
+                      <Logo w={w} size="md" />
+                      <span className="flex min-w-0 flex-1 flex-col leading-tight">
+                        <span className="truncate text-[13.5px] text-ink">{w.name}</span>
+                        {w.plan && <span className="truncate text-[11.5px] text-mute">{w.plan}</span>}
+                      </span>
+                      {on && <Icon d="M3.5 8.5l3 3 6-7" className="shrink-0 text-brand" />}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {user && (
+          <div className="mt-2 flex h-12 shrink-0 items-center rounded-lg">
+            <span className="flex w-10 shrink-0 justify-center">
+              <Avatar name={user.name} src={user.src} size="sm" />
+            </span>
+            <Label hidden={collapsed} className="flex flex-col pl-1 leading-tight">
+              <span className="truncate text-[13px] font-medium text-ink">{user.name}</span>
+              <span className="truncate text-[11.5px] text-mute">{user.email}</span>
+            </Label>
+          </div>
+        )}
       </div>
     </aside>
   );
