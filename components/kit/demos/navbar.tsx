@@ -48,12 +48,21 @@ const NAV: NavItem[] = [
   {
     label: "Resources",
     menu: {
-      width: 460,
-      tiles: [
+      list: [
         { title: "Docs", description: "Guides and reference.", href: "#", icon: icon("M4 2h6l3 3v9H4zM10 2v3h3") },
         { title: "Changelog", description: "What shipped this week.", href: "#", icon: icon("M8 4v4l2.5 1.5M14 8A6 6 0 1 1 2 8a6 6 0 0 1 12 0Z") },
         { title: "Community", description: "Ask, share, meet.", href: "#", icon: icon("M5.5 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM2 13c0-2 1.5-3.5 3.5-3.5S9 11 9 13M11 7.5a1.6 1.6 0 1 0 0-3.2M11.5 9.6c1.5.3 2.5 1.6 2.5 3.4") },
         { title: "Templates", description: "Start from a working setup.", href: "#", icon: icon("M2.5 2.5h4.5v4.5H2.5zM9 2.5h4.5v4.5H9zM2.5 9h4.5v4.5H2.5zM9 9h4.5v4.5H9z") },
+      ],
+    },
+  },
+  {
+    label: "Company",
+    menu: {
+      list: [
+        { title: "About", description: "Who builds Astabyte.", href: "#", icon: icon("M8 7a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM3 14c0-2.8 2.2-4.5 5-4.5s5 1.7 5 4.5") },
+        { title: "Careers", description: "Four open roles.", href: "#", icon: icon("M2.5 5.5h11v8h-11zM6 5.5v-2h4v2") },
+        { title: "Contact", description: "Talk to the team.", href: "#", icon: icon("M2.5 4h11v8h-11zM2.5 4.5 8 9l5.5-4.5") },
       ],
     },
   },

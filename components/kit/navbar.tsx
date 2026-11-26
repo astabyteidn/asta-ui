@@ -16,6 +16,8 @@ export interface NavTile {
 export interface NavMenu {
   /** Panel width in px (clamped to the space available). */
   width?: number;
+  /** A plain dropdown: a short list that opens right under its trigger instead of the centred mega panel. */
+  list?: NavTile[];
   tiles?: NavTile[];
   columns?: { heading: string; links: NavTile[] }[];
   feature?: { title: string; description: string; href: string; cta: string };
@@ -118,7 +120,33 @@ function Tile({ tile, big }: { tile: NavTile; big: boolean }) {
   );
 }
 
+function List({ links }: { links: NavTile[] }) {
+  return (
+    <div className="flex flex-col gap-0.5 p-1.5">
+      {links.map((l) => (
+        <a
+          key={l.title}
+          href={l.href}
+          data-kit-nav-link
+          className="group/item flex items-start gap-3 rounded-lg px-2.5 py-2 outline-none transition-colors duration-150 hover:bg-paper-2 focus-visible:bg-paper-2"
+        >
+          {l.icon && (
+            <span className={cx("mt-px flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-paper text-mute transition-colors duration-150 group-hover/item:text-ink [&_svg]:h-3.5 [&_svg]:w-3.5", RING)}>
+              {l.icon}
+            </span>
+          )}
+          <span className="flex min-w-0 flex-col">
+            <span className="text-[13.5px] font-medium text-ink">{l.title}</span>
+            {l.description && <span className="text-[12px] leading-snug text-mute">{l.description}</span>}
+          </span>
+        </a>
+      ))}
+    </div>
+  );
+}
+
 function Panel({ menu }: { menu: NavMenu }) {
+  if (menu.list) return <List links={menu.list} />;
   const tiles = menu.tiles ?? [];
   const big = tiles.some((t) => t.preview);
   return (
@@ -174,11 +202,12 @@ function Panel({ menu }: { menu: NavMenu }) {
 }
 
 /** Every link in a menu, flattened, for the mobile sheet. */
-const flat = (m: NavMenu): NavTile[] => [...(m.tiles ?? []), ...(m.columns?.flatMap((c) => c.links) ?? [])];
+const flat = (m: NavMenu): NavTile[] => [...(m.list ?? []), ...(m.tiles ?? []), ...(m.columns?.flatMap((c) => c.links) ?? [])];
 
 /**
  * Site header with a mega menu. One shared panel sits under the bar and morphs its size between
- * sections while the new content slides in from the side you moved toward. Hovering a tile dims the
+ * sections while the new content slides in from the side you moved toward. A menu with `list` is a
+ * plain dropdown: the same panel glides over to sit right under its trigger. Hovering a tile dims the
  * rest. Below 560px of container width it collapses to a burger and a sheet of accordion sections.
  * Wrap it in an element with `@container` (the demo does) or it falls back to the viewport width.
  */
@@ -189,6 +218,8 @@ export function Navbar({ brand, brandHref = "/", items, docs, cta, scrollRoot, c
   const [last, setLast] = useState<number | null>(null);
   const [slide, setSlide] = useState(false);
   const [size, setSize] = useState({ w: 0, h: 0 });
+  // Where the open trigger sits in the bar, measured when a menu opens (never per frame).
+  const [anchor, setAnchor] = useState({ left: 0, bar: 0 });
   const [scrolled, setScrolled] = useState(false);
   const [sheet, setSheet] = useState(false);
   const [section, setSection] = useState<number | null>(null);
@@ -209,19 +240,24 @@ export function Navbar({ brand, brandHref = "/", items, docs, cta, scrollRoot, c
     const moving = i !== null && cur !== null && i !== cur;
     if (moving) setDir(i > cur ? 1 : -1);
     setSlide(moving);
-    if (i !== null) setLast(i);
+    if (i !== null) {
+      setLast(i);
+      const t = triggers.current[i];
+      const bar = t?.closest<HTMLElement>("[data-kit-nav-bar]");
+      if (t && bar) setAnchor({ left: t.getBoundingClientRect().left - bar.getBoundingClientRect().left, bar: bar.offsetWidth });
+    }
     setOpen(i);
   }, []);
 
   // Hover intent: a short delay before the first open, instant while moving between triggers.
   const enter = (i: number) => {
     clearTimeout(timer.current);
-    if (openRef.current === null) timer.current = setTimeout(() => show(i), 110);
+    if (openRef.current === null) timer.current = setTimeout(() => show(i), 80);
     else show(i);
   };
   const leave = () => {
     clearTimeout(timer.current);
-    timer.current = setTimeout(() => show(null), 180);
+    timer.current = setTimeout(() => show(null), 150);
   };
   const stay = () => clearTimeout(timer.current);
 
@@ -278,6 +314,8 @@ export function Navbar({ brand, brandHref = "/", items, docs, cta, scrollRoot, c
   useEffect(() => () => clearTimeout(timer.current), []);
 
   const menu = shown !== null ? items[shown]?.menu : undefined;
+  // Mega menus centre under the bar, plain dropdowns line up with their trigger. Clamped to the bar.
+  const panelX = menu?.list ? Math.max(12, Math.min(anchor.left - 6, anchor.bar - size.w - 12)) : (anchor.bar - size.w) / 2;
   const trigger =
     "flex h-8 items-center gap-1 rounded-md px-2.5 text-[13.5px] font-medium text-ink-2 outline-none transition-colors duration-200 hover:bg-paper-2 hover:text-ink focus-visible:ring-2 focus-visible:ring-brand/50 aria-expanded:bg-paper-2 aria-expanded:text-ink";
 
@@ -291,11 +329,11 @@ export function Navbar({ brand, brandHref = "/", items, docs, cta, scrollRoot, c
       )}
     >
       <style href="asta-navbar" precedence="asta">{`
-        @keyframes kit-nav-in { from { opacity: 0; transform: translateX(calc(var(--kit-dir) * 36px)); } to { opacity: 1; transform: none; } }
+        @keyframes kit-nav-in { from { opacity: 0; transform: translateX(calc(var(--kit-dir) * 14px)); } to { opacity: 1; transform: none; } }
         @keyframes kit-nav-pop { from { opacity: 0; transform: translateY(-6px) scale(.98); } to { opacity: 1; transform: none; } }
         @media (prefers-reduced-motion: reduce) { .kit-nav-motion, .kit-nav-motion * { animation: none !important; transition-duration: 0s !important; } }
       `}</style>
-      <div className="kit-nav-motion relative flex h-14 items-center gap-3 px-4">
+      <div data-kit-nav-bar className="kit-nav-motion relative flex h-14 items-center gap-3 px-4">
         <a href={brandHref} className="flex flex-1 items-center gap-2 text-[15px] font-semibold tracking-[-0.02em] text-ink outline-none focus-visible:ring-2 focus-visible:ring-brand/50 rounded-md">
           {brand}
         </a>
@@ -380,9 +418,12 @@ export function Navbar({ brand, brandHref = "/", items, docs, cta, scrollRoot, c
           onPointerEnter={stay}
           onPointerLeave={leave}
           className={cx(
-            "absolute left-1/2 top-[calc(100%-2px)] hidden -translate-x-1/2 @min-[560px]:block",
+            "absolute left-0 top-[calc(100%-2px)] hidden @min-[560px]:block",
+            size.w > 0 && "transition-transform duration-300",
+            EASE,
             open === null && "pointer-events-none",
           )}
+          style={{ transform: `translateX(${Math.round(panelX)}px)` }}
         >
           <div
             className={cx(
@@ -400,8 +441,8 @@ export function Navbar({ brand, brandHref = "/", items, docs, cta, scrollRoot, c
                 style={
                   {
                     "--kit-dir": dir,
-                    width: `min(${menu.width ?? 560}px, calc(100cqw - 24px))`,
-                    animation: slide ? "kit-nav-in .38s cubic-bezier(.16,1,.3,1) both" : undefined,
+                    width: `min(${menu.width ?? (menu.list ? 300 : 560)}px, calc(100cqw - 24px))`,
+                    animation: slide ? "kit-nav-in .28s cubic-bezier(.16,1,.3,1) both" : undefined,
                   } as React.CSSProperties
                 }
               >
