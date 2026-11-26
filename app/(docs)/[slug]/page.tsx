@@ -161,8 +161,8 @@ export default async function UiComponent({ params }: Props) {
           </div>
         </div>
 
-        <h1 className="display ui-enter mt-6 text-[clamp(2.4rem,5vw,4.2rem)] [--i:1]">{block.title}</h1>
-        <p className="ui-enter mt-4 max-w-2xl text-[clamp(1.05rem,1.4vw,1.2rem)] leading-snug text-ink-2 [--i:2]">
+        <h1 className="doc-h1 ui-enter mt-5 [--i:1]">{block.title}</h1>
+        <p className="doc-lead ui-enter mt-3 max-w-2xl [--i:2]">
           {block.description}
         </p>
 
@@ -189,8 +189,8 @@ export default async function UiComponent({ params }: Props) {
         </section>
 
         {vars.length > 0 && (
-          <section id="variants" className="mt-20 scroll-mt-10">
-            <h2 className="display text-[clamp(1.6rem,2.6vw,2.2rem)]">Variants</h2>
+          <section id="variants" className="mt-14 scroll-mt-10">
+            <h2 className="doc-h2">Variants</h2>
             <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-mute">
               {vars.length} more takes on the {block.title.toLowerCase()}, each a single file you install on its own by its id.
             </p>
@@ -227,14 +227,14 @@ export default async function UiComponent({ params }: Props) {
           </section>
         )}
 
-        <div className="mt-20 flex flex-wrap items-end justify-between gap-4">
-          <h2 id="installation" className="display scroll-mt-10 text-[clamp(1.6rem,2.6vw,2.2rem)]">
+        <div className="mt-14 flex flex-wrap items-end justify-between gap-4">
+          <h2 id="installation" className="doc-h2 scroll-mt-10">
             Installation
           </h2>
           {dual && <PrimitiveSwitch />}
         </div>
 
-        <ol className="ui-steps mt-8 flex flex-col gap-12">
+        <ol className="ui-steps mt-6 flex flex-col gap-9">
           <li id="cli" className="scroll-mt-10">
             <h3 className="text-[18px] font-medium tracking-[-0.01em]">Run the CLI</h3>
             <p className="mt-2 max-w-2xl text-[16px] leading-relaxed text-mute">
@@ -318,7 +318,7 @@ export default async function UiComponent({ params }: Props) {
           )}
         </ol>
 
-        <h2 id="usage" className="display mt-20 scroll-mt-10 text-[clamp(1.6rem,2.6vw,2.2rem)]">
+        <h2 id="usage" className="doc-h2 mt-14 scroll-mt-10">
           Usage
         </h2>
         <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-mute">
@@ -341,7 +341,7 @@ export default async function UiComponent({ params }: Props) {
                 {dir}
                 {!back && <span className="btn-arrow" />}
               </span>
-              <span className="display mt-3 block text-[clamp(1.4rem,2.4vw,2rem)] transition-colors group-hover:text-accent">{b.title}</span>
+              <span className="mt-2 block text-[18px] font-medium tracking-[-0.015em] transition-colors group-hover:text-accent">{b.title}</span>
             </Link>
           ))}
         </nav>
