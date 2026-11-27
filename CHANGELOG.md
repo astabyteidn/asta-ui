@@ -2,6 +2,14 @@
 
 Releases are git tags (`vX.Y.Z`); pushing a tag deploys ui.astabyte.com. Merging to `main` does not.
 
+## 0.9.7 — 2026-11-27
+
+- **Navbar dropdowns.** The kit Navbar takes plain dropdowns next to the mega menu. A menu with `list` opens a short list with icons right under its trigger. Moving between menus is quicker and slides less.
+- **Sidebar rework.** The kit Sidebar has a wordmark, icon rows with a grey pill on the active one, a Pinned group, a promo card, a striped Upgrade button and the workspace switcher at the bottom.
+- **Header menu.** Docs and Components open a mega menu with icons and a feature card. A pill follows the pointer across the header, and ← → move between items.
+- **Home timeline.** The organisms section is now a scroll timeline of seven live demos, with a rail that fills as you scroll.
+- **Calmer docs type.** Smaller titles and headings, a narrower column and tighter spacing, closer to a blog post.
+
 ## 0.9.6 — 2026-11-23
 
 - **10 new kit components for AI products:** thinking, context meter, scrub input, model picker, citations, tool approval, agent plan, prompt composer, trace waterfall and API keys. Each works in React and in plain HTML + CSS (`asta.css` / `asta.js`). The kit now has 132 components.
