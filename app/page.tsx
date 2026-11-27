@@ -3,7 +3,7 @@ import CopyChip from "@/components/ui-site/CopyChip";
 import LitText from "@/components/ui-site/LitText";
 import SwapWord from "@/components/ui-site/SwapWord";
 import Showcase from "@/components/ui-site/Showcase";
-import KitGrid from "@/components/ui-site/KitGrid";
+import Timeline from "@/components/ui-site/Timeline";
 import UiGrid from "@/components/ui-site/UiGrid";
 import { kitItems } from "@/lib/kit";
 import { labBlocks } from "@/lib/lab";
@@ -110,16 +110,16 @@ export default function UiHome() {
       </section>
 
       <section id="kit" className="mt-28 scroll-mt-8" aria-label="The kit">
-        <div className="px-shell mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div className="px-shell mb-12 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="label text-accent">§ 02 · Atoms → Molecules → Organisms</p>
-            <h2 className="display mt-3 text-[clamp(2rem,4.4vw,3.6rem)]">The kit</h2>
+            <p className="label text-accent">§ 02 · Organisms</p>
+            <h2 className="display mt-3 text-[clamp(2rem,4.4vw,3.6rem)]">One product, start to finish</h2>
           </div>
           <p className="max-w-sm text-[15px] leading-relaxed text-mute sm:text-right">
-            Built up from the smallest piece. Every demo is live: click, type and tab through them.
+            Whole sections, built up from the atoms. Every demo is live: click, type and tab through them.
           </p>
         </div>
-        <KitGrid />
+        <Timeline />
       </section>
 
       <section className="px-shell mt-28" aria-label="Why we made these">
